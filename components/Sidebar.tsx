@@ -37,9 +37,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, toggleCollapse }) => {
         {!isCollapsed && (
             <div className="flex items-center gap-3 animate-fadeIn">
                 <div className="w-9 h-9 rounded-xl bg-indigo-500/20 flex items-center justify-center border border-indigo-500/20 text-indigo-500 shadow-[0_0_15px_rgba(99,102,241,0.2)]">
-                    <span className="font-mono font-bold text-lg">J</span>
+                    <span className="font-mono font-bold text-lg">P</span>
                 </div>
-                <span className="font-bold text-xl text-textPrimary tracking-tight">JobFlow</span>
+                <span className="font-bold text-xl text-textPrimary tracking-tight">Polaris</span>
             </div>
         )}
         <button 
