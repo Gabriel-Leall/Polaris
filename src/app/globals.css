@@ -1,0 +1,31 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Polaris Design System Colors */
+    --bg-main: #09090B;
+    --bg-card: #121214;
+    --bg-sidebar: #0C0C0E;
+    --bg-input: #18181B;
+    
+    --primary: #6366F1;
+    --primary-glow: #818CF8;
+    --secondary: #A1A1AA;
+    
+    --status-interview: #6366F1;
+    --status-applied: #3B82F6;
+    --status-rejected: #EF4444;
+    --status-pending: #EAB308;
+  }
+  
+  * {
+    @apply border-white/5;
+  }
+  
+  body {
+    @apply bg-[#09090B] text-white;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
