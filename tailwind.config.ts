@@ -9,11 +9,11 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Backgrounds
-        'bg-main': '#09090B',
-        'bg-card': '#121214',
-        'bg-sidebar': '#0C0C0E',
-        'bg-input': '#18181B',
+        // Backgrounds (semantic tokens)
+        'main': '#09090B',
+        'card': '#121214',
+        'sidebar': '#0C0C0E',
+        'input': '#18181B',
         
         // Accents
         'primary': '#6366F1',
@@ -26,13 +26,12 @@ const config: Config = {
         'status-rejected': '#EF4444',
         'status-pending': '#EAB308',
         
-        // Text colors
-        'text-primary': '#FFFFFF',
-        'text-muted': '#A1A1AA',
-        'text-code': '#71717A',
+        // Text colors (semantic tokens)
+        'muted': '#A1A1AA',
+        'code': '#71717A',
         
         // Border
-        'border-glass': 'rgba(255, 255, 255, 0.05)',
+        'glass': 'rgba(255, 255, 255, 0.05)',
       },
       fontFamily: {
         sans: ['Inter', 'Geist Sans', 'system-ui', 'sans-serif'],

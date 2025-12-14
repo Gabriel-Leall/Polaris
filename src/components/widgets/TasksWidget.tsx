@@ -3,11 +3,14 @@
 // Placeholder for TasksWidget
 // TODO: Migrate from existing TasksWidget component
 
-export default function TasksWidget() {
+function TasksWidget() {
   return (
-    <div className="bg-[#121214] rounded-3xl p-6">
+    <div className="bg-card rounded-3xl p-6">
       <h2 className="text-sm font-semibold text-white mb-4">Tasks</h2>
-      <p className="text-[#A1A1AA] text-sm">Tasks widget will be migrated here</p>
+      <p className="text-muted text-sm">Tasks widget will be migrated here</p>
     </div>
   )
 }
+
+export default TasksWidget
+export { TasksWidget }
