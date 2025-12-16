@@ -49,10 +49,39 @@ export const MOCK_EMAILS: EmailItem[] = [
 ];
 
 export const MOCK_TASKS: TaskItem[] = [
-  { id: 't1', label: 'Complete Linear take-home', completed: false, dueDate: 'Tomorrow' },
-  { id: 't2', label: 'Reply to Stripe recruiter', completed: true },
-  { id: 't3', label: 'Update portfolio with new case study', completed: false },
-  { id: 't4', label: 'Research Vercel interview questions', completed: false },
+  { 
+    id: 't1', 
+    label: 'Complete Linear take-home', 
+    completed: false, 
+    dueDate: 'Tomorrow',
+    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24), // 1 day ago
+    updatedAt: new Date(Date.now() - 1000 * 60 * 60 * 12), // 12 hours ago
+    userId: 'mock-user-id'
+  },
+  { 
+    id: 't2', 
+    label: 'Reply to Stripe recruiter', 
+    completed: true,
+    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 48), // 2 days ago
+    updatedAt: new Date(Date.now() - 1000 * 60 * 60 * 6), // 6 hours ago
+    userId: 'mock-user-id'
+  },
+  { 
+    id: 't3', 
+    label: 'Update portfolio with new case study', 
+    completed: false,
+    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 72), // 3 days ago
+    updatedAt: new Date(Date.now() - 1000 * 60 * 60 * 72), // 3 days ago
+    userId: 'mock-user-id'
+  },
+  { 
+    id: 't4', 
+    label: 'Research Vercel interview questions', 
+    completed: false,
+    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 96), // 4 days ago
+    updatedAt: new Date(Date.now() - 1000 * 60 * 60 * 96), // 4 days ago
+    userId: 'mock-user-id'
+  },
 ];
 
 export const MOCK_PROJECTS: ProjectItem[] = [

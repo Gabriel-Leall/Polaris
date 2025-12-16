@@ -1,0 +1,75 @@
+import { z } from 'zod'
+
+// Validation schemas for Server Actions
+
+export const createTaskSchema = z.object({
+  label: z.string().min(1, 'Task label is required').max(500, 'Task label too long'),
+  completed: z.boolean().default(false),
+  dueDate: z.string().optional(),
+  userId: z.string().uuid('Invalid user ID')
+})
+
+export const updateTaskSchema = z.object({
+  id: z.string().uuid('Invalid task ID'),
+  label: z.string().min(1, 'Task label is required').max(500, 'Task label too long').optional(),
+  completed: z.boolean().optional(),
+  dueDate: z.string().optional()
+})
+
+export const createJobApplicationSchema = z.object({
+  companyName: z.string().min(1, 'Company name is required').max(200, 'Company name too long'),
+  companyDomain: z.string().optional(),
+  position: z.string().min(1, 'Position is required').max(200, 'Position too long'),
+  status: z.enum(['Interview', 'Applied', 'Rejected', 'Offer'] as const).default('Applied'),
+  notes: z.string().max(2000, 'Notes too long').optional(),
+  userId: z.string().uuid('Invalid user ID')
+})
+
+export const updateJobApplicationSchema = z.object({
+  id: z.string().uuid('Invalid job application ID'),
+  companyName: z.string().min(1, 'Company name is required').max(200, 'Company name too long').optional(),
+  companyDomain: z.string().optional(),
+  position: z.string().min(1, 'Position is required').max(200, 'Position too long').optional(),
+  status: z.enum(['Interview', 'Applied', 'Rejected', 'Offer'] as const).optional(),
+  notes: z.string().max(2000, 'Notes too long').optional()
+})
+
+export const updateJobApplicationStatusSchema = z.object({
+  id: z.string().uuid('Invalid job application ID'),
+  status: z.enum(['Interview', 'Applied', 'Rejected', 'Offer'] as const)
+})
+
+export const createUserPreferencesSchema = z.object({
+  userId: z.string().uuid('Invalid user ID'),
+  theme: z.enum(['light', 'dark'] as const).default('dark'),
+  focusDuration: z.number().min(1, 'Focus duration must be at least 1 minute').max(180, 'Focus duration too long').default(25),
+  breakDuration: z.number().min(1, 'Break duration must be at least 1 minute').max(60, 'Break duration too long').default(5),
+  zenModeEnabled: z.boolean().default(false),
+  sidebarCollapsed: z.boolean().default(false)
+})
+
+export const updateUserPreferencesSchema = z.object({
+  id: z.string().uuid('Invalid preferences ID'),
+  theme: z.enum(['light', 'dark'] as const).optional(),
+  focusDuration: z.number().min(1, 'Focus duration must be at least 1 minute').max(180, 'Focus duration too long').optional(),
+  breakDuration: z.number().min(1, 'Break duration must be at least 1 minute').max(60, 'Break duration too long').optional(),
+  zenModeEnabled: z.boolean().optional(),
+  sidebarCollapsed: z.boolean().optional()
+})
+
+export const userIdSchema = z.string().uuid('Invalid user ID')
+
+// Environment variable validation
+export const envSchema = z.object({
+  NEXT_PUBLIC_SUPABASE_URL: z.string().url('Invalid Supabase URL'),
+  NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().min(1, 'Supabase anon key is required')
+})
+
+// Helper type exports
+export type CreateTaskInput = z.infer<typeof createTaskSchema>
+export type UpdateTaskInput = z.infer<typeof updateTaskSchema>
+export type CreateJobApplicationInput = z.infer<typeof createJobApplicationSchema>
+export type UpdateJobApplicationInput = z.infer<typeof updateJobApplicationSchema>
+export type UpdateJobApplicationStatusInput = z.infer<typeof updateJobApplicationStatusSchema>
+export type CreateUserPreferencesInput = z.infer<typeof createUserPreferencesSchema>
+export type UpdateUserPreferencesInput = z.infer<typeof updateUserPreferencesSchema>
