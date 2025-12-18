@@ -18,6 +18,10 @@
     --status-applied: #3B82F6;
     --status-rejected: #EF4444;
     --status-pending: #EAB308;
+    
+    /* Glass effect variables */
+    --glass-border: rgba(255, 255, 255, 0.05);
+    --glass-bg: rgba(255, 255, 255, 0.02);
   }
   
   * {
@@ -25,7 +29,113 @@
   }
   
   body {
-    @apply bg-[#09090B] text-white;
+    @apply bg-main text-white font-sans;
     font-feature-settings: "rlig" 1, "calt" 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  /* Typography hierarchy */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold text-white;
+  }
+  
+  h1 {
+    @apply text-4xl font-bold;
+  }
+  
+  h2 {
+    @apply text-2xl;
+  }
+  
+  h3 {
+    @apply text-xl;
+  }
+  
+  /* Code elements */
+  code, pre {
+    font-family: var(--font-jetbrains-mono), 'JetBrains Mono', 'Geist Mono', monospace;
+    font-feature-settings: "liga" 0;
+  }
+  
+  /* Focus styles for better accessibility */
+  :focus-visible {
+    @apply outline-none ring-2 ring-primary ring-offset-2 ring-offset-main;
+  }
+}
+
+@layer components {
+  /* Glass card component */
+  .glass-card {
+    @apply bg-card border border-glass backdrop-blur-sm;
+    background-image: var(--gradient-glass);
+  }
+  
+  /* Interactive glass elements */
+  .glass-interactive {
+    @apply glass-card transition-all duration-200 hover:border-white/10 hover:shadow-card-hover;
+  }
+  
+  /* Glow effects */
+  .glow-primary {
+    @apply shadow-glow;
+  }
+  
+  .glow-primary-sm {
+    @apply shadow-glow-sm;
+  }
+  
+  .glow-primary-lg {
+    @apply shadow-glow-lg;
+  }
+  
+  /* Interactive element base styles */
+  .interactive-element {
+    @apply transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-main;
+  }
+  
+  /* Hover states for interactive elements */
+  .hover-lift {
+    @apply hover:scale-105 active:scale-95 transition-transform duration-200;
+  }
+  
+  .hover-glow {
+    @apply hover:shadow-glow-sm transition-shadow duration-200;
+  }
+  
+  .hover-brighten {
+    @apply hover:brightness-110 transition-all duration-200;
+  }
+  
+  /* Sidebar active item gradient */
+  .sidebar-active {
+    @apply bg-gradient-to-r from-primary/20 via-purple-500/5 to-transparent;
+  }
+  
+  /* Code editor styles */
+  .code-editor {
+    font-family: var(--font-jetbrains-mono), 'JetBrains Mono', 'Geist Mono', monospace;
+    font-feature-settings: "liga" 0, "calt" 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  /* Status indicators */
+  .status-dot {
+    @apply w-2 h-2 rounded-full animate-pulse;
+  }
+  
+  /* Glass borders with subtle animation */
+  .glass-border-animated {
+    @apply border border-glass hover:border-white/10 transition-colors duration-300;
+  }
+  
+  /* Subtle shadows for depth */
+  .subtle-shadow {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+  }
+  
+  .subtle-shadow-hover {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
   }
 }

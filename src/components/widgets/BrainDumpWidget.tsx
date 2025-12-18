@@ -135,7 +135,7 @@ function BrainDumpWidgetCore() {
   }
 
   return (
-    <div className="bg-card rounded-3xl p-6 h-full flex flex-col">
+    <div className="glass-card rounded-3xl p-6 h-full flex flex-col">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-sm font-semibold text-white">Brain Dump</h2>

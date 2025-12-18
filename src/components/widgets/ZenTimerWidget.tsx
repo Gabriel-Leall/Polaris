@@ -102,7 +102,7 @@ const ZenTimerWidget = ({ className }: ZenTimerWidgetProps) => {
   const progress = ((timerState.initialDuration - timerState.totalSeconds) / timerState.initialDuration) * 100
 
   return (
-    <div className={cn("bg-card rounded-3xl p-6 border border-white/5", className)}>
+    <div className={cn("glass-card rounded-3xl p-6", className)}>
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-sm font-semibold text-white">Zen Timer</h2>
@@ -148,7 +148,7 @@ const ZenTimerWidget = ({ className }: ZenTimerWidgetProps) => {
           disabled={timerState.totalSeconds === 0}
           className={cn(
             "h-16 w-16 rounded-full p-0 transition-all duration-200",
-            timerState.isRunning && "shadow-[0_0_20px_rgba(99,102,241,0.5)]"
+            timerState.isRunning && "glow-primary"
           )}
         >
           {timerState.isRunning ? (

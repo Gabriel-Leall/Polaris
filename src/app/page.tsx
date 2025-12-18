@@ -1,7 +1,9 @@
 import { TasksWidget } from '@/components/widgets/TasksWidget'
+import { ZenTimerWidget } from '@/components/widgets/ZenTimerWidget'
 import { 
   DashboardLayout, 
   Sidebar, 
+  SidebarNav,
   BentoGrid, 
   GridColumn, 
   WidgetCard 
@@ -12,9 +14,7 @@ export default function Dashboard() {
     <DashboardLayout>
       {/* Sidebar */}
       <Sidebar>
-        <nav className="space-y-2">
-          <div className="text-sm text-muted">Navigation items will go here</div>
-        </nav>
+        <SidebarNav activeItem="dashboard" />
       </Sidebar>
       
       {/* Main Content Grid */}
@@ -24,13 +24,9 @@ export default function Dashboard() {
           <TasksWidget />
         </GridColumn>
         
-        {/* Center Column - Brain Dump */}
+        {/* Center Column - Zen Timer */}
         <GridColumn span="center">
-          <WidgetCard title="Brain Dump">
-            <div className="text-sm text-muted">
-              Brain dump widget content will go here
-            </div>
-          </WidgetCard>
+          <ZenTimerWidget />
         </GridColumn>
         
         {/* Right Column - Context */}

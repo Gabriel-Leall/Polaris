@@ -108,7 +108,7 @@ function TasksWidget({ className }: TasksWidgetProps) {
 
   return (
     <div
-      className={cn("bg-card rounded-3xl p-6 border border-glass", className)}
+      className={cn("glass-card rounded-3xl p-6", className)}
     >
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
