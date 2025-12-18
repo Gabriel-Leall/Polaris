@@ -5,3 +5,5 @@
 export { default as Sidebar } from './Sidebar'
 export { default as BentoGrid } from './BentoGrid'
 export { default as DashboardLayout } from './DashboardLayout'
+export { default as GridColumn } from './GridColumn'
+export { default as WidgetCard } from './WidgetCard'

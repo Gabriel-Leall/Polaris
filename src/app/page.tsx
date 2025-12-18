@@ -1,34 +1,47 @@
 import { TasksWidget } from '@/components/widgets/TasksWidget'
+import { 
+  DashboardLayout, 
+  Sidebar, 
+  BentoGrid, 
+  GridColumn, 
+  WidgetCard 
+} from '@/components/layout'
 
 export default function Dashboard() {
   return (
-    <main className="h-screen w-full overflow-hidden bg-main text-white">
-      <div className="grid grid-cols-12 gap-6 h-full p-6">
-        {/* Sidebar */}
-        <aside className="w-64 bg-sidebar rounded-3xl">
-          <div className="p-6">
-            <h1 className="text-xl font-bold text-white">Polaris</h1>
-          </div>
-        </aside>
+    <DashboardLayout>
+      {/* Sidebar */}
+      <Sidebar>
+        <nav className="space-y-2">
+          <div className="text-sm text-muted">Navigation items will go here</div>
+        </nav>
+      </Sidebar>
+      
+      {/* Main Content Grid */}
+      <BentoGrid>
+        {/* Left Column - Tasks */}
+        <GridColumn span="left">
+          <TasksWidget />
+        </GridColumn>
         
-        {/* Main Content Grid */}
-        <div className="col-span-11 grid grid-cols-12 gap-6">
-          {/* Left Column - Tasks */}
-          <div className="col-span-3">
-            <TasksWidget />
-          </div>
-          
-          {/* Center Column - Brain Dump */}
-          <div className="col-span-5 bg-card rounded-3xl p-6 border border-glass">
-            <h2 className="text-sm font-semibold text-white mb-4">Brain Dump</h2>
-          </div>
-          
-          {/* Right Column - Context */}
-          <div className="col-span-4 bg-card rounded-3xl p-6 border border-glass">
-            <h2 className="text-sm font-semibold text-white mb-4">Context</h2>
-          </div>
-        </div>
-      </div>
-    </main>
+        {/* Center Column - Brain Dump */}
+        <GridColumn span="center">
+          <WidgetCard title="Brain Dump">
+            <div className="text-sm text-muted">
+              Brain dump widget content will go here
+            </div>
+          </WidgetCard>
+        </GridColumn>
+        
+        {/* Right Column - Context */}
+        <GridColumn span="right">
+          <WidgetCard title="Context">
+            <div className="text-sm text-muted">
+              Context widgets will go here
+            </div>
+          </WidgetCard>
+        </GridColumn>
+      </BentoGrid>
+    </DashboardLayout>
   )
 }
