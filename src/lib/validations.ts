@@ -57,6 +57,18 @@ export const updateUserPreferencesSchema = z.object({
   sidebarCollapsed: z.boolean().optional()
 })
 
+export const createBrainDumpNoteSchema = z.object({
+  userId: z.string().uuid('Invalid user ID'),
+  content: z.string().default(''),
+  version: z.number().min(1, 'Version must be at least 1').default(1)
+})
+
+export const updateBrainDumpNoteSchema = z.object({
+  id: z.string().uuid('Invalid brain dump note ID'),
+  content: z.string().optional(),
+  version: z.number().min(1, 'Version must be at least 1').optional()
+})
+
 export const userIdSchema = z.string().uuid('Invalid user ID')
 
 // Environment variable validation
@@ -73,3 +85,5 @@ export type UpdateJobApplicationInput = z.infer<typeof updateJobApplicationSchem
 export type UpdateJobApplicationStatusInput = z.infer<typeof updateJobApplicationStatusSchema>
 export type CreateUserPreferencesInput = z.infer<typeof createUserPreferencesSchema>
 export type UpdateUserPreferencesInput = z.infer<typeof updateUserPreferencesSchema>
+export type CreateBrainDumpNoteInput = z.infer<typeof createBrainDumpNoteSchema>
+export type UpdateBrainDumpNoteInput = z.infer<typeof updateBrainDumpNoteSchema>

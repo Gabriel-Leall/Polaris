@@ -4,3 +4,4 @@
 export * from './tasks'
 export * from './jobApplications'
 export * from './userPreferences'
+export * from './brainDumpNotes'
