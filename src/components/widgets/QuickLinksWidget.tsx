@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { ExternalLink, Plus, Edit2, Trash2, Globe, Github, Linkedin, Mail, FileText, Briefcase } from 'lucide-react'
 import { Button, Dialog, Input } from '@/components/ui'
+import { ErrorBoundary, WidgetErrorFallback } from '@/components/ui/error-boundary'
 import { cn } from '@/lib/utils'
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
@@ -98,10 +99,10 @@ const iconMap = {
 }
 
 interface QuickLinksWidgetProps {
-  className?: string
+  className?: string | undefined
 }
 
-function QuickLinksWidget({ className }: QuickLinksWidgetProps) {
+function QuickLinksWidgetCore({ className }: QuickLinksWidgetProps) {
   const { links, addLink, updateLink, removeLink } = useQuickLinksStore()
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
   const [editingLink, setEditingLink] = useState<QuickLink | null>(null)
@@ -342,6 +343,19 @@ function QuickLinksWidget({ className }: QuickLinksWidgetProps) {
         </div>
       </Dialog>
     </div>
+  )
+}
+
+// Wrapper component with error boundary
+function QuickLinksWidget({ className }: QuickLinksWidgetProps) {
+  return (
+    <ErrorBoundary 
+      fallback={WidgetErrorFallback}
+      name="QuickLinksWidget"
+      maxRetries={2}
+    >
+      <QuickLinksWidgetCore className={className} />
+    </ErrorBoundary>
   )
 }
 

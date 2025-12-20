@@ -1,6 +1,7 @@
 'use client'
 
 import { cn } from '@/lib/utils'
+import { ErrorBoundary, WidgetErrorFallback } from '@/components/ui/error-boundary'
 import { 
   Home, 
   Target, 
@@ -20,9 +21,9 @@ interface NavItem {
 }
 
 interface SidebarNavProps {
-  activeItem?: string
-  onItemClick?: (itemId: string) => void
-  className?: string
+  activeItem?: string | undefined
+  onItemClick?: ((itemId: string) => void) | undefined
+  className?: string | undefined
 }
 
 const navItems: NavItem[] = [
@@ -41,7 +42,7 @@ const navItems: NavItem[] = [
  * SidebarNav - Navigation component for the sidebar
  * Implements Polaris design system with proper active states and hover effects
  */
-function SidebarNav({ activeItem = 'dashboard', onItemClick, className }: SidebarNavProps) {
+function SidebarNavCore({ activeItem = 'dashboard', onItemClick, className }: SidebarNavProps) {
   return (
     <nav className={cn('space-y-1', className)}>
       {navItems.map((item) => {
@@ -76,6 +77,23 @@ function SidebarNav({ activeItem = 'dashboard', onItemClick, className }: Sideba
         )
       })}
     </nav>
+  )
+}
+
+// Wrapper component with error boundary
+function SidebarNav({ activeItem = 'dashboard', onItemClick, className }: SidebarNavProps) {
+  return (
+    <ErrorBoundary 
+      fallback={WidgetErrorFallback}
+      name="SidebarNav"
+      maxRetries={2}
+    >
+      <SidebarNavCore 
+        activeItem={activeItem} 
+        onItemClick={onItemClick} 
+        className={className} 
+      />
+    </ErrorBoundary>
   )
 }
 

@@ -3,14 +3,15 @@
 import { useState, useMemo } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { Button } from '@/components/ui'
+import { ErrorBoundary, WidgetErrorFallback } from '@/components/ui/error-boundary'
 import { cn } from '@/lib/utils'
 import type { CalendarDay } from '@/types'
 
 interface CalendarWidgetProps {
-  className?: string
+  className?: string | undefined
 }
 
-function CalendarWidget({ className }: CalendarWidgetProps) {
+function CalendarWidgetCore({ className }: CalendarWidgetProps) {
   const [currentDate, setCurrentDate] = useState(new Date())
 
   const { monthName, year, daysInMonth, firstDayOfMonth, today } = useMemo(() => {
@@ -159,6 +160,19 @@ function CalendarWidget({ className }: CalendarWidgetProps) {
         </p>
       </div>
     </div>
+  )
+}
+
+// Wrapper component with error boundary
+function CalendarWidget({ className }: CalendarWidgetProps) {
+  return (
+    <ErrorBoundary 
+      fallback={WidgetErrorFallback}
+      name="CalendarWidget"
+      maxRetries={2}
+    >
+      <CalendarWidgetCore className={className} />
+    </ErrorBoundary>
   )
 }
 

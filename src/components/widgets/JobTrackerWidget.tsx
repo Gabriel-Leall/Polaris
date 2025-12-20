@@ -21,6 +21,7 @@ import {
   DialogTitle, 
   DialogTrigger 
 } from '@/components/ui/dialog'
+import { ErrorBoundary, DataErrorFallback } from '@/components/ui/error-boundary'
 import { cn } from '@/lib/utils'
 
 interface JobApplicationFormData {
@@ -39,7 +40,7 @@ const statusColors: Record<AppStatus, string> = {
 
 const statusOptions: AppStatus[] = ['Applied', 'Interview', 'Offer', 'Rejected']
 
-function JobTrackerWidget() {
+function JobTrackerWidgetCore() {
   const [jobApplications, setJobApplications] = useState<JobApplication[]>([])
   const [filteredApplications, setFilteredApplications] = useState<JobApplication[]>([])
   const [filterStatus, setFilterStatus] = useState<AppStatus | 'All'>('All')
@@ -429,6 +430,19 @@ function JobTrackerWidget() {
         </DialogContent>
       </Dialog>
     </div>
+  )
+}
+
+// Wrapper component with error boundary
+function JobTrackerWidget() {
+  return (
+    <ErrorBoundary 
+      fallback={DataErrorFallback}
+      name="JobTrackerWidget"
+      maxRetries={3}
+    >
+      <JobTrackerWidgetCore />
+    </ErrorBoundary>
   )
 }
 

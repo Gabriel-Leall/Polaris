@@ -3,6 +3,7 @@
 import { useRef, useEffect } from 'react'
 import { Play, Pause, SkipBack, SkipForward, Volume2, VolumeX, Shuffle, Repeat } from 'lucide-react'
 import { Button } from '@/components/ui'
+import { ErrorBoundary, WidgetErrorFallback } from '@/components/ui/error-boundary'
 import { cn } from '@/lib/utils'
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
@@ -82,10 +83,10 @@ const useMediaPlayerStore = create<MediaPlayerStore>()(
 )
 
 interface MediaPlayerWidgetProps {
-  className?: string
+  className?: string | undefined
 }
 
-function MediaPlayerWidget({ className }: MediaPlayerWidgetProps) {
+function MediaPlayerWidgetCore({ className }: MediaPlayerWidgetProps) {
   const {
     currentTrack,
     isPlaying,
@@ -308,6 +309,19 @@ function MediaPlayerWidget({ className }: MediaPlayerWidgetProps) {
         </span>
       </div>
     </div>
+  )
+}
+
+// Wrapper component with error boundary
+function MediaPlayerWidget({ className }: MediaPlayerWidgetProps) {
+  return (
+    <ErrorBoundary 
+      fallback={WidgetErrorFallback}
+      name="MediaPlayerWidget"
+      maxRetries={2}
+    >
+      <MediaPlayerWidgetCore className={className} />
+    </ErrorBoundary>
   )
 }
 

@@ -1,5 +1,6 @@
 import { TasksWidget } from '@/components/widgets/TasksWidget'
 import { ZenTimerWidget } from '@/components/widgets/ZenTimerWidget'
+import { ErrorTestingPanel } from '@/components/ui/error-testing-panel'
 import { 
   DashboardLayout, 
   Sidebar, 
@@ -38,6 +39,9 @@ export default function Dashboard() {
           </WidgetCard>
         </GridColumn>
       </BentoGrid>
+      
+      {/* Development Error Testing Panel */}
+      <ErrorTestingPanel />
     </DashboardLayout>
   )
 }

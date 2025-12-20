@@ -12,16 +12,17 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
+import { ErrorBoundary, DataErrorFallback } from "@/components/ui/error-boundary";
 import { cn } from "@/lib/utils";
 
 // Mock user ID for now - in a real app this would come from auth
 const MOCK_USER_ID = "123e4567-e89b-12d3-a456-426614174001";
 
 interface TasksWidgetProps {
-  className?: string;
+  className?: string | undefined;
 }
 
-function TasksWidget({ className }: TasksWidgetProps) {
+function TasksWidgetCore({ className }: TasksWidgetProps) {
   const [tasks, setTasks] = useState<TaskItem[]>([]);
   const [newTaskLabel, setNewTaskLabel] = useState("");
   const [isLoading, setIsLoading] = useState(true);
@@ -32,8 +33,13 @@ function TasksWidget({ className }: TasksWidgetProps) {
     try {
       setIsLoading(true);
       setError(null);
-      const fetchedTasks = await getTasks(MOCK_USER_ID);
-      setTasks(fetchedTasks);
+      const result = await getTasks(MOCK_USER_ID);
+      
+      if (result.success) {
+        setTasks(result.data);
+      } else {
+        setError(result.error.message);
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to load tasks");
     } finally {
@@ -53,14 +59,18 @@ function TasksWidget({ className }: TasksWidgetProps) {
       setIsCreating(true);
       setError(null);
 
-      const newTask = await createTask({
+      const result = await createTask({
         label: newTaskLabel.trim(),
         completed: false,
         userId: MOCK_USER_ID,
       });
 
-      setTasks((prev) => [newTask, ...prev]);
-      setNewTaskLabel("");
+      if (result.success) {
+        setTasks((prev) => [result.data, ...prev]);
+        setNewTaskLabel("");
+      } else {
+        setError(result.error.message);
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to create task");
     } finally {
@@ -73,11 +83,15 @@ function TasksWidget({ className }: TasksWidgetProps) {
       try {
         setError(null);
 
-        const updatedTask = await updateTask(taskId, { completed });
+        const result = await updateTask(taskId, { completed });
 
-        setTasks((prev) =>
-          prev.map((task) => (task.id === taskId ? updatedTask : task))
-        );
+        if (result.success) {
+          setTasks((prev) =>
+            prev.map((task) => (task.id === taskId ? result.data : task))
+          );
+        } else {
+          setError(result.error.message);
+        }
       } catch (err) {
         setError(err instanceof Error ? err.message : "Failed to update task");
       }
@@ -89,9 +103,13 @@ function TasksWidget({ className }: TasksWidgetProps) {
     try {
       setError(null);
 
-      await deleteTask(taskId);
+      const result = await deleteTask(taskId);
 
-      setTasks((prev) => prev.filter((task) => task.id !== taskId));
+      if (result.success) {
+        setTasks((prev) => prev.filter((task) => task.id !== taskId));
+      } else {
+        setError(result.error.message);
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to delete task");
     }
@@ -216,6 +234,19 @@ function TasksWidget({ className }: TasksWidgetProps) {
       )}
     </div>
   );
+}
+
+// Wrapper component with error boundary
+function TasksWidget({ className }: TasksWidgetProps) {
+  return (
+    <ErrorBoundary 
+      fallback={DataErrorFallback}
+      name="TasksWidget"
+      maxRetries={3}
+    >
+      <TasksWidgetCore className={className} />
+    </ErrorBoundary>
+  )
 }
 
 export default TasksWidget;

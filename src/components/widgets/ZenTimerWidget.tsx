@@ -3,11 +3,12 @@
 import { useState, useEffect, useCallback } from 'react'
 import { Play, Pause, RotateCcw } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { ErrorBoundary, WidgetErrorFallback } from '@/components/ui/error-boundary'
 import { useZenStore } from '@/store/zenStore'
 import { cn } from '@/lib/utils'
 
 interface ZenTimerWidgetProps {
-  className?: string
+  className?: string | undefined
 }
 
 interface TimerState {
@@ -18,7 +19,7 @@ interface TimerState {
   initialDuration: number
 }
 
-const ZenTimerWidget = ({ className }: ZenTimerWidgetProps) => {
+const ZenTimerWidgetCore = ({ className }: ZenTimerWidgetProps) => {
   const { isZenMode, setZenMode } = useZenStore()
   
   const [timerState, setTimerState] = useState<TimerState>({
@@ -169,6 +170,19 @@ const ZenTimerWidget = ({ className }: ZenTimerWidgetProps) => {
         </div>
       )}
     </div>
+  )
+}
+
+// Wrapper component with error boundary
+const ZenTimerWidget = ({ className }: ZenTimerWidgetProps) => {
+  return (
+    <ErrorBoundary 
+      fallback={WidgetErrorFallback}
+      name="ZenTimerWidget"
+      maxRetries={2}
+    >
+      <ZenTimerWidgetCore className={className} />
+    </ErrorBoundary>
   )
 }
 
