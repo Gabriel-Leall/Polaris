@@ -291,7 +291,7 @@ function QuickLinksWidgetCore({ className }: QuickLinksWidgetProps) {
               <label className="text-sm text-zinc-400 mb-2 block">Category</label>
               <select
                 value={newLink.category}
-                onChange={(e) => setNewLink(prev => ({ ...prev, category: e.target.value as any }))}
+                onChange={(e) => setNewLink(prev => ({ ...prev, category: e.target.value as 'work' | 'social' | 'tools' | 'other' }))}
                 className="w-full bg-input border border-white/10 rounded-xl px-3 py-2 text-white text-sm"
               >
                 <option value="work">Work</option>

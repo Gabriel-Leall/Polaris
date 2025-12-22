@@ -32,7 +32,7 @@ class ErrorMonitoringService {
   constructor(config: Partial<MonitoringConfig> = {}) {
     this.config = {
       enabled: process.env.NODE_ENV === 'production',
-      environment: (process.env.NODE_ENV as any) || 'development',
+      environment: (process.env.NODE_ENV as 'development' | 'production' | 'test') || 'development',
       maxRetries: 3,
       batchSize: 10,
       flushInterval: 30000, // 30 seconds
@@ -103,9 +103,9 @@ class ErrorMonitoringService {
    */
   setUserContext(userId: string, metadata?: Record<string, unknown> | undefined): void {
     if (typeof window !== 'undefined') {
-      (window as any).__errorMonitoringContext = {
+      (window as Window & { __errorMonitoringContext?: { userId: string; metadata?: Record<string, unknown>; sessionId?: string } }).__errorMonitoringContext = {
         userId,
-        metadata,
+        ...(metadata && { metadata }),
         sessionId: this.generateSessionId()
       }
     }
@@ -124,12 +124,12 @@ class ErrorMonitoringService {
       message,
       category,
       level,
-      data,
+      ...(data && { data }),
       timestamp: new Date().toISOString()
     }
 
     if (typeof window !== 'undefined') {
-      const breadcrumbs = (window as any).__errorBreadcrumbs || []
+      const breadcrumbs = (window as Window & { __errorBreadcrumbs?: Array<{ timestamp: string; message: string; level: string; category?: string; data?: Record<string, unknown> }> }).__errorBreadcrumbs || []
       breadcrumbs.push(breadcrumb)
       
       // Keep only last 50 breadcrumbs
@@ -137,7 +137,7 @@ class ErrorMonitoringService {
         breadcrumbs.shift()
       }
       
-      (window as any).__errorBreadcrumbs = breadcrumbs
+      (window as Window & { __errorBreadcrumbs?: Array<{ timestamp: string; message: string; level: string; category?: string; data?: Record<string, unknown> }> }).__errorBreadcrumbs = breadcrumbs
     }
 
     if (this.config.environment === 'development') {
@@ -163,12 +163,12 @@ class ErrorMonitoringService {
       
       // Re-queue errors for retry (up to maxRetries)
       errors.forEach(errorData => {
-        const retryCount = (errorData as any).retryCount || 0
+        const retryCount = (errorData as { retryCount?: number }).retryCount || 0
         if (retryCount < this.config.maxRetries) {
           this.errorQueue.push({
             ...errorData,
             retryCount: retryCount + 1
-          } as any)
+          } as typeof errorData & { retryCount: number })
         }
       })
     }
@@ -200,7 +200,7 @@ class ErrorMonitoringService {
         environment: this.config.environment,
         userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : undefined,
         url: typeof window !== 'undefined' ? window.location.href : undefined,
-        breadcrumbs: typeof window !== 'undefined' ? (window as any).__errorBreadcrumbs : undefined
+        breadcrumbs: typeof window !== 'undefined' ? (window as Window & { __errorBreadcrumbs?: Array<{ timestamp: string; message: string; level: string; category?: string; data?: Record<string, unknown> }> }).__errorBreadcrumbs : undefined
       }))
     }
 

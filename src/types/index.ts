@@ -227,7 +227,7 @@ export interface Database {
         Insert: {
           id?: string;
           user_id: string;
-          content?: string;
+          content: string;
           version?: number;
           created_at?: string;
           updated_at?: string;

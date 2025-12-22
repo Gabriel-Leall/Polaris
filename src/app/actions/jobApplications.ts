@@ -30,8 +30,8 @@ export async function createJobApplication(data: CreateJobApplicationInput): Pro
       last_updated: now
     }
 
-    const { data: jobApp, error } = await (supabase as any)
-      .from('job_applications')
+    const { data: jobApp, error } = await (supabase
+      .from('job_applications') as any)
       .insert(insertData)
       .select()
       .single()
@@ -67,8 +67,8 @@ export async function updateJobApplicationStatus(id: string, status: AppStatus):
     // Validate input data
     const validatedData = updateJobApplicationStatusSchema.parse({ id, status })
     
-    const { data: jobApp, error } = await (supabase as any)
-      .from('job_applications')
+    const { data: jobApp, error } = await (supabase
+      .from('job_applications') as any)
       .update({
         status: validatedData.status,
         last_updated: new Date().toISOString(),
@@ -120,8 +120,8 @@ export async function updateJobApplication(id: string, data: Partial<UpdateJobAp
     if (validatedData.status !== undefined) updateData.status = validatedData.status
     if (validatedData.notes !== undefined) updateData.notes = validatedData.notes
 
-    const { data: jobApp, error } = await (supabase as any)
-      .from('job_applications')
+    const { data: jobApp, error } = await (supabase
+      .from('job_applications') as any)
       .update(updateData)
       .eq('id', validatedData.id)
       .select()
@@ -158,8 +158,8 @@ export async function deleteJobApplication(id: string): Promise<void> {
     // Validate job application ID
     const validatedId = userIdSchema.parse(id)
     
-    const { error } = await (supabase as any)
-      .from('job_applications')
+    const { error } = await (supabase
+      .from('job_applications') as any)
       .delete()
       .eq('id', validatedId)
 
@@ -179,8 +179,8 @@ export async function getJobApplications(userId: string): Promise<JobApplication
     // Validate user ID
     const validatedUserId = userIdSchema.parse(userId)
     
-    const { data: jobApps, error } = await (supabase as any)
-      .from('job_applications')
+    const { data: jobApps, error } = await (supabase
+      .from('job_applications') as any)
       .select('*')
       .eq('user_id', validatedUserId)
       .order('last_updated', { ascending: false })

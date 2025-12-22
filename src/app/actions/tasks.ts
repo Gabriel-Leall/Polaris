@@ -18,8 +18,8 @@ export async function createTask(data: CreateTaskInput): Promise<Result<TaskItem
     const validatedData = createTaskSchema.parse(data)
     
     return await supabaseCircuitBreaker.execute(async () => {
-      const { data: task, error } = await (supabase as any)
-        .from('tasks')
+      const { data: task, error } = await (supabase
+        .from('tasks') as any)
         .insert({
           user_id: validatedData.userId,
           label: validatedData.label,
@@ -61,8 +61,8 @@ export async function updateTask(id: string, data: Partial<UpdateTaskInput>): Pr
       // Always update the updated_at timestamp
       updateData.updated_at = new Date().toISOString()
 
-      const { data: task, error } = await (supabase as any)
-        .from('tasks')
+      const { data: task, error } = await (supabase
+        .from('tasks') as any)
         .update(updateData)
         .eq('id', validatedData.id)
         .select()
@@ -92,8 +92,8 @@ export async function deleteTask(id: string): Promise<Result<void>> {
     const validatedId = userIdSchema.parse(id)
     
     return await supabaseCircuitBreaker.execute(async () => {
-      const { error } = await (supabase as any)
-        .from('tasks')
+      const { error } = await (supabase
+        .from('tasks') as any)
         .delete()
         .eq('id', validatedId)
 
@@ -110,8 +110,8 @@ export async function getTasks(userId: string): Promise<Result<TaskItem[]>> {
     const validatedUserId = userIdSchema.parse(userId)
     
     return await supabaseCircuitBreaker.execute(async () => {
-      const { data: tasks, error } = await (supabase as any)
-        .from('tasks')
+      const { data: tasks, error } = await (supabase
+        .from('tasks') as any)
         .select('*')
         .eq('user_id', validatedUserId)
         .order('created_at', { ascending: false })

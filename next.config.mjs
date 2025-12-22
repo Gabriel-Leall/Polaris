@@ -12,6 +12,7 @@ const nextConfig = {
   },
   images: {
     domains: [],
+    formats: ['image/webp', 'image/avif'],
   },
   typescript: {
     ignoreBuildErrors: false,
@@ -19,6 +20,13 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: false,
   },
+  // Performance optimizations
+  compress: true,
+  poweredByHeader: false,
+  // Bundle analyzer (uncomment to analyze bundle)
+  // bundleAnalyzer: {
+  //   enabled: process.env.ANALYZE === 'true',
+  // },
 };
 
 export default nextConfig;

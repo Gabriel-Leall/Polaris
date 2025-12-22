@@ -16,8 +16,8 @@ export async function createBrainDumpNote(data: CreateBrainDumpNoteInput): Promi
     // Validate input data
     const validatedData = createBrainDumpNoteSchema.parse(data)
     
-    const { data: note, error } = await (supabase as any)
-      .from('brain_dump_notes')
+    const { data: note, error } = await (supabase
+      .from('brain_dump_notes') as any)
       .insert({
         user_id: validatedData.userId,
         content: validatedData.content,
@@ -59,8 +59,8 @@ export async function updateBrainDumpNote(id: string, data: Partial<UpdateBrainD
     // Always update the updated_at timestamp
     updateData.updated_at = new Date().toISOString()
 
-    const { data: note, error } = await (supabase as any)
-      .from('brain_dump_notes')
+    const { data: note, error } = await (supabase
+      .from('brain_dump_notes') as any)
       .update(updateData)
       .eq('id', validatedData.id)
       .select()
@@ -92,8 +92,8 @@ export async function deleteBrainDumpNote(id: string): Promise<void> {
     // Validate note ID
     const validatedId = userIdSchema.parse(id)
     
-    const { error } = await (supabase as any)
-      .from('brain_dump_notes')
+    const { error } = await (supabase
+      .from('brain_dump_notes') as any)
       .delete()
       .eq('id', validatedId)
 
@@ -113,8 +113,8 @@ export async function getBrainDumpNote(userId: string): Promise<BrainDumpNote | 
     // Validate user ID
     const validatedUserId = userIdSchema.parse(userId)
     
-    const { data: note, error } = await (supabase as any)
-      .from('brain_dump_notes')
+    const { data: note, error } = await (supabase
+      .from('brain_dump_notes') as any)
       .select('*')
       .eq('user_id', validatedUserId)
       .order('updated_at', { ascending: false })

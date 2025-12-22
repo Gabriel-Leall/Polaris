@@ -26,8 +26,8 @@ export async function updateUserPreferences(id: string, preferences: Partial<Upd
     if (validatedData.zenModeEnabled !== undefined) updateData.zen_mode_enabled = validatedData.zenModeEnabled
     if (validatedData.sidebarCollapsed !== undefined) updateData.sidebar_collapsed = validatedData.sidebarCollapsed
 
-    const { data: prefs, error } = await (supabase as any)
-      .from('user_preferences')
+    const { data: prefs, error } = await (supabase
+      .from('user_preferences') as any)
       .update(updateData)
       .eq('id', validatedData.id)
       .select()
@@ -62,8 +62,8 @@ export async function getUserPreferences(userId: string): Promise<UserPreference
     // Validate user ID
     const validatedUserId = userIdSchema.parse(userId)
     
-    const { data: prefs, error } = await (supabase as any)
-      .from('user_preferences')
+    const { data: prefs, error } = await (supabase
+      .from('user_preferences') as any)
       .select('*')
       .eq('user_id', validatedUserId)
       .single()
@@ -101,8 +101,8 @@ export async function createUserPreferences(data: CreateUserPreferencesInput): P
     // Validate input data
     const validatedData = createUserPreferencesSchema.parse(data)
     
-    const { data: prefs, error } = await (supabase as any)
-      .from('user_preferences')
+    const { data: prefs, error } = await (supabase
+      .from('user_preferences') as any)
       .insert({
         user_id: validatedData.userId,
         theme: validatedData.theme,

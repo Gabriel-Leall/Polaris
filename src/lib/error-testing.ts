@@ -270,7 +270,7 @@ export const useErrorTesting = () => {
  * Global error testing utilities (development only)
  */
 if (process.env.NODE_ENV === 'development' && typeof window !== 'undefined') {
-  (window as any).__errorTester = ErrorTester.getInstance()
+  (window as Window & { __errorTester?: ErrorTester }).__errorTester = ErrorTester.getInstance()
   console.log('🧪 Error testing utilities available at window.__errorTester')
 }
 
