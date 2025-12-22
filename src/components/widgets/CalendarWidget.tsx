@@ -91,7 +91,7 @@ function CalendarWidgetCore({ className }: CalendarWidgetProps) {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h2 className="text-sm font-semibold text-white">{monthName} {year}</h2>
-          <p className="text-xs text-zinc-500 mt-1">Calendar</p>
+          <p className="text-xs text-secondary mt-1">Calendar</p>
         </div>
         <div className="flex items-center gap-1">
           <Button
@@ -124,7 +124,7 @@ function CalendarWidgetCore({ className }: CalendarWidgetProps) {
       {/* Days of week header */}
       <div className="grid grid-cols-7 gap-1 mb-2">
         {['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map((day) => (
-          <div key={day} className="text-center text-xs text-zinc-500 py-2 font-medium">
+          <div key={day} className="text-xs text-secondary py-2 font-medium flex justify-center">
             {day}
           </div>
         ))}
@@ -139,7 +139,7 @@ function CalendarWidgetCore({ className }: CalendarWidgetProps) {
               'relative h-8 w-full text-xs rounded-lg transition-colors hover:bg-white/5',
               {
                 'text-white': calendarDay.isCurrentMonth,
-                'text-zinc-600': !calendarDay.isCurrentMonth,
+                'text-muted': !calendarDay.isCurrentMonth,
                 'bg-primary text-white hover:bg-primary/90': calendarDay.isToday,
                 'font-semibold': calendarDay.isToday,
               }
@@ -155,7 +155,7 @@ function CalendarWidgetCore({ className }: CalendarWidgetProps) {
 
       {/* Footer */}
       <div className="mt-4 pt-4 border-t border-white/5">
-        <p className="text-xs text-zinc-500 text-center">
+        <p className="text-xs text-secondary flex justify-center">
           {calendarDays.filter(d => d.hasEvent && d.isCurrentMonth).length} events this month
         </p>
       </div>

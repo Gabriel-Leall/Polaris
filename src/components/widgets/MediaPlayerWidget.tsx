@@ -183,12 +183,12 @@ function MediaPlayerWidgetCore({ className }: MediaPlayerWidgetProps) {
   const volumePercentage = isMuted ? 0 : volume * 100
 
   return (
-    <div className={cn('bg-card rounded-3xl p-6 border border-white/5', className)}>
+    <div className={cn('bg-card rounded-3xl p-6 border border-glass', className)}>
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
           <h2 className="text-sm font-semibold text-white">Media Player</h2>
-          <p className="text-xs text-zinc-500 mt-1">Focus Sounds</p>
+          <p className="text-xs text-secondary mt-1">Focus Sounds</p>
         </div>
         <div className="flex items-center gap-1">
           <Button
@@ -197,7 +197,7 @@ function MediaPlayerWidgetCore({ className }: MediaPlayerWidgetProps) {
             onClick={toggleShuffle}
             className={cn('h-8 w-8 p-0', {
               'text-primary': isShuffled,
-              'text-zinc-500': !isShuffled,
+              'text-secondary': !isShuffled,
             })}
           >
             <Shuffle className="h-4 w-4" />
@@ -208,7 +208,7 @@ function MediaPlayerWidgetCore({ className }: MediaPlayerWidgetProps) {
             onClick={toggleRepeat}
             className={cn('h-8 w-8 p-0', {
               'text-primary': repeatMode !== 'none',
-              'text-zinc-500': repeatMode === 'none',
+              'text-secondary': repeatMode === 'none',
             })}
           >
             <Repeat className="h-4 w-4" />
@@ -228,7 +228,7 @@ function MediaPlayerWidgetCore({ className }: MediaPlayerWidgetProps) {
       <div className="mb-4">
         <div
           ref={progressRef}
-          className="relative h-2 bg-white/10 rounded-full cursor-pointer"
+          className="relative h-2 bg-input rounded-full cursor-pointer"
           onClick={handleProgressClick}
         >
           <div
@@ -236,7 +236,7 @@ function MediaPlayerWidgetCore({ className }: MediaPlayerWidgetProps) {
             style={{ width: `${progress}%` }}
           />
         </div>
-        <div className="flex justify-between text-xs text-zinc-500 mt-2">
+        <div className="flex justify-between text-xs text-secondary mt-2">
           <span>{formatTime(currentTime)}</span>
           <span>{currentTrack ? formatTime(currentTrack.duration) : '0:00'}</span>
         </div>
@@ -294,11 +294,11 @@ function MediaPlayerWidgetCore({ className }: MediaPlayerWidgetProps) {
         <div className="flex-1">
           <div
             ref={volumeRef}
-            className="relative h-2 bg-white/10 rounded-full cursor-pointer"
+            className="relative h-2 bg-input rounded-full cursor-pointer"
             onClick={handleVolumeClick}
           >
             <div
-              className="absolute top-0 left-0 h-full bg-white/40 rounded-full transition-all"
+              className="absolute top-0 left-0 h-full bg-primary/60 rounded-full transition-all"
               style={{ width: `${volumePercentage}%` }}
             />
           </div>

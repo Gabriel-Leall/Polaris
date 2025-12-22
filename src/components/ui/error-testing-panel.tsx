@@ -157,22 +157,22 @@ function ErrorTestingPanel() {
                           </p>
                           <div className="space-y-1">
                             <div className="text-xs">
-                              <span className="text-zinc-400">Error:</span>
+                              <span className="text-muted">Error:</span>
                               <span className="text-status-rejected ml-1 font-mono">
                                 {scenario.error.message}
                               </span>
                             </div>
                             <div className="text-xs">
-                              <span className="text-zinc-400">Retryable:</span>
+                              <span className="text-muted">Retryable:</span>
                               <span className={cn(
                                 "ml-1 font-medium",
-                                scenario.shouldRetry ? "text-green-400" : "text-status-rejected"
+                                scenario.shouldRetry ? "text-primary" : "text-status-rejected"
                               )}>
                                 {scenario.shouldRetry ? 'Yes' : 'No'}
                               </span>
                             </div>
                             <div className="text-xs">
-                              <span className="text-zinc-400">Expected:</span>
+                              <span className="text-muted">Expected:</span>
                               <span className="text-white ml-1">
                                 {scenario.expectedBehavior}
                               </span>

@@ -1,55 +1,54 @@
 // Test setup file to configure environment variables and mocks
 import '@testing-library/jest-dom'
-import { beforeAll, afterAll, vi } from 'vitest'
+import { beforeAll, afterAll, beforeEach, vi } from 'vitest'
 
 // Set up environment variables for testing
 process.env.NEXT_PUBLIC_SUPABASE_URL = 'https://test.supabase.co'
 process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = 'test-anon-key'
 
 // Mock localStorage for testing
+const storage: Record<string, string> = {}
+
 const localStorageMock = {
-  getItem: vi.fn(),
-  setItem: vi.fn(),
-  removeItem: vi.fn(),
-  clear: vi.fn(),
-  length: 0,
-  key: vi.fn()
+  getItem: vi.fn((key: string) => (key in storage ? storage[key] : null)),
+  setItem: vi.fn((key: string, value: string) => {
+    storage[key] = String(value)
+  }),
+  removeItem: vi.fn((key: string) => {
+    delete storage[key]
+  }),
+  clear: vi.fn(() => {
+    Object.keys(storage).forEach(key => delete storage[key])
+  }),
+  key: vi.fn((index: number) => Object.keys(storage)[index] ?? null),
+  get length() {
+    return Object.keys(storage).length
+  }
 }
 
 Object.defineProperty(window, 'localStorage', {
-  value: localStorageMock
+  value: localStorageMock,
+  writable: true,
+  configurable: true
 })
 
-// Make localStorage available globally
-global.localStorage = localStorageMock
+// Make localStorage available globally without touching read-only globals
+vi.stubGlobal('localStorage', localStorageMock)
 
-// Mock Supabase client
-vi.mock('@/lib/supabase', () => ({
-  supabase: {
-    from: vi.fn(() => ({
-      select: vi.fn(() => ({
-        eq: vi.fn(() => ({
-          order: vi.fn(() => Promise.resolve({ data: [], error: null }))
-        }))
-      })),
-      insert: vi.fn(() => ({
-        select: vi.fn(() => ({
-          single: vi.fn(() => Promise.resolve({ data: null, error: null }))
-        }))
-      })),
-      update: vi.fn(() => ({
-        eq: vi.fn(() => ({
-          select: vi.fn(() => ({
-            single: vi.fn(() => Promise.resolve({ data: null, error: null }))
-          }))
-        }))
-      })),
-      delete: vi.fn(() => ({
-        eq: vi.fn(() => Promise.resolve({ error: null }))
-      }))
-    }))
-  }
-}))
+// Provide a Jest-compatible global for tests that still reference jest.* APIs
+vi.stubGlobal('jest', {
+  ...vi,
+  fn: vi.fn,
+  mock: vi.mock,
+  spyOn: vi.spyOn,
+  clearAllMocks: vi.clearAllMocks,
+  resetAllMocks: vi.resetAllMocks,
+  restoreAllMocks: vi.restoreAllMocks
+})
+
+beforeEach(() => {
+  localStorageMock.clear()
+})
 
 // Mock console methods to reduce noise in tests
 const originalConsoleLog = console.log

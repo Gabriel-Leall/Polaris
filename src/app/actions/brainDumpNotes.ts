@@ -1,6 +1,6 @@
 'use server'
 
-import { supabase } from '@/lib/supabase'
+import { supabase, type Tables } from '@/lib/supabase'
 import { BrainDumpNote } from '@/types'
 import { 
   createBrainDumpNoteSchema, 
@@ -10,14 +10,16 @@ import {
   type UpdateBrainDumpNoteInput 
 } from '@/lib/validations'
 
+type BrainDumpNoteRow = Tables<'brain_dump_notes'>
+
 // Brain Dump Notes Server Actions
-export async function createBrainDumpNote(data: CreateBrainDumpNoteInput): Promise<BrainDumpNote> {
+export const createBrainDumpNote = async (data: CreateBrainDumpNoteInput): Promise<BrainDumpNote> => {
   try {
     // Validate input data
     const validatedData = createBrainDumpNoteSchema.parse(data)
     
-    const { data: note, error } = await (supabase
-      .from('brain_dump_notes') as any)
+    const { data: note, error } = await supabase
+      .from('brain_dump_notes')
       .insert({
         user_id: validatedData.userId,
         content: validatedData.content,
@@ -47,20 +49,20 @@ export async function createBrainDumpNote(data: CreateBrainDumpNoteInput): Promi
   }
 }
 
-export async function updateBrainDumpNote(id: string, data: Partial<UpdateBrainDumpNoteInput>): Promise<BrainDumpNote> {
+export const updateBrainDumpNote = async (id: string, data: Partial<UpdateBrainDumpNoteInput>): Promise<BrainDumpNote> => {
   try {
     // Validate input data
     const validatedData = updateBrainDumpNoteSchema.parse({ id, ...data })
     
-    const updateData: Record<string, unknown> = {}
+    const updateData: Partial<BrainDumpNoteRow> = {}
     if (validatedData.content !== undefined) updateData.content = validatedData.content
     if (validatedData.version !== undefined) updateData.version = validatedData.version
     
     // Always update the updated_at timestamp
     updateData.updated_at = new Date().toISOString()
 
-    const { data: note, error } = await (supabase
-      .from('brain_dump_notes') as any)
+    const { data: note, error } = await supabase
+      .from('brain_dump_notes')
       .update(updateData)
       .eq('id', validatedData.id)
       .select()
@@ -87,13 +89,13 @@ export async function updateBrainDumpNote(id: string, data: Partial<UpdateBrainD
   }
 }
 
-export async function deleteBrainDumpNote(id: string): Promise<void> {
+export const deleteBrainDumpNote = async (id: string): Promise<void> => {
   try {
     // Validate note ID
     const validatedId = userIdSchema.parse(id)
     
-    const { error } = await (supabase
-      .from('brain_dump_notes') as any)
+    const { error } = await supabase
+      .from('brain_dump_notes')
       .delete()
       .eq('id', validatedId)
 
@@ -108,13 +110,13 @@ export async function deleteBrainDumpNote(id: string): Promise<void> {
   }
 }
 
-export async function getBrainDumpNote(userId: string): Promise<BrainDumpNote | null> {
+export const getBrainDumpNote = async (userId: string): Promise<BrainDumpNote | null> => {
   try {
     // Validate user ID
     const validatedUserId = userIdSchema.parse(userId)
     
-    const { data: note, error } = await (supabase
-      .from('brain_dump_notes') as any)
+    const { data: note, error } = await supabase
+      .from('brain_dump_notes')
       .select('*')
       .eq('user_id', validatedUserId)
       .order('updated_at', { ascending: false })
@@ -146,7 +148,7 @@ export async function getBrainDumpNote(userId: string): Promise<BrainDumpNote | 
   }
 }
 
-export async function saveBrainDumpNote(userId: string, content: string): Promise<BrainDumpNote> {
+export const saveBrainDumpNote = async (userId: string, content: string): Promise<BrainDumpNote> => {
   try {
     // First, try to get existing note
     const existingNote = await getBrainDumpNote(userId)

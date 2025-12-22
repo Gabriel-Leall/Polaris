@@ -8,11 +8,12 @@
 
 import './setup'
 import * as fc from 'fast-check'
+import { vi } from 'vitest'
 
 // Mock the Supabase module before importing Server Actions
-jest.mock('@/lib/supabase', () => {
+vi.mock('@/lib/supabase', () => {
   const mockSupabase = {
-    from: jest.fn()
+    from: vi.fn()
   }
   return { supabase: mockSupabase }
 })
@@ -28,7 +29,7 @@ describe('Supabase Data Persistence', () => {
   })
 
   test('Property 7: Supabase data persistence - task creation and retrieval round trip', async () => {
-    const { supabase } = require('@/lib/supabase')
+    const { supabase } = await import('@/lib/supabase')
     
     const taskData = {
       label: 'Test Task',
@@ -96,7 +97,7 @@ describe('Supabase Data Persistence', () => {
   })
 
   test('Property 7: Supabase data persistence - job application creation and retrieval round trip', async () => {
-    const { supabase } = require('@/lib/supabase')
+    const { supabase } = await import('@/lib/supabase')
     
     const jobData = {
       companyName: 'Test Company',
@@ -172,7 +173,7 @@ describe('Supabase Data Persistence', () => {
   })
 
   test('Property 7: Supabase data persistence - user preferences creation and retrieval round trip', async () => {
-    const { supabase } = require('@/lib/supabase')
+    const { supabase } = await import('@/lib/supabase')
     
     const prefsData = {
       userId: '123e4567-e89b-12d3-a456-426614174001',
@@ -246,7 +247,7 @@ describe('Supabase Data Persistence', () => {
   })
 
   test('Property 7: Supabase data persistence - task update operations persist changes', async () => {
-    const { supabase } = require('@/lib/supabase')
+    const { supabase } = await import('@/lib/supabase')
     
     const testData = {
       taskId: '123e4567-e89b-12d3-a456-426614174000',
@@ -305,7 +306,7 @@ describe('Supabase Data Persistence', () => {
   })
 
   test('Property 7: Supabase data persistence - delete operations remove data', async () => {
-    const { supabase } = require('@/lib/supabase')
+    const { supabase } = await import('@/lib/supabase')
     
     const taskId = '123e4567-e89b-12d3-a456-426614174000'
     
@@ -330,7 +331,7 @@ describe('Supabase Data Persistence', () => {
   })
 
   test('Property 7: Supabase data persistence - all operations use correct table names', async () => {
-    const { supabase } = require('@/lib/supabase')
+    const { supabase } = await import('@/lib/supabase')
     
     // Mock successful responses for all operations
     const mockSingle = jest.fn().mockResolvedValue({ 
@@ -387,7 +388,7 @@ describe('Supabase Data Persistence', () => {
   })
 
   test('Property 7: Supabase data persistence - operations handle database errors gracefully', async () => {
-    const { supabase } = require('@/lib/supabase')
+    const { supabase } = await import('@/lib/supabase')
     
     // Mock database error
     const mockError = { message: 'Database connection failed', code: 'CONNECTION_ERROR' }

@@ -1,6 +1,6 @@
 'use server'
 
-import { supabase } from '@/lib/supabase'
+import { supabase, type Tables } from '@/lib/supabase'
 import { UserPreferences } from '@/types'
 import { 
   createUserPreferencesSchema, 
@@ -10,13 +10,27 @@ import {
   type UpdateUserPreferencesInput
 } from '@/lib/validations'
 
+type UserPreferencesRow = Tables<'user_preferences'>
+
+const mapUserPreferencesRow = (prefs: UserPreferencesRow): UserPreferences => ({
+  id: prefs.id,
+  userId: prefs.user_id,
+  theme: prefs.theme,
+  focusDuration: prefs.focus_duration,
+  breakDuration: prefs.break_duration,
+  zenModeEnabled: prefs.zen_mode_enabled,
+  sidebarCollapsed: prefs.sidebar_collapsed,
+  createdAt: new Date(prefs.created_at),
+  updatedAt: new Date(prefs.updated_at)
+})
+
 // User Preferences Server Actions
-export async function updateUserPreferences(id: string, preferences: Partial<UpdateUserPreferencesInput>): Promise<UserPreferences> {
+export const updateUserPreferences = async (id: string, preferences: Partial<UpdateUserPreferencesInput>): Promise<UserPreferences> => {
   try {
     // Validate input data
     const validatedData = updateUserPreferencesSchema.parse({ id, ...preferences })
     
-    const updateData: Record<string, unknown> = {
+    const updateData: Partial<UserPreferencesRow> = {
       updated_at: new Date().toISOString()
     }
     
@@ -26,8 +40,8 @@ export async function updateUserPreferences(id: string, preferences: Partial<Upd
     if (validatedData.zenModeEnabled !== undefined) updateData.zen_mode_enabled = validatedData.zenModeEnabled
     if (validatedData.sidebarCollapsed !== undefined) updateData.sidebar_collapsed = validatedData.sidebarCollapsed
 
-    const { data: prefs, error } = await (supabase
-      .from('user_preferences') as any)
+    const { data: prefs, error } = await supabase
+      .from('user_preferences')
       .update(updateData)
       .eq('id', validatedData.id)
       .select()
@@ -38,17 +52,7 @@ export async function updateUserPreferences(id: string, preferences: Partial<Upd
     }
 
     // Transform database row to UserPreferences
-    return {
-      id: prefs.id,
-      userId: prefs.user_id,
-      theme: prefs.theme,
-      focusDuration: prefs.focus_duration,
-      breakDuration: prefs.break_duration,
-      zenModeEnabled: prefs.zen_mode_enabled,
-      sidebarCollapsed: prefs.sidebar_collapsed,
-      createdAt: new Date(prefs.created_at),
-      updatedAt: new Date(prefs.updated_at)
-    }
+    return mapUserPreferencesRow(prefs)
   } catch (error) {
     if (error instanceof Error) {
       throw new Error(`Update user preferences failed: ${error.message}`)
@@ -57,13 +61,13 @@ export async function updateUserPreferences(id: string, preferences: Partial<Upd
   }
 }
 
-export async function getUserPreferences(userId: string): Promise<UserPreferences | null> {
+export const getUserPreferences = async (userId: string): Promise<UserPreferences | null> => {
   try {
     // Validate user ID
     const validatedUserId = userIdSchema.parse(userId)
     
-    const { data: prefs, error } = await (supabase
-      .from('user_preferences') as any)
+    const { data: prefs, error } = await supabase
+      .from('user_preferences')
       .select('*')
       .eq('user_id', validatedUserId)
       .single()
@@ -77,17 +81,7 @@ export async function getUserPreferences(userId: string): Promise<UserPreference
     }
 
     // Transform database row to UserPreferences
-    return {
-      id: prefs.id,
-      userId: prefs.user_id,
-      theme: prefs.theme,
-      focusDuration: prefs.focus_duration,
-      breakDuration: prefs.break_duration,
-      zenModeEnabled: prefs.zen_mode_enabled,
-      sidebarCollapsed: prefs.sidebar_collapsed,
-      createdAt: new Date(prefs.created_at),
-      updatedAt: new Date(prefs.updated_at)
-    }
+    return mapUserPreferencesRow(prefs)
   } catch (error) {
     if (error instanceof Error) {
       throw new Error(`Get user preferences failed: ${error.message}`)
@@ -96,13 +90,13 @@ export async function getUserPreferences(userId: string): Promise<UserPreference
   }
 }
 
-export async function createUserPreferences(data: CreateUserPreferencesInput): Promise<UserPreferences> {
+export const createUserPreferences = async (data: CreateUserPreferencesInput): Promise<UserPreferences> => {
   try {
     // Validate input data
     const validatedData = createUserPreferencesSchema.parse(data)
     
-    const { data: prefs, error } = await (supabase
-      .from('user_preferences') as any)
+    const { data: prefs, error } = await supabase
+      .from('user_preferences')
       .insert({
         user_id: validatedData.userId,
         theme: validatedData.theme,
@@ -119,17 +113,7 @@ export async function createUserPreferences(data: CreateUserPreferencesInput): P
     }
 
     // Transform database row to UserPreferences
-    return {
-      id: prefs.id,
-      userId: prefs.user_id,
-      theme: prefs.theme,
-      focusDuration: prefs.focus_duration,
-      breakDuration: prefs.break_duration,
-      zenModeEnabled: prefs.zen_mode_enabled,
-      sidebarCollapsed: prefs.sidebar_collapsed,
-      createdAt: new Date(prefs.created_at),
-      updatedAt: new Date(prefs.updated_at)
-    }
+    return mapUserPreferencesRow(prefs)
   } catch (error) {
     if (error instanceof Error) {
       throw new Error(`Create user preferences failed: ${error.message}`)
@@ -138,7 +122,7 @@ export async function createUserPreferences(data: CreateUserPreferencesInput): P
   }
 }
 
-export async function getOrCreateUserPreferences(userId: string): Promise<UserPreferences> {
+export const getOrCreateUserPreferences = async (userId: string): Promise<UserPreferences> => {
   try {
     // First try to get existing preferences
     const existingPrefs = await getUserPreferences(userId)

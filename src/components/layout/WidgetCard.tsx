@@ -1,4 +1,5 @@
 import { ScrollArea } from '@/components/ui/scroll-area'
+import { cn } from '@/lib/utils'
 
 interface WidgetCardProps {
   children: React.ReactNode
@@ -20,11 +21,10 @@ function WidgetCard({
   actions 
 }: WidgetCardProps) {
   return (
-    <div className={`
-      bg-card rounded-3xl border border-glass
-      flex flex-col h-full
-      ${className || ''}
-    `}>
+    <div className={cn(
+      'bg-card rounded-3xl border border-glass flex flex-col h-full',
+      className
+    )}>
       {/* Header */}
       {title && (
         <div className="flex items-center justify-between p-6 border-b border-glass">

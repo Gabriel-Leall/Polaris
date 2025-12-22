@@ -1,3 +1,4 @@
+import type React from 'react'
 import { ZodError } from 'zod'
 
 // Error types for better error handling
@@ -52,10 +53,10 @@ export type Result<T, E = AppError> =
   | { success: false; error: E }
 
 // Safe wrapper for Server Actions
-export async function safeServerAction<T>(
+export const safeServerAction = async <T>(
   action: () => Promise<T>,
   context?: string
-): Promise<Result<T>> {
+): Promise<Result<T>> => {
   try {
     const data = await action()
     return { success: true, data }
@@ -182,13 +183,13 @@ export function parseError(error: unknown): AppError {
 }
 
 // Retry mechanism for retryable operations
-export async function withRetry<T>(
+export const withRetry = async <T>(
   operation: () => Promise<T>,
   maxRetries = 3,
   delay = 1000,
   backoff = 2
-): Promise<T> {
-  let lastError: Error
+): Promise<T> => {
+  let lastError: Error | null = null
 
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
@@ -212,7 +213,7 @@ export async function withRetry<T>(
     }
   }
 
-  throw lastError!
+  throw lastError ?? new Error('Operation failed after retries')
 }
 
 // Circuit breaker pattern for preventing cascading failures

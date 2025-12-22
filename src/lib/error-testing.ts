@@ -4,7 +4,7 @@
  */
 
 import { ErrorType, PolarisError } from './error-handling'
-import errorMonitoring from './error-monitoring'
+import { errorMonitoring } from './error-monitoring'
 
 export interface ErrorScenario {
   name: string
@@ -273,5 +273,4 @@ if (process.env.NODE_ENV === 'development' && typeof window !== 'undefined') {
   (window as Window & { __errorTester?: ErrorTester }).__errorTester = ErrorTester.getInstance()
   console.log('🧪 Error testing utilities available at window.__errorTester')
 }
-
-export default ErrorTester
+export { ErrorTester }

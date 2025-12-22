@@ -2,6 +2,7 @@
 
 import React from 'react'
 import { AlertTriangle, RefreshCw, Home, Bug } from 'lucide-react'
+import { cn } from '@/lib/utils'
 import { ErrorBoundary, ErrorLogger } from './error-boundary'
 
 interface GlobalErrorFallbackProps {
@@ -40,7 +41,7 @@ function GlobalErrorFallback({ error, retry, errorInfo }: GlobalErrorFallbackPro
 
   return (
     <div className="min-h-screen bg-main flex items-center justify-center p-6">
-      <div className="bg-card rounded-3xl p-8 border border-status-rejected/20 max-w-md w-full text-center">
+      <div className="bg-card rounded-3xl p-8 border border-status-rejected/20 max-w-md w-full flex flex-col items-center">
         <div className="mb-6">
           <AlertTriangle className="w-16 h-16 text-status-rejected mx-auto mb-4" />
           <h1 className="text-xl font-bold text-white mb-2">Application Error</h1>
@@ -104,13 +105,14 @@ function GlobalErrorFallback({ error, retry, errorInfo }: GlobalErrorFallbackPro
 
 interface GlobalErrorBoundaryProps {
   children: React.ReactNode
+  className?: string
 }
 
 /**
  * GlobalErrorBoundary - Top-level error boundary for the entire application
  * Provides comprehensive error handling and recovery options
  */
-function GlobalErrorBoundary({ children }: GlobalErrorBoundaryProps) {
+function GlobalErrorBoundary({ children, className }: GlobalErrorBoundaryProps) {
   return (
     <ErrorBoundary
       fallback={GlobalErrorFallback}
@@ -129,7 +131,7 @@ function GlobalErrorBoundary({ children }: GlobalErrorBoundaryProps) {
         }
       }}
     >
-      {children}
+      <div className={cn('relative', className)}>{children}</div>
     </ErrorBoundary>
   )
 }

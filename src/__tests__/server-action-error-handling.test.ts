@@ -10,9 +10,12 @@ import './setup'
 import * as fc from 'fast-check'
 
 // Mock the Supabase module before importing Server Actions
-jest.mock('@/lib/supabase', () => {
+import { vi } from 'vitest'
+
+// Mock Supabase module
+vi.mock('@/lib/supabase', () => {
   const mockSupabase = {
-    from: jest.fn()
+    from: vi.fn()
   }
   return { supabase: mockSupabase }
 })
@@ -28,7 +31,7 @@ describe('Server Action Error Handling', () => {
   })
 
   test('Property 11: Server Action error handling - all actions handle database errors gracefully', async () => {
-    const { supabase } = require('@/lib/supabase')
+    const { supabase } = await import('@/lib/supabase')
     
     // Configure mock to return error for all operations
     const mockError = { 
@@ -95,7 +98,7 @@ describe('Server Action Error Handling', () => {
   })
 
   test('Property 11: Server Action error handling - job application actions handle errors', async () => {
-    const { supabase } = require('@/lib/supabase')
+    const { supabase } = await import('@/lib/supabase')
     
     // Configure mock to return error
     const mockError = { 
@@ -134,7 +137,7 @@ describe('Server Action Error Handling', () => {
   })
 
   test('Property 11: Server Action error handling - user preferences actions handle errors', async () => {
-    const { supabase } = require('@/lib/supabase')
+    const { supabase } = await import('@/lib/supabase')
     
     // Configure mock to return error
     const mockError = { 
@@ -170,7 +173,7 @@ describe('Server Action Error Handling', () => {
   })
 
   test('Property 11: Server Action error handling - all errors are instances of Error class', async () => {
-    const { supabase } = require('@/lib/supabase')
+    const { supabase } = await import('@/lib/supabase')
     
     // Configure mock to return error
     const mockError = { message: 'Test error', code: 'TEST_ERROR' }

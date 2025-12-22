@@ -331,5 +331,4 @@ export const performanceMonitoring = {
   }
 }
 
-export default errorMonitoring
-export { ErrorMonitoringService, type ErrorContext, type MonitoringConfig }
+export { errorMonitoring, ErrorMonitoringService, type ErrorContext, type MonitoringConfig }

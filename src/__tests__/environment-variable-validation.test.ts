@@ -7,6 +7,7 @@
  */
 
 import * as fc from 'fast-check'
+import { vi } from 'vitest'
 
 // Mock process.env for testing
 const originalEnv = process.env
@@ -337,7 +338,7 @@ describe('Environment Variable Validation', () => {
     )
   })
 
-  test('Property 14: Environment variable validation - actual Supabase client import works with valid env', () => {
+  test('Property 14: Environment variable validation - actual Supabase client import works with valid env', async () => {
     // Test that the actual Supabase client module handles environment validation
     const validUrl = 'https://test-project.supabase.co'
     const validKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRlc3QiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTY0NjA2ODQwMCwiZXhwIjoxOTYxNjQ0NDAwfQ.test-signature-here-with-more-characters-to-make-it-realistic'
@@ -345,24 +346,17 @@ describe('Environment Variable Validation', () => {
     // Set valid environment variables
     process.env.NEXT_PUBLIC_SUPABASE_URL = validUrl
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = validKey
-    
-    // The module should be importable without throwing
-    expect(() => {
-      // Clear module cache to force re-evaluation
-      delete require.cache[require.resolve('@/lib/supabase')]
-      require('@/lib/supabase')
-    }).not.toThrow()
+
+    vi.resetModules()
+    await expect(import('@/lib/supabase')).resolves.toBeDefined()
   })
 
-  test('Property 14: Environment variable validation - Supabase client throws on missing env vars', () => {
+  test('Property 14: Environment variable validation - Supabase client throws on missing env vars', async () => {
     // Test that the actual Supabase client module throws on missing variables
     delete process.env.NEXT_PUBLIC_SUPABASE_URL
     delete process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-    
-    expect(() => {
-      // Clear module cache to force re-evaluation
-      delete require.cache[require.resolve('@/lib/supabase')]
-      require('@/lib/supabase')
-    }).toThrow('Missing Supabase environment variables')
+
+    vi.resetModules()
+    await expect(import('@/lib/supabase')).rejects.toThrow('Missing Supabase environment variables')
   })
 })

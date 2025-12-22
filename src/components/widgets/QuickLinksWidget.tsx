@@ -166,13 +166,13 @@ function QuickLinksWidgetCore({ className }: QuickLinksWidgetProps) {
   const getCategoryColor = (category: string) => {
     switch (category) {
       case 'work':
-        return 'text-blue-400'
+        return 'text-primary'
       case 'social':
-        return 'text-green-400'
+        return 'text-status-pending'
       case 'tools':
-        return 'text-purple-400'
+        return 'text-status-interview'
       default:
-        return 'text-zinc-400'
+        return 'text-muted'
     }
   }
 
@@ -182,7 +182,7 @@ function QuickLinksWidgetCore({ className }: QuickLinksWidgetProps) {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h2 className="text-sm font-semibold text-white">Quick Links</h2>
-          <p className="text-xs text-zinc-500 mt-1">{links.length} saved links</p>
+          <p className="text-xs text-secondary mt-1">{links.length} saved links</p>
         </div>
         <Button
           variant="secondary"
@@ -215,7 +215,7 @@ function QuickLinksWidgetCore({ className }: QuickLinksWidgetProps) {
                   <p className="text-white text-sm font-medium truncate hover:text-primary transition-colors">
                     {link.title}
                   </p>
-                  <p className="text-zinc-500 text-xs truncate">
+                  <p className="text-muted text-xs truncate">
                     {link.url.replace(/^https?:\/\//, '')}
                   </p>
                 </button>
@@ -234,7 +234,7 @@ function QuickLinksWidgetCore({ className }: QuickLinksWidgetProps) {
                   variant="secondary"
                   size="sm"
                   onClick={() => handleDeleteLink(link.id)}
-                  className="h-7 w-7 p-0 text-red-400 hover:text-red-300"
+                  className="h-7 w-7 p-0 text-status-rejected hover:text-status-rejected/80"
                 >
                   <Trash2 className="h-3 w-3" />
                 </Button>
@@ -246,9 +246,9 @@ function QuickLinksWidgetCore({ className }: QuickLinksWidgetProps) {
 
       {/* Empty State */}
       {links.length === 0 && (
-        <div className="text-center py-8">
-          <ExternalLink className="h-8 w-8 text-zinc-600 mx-auto mb-3" />
-          <p className="text-zinc-500 text-sm mb-2">No quick links yet</p>
+        <div className="py-8 flex flex-col items-center">
+          <ExternalLink className="h-8 w-8 text-secondary mx-auto mb-3" />
+          <p className="text-secondary text-sm mb-2">No quick links yet</p>
           <Button
             variant="secondary"
             size="sm"
@@ -268,7 +268,7 @@ function QuickLinksWidgetCore({ className }: QuickLinksWidgetProps) {
           
           <div className="space-y-4">
             <div>
-              <label className="text-sm text-zinc-400 mb-2 block">Title</label>
+                <label className="text-sm text-secondary mb-2 block">Title</label>
               <Input
                 value={newLink.title}
                 onChange={(e) => setNewLink(prev => ({ ...prev, title: e.target.value }))}
@@ -278,7 +278,7 @@ function QuickLinksWidgetCore({ className }: QuickLinksWidgetProps) {
             </div>
             
             <div>
-              <label className="text-sm text-zinc-400 mb-2 block">URL</label>
+                <label className="text-sm text-secondary mb-2 block">URL</label>
               <Input
                 value={newLink.url}
                 onChange={(e) => setNewLink(prev => ({ ...prev, url: e.target.value }))}
@@ -288,7 +288,7 @@ function QuickLinksWidgetCore({ className }: QuickLinksWidgetProps) {
             </div>
             
             <div>
-              <label className="text-sm text-zinc-400 mb-2 block">Category</label>
+                <label className="text-sm text-secondary mb-2 block">Category</label>
               <select
                 value={newLink.category}
                 onChange={(e) => setNewLink(prev => ({ ...prev, category: e.target.value as 'work' | 'social' | 'tools' | 'other' }))}
@@ -302,7 +302,7 @@ function QuickLinksWidgetCore({ className }: QuickLinksWidgetProps) {
             </div>
             
             <div>
-              <label className="text-sm text-zinc-400 mb-2 block">Icon</label>
+                <label className="text-sm text-secondary mb-2 block">Icon</label>
               <select
                 value={newLink.icon}
                 onChange={(e) => setNewLink(prev => ({ ...prev, icon: e.target.value }))}

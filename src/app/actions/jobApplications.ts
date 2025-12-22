@@ -1,6 +1,6 @@
 'use server'
 
-import { supabase, type TablesInsert } from '@/lib/supabase'
+import { supabase, type Tables, type TablesInsert } from '@/lib/supabase'
 import { JobApplication, AppStatus } from '@/types'
 import { 
   createJobApplicationSchema, 
@@ -11,8 +11,10 @@ import {
   type UpdateJobApplicationInput
 } from '@/lib/validations'
 
+type JobApplicationRow = Tables<'job_applications'>
+
 // Job Application Server Actions
-export async function createJobApplication(data: CreateJobApplicationInput): Promise<JobApplication> {
+export const createJobApplication = async (data: CreateJobApplicationInput): Promise<JobApplication> => {
   try {
     // Validate input data
     const validatedData = createJobApplicationSchema.parse(data)
@@ -30,8 +32,8 @@ export async function createJobApplication(data: CreateJobApplicationInput): Pro
       last_updated: now
     }
 
-    const { data: jobApp, error } = await (supabase
-      .from('job_applications') as any)
+    const { data: jobApp, error } = await supabase
+      .from('job_applications')
       .insert(insertData)
       .select()
       .single()
@@ -62,13 +64,13 @@ export async function createJobApplication(data: CreateJobApplicationInput): Pro
   }
 }
 
-export async function updateJobApplicationStatus(id: string, status: AppStatus): Promise<JobApplication> {
+export const updateJobApplicationStatus = async (id: string, status: AppStatus): Promise<JobApplication> => {
   try {
     // Validate input data
     const validatedData = updateJobApplicationStatusSchema.parse({ id, status })
     
-    const { data: jobApp, error } = await (supabase
-      .from('job_applications') as any)
+    const { data: jobApp, error } = await supabase
+      .from('job_applications')
       .update({
         status: validatedData.status,
         last_updated: new Date().toISOString(),
@@ -104,7 +106,7 @@ export async function updateJobApplicationStatus(id: string, status: AppStatus):
   }
 }
 
-export async function updateJobApplication(id: string, data: Partial<UpdateJobApplicationInput>): Promise<JobApplication> {
+export const updateJobApplication = async (id: string, data: Partial<UpdateJobApplicationInput>): Promise<JobApplication> => {
   try {
     // Validate input data
     const validatedData = updateJobApplicationSchema.parse({ id, ...data })
@@ -120,8 +122,8 @@ export async function updateJobApplication(id: string, data: Partial<UpdateJobAp
     if (validatedData.status !== undefined) updateData.status = validatedData.status
     if (validatedData.notes !== undefined) updateData.notes = validatedData.notes
 
-    const { data: jobApp, error } = await (supabase
-      .from('job_applications') as any)
+    const { data: jobApp, error } = await supabase
+      .from('job_applications')
       .update(updateData)
       .eq('id', validatedData.id)
       .select()
@@ -153,13 +155,13 @@ export async function updateJobApplication(id: string, data: Partial<UpdateJobAp
   }
 }
 
-export async function deleteJobApplication(id: string): Promise<void> {
+export const deleteJobApplication = async (id: string): Promise<void> => {
   try {
     // Validate job application ID
     const validatedId = userIdSchema.parse(id)
     
-    const { error } = await (supabase
-      .from('job_applications') as any)
+    const { error } = await supabase
+      .from('job_applications')
       .delete()
       .eq('id', validatedId)
 
@@ -174,13 +176,13 @@ export async function deleteJobApplication(id: string): Promise<void> {
   }
 }
 
-export async function getJobApplications(userId: string): Promise<JobApplication[]> {
+export const getJobApplications = async (userId: string): Promise<JobApplication[]> => {
   try {
     // Validate user ID
     const validatedUserId = userIdSchema.parse(userId)
     
-    const { data: jobApps, error } = await (supabase
-      .from('job_applications') as any)
+    const { data: jobApps, error } = await supabase
+      .from('job_applications')
       .select('*')
       .eq('user_id', validatedUserId)
       .order('last_updated', { ascending: false })
@@ -190,7 +192,7 @@ export async function getJobApplications(userId: string): Promise<JobApplication
     }
 
     // Transform database rows to JobApplication array
-    return jobApps.map((jobApp: any) => ({
+    return (jobApps ?? []).map((jobApp: JobApplicationRow) => ({
       id: jobApp.id,
       companyName: jobApp.company_name,
       companyDomain: jobApp.company_domain || undefined,

@@ -1,4 +1,4 @@
-"use client";
+'use client'
 
 import { useState, useEffect, useCallback } from "react";
 import { Plus, X } from "lucide-react";
@@ -157,7 +157,7 @@ function TasksWidget({ className }: TasksWidgetProps) {
             <div className="w-6 h-6 border-2 border-primary/20 border-t-primary rounded-full animate-spin" />
           </div>
         ) : tasks.length === 0 ? (
-          <div className="text-center py-8">
+          <div className="py-8 flex flex-col items-center">
             <p className="text-muted text-sm">No tasks yet</p>
             <p className="text-code text-xs mt-1">Add your first task above</p>
           </div>

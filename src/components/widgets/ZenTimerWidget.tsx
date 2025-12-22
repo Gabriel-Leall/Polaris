@@ -121,7 +121,7 @@ const ZenTimerWidgetCore = ({ className }: ZenTimerWidgetProps) => {
       </div>
 
       {/* Timer Display */}
-      <div className="text-center mb-8">
+      <div className="mb-8 flex flex-col items-center">
         <div className="text-6xl font-bold text-white mb-2 font-mono">
           {formatTime(timerState.minutes, timerState.seconds)}
         </div>
@@ -162,7 +162,7 @@ const ZenTimerWidgetCore = ({ className }: ZenTimerWidgetProps) => {
 
       {/* Zen Mode Indicator */}
       {isZenMode && (
-        <div className="mt-4 text-center">
+        <div className="mt-4 flex justify-center">
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/20 rounded-full">
             <div className="w-2 h-2 bg-primary rounded-full animate-pulse" />
             <span className="text-xs text-primary font-medium">Zen Mode Active</span>

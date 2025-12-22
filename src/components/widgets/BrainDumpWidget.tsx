@@ -184,7 +184,7 @@ function BrainDumpWidgetCore() {
       {/* Content Area */}
       <div className="flex-1 relative">
         {/* Line Numbers Gutter */}
-        <div className="absolute left-0 top-0 bottom-0 w-12 bg-input/50 border-r border-glass rounded-l-xl flex flex-col text-xs text-zinc-700 font-mono">
+        <div className="absolute left-0 top-0 bottom-0 w-12 bg-input/50 border-r border-glass rounded-l-xl flex flex-col text-xs text-muted font-mono">
           {content.split('\n').map((_, index) => (
             <div key={index} className="px-2 py-1 leading-5 text-right">
               {index + 1}
@@ -219,7 +219,7 @@ function BrainDumpWidgetCore() {
       </div>
 
       {/* Footer Info */}
-      <div className="mt-3 text-xs text-zinc-500 flex items-center justify-between">
+      <div className="mt-3 text-xs text-secondary flex items-center justify-between">
         <span>{content.length} characters</span>
         <span>{content.split('\n').length} lines</span>
       </div>

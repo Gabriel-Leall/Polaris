@@ -1,6 +1,9 @@
+'use client'
+
 import React from 'react'
+import { cn } from '@/lib/utils'
 import { AlertCircle, RefreshCw, Bug, Database, Wifi, Clock } from 'lucide-react'
-import errorMonitoring from '@/lib/error-monitoring'
+import { errorMonitoring } from '@/lib/error-monitoring'
 
 interface ErrorBoundaryState {
   hasError: boolean
@@ -18,6 +21,7 @@ interface ErrorBoundaryProps {
   resetKeys?: Array<string | number>
   isolate?: boolean
   name?: string
+  className?: string
 }
 
 // Error logging service
@@ -176,21 +180,24 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
   }
 
   render() {
-    if (this.state.hasError) {
-      const FallbackComponent = this.props.fallback || DefaultErrorFallback
-      return (
-        <FallbackComponent 
-          error={this.state.error} 
-          retry={this.retry}
-          errorInfo={this.state.errorInfo}
-          retryCount={this.state.retryCount}
-          maxRetries={this.props.maxRetries || 3}
-          canRetry={this.state.retryCount < (this.props.maxRetries || 3)}
-        />
-      )
-    }
+    const { className, children } = this.props
+    const content = this.state.hasError
+      ? (() => {
+          const FallbackComponent = this.props.fallback || DefaultErrorFallback
+          return (
+            <FallbackComponent 
+              error={this.state.error} 
+              retry={this.retry}
+              errorInfo={this.state.errorInfo}
+              retryCount={this.state.retryCount}
+              maxRetries={this.props.maxRetries || 3}
+              canRetry={this.state.retryCount < (this.props.maxRetries || 3)}
+            />
+          )
+        })()
+      : children
 
-    return this.props.children
+    return <div className={cn('relative', className)}>{content}</div>
   }
 }
 
@@ -230,17 +237,19 @@ function DefaultErrorFallback({
     if (message.includes('database') || message.includes('supabase')) return 'Database Error'
     if (message.includes('timeout')) return 'Timeout Error'
     if (message.includes('validation')) return 'Validation Error'
-    return 'Application Error'
+    return 'Unexpected Error'
   }
 
   const ErrorIcon = getErrorIcon()
+  const errorHeading = 'Application Error'
 
   return (
     <div className="bg-card rounded-3xl p-6 border border-status-rejected/20">
       <div className="flex items-center gap-3 mb-4">
         <ErrorIcon className="w-5 h-5 text-status-rejected" />
         <div>
-          <h3 className="text-sm font-semibold text-white">{getErrorType()}</h3>
+          <h3 className="text-sm font-semibold text-white">{errorHeading}</h3>
+          <p className="text-xs text-secondary">{getErrorType()}</p>
           {retryCount > 0 && (
             <p className="text-xs text-secondary">
               Attempt {retryCount} of {maxRetries}
@@ -298,7 +307,7 @@ function WidgetErrorFallback({ retry, canRetry }: ErrorFallbackProps) {
     <div className="bg-card rounded-3xl p-6 border border-status-rejected/20 h-full flex flex-col items-center justify-center">
       <AlertCircle className="w-8 h-8 text-status-rejected mb-3" />
       <h3 className="text-sm font-semibold text-white mb-2">Widget Error</h3>
-      <p className="text-xs text-secondary text-center mb-4">
+      <p className="text-xs text-secondary mb-4 max-w-xs">
         This widget encountered an error and couldn&apos;t load properly.
       </p>
       {canRetry && (

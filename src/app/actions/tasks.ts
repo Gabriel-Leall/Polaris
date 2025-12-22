@@ -1,135 +1,126 @@
 'use server'
 
-import { supabase } from '@/lib/supabase'
+import { supabase, type Tables } from '@/lib/supabase'
 import { TaskItem } from '@/types'
-import { 
-  createTaskSchema, 
-  updateTaskSchema, 
+import {
+  createTaskSchema,
+  updateTaskSchema,
   userIdSchema,
   type CreateTaskInput,
-  type UpdateTaskInput 
+  type UpdateTaskInput
 } from '@/lib/validations'
-import { safeServerAction, supabaseCircuitBreaker, Result } from '@/lib/error-handling'
 
-// Task Management Server Actions with enhanced error handling
-export async function createTask(data: CreateTaskInput): Promise<Result<TaskItem>> {
-  return safeServerAction(async () => {
-    // Validate input data
+type TaskRow = Tables<'tasks'>
+
+const mapTaskRow = (task: TaskRow): TaskItem => ({
+  id: task.id,
+  label: task.label,
+  completed: task.completed,
+  dueDate: task.due_date ?? undefined,
+  createdAt: new Date(task.created_at),
+  updatedAt: new Date(task.updated_at),
+  userId: task.user_id
+})
+
+export const createTask = async (data: CreateTaskInput): Promise<TaskItem> => {
+  try {
     const validatedData = createTaskSchema.parse(data)
-    
-    return await supabaseCircuitBreaker.execute(async () => {
-      const { data: task, error } = await (supabase
-        .from('tasks') as any)
-        .insert({
-          user_id: validatedData.userId,
-          label: validatedData.label,
-          completed: validatedData.completed,
-          due_date: validatedData.dueDate || null
-        })
-        .select()
-        .single()
 
-      if (error) {
-        throw error
-      }
+    const { data: task, error } = await supabase
+      .from('tasks')
+      .insert({
+        user_id: validatedData.userId,
+        label: validatedData.label,
+        completed: validatedData.completed,
+        due_date: validatedData.dueDate ?? null
+      })
+      .select()
+      .single()
 
-      // Transform database row to TaskItem
-      return {
-        id: task.id,
-        label: task.label,
-        completed: task.completed,
-        dueDate: task.due_date || undefined,
-        createdAt: new Date(task.created_at),
-        updatedAt: new Date(task.updated_at),
-        userId: task.user_id
-      }
-    })
-  }, 'createTask')
+    if (error || !task) {
+      throw new Error(`Failed to create task: ${error?.message ?? 'Unknown error'}`)
+    }
+
+    return mapTaskRow(task)
+  } catch (error) {
+    if (error instanceof Error) {
+      throw new Error(`Create task failed: ${error.message}`)
+    }
+    throw new Error('Create task failed: Unknown error')
+  }
 }
 
-export async function updateTask(id: string, data: Partial<UpdateTaskInput>): Promise<Result<TaskItem>> {
-  return safeServerAction(async () => {
-    // Validate input data
+export const updateTask = async (id: string, data: Partial<UpdateTaskInput>): Promise<TaskItem> => {
+  try {
     const validatedData = updateTaskSchema.parse({ id, ...data })
-    
-    return await supabaseCircuitBreaker.execute(async () => {
-      const updateData: Record<string, unknown> = {}
-      if (validatedData.label !== undefined) updateData.label = validatedData.label
-      if (validatedData.completed !== undefined) updateData.completed = validatedData.completed
-      if (validatedData.dueDate !== undefined) updateData.due_date = validatedData.dueDate
-      
-      // Always update the updated_at timestamp
-      updateData.updated_at = new Date().toISOString()
 
-      const { data: task, error } = await (supabase
-        .from('tasks') as any)
-        .update(updateData)
-        .eq('id', validatedData.id)
-        .select()
-        .single()
+    const updateData: Partial<TaskRow> = {
+      updated_at: new Date().toISOString()
+    }
 
-      if (error) {
-        throw error
-      }
+    if (validatedData.label !== undefined) updateData.label = validatedData.label
+    if (validatedData.completed !== undefined) updateData.completed = validatedData.completed
+    if (validatedData.dueDate !== undefined) updateData.due_date = validatedData.dueDate
 
-      // Transform database row to TaskItem
-      return {
-        id: task.id,
-        label: task.label,
-        completed: task.completed,
-        dueDate: task.due_date || undefined,
-        createdAt: new Date(task.created_at),
-        updatedAt: new Date(task.updated_at),
-        userId: task.user_id
-      }
-    })
-  }, 'updateTask')
+    const { data: task, error } = await supabase
+      .from('tasks')
+      .update(updateData)
+      .eq('id', validatedData.id)
+      .select()
+      .single()
+
+    if (error || !task) {
+      throw new Error(`Failed to update task: ${error?.message ?? 'Unknown error'}`)
+    }
+
+    return mapTaskRow(task)
+  } catch (error) {
+    if (error instanceof Error) {
+      throw new Error(`Update task failed: ${error.message}`)
+    }
+    throw new Error('Update task failed: Unknown error')
+  }
 }
 
-export async function deleteTask(id: string): Promise<Result<void>> {
-  return safeServerAction(async () => {
-    // Validate task ID
+export const deleteTask = async (id: string): Promise<void> => {
+  try {
     const validatedId = userIdSchema.parse(id)
-    
-    return await supabaseCircuitBreaker.execute(async () => {
-      const { error } = await (supabase
-        .from('tasks') as any)
-        .delete()
-        .eq('id', validatedId)
 
-      if (error) {
-        throw error
-      }
-    })
-  }, 'deleteTask')
+    const { error } = await supabase
+      .from('tasks')
+      .delete()
+      .eq('id', validatedId)
+
+    if (error) {
+      throw new Error(`Failed to delete task: ${error.message}`)
+    }
+  } catch (error) {
+    if (error instanceof Error) {
+      throw new Error(`Delete task failed: ${error.message}`)
+    }
+    throw new Error('Delete task failed: Unknown error')
+  }
 }
 
-export async function getTasks(userId: string): Promise<Result<TaskItem[]>> {
-  return safeServerAction(async () => {
-    // Validate user ID
+export const getTasks = async (userId: string): Promise<TaskItem[]> => {
+  try {
     const validatedUserId = userIdSchema.parse(userId)
-    
-    return await supabaseCircuitBreaker.execute(async () => {
-      const { data: tasks, error } = await (supabase
-        .from('tasks') as any)
-        .select('*')
-        .eq('user_id', validatedUserId)
-        .order('created_at', { ascending: false })
 
-      if (error) {
-        throw error
-      }
+    const { data: tasks, error } = await supabase
+      .from('tasks')
+      .select('*')
+      .eq('user_id', validatedUserId)
+      .order('created_at', { ascending: false })
 
-      // Transform database rows to TaskItem array
-      return tasks.map((task: any) => ({
-        id: task.id,
-        label: task.label,
-        completed: task.completed,
-        dueDate: task.due_date || undefined,
-        createdAt: new Date(task.created_at),
-        updatedAt: new Date(task.updated_at),
-        userId: task.user_id
-      }))
-    })
-  }, 'getTasks')
+    if (error) {
+      throw new Error(`Failed to fetch tasks: ${error.message}`)
+    }
+
+    return (tasks ?? []).map(mapTaskRow)
+  } catch (error) {
+    if (error instanceof Error) {
+      throw new Error(`Get tasks failed: ${error.message}`)
+    }
+    throw new Error('Get tasks failed: Unknown error')
+  }
 }
