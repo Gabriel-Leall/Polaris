@@ -1,27 +1,38 @@
-'use client'
+"use client";
 
-import React from 'react'
-import { cn } from '@/lib/utils'
-import { AlertCircle, RefreshCw, Bug, Database, Wifi, Clock } from 'lucide-react'
-import { errorMonitoring } from '@/lib/error-monitoring'
+import React from "react";
+import { cn } from "@/lib/utils";
+import {
+  AlertCircle,
+  RefreshCw,
+  Bug,
+  Database,
+  Wifi,
+  Clock,
+} from "lucide-react";
+import { errorMonitoring } from "@/lib/error-monitoring";
 
 interface ErrorBoundaryState {
-  hasError: boolean
-  error: Error | null
-  errorInfo: React.ErrorInfo | null
-  retryCount: number
+  hasError: boolean;
+  error: Error | null;
+  errorInfo: React.ErrorInfo | null;
+  retryCount: number;
 }
 
 interface ErrorBoundaryProps {
-  children: React.ReactNode
-  fallback?: React.ComponentType<{ error: Error | null; retry: () => void; errorInfo?: React.ErrorInfo | null }>
-  onError?: (error: Error, errorInfo: React.ErrorInfo) => void
-  maxRetries?: number
-  resetOnPropsChange?: boolean
-  resetKeys?: Array<string | number>
-  isolate?: boolean
-  name?: string
-  className?: string
+  children: React.ReactNode;
+  fallback?: React.ComponentType<{
+    error: Error | null;
+    retry: () => void;
+    errorInfo?: React.ErrorInfo | null;
+  }>;
+  onError?: (error: Error, errorInfo: React.ErrorInfo) => void;
+  maxRetries?: number;
+  resetOnPropsChange?: boolean;
+  resetKeys?: Array<string | number>;
+  isolate?: boolean;
+  name?: string;
+  className?: string;
 }
 
 // Error logging service
@@ -33,53 +44,58 @@ class ErrorLogger {
       componentStack: errorInfo.componentStack,
       context,
       timestamp: new Date().toISOString(),
-      userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : 'test-environment',
-      url: typeof window !== 'undefined' ? window.location.href : 'test-url',
-    }
+      userAgent:
+        typeof navigator !== "undefined"
+          ? navigator.userAgent
+          : "test-environment",
+      url: typeof window !== "undefined" ? window.location.href : "test-url",
+    };
 
     // Log to console in development
-    if (process.env.NODE_ENV === 'development') {
-      console.group('🚨 Error Boundary Caught Error')
-      console.error('Error:', error)
-      console.error('Error Info:', errorInfo)
-      console.error('Context:', context)
-      console.groupEnd()
+    if (process.env.NODE_ENV === "development") {
+      console.group("🚨 Error Boundary Caught Error");
+      console.error("Error:", error);
+      console.error("Error Info:", errorInfo);
+      console.error("Context:", context);
+      console.groupEnd();
     }
 
     // In production, you would send this to your monitoring service
     // Example: Sentry, LogRocket, DataDog, etc.
-    if (process.env.NODE_ENV === 'production') {
+    if (process.env.NODE_ENV === "production") {
       // Example: Sentry.captureException(error, { extra: errorData })
-      console.error('Production Error:', errorData)
+      console.error("Production Error:", errorData);
     }
 
     // Store in localStorage for debugging
     try {
-      if (typeof localStorage !== 'undefined') {
-        const existingErrors = JSON.parse(localStorage.getItem('polaris-errors') || '[]')
-        existingErrors.push(errorData)
+      if (typeof localStorage !== "undefined") {
+        const existingErrors = JSON.parse(
+          localStorage.getItem("polaris-errors") || "[]"
+        );
+        existingErrors.push(errorData);
         // Keep only last 10 errors
-        const recentErrors = existingErrors.slice(-10)
-        localStorage.setItem('polaris-errors', JSON.stringify(recentErrors))
+        const recentErrors = existingErrors.slice(-10);
+        localStorage.setItem("polaris-errors", JSON.stringify(recentErrors));
       }
     } catch (storageError) {
-      console.warn('Failed to store error in localStorage:', storageError)
+      console.warn("Failed to store error in localStorage:", storageError);
     }
   }
 
   static getStoredErrors() {
     try {
-      if (typeof localStorage === 'undefined') return []
-      return JSON.parse(localStorage.getItem('polaris-errors') || '[]')
+      if (typeof localStorage === "undefined") return [];
+      return JSON.parse(localStorage.getItem("polaris-errors") || "[]");
     } catch {
-      return []
+      return [];
     }
   }
 
   static clearStoredErrors() {
     try {
-      if (typeof localStorage !== 'undefined') {
-        localStorage.removeItem('polaris-errors')
+      if (typeof localStorage !== "undefined") {
+        localStorage.removeItem("polaris-errors");
       }
     } catch {
       // Ignore storage errors
@@ -87,161 +103,167 @@ class ErrorLogger {
   }
 }
 
-class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
-  private resetTimeoutId: number | null = null
+class ErrorBoundary extends React.Component<
+  ErrorBoundaryProps,
+  ErrorBoundaryState
+> {
+  private resetTimeoutId: number | null = null;
 
   constructor(props: ErrorBoundaryProps) {
-    super(props)
-    this.state = { 
-      hasError: false, 
-      error: null, 
+    super(props);
+    this.state = {
+      hasError: false,
+      error: null,
       errorInfo: null,
-      retryCount: 0
-    }
+      retryCount: 0,
+    };
   }
 
   static getDerivedStateFromError(error: Error): Partial<ErrorBoundaryState> {
-    return { hasError: true, error }
+    return { hasError: true, error };
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    this.setState({ errorInfo })
-    
+    this.setState({ errorInfo });
+
     // Log the error
-    ErrorLogger.log(error, errorInfo, this.props.name)
-    
+    ErrorLogger.log(error, errorInfo, this.props.name);
+
     // Report to monitoring service
     errorMonitoring.reportError(error, errorInfo, {
       component: this.props.name,
       metadata: {
         retryCount: this.state.retryCount,
-        maxRetries: this.props.maxRetries || 3
-      }
-    })
-    
+        maxRetries: this.props.maxRetries || 3,
+      },
+    });
+
     // Call custom error handler if provided
-    this.props.onError?.(error, errorInfo)
+    this.props.onError?.(error, errorInfo);
   }
 
   componentDidUpdate(prevProps: ErrorBoundaryProps) {
-    const { resetOnPropsChange, resetKeys } = this.props
-    const { hasError } = this.state
+    const { resetOnPropsChange, resetKeys } = this.props;
+    const { hasError } = this.state;
 
     // Reset error boundary when resetKeys change
     if (hasError && resetOnPropsChange && resetKeys) {
       const hasResetKeyChanged = resetKeys.some(
         (key, index) => prevProps.resetKeys?.[index] !== key
-      )
-      
+      );
+
       if (hasResetKeyChanged) {
-        this.resetErrorBoundary()
+        this.resetErrorBoundary();
       }
     }
   }
 
   componentWillUnmount() {
     if (this.resetTimeoutId) {
-      clearTimeout(this.resetTimeoutId)
+      clearTimeout(this.resetTimeoutId);
     }
   }
 
   resetErrorBoundary = () => {
     if (this.resetTimeoutId) {
-      clearTimeout(this.resetTimeoutId)
+      clearTimeout(this.resetTimeoutId);
     }
 
-    this.setState({ 
-      hasError: false, 
-      error: null, 
+    this.setState({
+      hasError: false,
+      error: null,
       errorInfo: null,
-      retryCount: 0
-    })
-  }
+      retryCount: 0,
+    });
+  };
 
   retry = () => {
-    const { maxRetries = 3 } = this.props
-    const { retryCount } = this.state
+    const { maxRetries = 3 } = this.props;
+    const { retryCount } = this.state;
 
     if (retryCount >= maxRetries) {
-      return
+      return;
     }
 
-    this.setState(prevState => ({ 
-      hasError: false, 
-      error: null, 
+    this.setState((prevState) => ({
+      hasError: false,
+      error: null,
       errorInfo: null,
-      retryCount: prevState.retryCount + 1
-    }))
+      retryCount: prevState.retryCount + 1,
+    }));
 
     // Auto-reset after successful retry
     this.resetTimeoutId = window.setTimeout(() => {
-      this.setState({ retryCount: 0 })
-    }, 30000) // Reset retry count after 30 seconds
-  }
+      this.setState({ retryCount: 0 });
+    }, 30000); // Reset retry count after 30 seconds
+  };
 
   render() {
-    const { className, children } = this.props
+    const { className, children } = this.props;
     const content = this.state.hasError
       ? (() => {
-          const FallbackComponent = this.props.fallback || DefaultErrorFallback
+          const FallbackComponent = this.props.fallback || DefaultErrorFallback;
           return (
-            <FallbackComponent 
-              error={this.state.error} 
+            <FallbackComponent
+              error={this.state.error}
               retry={this.retry}
               errorInfo={this.state.errorInfo}
               retryCount={this.state.retryCount}
               maxRetries={this.props.maxRetries || 3}
               canRetry={this.state.retryCount < (this.props.maxRetries || 3)}
             />
-          )
+          );
         })()
-      : children
+      : children;
 
-    return <div className={cn('relative', className)}>{content}</div>
+    return <div className={cn("relative", className)}>{content}</div>;
   }
 }
 
 // Enhanced error fallback component
 interface ErrorFallbackProps {
-  error: Error | null
-  retry: () => void
-  errorInfo?: React.ErrorInfo | null
-  retryCount?: number
-  maxRetries?: number
-  canRetry?: boolean
+  error: Error | null;
+  retry: () => void;
+  errorInfo?: React.ErrorInfo | null;
+  retryCount?: number;
+  maxRetries?: number;
+  canRetry?: boolean;
 }
 
-function DefaultErrorFallback({ 
-  error, 
-  retry, 
-  errorInfo, 
-  retryCount = 0, 
-  maxRetries = 3, 
-  canRetry = true 
+function DefaultErrorFallback({
+  error,
+  retry,
+  errorInfo,
+  retryCount = 0,
+  maxRetries = 3,
+  canRetry = true,
 }: ErrorFallbackProps) {
   const getErrorIcon = () => {
-    if (!error) return AlertCircle
-    
-    const message = error.message.toLowerCase()
-    if (message.includes('network') || message.includes('fetch')) return Wifi
-    if (message.includes('database') || message.includes('supabase')) return Database
-    if (message.includes('timeout')) return Clock
-    return Bug
-  }
+    if (!error) return AlertCircle;
+
+    const message = error.message.toLowerCase();
+    if (message.includes("network") || message.includes("fetch")) return Wifi;
+    if (message.includes("database") || message.includes("supabase"))
+      return Database;
+    if (message.includes("timeout")) return Clock;
+    return Bug;
+  };
 
   const getErrorType = () => {
-    if (!error) return 'Unknown Error'
-    
-    const message = error.message.toLowerCase()
-    if (message.includes('network') || message.includes('fetch')) return 'Network Error'
-    if (message.includes('database') || message.includes('supabase')) return 'Database Error'
-    if (message.includes('timeout')) return 'Timeout Error'
-    if (message.includes('validation')) return 'Validation Error'
-    return 'Unexpected Error'
-  }
+    if (!error) return "Unknown Error";
 
-  const ErrorIcon = getErrorIcon()
-  const errorHeading = 'Application Error'
+    const message = error.message.toLowerCase();
+    if (message.includes("network") || message.includes("fetch"))
+      return "Network Error";
+    if (message.includes("database") || message.includes("supabase"))
+      return "Database Error";
+    if (message.includes("timeout")) return "Timeout Error";
+    if (message.includes("validation")) return "Validation Error";
+    return "Unexpected Error";
+  };
+
+  const ErrorIcon = getErrorIcon();
+  const errorHeading = "Application Error";
 
   return (
     <div className="bg-card rounded-3xl p-6 border border-status-rejected/20">
@@ -257,12 +279,12 @@ function DefaultErrorFallback({
           )}
         </div>
       </div>
-      
+
       <p className="text-xs text-secondary mb-4">
-        {error?.message || 'An unexpected error occurred. Please try again.'}
+        {error?.message || "An unexpected error occurred. Please try again."}
       </p>
-      
-      {process.env.NODE_ENV === 'development' && errorInfo && (
+
+      {process.env.NODE_ENV === "development" && errorInfo && (
         <details className="mb-4">
           <summary className="text-xs text-secondary cursor-pointer hover:text-white">
             Technical Details
@@ -272,7 +294,7 @@ function DefaultErrorFallback({
           </pre>
         </details>
       )}
-      
+
       <div className="flex gap-2">
         {canRetry && (
           <button
@@ -283,7 +305,7 @@ function DefaultErrorFallback({
             Try Again
           </button>
         )}
-        
+
         <button
           onClick={() => window.location.reload()}
           className="flex items-center gap-2 px-3 py-2 bg-secondary hover:bg-secondary/80 text-white text-xs rounded-lg transition-colors"
@@ -291,14 +313,15 @@ function DefaultErrorFallback({
           Reload Page
         </button>
       </div>
-      
+
       {!canRetry && (
         <p className="text-xs text-secondary mt-3">
-          Maximum retry attempts reached. Please reload the page or contact support.
+          Maximum retry attempts reached. Please reload the page or contact
+          support.
         </p>
       )}
     </div>
-  )
+  );
 }
 
 // Specialized error boundaries for different widget types
@@ -320,7 +343,7 @@ function WidgetErrorFallback({ retry, canRetry }: ErrorFallbackProps) {
         </button>
       )}
     </div>
-  )
+  );
 }
 
 function DataErrorFallback({ retry, canRetry }: ErrorFallbackProps) {
@@ -330,11 +353,11 @@ function DataErrorFallback({ retry, canRetry }: ErrorFallbackProps) {
         <Database className="w-5 h-5 text-status-rejected" />
         <h3 className="text-sm font-semibold text-white">Data Loading Error</h3>
       </div>
-      
+
       <p className="text-xs text-secondary mb-4">
         Failed to load data. Please check your connection and try again.
       </p>
-      
+
       {canRetry && (
         <button
           onClick={retry}
@@ -345,7 +368,7 @@ function DataErrorFallback({ retry, canRetry }: ErrorFallbackProps) {
         </button>
       )}
     </div>
-  )
+  );
 }
 
 // Higher-order component for wrapping widgets with error boundaries
@@ -354,26 +377,28 @@ function withErrorBoundary<P extends object>(
   errorBoundaryProps?: Partial<ErrorBoundaryProps>
 ) {
   const WrappedComponent = (props: P) => (
-    <ErrorBoundary 
+    <ErrorBoundary
       fallback={WidgetErrorFallback}
       name={Component.displayName || Component.name}
       {...errorBoundaryProps}
     >
       <Component {...props} />
     </ErrorBoundary>
-  )
-  
-  WrappedComponent.displayName = `withErrorBoundary(${Component.displayName || Component.name})`
-  
-  return WrappedComponent
+  );
+
+  WrappedComponent.displayName = `withErrorBoundary(${
+    Component.displayName || Component.name
+  })`;
+
+  return WrappedComponent;
 }
 
-export default ErrorBoundary
-export { 
-  ErrorBoundary, 
-  DefaultErrorFallback, 
-  WidgetErrorFallback, 
+export default ErrorBoundary;
+export {
+  ErrorBoundary,
+  DefaultErrorFallback,
+  WidgetErrorFallback,
   DataErrorFallback,
   ErrorLogger,
-  withErrorBoundary
-}
+  withErrorBoundary,
+};

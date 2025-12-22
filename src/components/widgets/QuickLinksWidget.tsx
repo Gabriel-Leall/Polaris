@@ -1,26 +1,40 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { ExternalLink, Plus, Edit2, Trash2, Globe, Github, Linkedin, Mail, FileText, Briefcase } from 'lucide-react'
-import { Button, Dialog, Input } from '@/components/ui'
-import { ErrorBoundary, WidgetErrorFallback } from '@/components/ui/error-boundary'
-import { cn } from '@/lib/utils'
-import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
+import { useState } from "react";
+import {
+  ExternalLink,
+  Plus,
+  Edit2,
+  Trash2,
+  Globe,
+  Github,
+  Linkedin,
+  Mail,
+  FileText,
+  Briefcase,
+} from "lucide-react";
+import { Button, Dialog, Input } from "@/components/ui";
+import {
+  ErrorBoundary,
+  WidgetErrorFallback,
+} from "@/components/ui/error-boundary";
+import { cn } from "@/lib/utils";
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 interface QuickLink {
-  id: string
-  title: string
-  url: string
-  icon: string
-  category: 'work' | 'social' | 'tools' | 'other'
+  id: string;
+  title: string;
+  url: string;
+  icon: string;
+  category: "work" | "social" | "tools" | "other";
 }
 
 interface QuickLinksStore {
-  links: QuickLink[]
-  addLink: (link: Omit<QuickLink, 'id'>) => void
-  updateLink: (id: string, link: Partial<QuickLink>) => void
-  removeLink: (id: string) => void
+  links: QuickLink[];
+  addLink: (link: Omit<QuickLink, "id">) => void;
+  updateLink: (id: string, link: Partial<QuickLink>) => void;
+  removeLink: (id: string) => void;
 }
 
 const useQuickLinksStore = create<QuickLinksStore>()(
@@ -28,161 +42,179 @@ const useQuickLinksStore = create<QuickLinksStore>()(
     (set) => ({
       links: [
         {
-          id: '1',
-          title: 'GitHub',
-          url: 'https://github.com',
-          icon: 'github',
-          category: 'work',
+          id: "1",
+          title: "GitHub",
+          url: "https://github.com",
+          icon: "github",
+          category: "work",
         },
         {
-          id: '2',
-          title: 'LinkedIn',
-          url: 'https://linkedin.com',
-          icon: 'linkedin',
-          category: 'social',
+          id: "2",
+          title: "LinkedIn",
+          url: "https://linkedin.com",
+          icon: "linkedin",
+          category: "social",
         },
         {
-          id: '3',
-          title: 'Portfolio',
-          url: 'https://portfolio.dev',
-          icon: 'globe',
-          category: 'work',
+          id: "3",
+          title: "Portfolio",
+          url: "https://portfolio.dev",
+          icon: "globe",
+          category: "work",
         },
         {
-          id: '4',
-          title: 'Resume',
-          url: '/resume.pdf',
-          icon: 'file-text',
-          category: 'work',
+          id: "4",
+          title: "Resume",
+          url: "/resume.pdf",
+          icon: "file-text",
+          category: "work",
         },
         {
-          id: '5',
-          title: 'Job Board',
-          url: 'https://jobs.dev',
-          icon: 'briefcase',
-          category: 'work',
+          id: "5",
+          title: "Job Board",
+          url: "https://jobs.dev",
+          icon: "briefcase",
+          category: "work",
         },
         {
-          id: '6',
-          title: 'Email',
-          url: 'mailto:hello@example.com',
-          icon: 'mail',
-          category: 'other',
+          id: "6",
+          title: "Email",
+          url: "mailto:hello@example.com",
+          icon: "mail",
+          category: "other",
         },
       ],
-      addLink: (link) => set((state) => ({
-        links: [...state.links, { ...link, id: Date.now().toString() }]
-      })),
-      updateLink: (id, updatedLink) => set((state) => ({
-        links: state.links.map(link => 
-          link.id === id ? { ...link, ...updatedLink } : link
-        )
-      })),
-      removeLink: (id) => set((state) => ({
-        links: state.links.filter(link => link.id !== id)
-      })),
+      addLink: (link) =>
+        set((state) => ({
+          links: [...state.links, { ...link, id: Date.now().toString() }],
+        })),
+      updateLink: (id, updatedLink) =>
+        set((state) => ({
+          links: state.links.map((link) =>
+            link.id === id ? { ...link, ...updatedLink } : link
+          ),
+        })),
+      removeLink: (id) =>
+        set((state) => ({
+          links: state.links.filter((link) => link.id !== id),
+        })),
     }),
     {
-      name: 'quick-links-store',
+      name: "quick-links-store",
     }
   )
-)
+);
 
 const iconMap = {
   github: Github,
   linkedin: Linkedin,
   globe: Globe,
-  'file-text': FileText,
+  "file-text": FileText,
   briefcase: Briefcase,
   mail: Mail,
-  'external-link': ExternalLink,
-}
+  "external-link": ExternalLink,
+};
 
 interface QuickLinksWidgetProps {
-  className?: string | undefined
+  className?: string | undefined;
 }
 
 function QuickLinksWidgetCore({ className }: QuickLinksWidgetProps) {
-  const { links, addLink, updateLink, removeLink } = useQuickLinksStore()
-  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
-  const [editingLink, setEditingLink] = useState<QuickLink | null>(null)
+  const { links, addLink, updateLink, removeLink } = useQuickLinksStore();
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [editingLink, setEditingLink] = useState<QuickLink | null>(null);
   const [newLink, setNewLink] = useState<{
-    title: string
-    url: string
-    icon: string
-    category: 'work' | 'social' | 'tools' | 'other'
+    title: string;
+    url: string;
+    icon: string;
+    category: "work" | "social" | "tools" | "other";
   }>({
-    title: '',
-    url: '',
-    icon: 'external-link',
-    category: 'other',
-  })
+    title: "",
+    url: "",
+    icon: "external-link",
+    category: "other",
+  });
 
   const handleAddLink = () => {
     if (newLink.title && newLink.url) {
-      addLink(newLink)
-      setNewLink({ title: '', url: '', icon: 'external-link', category: 'other' })
-      setIsAddDialogOpen(false)
+      addLink(newLink);
+      setNewLink({
+        title: "",
+        url: "",
+        icon: "external-link",
+        category: "other",
+      });
+      setIsAddDialogOpen(false);
     }
-  }
+  };
 
   const handleEditLink = (link: QuickLink) => {
-    setEditingLink(link)
+    setEditingLink(link);
     setNewLink({
       title: link.title,
       url: link.url,
       icon: link.icon,
       category: link.category,
-    })
-    setIsAddDialogOpen(true)
-  }
+    });
+    setIsAddDialogOpen(true);
+  };
 
   const handleUpdateLink = () => {
     if (editingLink && newLink.title && newLink.url) {
-      updateLink(editingLink.id, newLink)
-      setEditingLink(null)
-      setNewLink({ title: '', url: '', icon: 'external-link', category: 'other' })
-      setIsAddDialogOpen(false)
+      updateLink(editingLink.id, newLink);
+      setEditingLink(null);
+      setNewLink({
+        title: "",
+        url: "",
+        icon: "external-link",
+        category: "other",
+      });
+      setIsAddDialogOpen(false);
     }
-  }
+  };
 
   const handleDeleteLink = (id: string) => {
-    removeLink(id)
-  }
+    removeLink(id);
+  };
 
   const openLink = (url: string) => {
-    if (url.startsWith('mailto:') || url.startsWith('tel:')) {
-      window.location.href = url
+    if (url.startsWith("mailto:") || url.startsWith("tel:")) {
+      window.location.href = url;
     } else {
-      window.open(url, '_blank', 'noopener,noreferrer')
+      window.open(url, "_blank", "noopener,noreferrer");
     }
-  }
+  };
 
   const getIcon = (iconName: string) => {
-    const IconComponent = iconMap[iconName as keyof typeof iconMap] || ExternalLink
-    return IconComponent
-  }
+    const IconComponent =
+      iconMap[iconName as keyof typeof iconMap] || ExternalLink;
+    return IconComponent;
+  };
 
   const getCategoryColor = (category: string) => {
     switch (category) {
-      case 'work':
-        return 'text-primary'
-      case 'social':
-        return 'text-status-pending'
-      case 'tools':
-        return 'text-status-interview'
+      case "work":
+        return "text-primary";
+      case "social":
+        return "text-status-pending";
+      case "tools":
+        return "text-status-interview";
       default:
-        return 'text-muted'
+        return "text-muted";
     }
-  }
+  };
 
   return (
-    <div className={cn('bg-card rounded-3xl p-6 border border-white/5', className)}>
+    <div
+      className={cn("bg-card rounded-3xl p-6 border border-white/5", className)}
+    >
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
           <h2 className="text-sm font-semibold text-white">Quick Links</h2>
-          <p className="text-xs text-secondary mt-1">{links.length} saved links</p>
+          <p className="text-xs text-secondary mt-1">
+            {links.length} saved links
+          </p>
         </div>
         <Button
           variant="secondary"
@@ -197,16 +229,18 @@ function QuickLinksWidgetCore({ className }: QuickLinksWidgetProps) {
       {/* Links Grid */}
       <div className="space-y-2">
         {links.map((link) => {
-          const IconComponent = getIcon(link.icon)
+          const IconComponent = getIcon(link.icon);
           return (
             <div
               key={link.id}
               className="group flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 transition-colors"
             >
-              <div className={cn('flex-shrink-0', getCategoryColor(link.category))}>
+              <div
+                className={cn("flex-shrink-0", getCategoryColor(link.category))}
+              >
                 <IconComponent className="h-4 w-4" />
               </div>
-              
+
               <div className="flex-1 min-w-0">
                 <button
                   onClick={() => openLink(link.url)}
@@ -216,11 +250,11 @@ function QuickLinksWidgetCore({ className }: QuickLinksWidgetProps) {
                     {link.title}
                   </p>
                   <p className="text-muted text-xs truncate">
-                    {link.url.replace(/^https?:\/\//, '')}
+                    {link.url.replace(/^https?:\/\//, "")}
                   </p>
                 </button>
               </div>
-              
+
               <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                 <Button
                   variant="secondary"
@@ -240,7 +274,7 @@ function QuickLinksWidgetCore({ className }: QuickLinksWidgetProps) {
                 </Button>
               </div>
             </div>
-          )
+          );
         })}
       </div>
 
@@ -263,35 +297,50 @@ function QuickLinksWidgetCore({ className }: QuickLinksWidgetProps) {
       <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
         <div className="bg-card border border-white/10 rounded-2xl p-6 w-full max-w-md">
           <h3 className="text-white font-semibold mb-4">
-            {editingLink ? 'Edit Link' : 'Add Quick Link'}
+            {editingLink ? "Edit Link" : "Add Quick Link"}
           </h3>
-          
+
           <div className="space-y-4">
             <div>
-                <label className="text-sm text-secondary mb-2 block">Title</label>
+              <label className="text-sm text-secondary mb-2 block">Title</label>
               <Input
                 value={newLink.title}
-                onChange={(e) => setNewLink(prev => ({ ...prev, title: e.target.value }))}
+                onChange={(e) =>
+                  setNewLink((prev) => ({ ...prev, title: e.target.value }))
+                }
                 placeholder="Link title"
                 className="w-full"
               />
             </div>
-            
+
             <div>
-                <label className="text-sm text-secondary mb-2 block">URL</label>
+              <label className="text-sm text-secondary mb-2 block">URL</label>
               <Input
                 value={newLink.url}
-                onChange={(e) => setNewLink(prev => ({ ...prev, url: e.target.value }))}
+                onChange={(e) =>
+                  setNewLink((prev) => ({ ...prev, url: e.target.value }))
+                }
                 placeholder="https://example.com"
                 className="w-full"
               />
             </div>
-            
+
             <div>
-                <label className="text-sm text-secondary mb-2 block">Category</label>
+              <label className="text-sm text-secondary mb-2 block">
+                Category
+              </label>
               <select
                 value={newLink.category}
-                onChange={(e) => setNewLink(prev => ({ ...prev, category: e.target.value as 'work' | 'social' | 'tools' | 'other' }))}
+                onChange={(e) =>
+                  setNewLink((prev) => ({
+                    ...prev,
+                    category: e.target.value as
+                      | "work"
+                      | "social"
+                      | "tools"
+                      | "other",
+                  }))
+                }
                 className="w-full bg-input border border-white/10 rounded-xl px-3 py-2 text-white text-sm"
               >
                 <option value="work">Work</option>
@@ -300,12 +349,14 @@ function QuickLinksWidgetCore({ className }: QuickLinksWidgetProps) {
                 <option value="other">Other</option>
               </select>
             </div>
-            
+
             <div>
-                <label className="text-sm text-secondary mb-2 block">Icon</label>
+              <label className="text-sm text-secondary mb-2 block">Icon</label>
               <select
                 value={newLink.icon}
-                onChange={(e) => setNewLink(prev => ({ ...prev, icon: e.target.value }))}
+                onChange={(e) =>
+                  setNewLink((prev) => ({ ...prev, icon: e.target.value }))
+                }
                 className="w-full bg-input border border-white/10 rounded-xl px-3 py-2 text-white text-sm"
               >
                 <option value="external-link">External Link</option>
@@ -318,14 +369,19 @@ function QuickLinksWidgetCore({ className }: QuickLinksWidgetProps) {
               </select>
             </div>
           </div>
-          
+
           <div className="flex gap-3 mt-6">
             <Button
               variant="secondary"
               onClick={() => {
-                setIsAddDialogOpen(false)
-                setEditingLink(null)
-                setNewLink({ title: '', url: '', icon: 'external-link', category: 'other' })
+                setIsAddDialogOpen(false);
+                setEditingLink(null);
+                setNewLink({
+                  title: "",
+                  url: "",
+                  icon: "external-link",
+                  category: "other",
+                });
               }}
               className="flex-1"
             >
@@ -337,27 +393,27 @@ function QuickLinksWidgetCore({ className }: QuickLinksWidgetProps) {
               disabled={!newLink.title || !newLink.url}
               className="flex-1"
             >
-              {editingLink ? 'Update' : 'Add'} Link
+              {editingLink ? "Update" : "Add"} Link
             </Button>
           </div>
         </div>
       </Dialog>
     </div>
-  )
+  );
 }
 
 // Wrapper component with error boundary
 function QuickLinksWidget({ className }: QuickLinksWidgetProps) {
   return (
-    <ErrorBoundary 
+    <ErrorBoundary
       fallback={WidgetErrorFallback}
       name="QuickLinksWidget"
       maxRetries={2}
     >
       <QuickLinksWidgetCore className={className} />
     </ErrorBoundary>
-  )
+  );
 }
 
-export default QuickLinksWidget
-export { QuickLinksWidget }
+export default QuickLinksWidget;
+export { QuickLinksWidget };

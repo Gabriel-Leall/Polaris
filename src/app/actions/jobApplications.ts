@@ -1,27 +1,29 @@
-'use server'
+"use server";
 
-import { supabase, type Tables, type TablesInsert } from '@/lib/supabase'
-import { JobApplication, AppStatus } from '@/types'
-import { 
-  createJobApplicationSchema, 
+import { supabase, type Tables, type TablesInsert } from "@/lib/supabase";
+import { JobApplication, AppStatus } from "@/types";
+import {
+  createJobApplicationSchema,
   updateJobApplicationSchema,
   updateJobApplicationStatusSchema,
   userIdSchema,
   type CreateJobApplicationInput,
-  type UpdateJobApplicationInput
-} from '@/lib/validations'
+  type UpdateJobApplicationInput,
+} from "@/lib/validations";
 
-type JobApplicationRow = Tables<'job_applications'>
+type JobApplicationRow = Tables<"job_applications">;
 
 // Job Application Server Actions
-export const createJobApplication = async (data: CreateJobApplicationInput): Promise<JobApplication> => {
+export const createJobApplication = async (
+  data: CreateJobApplicationInput
+): Promise<JobApplication> => {
   try {
     // Validate input data
-    const validatedData = createJobApplicationSchema.parse(data)
-    
-    const now = new Date().toISOString()
-    
-    const insertData: TablesInsert<'job_applications'> = {
+    const validatedData = createJobApplicationSchema.parse(data);
+
+    const now = new Date().toISOString();
+
+    const insertData: TablesInsert<"job_applications"> = {
       user_id: validatedData.userId,
       company_name: validatedData.companyName,
       company_domain: validatedData.companyDomain || null,
@@ -29,17 +31,17 @@ export const createJobApplication = async (data: CreateJobApplicationInput): Pro
       status: validatedData.status,
       notes: validatedData.notes || null,
       applied_at: now,
-      last_updated: now
-    }
+      last_updated: now,
+    };
 
     const { data: jobApp, error } = await supabase
-      .from('job_applications')
+      .from("job_applications")
       .insert(insertData)
       .select()
-      .single()
+      .single();
 
     if (error) {
-      throw new Error(`Failed to create job application: ${error.message}`)
+      throw new Error(`Failed to create job application: ${error.message}`);
     }
 
     // Transform database row to JobApplication
@@ -54,34 +56,42 @@ export const createJobApplication = async (data: CreateJobApplicationInput): Pro
       notes: jobApp.notes || undefined,
       userId: jobApp.user_id,
       createdAt: new Date(jobApp.created_at),
-      updatedAt: new Date(jobApp.updated_at)
-    }
+      updatedAt: new Date(jobApp.updated_at),
+    };
   } catch (error) {
     if (error instanceof Error) {
-      throw new Error(`Create job application failed: ${error.message}`)
+      throw new Error(`Create job application failed: ${error.message}`);
     }
-    throw new Error('Create job application failed: Unknown error')
+    throw new Error("Create job application failed: Unknown error");
   }
-}
+};
 
-export const updateJobApplicationStatus = async (id: string, status: AppStatus): Promise<JobApplication> => {
+export const updateJobApplicationStatus = async (
+  id: string,
+  status: AppStatus
+): Promise<JobApplication> => {
   try {
     // Validate input data
-    const validatedData = updateJobApplicationStatusSchema.parse({ id, status })
-    
+    const validatedData = updateJobApplicationStatusSchema.parse({
+      id,
+      status,
+    });
+
     const { data: jobApp, error } = await supabase
-      .from('job_applications')
+      .from("job_applications")
       .update({
         status: validatedData.status,
         last_updated: new Date().toISOString(),
-        updated_at: new Date().toISOString()
+        updated_at: new Date().toISOString(),
       })
-      .eq('id', validatedData.id)
+      .eq("id", validatedData.id)
       .select()
-      .single()
+      .single();
 
     if (error) {
-      throw new Error(`Failed to update job application status: ${error.message}`)
+      throw new Error(
+        `Failed to update job application status: ${error.message}`
+      );
     }
 
     // Transform database row to JobApplication
@@ -96,41 +106,49 @@ export const updateJobApplicationStatus = async (id: string, status: AppStatus):
       notes: jobApp.notes || undefined,
       userId: jobApp.user_id,
       createdAt: new Date(jobApp.created_at),
-      updatedAt: new Date(jobApp.updated_at)
-    }
+      updatedAt: new Date(jobApp.updated_at),
+    };
   } catch (error) {
     if (error instanceof Error) {
-      throw new Error(`Update job application status failed: ${error.message}`)
+      throw new Error(`Update job application status failed: ${error.message}`);
     }
-    throw new Error('Update job application status failed: Unknown error')
+    throw new Error("Update job application status failed: Unknown error");
   }
-}
+};
 
-export const updateJobApplication = async (id: string, data: Partial<UpdateJobApplicationInput>): Promise<JobApplication> => {
+export const updateJobApplication = async (
+  id: string,
+  data: Partial<UpdateJobApplicationInput>
+): Promise<JobApplication> => {
   try {
     // Validate input data
-    const validatedData = updateJobApplicationSchema.parse({ id, ...data })
-    
+    const validatedData = updateJobApplicationSchema.parse({ id, ...data });
+
     const updateData: Record<string, unknown> = {
       last_updated: new Date().toISOString(),
-      updated_at: new Date().toISOString()
-    }
-    
-    if (validatedData.companyName !== undefined) updateData.company_name = validatedData.companyName
-    if (validatedData.companyDomain !== undefined) updateData.company_domain = validatedData.companyDomain
-    if (validatedData.position !== undefined) updateData.position = validatedData.position
-    if (validatedData.status !== undefined) updateData.status = validatedData.status
-    if (validatedData.notes !== undefined) updateData.notes = validatedData.notes
+      updated_at: new Date().toISOString(),
+    };
+
+    if (validatedData.companyName !== undefined)
+      updateData.company_name = validatedData.companyName;
+    if (validatedData.companyDomain !== undefined)
+      updateData.company_domain = validatedData.companyDomain;
+    if (validatedData.position !== undefined)
+      updateData.position = validatedData.position;
+    if (validatedData.status !== undefined)
+      updateData.status = validatedData.status;
+    if (validatedData.notes !== undefined)
+      updateData.notes = validatedData.notes;
 
     const { data: jobApp, error } = await supabase
-      .from('job_applications')
+      .from("job_applications")
       .update(updateData)
-      .eq('id', validatedData.id)
+      .eq("id", validatedData.id)
       .select()
-      .single()
+      .single();
 
     if (error) {
-      throw new Error(`Failed to update job application: ${error.message}`)
+      throw new Error(`Failed to update job application: ${error.message}`);
     }
 
     // Transform database row to JobApplication
@@ -145,50 +163,52 @@ export const updateJobApplication = async (id: string, data: Partial<UpdateJobAp
       notes: jobApp.notes || undefined,
       userId: jobApp.user_id,
       createdAt: new Date(jobApp.created_at),
-      updatedAt: new Date(jobApp.updated_at)
-    }
+      updatedAt: new Date(jobApp.updated_at),
+    };
   } catch (error) {
     if (error instanceof Error) {
-      throw new Error(`Update job application failed: ${error.message}`)
+      throw new Error(`Update job application failed: ${error.message}`);
     }
-    throw new Error('Update job application failed: Unknown error')
+    throw new Error("Update job application failed: Unknown error");
   }
-}
+};
 
 export const deleteJobApplication = async (id: string): Promise<void> => {
   try {
     // Validate job application ID
-    const validatedId = userIdSchema.parse(id)
-    
+    const validatedId = userIdSchema.parse(id);
+
     const { error } = await supabase
-      .from('job_applications')
+      .from("job_applications")
       .delete()
-      .eq('id', validatedId)
+      .eq("id", validatedId);
 
     if (error) {
-      throw new Error(`Failed to delete job application: ${error.message}`)
+      throw new Error(`Failed to delete job application: ${error.message}`);
     }
   } catch (error) {
     if (error instanceof Error) {
-      throw new Error(`Delete job application failed: ${error.message}`)
+      throw new Error(`Delete job application failed: ${error.message}`);
     }
-    throw new Error('Delete job application failed: Unknown error')
+    throw new Error("Delete job application failed: Unknown error");
   }
-}
+};
 
-export const getJobApplications = async (userId: string): Promise<JobApplication[]> => {
+export const getJobApplications = async (
+  userId: string
+): Promise<JobApplication[]> => {
   try {
     // Validate user ID
-    const validatedUserId = userIdSchema.parse(userId)
-    
+    const validatedUserId = userIdSchema.parse(userId);
+
     const { data: jobApps, error } = await supabase
-      .from('job_applications')
-      .select('*')
-      .eq('user_id', validatedUserId)
-      .order('last_updated', { ascending: false })
+      .from("job_applications")
+      .select("*")
+      .eq("user_id", validatedUserId)
+      .order("last_updated", { ascending: false });
 
     if (error) {
-      throw new Error(`Failed to fetch job applications: ${error.message}`)
+      throw new Error(`Failed to fetch job applications: ${error.message}`);
     }
 
     // Transform database rows to JobApplication array
@@ -203,12 +223,12 @@ export const getJobApplications = async (userId: string): Promise<JobApplication
       notes: jobApp.notes || undefined,
       userId: jobApp.user_id,
       createdAt: new Date(jobApp.created_at),
-      updatedAt: new Date(jobApp.updated_at)
-    }))
+      updatedAt: new Date(jobApp.updated_at),
+    }));
   } catch (error) {
     if (error instanceof Error) {
-      throw new Error(`Get job applications failed: ${error.message}`)
+      throw new Error(`Get job applications failed: ${error.message}`);
     }
-    throw new Error('Get job applications failed: Unknown error')
+    throw new Error("Get job applications failed: Unknown error");
   }
-}
+};

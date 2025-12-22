@@ -1,35 +1,37 @@
-'use server'
+"use server";
 
-import { supabase, type Tables } from '@/lib/supabase'
-import { BrainDumpNote } from '@/types'
-import { 
-  createBrainDumpNoteSchema, 
-  updateBrainDumpNoteSchema, 
+import { supabase, type Tables } from "@/lib/supabase";
+import { BrainDumpNote } from "@/types";
+import {
+  createBrainDumpNoteSchema,
+  updateBrainDumpNoteSchema,
   userIdSchema,
   type CreateBrainDumpNoteInput,
-  type UpdateBrainDumpNoteInput 
-} from '@/lib/validations'
+  type UpdateBrainDumpNoteInput,
+} from "@/lib/validations";
 
-type BrainDumpNoteRow = Tables<'brain_dump_notes'>
+type BrainDumpNoteRow = Tables<"brain_dump_notes">;
 
 // Brain Dump Notes Server Actions
-export const createBrainDumpNote = async (data: CreateBrainDumpNoteInput): Promise<BrainDumpNote> => {
+export const createBrainDumpNote = async (
+  data: CreateBrainDumpNoteInput
+): Promise<BrainDumpNote> => {
   try {
     // Validate input data
-    const validatedData = createBrainDumpNoteSchema.parse(data)
-    
+    const validatedData = createBrainDumpNoteSchema.parse(data);
+
     const { data: note, error } = await supabase
-      .from('brain_dump_notes')
+      .from("brain_dump_notes")
       .insert({
         user_id: validatedData.userId,
         content: validatedData.content,
-        version: validatedData.version
+        version: validatedData.version,
       })
       .select()
-      .single()
+      .single();
 
     if (error) {
-      throw new Error(`Failed to create brain dump note: ${error.message}`)
+      throw new Error(`Failed to create brain dump note: ${error.message}`);
     }
 
     // Transform database row to BrainDumpNote
@@ -39,37 +41,42 @@ export const createBrainDumpNote = async (data: CreateBrainDumpNoteInput): Promi
       content: note.content,
       version: note.version,
       createdAt: new Date(note.created_at),
-      updatedAt: new Date(note.updated_at)
-    }
+      updatedAt: new Date(note.updated_at),
+    };
   } catch (error) {
     if (error instanceof Error) {
-      throw new Error(`Create brain dump note failed: ${error.message}`)
+      throw new Error(`Create brain dump note failed: ${error.message}`);
     }
-    throw new Error('Create brain dump note failed: Unknown error')
+    throw new Error("Create brain dump note failed: Unknown error");
   }
-}
+};
 
-export const updateBrainDumpNote = async (id: string, data: Partial<UpdateBrainDumpNoteInput>): Promise<BrainDumpNote> => {
+export const updateBrainDumpNote = async (
+  id: string,
+  data: Partial<UpdateBrainDumpNoteInput>
+): Promise<BrainDumpNote> => {
   try {
     // Validate input data
-    const validatedData = updateBrainDumpNoteSchema.parse({ id, ...data })
-    
-    const updateData: Partial<BrainDumpNoteRow> = {}
-    if (validatedData.content !== undefined) updateData.content = validatedData.content
-    if (validatedData.version !== undefined) updateData.version = validatedData.version
-    
+    const validatedData = updateBrainDumpNoteSchema.parse({ id, ...data });
+
+    const updateData: Partial<BrainDumpNoteRow> = {};
+    if (validatedData.content !== undefined)
+      updateData.content = validatedData.content;
+    if (validatedData.version !== undefined)
+      updateData.version = validatedData.version;
+
     // Always update the updated_at timestamp
-    updateData.updated_at = new Date().toISOString()
+    updateData.updated_at = new Date().toISOString();
 
     const { data: note, error } = await supabase
-      .from('brain_dump_notes')
+      .from("brain_dump_notes")
       .update(updateData)
-      .eq('id', validatedData.id)
+      .eq("id", validatedData.id)
       .select()
-      .single()
+      .single();
 
     if (error) {
-      throw new Error(`Failed to update brain dump note: ${error.message}`)
+      throw new Error(`Failed to update brain dump note: ${error.message}`);
     }
 
     // Transform database row to BrainDumpNote
@@ -79,56 +86,58 @@ export const updateBrainDumpNote = async (id: string, data: Partial<UpdateBrainD
       content: note.content,
       version: note.version,
       createdAt: new Date(note.created_at),
-      updatedAt: new Date(note.updated_at)
-    }
+      updatedAt: new Date(note.updated_at),
+    };
   } catch (error) {
     if (error instanceof Error) {
-      throw new Error(`Update brain dump note failed: ${error.message}`)
+      throw new Error(`Update brain dump note failed: ${error.message}`);
     }
-    throw new Error('Update brain dump note failed: Unknown error')
+    throw new Error("Update brain dump note failed: Unknown error");
   }
-}
+};
 
 export const deleteBrainDumpNote = async (id: string): Promise<void> => {
   try {
     // Validate note ID
-    const validatedId = userIdSchema.parse(id)
-    
+    const validatedId = userIdSchema.parse(id);
+
     const { error } = await supabase
-      .from('brain_dump_notes')
+      .from("brain_dump_notes")
       .delete()
-      .eq('id', validatedId)
+      .eq("id", validatedId);
 
     if (error) {
-      throw new Error(`Failed to delete brain dump note: ${error.message}`)
+      throw new Error(`Failed to delete brain dump note: ${error.message}`);
     }
   } catch (error) {
     if (error instanceof Error) {
-      throw new Error(`Delete brain dump note failed: ${error.message}`)
+      throw new Error(`Delete brain dump note failed: ${error.message}`);
     }
-    throw new Error('Delete brain dump note failed: Unknown error')
+    throw new Error("Delete brain dump note failed: Unknown error");
   }
-}
+};
 
-export const getBrainDumpNote = async (userId: string): Promise<BrainDumpNote | null> => {
+export const getBrainDumpNote = async (
+  userId: string
+): Promise<BrainDumpNote | null> => {
   try {
     // Validate user ID
-    const validatedUserId = userIdSchema.parse(userId)
-    
+    const validatedUserId = userIdSchema.parse(userId);
+
     const { data: note, error } = await supabase
-      .from('brain_dump_notes')
-      .select('*')
-      .eq('user_id', validatedUserId)
-      .order('updated_at', { ascending: false })
+      .from("brain_dump_notes")
+      .select("*")
+      .eq("user_id", validatedUserId)
+      .order("updated_at", { ascending: false })
       .limit(1)
-      .single()
+      .single();
 
     if (error) {
       // If no note exists, return null instead of throwing error
-      if (error.code === 'PGRST116') {
-        return null
+      if (error.code === "PGRST116") {
+        return null;
       }
-      throw new Error(`Failed to fetch brain dump note: ${error.message}`)
+      throw new Error(`Failed to fetch brain dump note: ${error.message}`);
     }
 
     // Transform database row to BrainDumpNote
@@ -138,39 +147,42 @@ export const getBrainDumpNote = async (userId: string): Promise<BrainDumpNote | 
       content: note.content,
       version: note.version,
       createdAt: new Date(note.created_at),
-      updatedAt: new Date(note.updated_at)
-    }
+      updatedAt: new Date(note.updated_at),
+    };
   } catch (error) {
     if (error instanceof Error) {
-      throw new Error(`Get brain dump note failed: ${error.message}`)
+      throw new Error(`Get brain dump note failed: ${error.message}`);
     }
-    throw new Error('Get brain dump note failed: Unknown error')
+    throw new Error("Get brain dump note failed: Unknown error");
   }
-}
+};
 
-export const saveBrainDumpNote = async (userId: string, content: string): Promise<BrainDumpNote> => {
+export const saveBrainDumpNote = async (
+  userId: string,
+  content: string
+): Promise<BrainDumpNote> => {
   try {
     // First, try to get existing note
-    const existingNote = await getBrainDumpNote(userId)
-    
+    const existingNote = await getBrainDumpNote(userId);
+
     if (existingNote) {
       // Update existing note with incremented version
       return await updateBrainDumpNote(existingNote.id, {
         content,
-        version: existingNote.version + 1
-      })
+        version: existingNote.version + 1,
+      });
     } else {
       // Create new note
       return await createBrainDumpNote({
         userId,
         content,
-        version: 1
-      })
+        version: 1,
+      });
     }
   } catch (error) {
     if (error instanceof Error) {
-      throw new Error(`Save brain dump note failed: ${error.message}`)
+      throw new Error(`Save brain dump note failed: ${error.message}`);
     }
-    throw new Error('Save brain dump note failed: Unknown error')
+    throw new Error("Save brain dump note failed: Unknown error");
   }
-}
+};
