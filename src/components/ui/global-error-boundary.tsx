@@ -106,7 +106,7 @@ function GlobalErrorFallback({
           </button>
         </div>
 
-        <div className="mt-6 pt-6 border-t border-glass">
+        <div className="mt-6 pt-6 border border-glass">
           <p className="text-xs text-secondary">
             If this problem persists, please contact support with the error
             details.

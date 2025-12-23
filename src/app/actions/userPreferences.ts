@@ -1,6 +1,6 @@
 "use server";
 
-import { supabase, type Tables } from "@/lib/supabase";
+import { supabase } from "@/lib/supabase";
 import { UserPreferences } from "@/types";
 import {
   createUserPreferencesSchema,
@@ -10,7 +10,7 @@ import {
   type UpdateUserPreferencesInput,
 } from "@/lib/validations";
 
-type UserPreferencesRow = Tables<"user_preferences">;
+type UserPreferencesRow = any;
 
 const mapUserPreferencesRow = (prefs: UserPreferencesRow): UserPreferences => ({
   id: prefs.id,

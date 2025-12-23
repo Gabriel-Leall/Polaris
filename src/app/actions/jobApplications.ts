@@ -1,6 +1,6 @@
 "use server";
 
-import { supabase, type Tables, type TablesInsert } from "@/lib/supabase";
+import { supabase } from "@/lib/supabase";
 import { JobApplication, AppStatus } from "@/types";
 import {
   createJobApplicationSchema,
@@ -11,7 +11,7 @@ import {
   type UpdateJobApplicationInput,
 } from "@/lib/validations";
 
-type JobApplicationRow = Tables<"job_applications">;
+type JobApplicationRow = any;
 
 // Job Application Server Actions
 export const createJobApplication = async (
@@ -23,7 +23,7 @@ export const createJobApplication = async (
 
     const now = new Date().toISOString();
 
-    const insertData: TablesInsert<"job_applications"> = {
+    const insertData = {
       user_id: validatedData.userId,
       company_name: validatedData.companyName,
       company_domain: validatedData.companyDomain || null,

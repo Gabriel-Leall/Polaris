@@ -36,10 +36,11 @@ import {
   updateUserPreferences,
   getUserPreferences,
 } from "@/app/actions/userPreferences";
+import { describe, test, beforeEach, expect, vi } from "vitest";
 
 describe("Supabase Data Persistence", () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   test("Property 7: Supabase data persistence - task creation and retrieval round trip", async () => {
@@ -68,22 +69,22 @@ describe("Supabase Data Persistence", () => {
     const mockRetrievedTasks = [mockCreatedTask];
 
     // Setup mocks for creation
-    const mockCreateSingle = jest
+    const mockCreateSingle = vi
       .fn()
       .mockResolvedValue({ data: mockCreatedTask, error: null });
-    const mockCreateSelect = jest.fn(() => ({ single: mockCreateSingle }));
+    const mockCreateSelect = vi.fn(() => ({ single: mockCreateSingle }));
 
     // Setup mocks for retrieval
-    const mockRetrieveOrder = jest
+    const mockRetrieveOrder = vi
       .fn()
       .mockResolvedValue({ data: mockRetrievedTasks, error: null });
-    const mockRetrieveEq = jest.fn(() => ({ order: mockRetrieveOrder }));
+    const mockRetrieveEq = vi.fn(() => ({ order: mockRetrieveOrder }));
 
     supabase.from.mockImplementation((table: string) => {
       if (table === "tasks") {
         return {
-          insert: jest.fn(() => ({ select: mockCreateSelect })),
-          select: jest.fn(() => ({ eq: mockRetrieveEq })),
+          insert: vi.fn(() => ({ select: mockCreateSelect })),
+          select: vi.fn(() => ({ eq: mockRetrieveEq })),
         };
       }
       return {};
@@ -147,22 +148,22 @@ describe("Supabase Data Persistence", () => {
     const mockRetrievedJobs = [mockCreatedJob];
 
     // Setup mocks for creation
-    const mockCreateSingle = jest
+    const mockCreateSingle = vi
       .fn()
       .mockResolvedValue({ data: mockCreatedJob, error: null });
-    const mockCreateSelect = jest.fn(() => ({ single: mockCreateSingle }));
+    const mockCreateSelect = vi.fn(() => ({ single: mockCreateSingle }));
 
     // Setup mocks for retrieval
-    const mockRetrieveOrder = jest
+    const mockRetrieveOrder = vi
       .fn()
       .mockResolvedValue({ data: mockRetrievedJobs, error: null });
-    const mockRetrieveEq = jest.fn(() => ({ order: mockRetrieveOrder }));
+    const mockRetrieveEq = vi.fn(() => ({ order: mockRetrieveOrder }));
 
     supabase.from.mockImplementation((table: string) => {
       if (table === "job_applications") {
         return {
-          insert: jest.fn(() => ({ select: mockCreateSelect })),
-          select: jest.fn(() => ({ eq: mockRetrieveEq })),
+          insert: vi.fn(() => ({ select: mockCreateSelect })),
+          select: vi.fn(() => ({ eq: mockRetrieveEq })),
         };
       }
       return {};
@@ -221,22 +222,22 @@ describe("Supabase Data Persistence", () => {
     };
 
     // Setup mocks for creation
-    const mockCreateSingle = jest
+    const mockCreateSingle = vi
       .fn()
       .mockResolvedValue({ data: mockCreatedPrefs, error: null });
-    const mockCreateSelect = jest.fn(() => ({ single: mockCreateSingle }));
+    const mockCreateSelect = vi.fn(() => ({ single: mockCreateSingle }));
 
     // Setup mocks for retrieval
-    const mockRetrieveSingle = jest
+    const mockRetrieveSingle = vi
       .fn()
       .mockResolvedValue({ data: mockCreatedPrefs, error: null });
-    const mockRetrieveEq = jest.fn(() => ({ single: mockRetrieveSingle }));
+    const mockRetrieveEq = vi.fn(() => ({ single: mockRetrieveSingle }));
 
     supabase.from.mockImplementation((table: string) => {
       if (table === "user_preferences") {
         return {
-          insert: jest.fn(() => ({ select: mockCreateSelect })),
-          select: jest.fn(() => ({ eq: mockRetrieveEq })),
+          insert: vi.fn(() => ({ select: mockCreateSelect })),
+          select: vi.fn(() => ({ eq: mockRetrieveEq })),
         };
       }
       return {};
@@ -296,16 +297,16 @@ describe("Supabase Data Persistence", () => {
     };
 
     // Setup mocks for update
-    const mockUpdateSingle = jest
+    const mockUpdateSingle = vi
       .fn()
       .mockResolvedValue({ data: mockUpdatedTask, error: null });
-    const mockUpdateSelect = jest.fn(() => ({ single: mockUpdateSingle }));
-    const mockUpdateEq = jest.fn(() => ({ select: mockUpdateSelect }));
+    const mockUpdateSelect = vi.fn(() => ({ single: mockUpdateSingle }));
+    const mockUpdateEq = vi.fn(() => ({ select: mockUpdateSelect }));
 
     supabase.from.mockImplementation((table: string) => {
       if (table === "tasks") {
         return {
-          update: jest.fn(() => ({ eq: mockUpdateEq })),
+          update: vi.fn(() => ({ eq: mockUpdateEq })),
         };
       }
       return {};
@@ -339,12 +340,12 @@ describe("Supabase Data Persistence", () => {
     const taskId = "123e4567-e89b-12d3-a456-426614174000";
 
     // Setup mocks for delete
-    const mockDeleteEq = jest.fn().mockResolvedValue({ error: null });
+    const mockDeleteEq = vi.fn().mockResolvedValue({ error: null });
 
     supabase.from.mockImplementation((table: string) => {
       if (table === "tasks") {
         return {
-          delete: jest.fn(() => ({ eq: mockDeleteEq })),
+          delete: vi.fn(() => ({ eq: mockDeleteEq })),
         };
       }
       return {};
@@ -362,7 +363,7 @@ describe("Supabase Data Persistence", () => {
     const { supabase } = await import("@/lib/supabase");
 
     // Mock successful responses for all operations
-    const mockSingle = jest.fn().mockResolvedValue({
+    const mockSingle = vi.fn().mockResolvedValue({
       data: {
         id: "123e4567-e89b-12d3-a456-426614174000",
         user_id: "123e4567-e89b-12d3-a456-426614174001",
@@ -374,18 +375,18 @@ describe("Supabase Data Persistence", () => {
       },
       error: null,
     });
-    const mockSelect = jest.fn(() => ({ single: mockSingle }));
-    const mockEq = jest.fn(() => ({
+    const mockSelect = vi.fn(() => ({ single: mockSingle }));
+    const mockEq = vi.fn(() => ({
       select: mockSelect,
       single: mockSingle,
-      order: jest.fn().mockResolvedValue({ data: [], error: null }),
+      order: vi.fn().mockResolvedValue({ data: [], error: null }),
     }));
 
     supabase.from.mockReturnValue({
-      insert: jest.fn(() => ({ select: mockSelect })),
-      update: jest.fn(() => ({ eq: mockEq })),
-      delete: jest.fn(() => ({ eq: mockEq })),
-      select: jest.fn(() => ({ eq: mockEq })),
+      insert: vi.fn(() => ({ select: mockSelect })),
+      update: vi.fn(() => ({ eq: mockEq })),
+      delete: vi.fn(() => ({ eq: mockEq })),
+      select: vi.fn(() => ({ eq: mockEq })),
     });
 
     // Test task operations use 'tasks' table
@@ -431,13 +432,13 @@ describe("Supabase Data Persistence", () => {
       message: "Database connection failed",
       code: "CONNECTION_ERROR",
     };
-    const mockSingle = jest
+    const mockSingle = vi
       .fn()
       .mockResolvedValue({ data: null, error: mockError });
-    const mockSelect = jest.fn(() => ({ single: mockSingle }));
+    const mockSelect = vi.fn(() => ({ single: mockSingle }));
 
     supabase.from.mockReturnValue({
-      insert: jest.fn(() => ({ select: mockSelect })),
+      insert: vi.fn(() => ({ select: mockSelect })),
     });
 
     // Test that database errors are properly handled and re-thrown

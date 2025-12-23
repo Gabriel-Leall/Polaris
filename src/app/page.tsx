@@ -1,13 +1,16 @@
 import { TasksWidget } from '@/components/widgets/TasksWidget'
 import { ZenTimerWidget } from '@/components/widgets/ZenTimerWidget'
-import { ErrorTestingPanel } from '@/components/ui/error-testing-panel'
+import { BrainDumpWidget } from '@/components/widgets/BrainDumpWidget'
+import { CalendarWidget } from '@/components/widgets/CalendarWidget'
+import { JobTrackerWidget } from '@/components/widgets/JobTrackerWidget'
+import { MediaPlayerWidget } from '@/components/widgets/MediaPlayerWidget'
+import { QuickLinksWidget } from '@/components/widgets/QuickLinksWidget'
 import { 
   DashboardLayout, 
   Sidebar, 
   SidebarNav,
   BentoGrid, 
-  GridColumn, 
-  WidgetCard 
+  GridColumn
 } from '@/components/layout'
 
 export default function Dashboard() {
@@ -20,28 +23,29 @@ export default function Dashboard() {
       
       {/* Main Content Grid */}
       <BentoGrid>
-        {/* Left Column - Tasks */}
+        {/* Left Column - Tasks & Calendar */}
         <GridColumn span="left">
-          <TasksWidget />
+          <div className="space-y-6 h-full">
+            <TasksWidget />
+            <CalendarWidget />
+          </div>
         </GridColumn>
         
-        {/* Center Column - Zen Timer */}
+        {/* Center Column - Brain Dump (Main Focus) */}
         <GridColumn span="center">
-          <ZenTimerWidget />
+          <BrainDumpWidget />
         </GridColumn>
         
-        {/* Right Column - Context */}
+        {/* Right Column - Context & Tools */}
         <GridColumn span="right">
-          <WidgetCard title="Context">
-            <div className="text-sm text-muted">
-              Context widgets will go here
-            </div>
-          </WidgetCard>
+          <div className="space-y-6 h-full">
+            <ZenTimerWidget />
+            <JobTrackerWidget />
+            <MediaPlayerWidget />
+            <QuickLinksWidget />
+          </div>
         </GridColumn>
       </BentoGrid>
-      
-      {/* Development Error Testing Panel */}
-      <ErrorTestingPanel />
     </DashboardLayout>
   )
 }

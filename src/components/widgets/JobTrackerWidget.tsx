@@ -33,9 +33,9 @@ interface JobApplicationFormData {
 
 const statusColors: Record<AppStatus, string> = {
   'Interview': 'bg-status-interview text-white',
-  'Applied': 'bg-blue-600 text-white',
+  'Applied': 'bg-status-applied text-white',
   'Rejected': 'bg-status-rejected text-white',
-  'Offer': 'bg-green-600 text-white'
+  'Offer': 'bg-status-pending text-white'
 }
 
 const statusOptions: AppStatus[] = ['Applied', 'Interview', 'Offer', 'Rejected']

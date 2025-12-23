@@ -284,4 +284,3 @@ if (process.env.NODE_ENV === "development" && typeof window !== "undefined") {
     ErrorTester.getInstance();
   console.log("🧪 Error testing utilities available at window.__errorTester");
 }
-export { ErrorTester };

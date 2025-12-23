@@ -1,6 +1,6 @@
 "use server";
 
-import { supabase, type Tables } from "@/lib/supabase";
+import { supabase } from "@/lib/supabase";
 import { BrainDumpNote } from "@/types";
 import {
   createBrainDumpNoteSchema,
@@ -10,8 +10,6 @@ import {
   type UpdateBrainDumpNoteInput,
 } from "@/lib/validations";
 
-type BrainDumpNoteRow = Tables<"brain_dump_notes">;
-
 // Brain Dump Notes Server Actions
 export const createBrainDumpNote = async (
   data: CreateBrainDumpNoteInput
@@ -20,13 +18,15 @@ export const createBrainDumpNote = async (
     // Validate input data
     const validatedData = createBrainDumpNoteSchema.parse(data);
 
+    const insertData = {
+      user_id: validatedData.userId,
+      content: validatedData.content,
+      version: validatedData.version,
+    };
+
     const { data: note, error } = await supabase
       .from("brain_dump_notes")
-      .insert({
-        user_id: validatedData.userId,
-        content: validatedData.content,
-        version: validatedData.version,
-      })
+      .insert(insertData)
       .select()
       .single();
 
@@ -59,7 +59,7 @@ export const updateBrainDumpNote = async (
     // Validate input data
     const validatedData = updateBrainDumpNoteSchema.parse({ id, ...data });
 
-    const updateData: Partial<BrainDumpNoteRow> = {};
+    const updateData: Record<string, any> = {};
     if (validatedData.content !== undefined)
       updateData.content = validatedData.content;
     if (validatedData.version !== undefined)

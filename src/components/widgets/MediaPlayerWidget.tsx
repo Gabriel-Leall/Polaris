@@ -220,7 +220,7 @@ function MediaPlayerWidgetCore({ className }: MediaPlayerWidgetProps) {
       {currentTrack && (
         <div className="mb-6">
           <h3 className="text-white font-medium text-sm mb-1">{currentTrack.title}</h3>
-          <p className="text-zinc-500 text-xs">{currentTrack.artist}</p>
+          <p className="text-secondary text-xs">{currentTrack.artist}</p>
         </div>
       )}
 
@@ -304,7 +304,7 @@ function MediaPlayerWidgetCore({ className }: MediaPlayerWidgetProps) {
           </div>
         </div>
         
-        <span className="text-xs text-zinc-500 w-8 text-right">
+        <span className="text-xs text-secondary w-8 text-right">
           {Math.round(volumePercentage)}
         </span>
       </div>

@@ -47,6 +47,7 @@ function GridColumn({
       md:col-span-1 
       ${getColumnClasses()}
       h-full
+      border border-white/10 rounded-3xl
       ${className || ''}
     `}>
       {content}

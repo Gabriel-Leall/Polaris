@@ -50,16 +50,25 @@ beforeEach(() => {
   localStorageMock.clear();
 });
 
-// Mock console methods to reduce noise in tests
+// Mock console methods to reduce noise in tests and silence Zustand persist warnings
 const originalConsoleLog = console.log;
 const originalConsoleError = console.error;
+const originalConsoleWarn = console.warn;
 
 beforeAll(() => {
   console.log = vi.fn();
   console.error = vi.fn();
+  console.warn = vi.fn((message: string) => {
+    // Silence Zustand persist middleware warnings in tests
+    if (message.includes('[zustand persist middleware]')) {
+      return;
+    }
+    originalConsoleWarn(message);
+  });
 });
 
 afterAll(() => {
   console.log = originalConsoleLog;
   console.error = originalConsoleError;
+  console.warn = originalConsoleWarn;
 });

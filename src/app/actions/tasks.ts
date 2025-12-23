@@ -1,6 +1,6 @@
 "use server";
 
-import { supabase, type Tables } from "@/lib/supabase";
+import { supabase } from "@/lib/supabase";
 import { TaskItem } from "@/types";
 import {
   createTaskSchema,
@@ -10,7 +10,7 @@ import {
   type UpdateTaskInput,
 } from "@/lib/validations";
 
-type TaskRow = Tables<"tasks">;
+type TaskRow = any;
 
 const mapTaskRow = (task: TaskRow): TaskItem => ({
   id: task.id,
