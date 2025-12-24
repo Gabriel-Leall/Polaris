@@ -8,6 +8,8 @@ import { saveBrainDumpNote, getBrainDumpNote } from "@/app/actions";
 import { supabase } from "@/lib/supabase";
 import { Save, Clock, AlertCircle } from "lucide-react";
 
+const LOCAL_BRAIN_DUMP_KEY = "polaris-brain-dump-local";
+
 function BrainDumpWidgetCore() {
   const {
     content,
@@ -24,6 +26,30 @@ function BrainDumpWidgetCore() {
 
   const [error, setError] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
+  const [isLocalMode, setIsLocalMode] = useState(false);
+
+  const loadLocalNote = () => {
+    if (typeof window === "undefined")
+      return { content: "", updatedAt: null as Date | null };
+    const raw = localStorage.getItem(LOCAL_BRAIN_DUMP_KEY);
+    if (!raw) return { content: "", updatedAt: null as Date | null };
+    try {
+      const parsed = JSON.parse(raw) as { content: string; updatedAt?: string };
+      return {
+        content: parsed.content ?? "",
+        updatedAt: parsed.updatedAt ? new Date(parsed.updatedAt) : null,
+      };
+    } catch {
+      return { content: "", updatedAt: null as Date | null };
+    }
+  };
+
+  const persistLocalNote = (value: string) => {
+    const payload = { content: value, updatedAt: new Date().toISOString() };
+    localStorage.setItem(LOCAL_BRAIN_DUMP_KEY, JSON.stringify(payload));
+    setLastSaved(new Date(payload.updatedAt));
+    setUnsavedChanges(false);
+  };
 
   // Debounce content changes for auto-save
   const debouncedContent = useDebounce(content, 2000); // 2 second delay
@@ -37,11 +63,17 @@ function BrainDumpWidgetCore() {
         } = await supabase.auth.getUser();
         if (user) {
           setUserId(user.id);
+          setIsLocalMode(false);
+          return;
         }
       } catch (err) {
         console.error("Error getting user:", err);
-        setError("Failed to authenticate user");
+        setError("Failed to authenticate user (using local notes)");
       }
+
+      // Fallback to local mode when no user is available
+      setIsLocalMode(true);
+      setUserId("local-user");
     };
 
     getCurrentUser();
@@ -55,21 +87,49 @@ function BrainDumpWidgetCore() {
       try {
         setLoading(true);
         setError(null);
+
+        if (isLocalMode || userId === "local-user") {
+          const local = loadLocalNote();
+          setContent(local.content);
+          setLastSaved(local.updatedAt);
+          setUnsavedChanges(false);
+          return;
+        }
+
         const note = await getBrainDumpNote(userId);
         if (note) {
           setContent(note.content);
           setLastSaved(note.updatedAt);
+          setUnsavedChanges(false);
+        } else {
+          // fallback if no remote note
+          const local = loadLocalNote();
+          setContent(local.content);
+          setLastSaved(local.updatedAt);
+          setUnsavedChanges(false);
         }
       } catch (err) {
         console.error("Error loading brain dump note:", err);
-        setError("Failed to load notes");
+        const local = loadLocalNote();
+        setContent(local.content);
+        setLastSaved(local.updatedAt);
+        setUnsavedChanges(false);
+        setIsLocalMode(true);
+        setError("Failed to load remote notes (using local notes)");
       } finally {
         setLoading(false);
       }
     };
 
     loadNote();
-  }, [userId, setContent, setLoading, setLastSaved]);
+  }, [
+    userId,
+    setContent,
+    setLoading,
+    setLastSaved,
+    isLocalMode,
+    setUnsavedChanges,
+  ]);
 
   // Auto-save when content changes (debounced)
   useEffect(() => {
@@ -79,11 +139,19 @@ function BrainDumpWidgetCore() {
       try {
         setSaving(true);
         setError(null);
+        if (isLocalMode || userId === "local-user") {
+          persistLocalNote(debouncedContent);
+          return;
+        }
+
         const savedNote = await saveBrainDumpNote(userId, debouncedContent);
         setLastSaved(savedNote.updatedAt);
+        setUnsavedChanges(false);
       } catch (err) {
         console.error("Error auto-saving brain dump note:", err);
-        setError("Failed to save notes");
+        persistLocalNote(debouncedContent);
+        setIsLocalMode(true);
+        setError("Failed to save notes remotely (saved locally)");
       } finally {
         setSaving(false);
       }
@@ -102,6 +170,8 @@ function BrainDumpWidgetCore() {
     setSaving,
     setLastSaved,
     content,
+    isLocalMode,
+    setUnsavedChanges,
   ]);
 
   // Manual save function
@@ -111,15 +181,31 @@ function BrainDumpWidgetCore() {
     try {
       setSaving(true);
       setError(null);
+      if (isLocalMode || userId === "local-user") {
+        persistLocalNote(content);
+        return;
+      }
+
       const savedNote = await saveBrainDumpNote(userId, content);
       setLastSaved(savedNote.updatedAt);
+      setUnsavedChanges(false);
     } catch (err) {
       console.error("Error manually saving brain dump note:", err);
-      setError("Failed to save notes");
+      persistLocalNote(content);
+      setIsLocalMode(true);
+      setError("Failed to save notes remotely (saved locally)");
     } finally {
       setSaving(false);
     }
-  }, [userId, content, isSaving, setSaving, setLastSaved]);
+  }, [
+    userId,
+    content,
+    isSaving,
+    setSaving,
+    setLastSaved,
+    isLocalMode,
+    setUnsavedChanges,
+  ]);
 
   // Handle content change
   const handleContentChange = useCallback(
@@ -149,7 +235,7 @@ function BrainDumpWidgetCore() {
   };
 
   return (
-    <div className="glass-card rounded-3xl p-6 h-full flex flex-col">
+    <div className="bg-card rounded-3xl p-6 h-full flex flex-col">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-sm font-semibold text-white">Brain Dump</h2>

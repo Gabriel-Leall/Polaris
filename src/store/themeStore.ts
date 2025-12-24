@@ -1,5 +1,4 @@
 import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
 
 interface ThemeStore {
   theme: 'light' | 'dark'
@@ -7,17 +6,10 @@ interface ThemeStore {
   setTheme: (theme: 'light' | 'dark') => void
 }
 
-export const useThemeStore = create<ThemeStore>()(
-  persist(
-    (set) => ({
-      theme: 'dark',
-      toggleTheme: () => set((state) => ({ 
-        theme: state.theme === 'light' ? 'dark' : 'light' 
-      })),
-      setTheme: (theme: 'light' | 'dark') => set({ theme }),
-    }),
-    {
-      name: 'theme-store',
-    }
-  )
-)
+export const useThemeStore = create<ThemeStore>()((set) => ({
+  theme: 'dark',
+  toggleTheme: () => set((state) => ({ 
+    theme: state.theme === 'light' ? 'dark' : 'light' 
+  })),
+  setTheme: (theme: 'light' | 'dark') => set({ theme }),
+}))

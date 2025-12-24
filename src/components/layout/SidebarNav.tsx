@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { cn } from '@/lib/utils'
 import { ErrorBoundary, WidgetErrorFallback } from '@/components/ui/error-boundary'
 import { 
@@ -8,7 +9,7 @@ import {
   Brain, 
   Calendar, 
   Music, 
-  Link, 
+  Link as LinkIcon, 
   Timer,
   Settings 
 } from 'lucide-react'
@@ -26,6 +27,11 @@ interface SidebarNavProps {
   className?: string | undefined
 }
 
+const navPaths: Record<string, string> = {
+  dashboard: '/',
+  'quick-links': '/quick-links',
+}
+
 const navItems: NavItem[] = [
   { id: 'dashboard', label: 'Dashboard', icon: Home },
   { id: 'zen-timer', label: 'Zen Timer', icon: Timer },
@@ -34,7 +40,7 @@ const navItems: NavItem[] = [
   { id: 'job-tracker', label: 'Job Tracker', icon: Target },
   { id: 'calendar', label: 'Calendar', icon: Calendar },
   { id: 'media-player', label: 'Media Player', icon: Music },
-  { id: 'quick-links', label: 'Quick Links', icon: Link },
+  { id: 'quick-links', label: 'Quick Links', icon: LinkIcon },
   { id: 'settings', label: 'Settings', icon: Settings },
 ]
 
@@ -48,10 +54,12 @@ function SidebarNavCore({ activeItem = 'dashboard', onItemClick, className }: Si
       {navItems.map((item) => {
         const Icon = item.icon
         const isActive = activeItem === item.id
+        const href = navPaths[item.id] ?? '#'
         
         return (
-          <button
+          <Link
             key={item.id}
+            href={href}
             onClick={() => onItemClick?.(item.id)}
             className={cn(
               'w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium transition-all duration-200 text-left',
@@ -73,7 +81,7 @@ function SidebarNavCore({ activeItem = 'dashboard', onItemClick, className }: Si
                 <div className="w-2 h-2 bg-primary rounded-full status-dot" />
               </div>
             )}
-          </button>
+          </Link>
         )
       })}
     </nav>

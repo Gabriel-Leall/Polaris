@@ -20,7 +20,6 @@ import {
 } from "@/components/ui/error-boundary";
 import { cn } from "@/lib/utils";
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
 
 interface QuickLink {
   id: string;
@@ -37,73 +36,66 @@ interface QuickLinksStore {
   removeLink: (id: string) => void;
 }
 
-const useQuickLinksStore = create<QuickLinksStore>()(
-  persist(
-    (set) => ({
-      links: [
-        {
-          id: "1",
-          title: "GitHub",
-          url: "https://github.com",
-          icon: "github",
-          category: "work",
-        },
-        {
-          id: "2",
-          title: "LinkedIn",
-          url: "https://linkedin.com",
-          icon: "linkedin",
-          category: "social",
-        },
-        {
-          id: "3",
-          title: "Portfolio",
-          url: "https://portfolio.dev",
-          icon: "globe",
-          category: "work",
-        },
-        {
-          id: "4",
-          title: "Resume",
-          url: "/resume.pdf",
-          icon: "file-text",
-          category: "work",
-        },
-        {
-          id: "5",
-          title: "Job Board",
-          url: "https://jobs.dev",
-          icon: "briefcase",
-          category: "work",
-        },
-        {
-          id: "6",
-          title: "Email",
-          url: "mailto:hello@example.com",
-          icon: "mail",
-          category: "other",
-        },
-      ],
-      addLink: (link) =>
-        set((state) => ({
-          links: [...state.links, { ...link, id: Date.now().toString() }],
-        })),
-      updateLink: (id, updatedLink) =>
-        set((state) => ({
-          links: state.links.map((link) =>
-            link.id === id ? { ...link, ...updatedLink } : link
-          ),
-        })),
-      removeLink: (id) =>
-        set((state) => ({
-          links: state.links.filter((link) => link.id !== id),
-        })),
-    }),
+const useQuickLinksStore = create<QuickLinksStore>()((set) => ({
+  links: [
     {
-      name: "quick-links-store",
-    }
-  )
-);
+      id: "1",
+      title: "GitHub",
+      url: "https://github.com",
+      icon: "github",
+      category: "work",
+    },
+    {
+      id: "2",
+      title: "LinkedIn",
+      url: "https://linkedin.com",
+      icon: "linkedin",
+      category: "social",
+    },
+    {
+      id: "3",
+      title: "Portfolio",
+      url: "https://portfolio.dev",
+      icon: "globe",
+      category: "work",
+    },
+    {
+      id: "4",
+      title: "Resume",
+      url: "/resume.pdf",
+      icon: "file-text",
+      category: "work",
+    },
+    {
+      id: "5",
+      title: "Job Board",
+      url: "https://jobs.dev",
+      icon: "briefcase",
+      category: "work",
+    },
+    {
+      id: "6",
+      title: "Email",
+      url: "mailto:hello@example.com",
+      icon: "mail",
+      category: "other",
+    },
+  ],
+  addLink: (link) =>
+    set((state) => ({
+      links: [...state.links, { ...link, id: Date.now().toString() }],
+    })),
+  updateLink: (id, updatedLink) =>
+    set((state) => ({
+      links: state.links.map((link) =>
+        link.id === id ? { ...link, ...updatedLink } : link
+      ),
+    })),
+  removeLink: (id) =>
+    set((state) => ({
+      links: state.links.filter((link) => link.id !== id),
+    })),
+}));
 
 const iconMap = {
   github: Github,
@@ -117,9 +109,11 @@ const iconMap = {
 
 interface QuickLinksWidgetProps {
   className?: string | undefined;
+  compact?: boolean;
+  readOnly?: boolean;
 }
 
-function QuickLinksWidgetCore({ className }: QuickLinksWidgetProps) {
+function QuickLinksWidgetCore({ className, compact = false, readOnly = false }: QuickLinksWidgetProps) {
   const { links, addLink, updateLink, removeLink } = useQuickLinksStore();
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [editingLink, setEditingLink] = useState<QuickLink | null>(null);
@@ -204,31 +198,44 @@ function QuickLinksWidgetCore({ className }: QuickLinksWidgetProps) {
     }
   };
 
+  const displayedLinks = compact ? links.slice(0, 4) : links;
+
   return (
     <div
-      className={cn("bg-card rounded-3xl p-6 border border-white/5", className)}
+      className={cn(
+        "bg-card rounded-3xl border border-glass",
+        compact ? "p-4" : "p-6",
+        className
+      )}
     >
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-4">
         <div>
           <h2 className="text-sm font-semibold text-white">Quick Links</h2>
           <p className="text-xs text-secondary mt-1">
             {links.length} saved links
           </p>
         </div>
-        <Button
-          variant="secondary"
-          size="sm"
-          onClick={() => setIsAddDialogOpen(true)}
-          className="h-8 w-8 p-0"
-        >
-          <Plus className="h-4 w-4" />
-        </Button>
+        {!readOnly && (
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={() => setIsAddDialogOpen(true)}
+            className="h-8 w-8 p-0"
+          >
+            <Plus className="h-4 w-4" />
+          </Button>
+        )}
+        {readOnly && (
+          <Button variant="secondary" size="sm" className="px-3 py-2 h-8">
+            <a href="/quick-links" className="flex items-center gap-2 text-xs">Manage</a>
+          </Button>
+        )}
       </div>
 
       {/* Links Grid */}
       <div className="space-y-2">
-        {links.map((link) => {
+        {displayedLinks.map((link) => {
           const IconComponent = getIcon(link.icon);
           return (
             <div
@@ -255,45 +262,55 @@ function QuickLinksWidgetCore({ className }: QuickLinksWidgetProps) {
                 </button>
               </div>
 
-              <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  onClick={() => handleEditLink(link)}
-                  className="h-7 w-7 p-0"
-                >
-                  <Edit2 className="h-3 w-3" />
-                </Button>
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  onClick={() => handleDeleteLink(link.id)}
-                  className="h-7 w-7 p-0 text-status-rejected hover:text-status-rejected/80"
-                >
-                  <Trash2 className="h-3 w-3" />
-                </Button>
-              </div>
+              {!readOnly && (
+                <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    onClick={() => handleEditLink(link)}
+                    className="h-7 w-7 p-0"
+                  >
+                    <Edit2 className="h-3 w-3" />
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    onClick={() => handleDeleteLink(link.id)}
+                    className="h-7 w-7 p-0 text-status-rejected hover:text-status-rejected/80"
+                  >
+                    <Trash2 className="h-3 w-3" />
+                  </Button>
+                </div>
+              )}
             </div>
           );
         })}
       </div>
 
       {/* Empty State */}
-      {links.length === 0 && (
+      {displayedLinks.length === 0 && (
         <div className="py-8 flex flex-col items-center">
           <ExternalLink className="h-8 w-8 text-secondary mx-auto mb-3" />
           <p className="text-secondary text-sm mb-2">No quick links yet</p>
-          <Button
-            variant="secondary"
-            size="sm"
-            onClick={() => setIsAddDialogOpen(true)}
-          >
-            Add your first link
-          </Button>
+          {!readOnly && (
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={() => setIsAddDialogOpen(true)}
+            >
+              Add your first link
+            </Button>
+          )}
+          {readOnly && (
+            <Button variant="secondary" size="sm">
+              <a href="/quick-links">Manage links</a>
+            </Button>
+          )}
         </div>
       )}
 
       {/* Add/Edit Dialog */}
+      {!readOnly && (
       <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
         <div className="bg-card border border-white/10 rounded-2xl p-6 w-full max-w-md">
           <h3 className="text-white font-semibold mb-4">
@@ -398,19 +415,20 @@ function QuickLinksWidgetCore({ className }: QuickLinksWidgetProps) {
           </div>
         </div>
       </Dialog>
+      )}
     </div>
   );
 }
 
 // Wrapper component with error boundary
-function QuickLinksWidget({ className }: QuickLinksWidgetProps) {
+function QuickLinksWidget({ className, compact, readOnly }: QuickLinksWidgetProps) {
   return (
     <ErrorBoundary
       fallback={WidgetErrorFallback}
       name="QuickLinksWidget"
       maxRetries={2}
     >
-      <QuickLinksWidgetCore className={className} />
+      <QuickLinksWidgetCore className={className} compact={compact} readOnly={readOnly} />
     </ErrorBoundary>
   );
 }

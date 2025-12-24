@@ -1,6 +1,6 @@
 interface BentoGridProps {
-  children: React.ReactNode
-  className?: string
+  children: React.ReactNode;
+  className?: string;
 }
 
 /**
@@ -10,18 +10,20 @@ interface BentoGridProps {
  */
 function BentoGrid({ children, className }: BentoGridProps) {
   return (
-    <div className={`
+    <div
+      className={`
       flex-1 
-      grid gap-6 h-full
+      grid gap-4 h-full
       grid-cols-1 
       md:grid-cols-2 
       lg:grid-cols-12
-      ${className || ''}
-    `}>
+      ${className || ""}
+    `}
+    >
       {children}
     </div>
-  )
+  );
 }
 
-export default BentoGrid
-export { BentoGrid }
+export default BentoGrid;
+export { BentoGrid };

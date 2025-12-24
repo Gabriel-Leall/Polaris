@@ -105,7 +105,7 @@ function CalendarWidgetCore({ className }: CalendarWidgetProps) {
 
   return (
     <div
-      className={cn("bg-card rounded-3xl p-6 border border-white/5", className)}
+      className={cn("bg-card rounded-3xl p-6", className)}
     >
       {/* Header */}
       <div className="flex items-center justify-between mb-6">

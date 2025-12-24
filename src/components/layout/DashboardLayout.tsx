@@ -1,6 +1,6 @@
 interface DashboardLayoutProps {
-  children: React.ReactNode
-  className?: string
+  children: React.ReactNode;
+  className?: string;
 }
 
 /**
@@ -10,21 +10,25 @@ interface DashboardLayoutProps {
  */
 function DashboardLayout({ children, className }: DashboardLayoutProps) {
   return (
-    <main className={`
+    <main
+      className={`
       h-screen w-full overflow-hidden bg-main text-white
       flex flex-col
-      ${className || ''}
-    `}>
-      <div className={`
-        flex gap-6 h-full p-6
+      ${className || ""}
+    `}
+    >
+      <div
+        className={`
+        flex gap-4 h-full p-6
         flex-col
         md:flex-row
-      `}>
+      `}
+      >
         {children}
       </div>
     </main>
-  )
+  );
 }
 
-export default DashboardLayout
-export { DashboardLayout }
+export default DashboardLayout;
+export { DashboardLayout };
