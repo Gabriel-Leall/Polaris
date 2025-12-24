@@ -1,5 +1,5 @@
-import { Sidebar, SidebarNav, DashboardLayout } from '@/components/layout'
-import { QuickLinksWidget } from '@/components/widgets/QuickLinksWidget'
+import { Sidebar, SidebarNav, DashboardLayout } from "@/components/layout";
+import { QuickLinksWidget } from "@/components/widgets/QuickLinksWidget";
 
 export default function QuickLinksPage() {
   return (
@@ -15,11 +15,13 @@ export default function QuickLinksPage() {
           <div className="bg-card rounded-3xl border border-glass p-6">
             <h2 className="text-sm font-semibold text-white">How to use</h2>
             <p className="text-sm text-secondary mt-2">
-              Manage your saved links here. Add new URLs, edit icons and categories. The dashboard shows a compact read-only snapshot; full configuration lives on this page.
+              Manage your saved links here. Add new URLs, edit icons and
+              categories. The dashboard shows a compact read-only snapshot; full
+              configuration lives on this page.
             </p>
           </div>
         </div>
       </div>
     </DashboardLayout>
-  )
+  );
 }

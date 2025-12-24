@@ -113,7 +113,11 @@ interface QuickLinksWidgetProps {
   readOnly?: boolean;
 }
 
-function QuickLinksWidgetCore({ className, compact = false, readOnly = false }: QuickLinksWidgetProps) {
+function QuickLinksWidgetCore({
+  className,
+  compact = false,
+  readOnly = false,
+}: QuickLinksWidgetProps) {
   const { links, addLink, updateLink, removeLink } = useQuickLinksStore();
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [editingLink, setEditingLink] = useState<QuickLink | null>(null);
@@ -228,7 +232,9 @@ function QuickLinksWidgetCore({ className, compact = false, readOnly = false }: 
         )}
         {readOnly && (
           <Button variant="secondary" size="sm" className="px-3 py-2 h-8">
-            <a href="/quick-links" className="flex items-center gap-2 text-xs">Manage</a>
+            <a href="/quick-links" className="flex items-center gap-2 text-xs">
+              Manage
+            </a>
           </Button>
         )}
       </div>
@@ -311,124 +317,136 @@ function QuickLinksWidgetCore({ className, compact = false, readOnly = false }: 
 
       {/* Add/Edit Dialog */}
       {!readOnly && (
-      <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-        <div className="bg-card border border-white/10 rounded-2xl p-6 w-full max-w-md">
-          <h3 className="text-white font-semibold mb-4">
-            {editingLink ? "Edit Link" : "Add Quick Link"}
-          </h3>
+        <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+          <div className="bg-card border border-white/10 rounded-2xl p-6 w-full max-w-md">
+            <h3 className="text-white font-semibold mb-4">
+              {editingLink ? "Edit Link" : "Add Quick Link"}
+            </h3>
 
-          <div className="space-y-4">
-            <div>
-              <label className="text-sm text-secondary mb-2 block">Title</label>
-              <Input
-                value={newLink.title}
-                onChange={(e) =>
-                  setNewLink((prev) => ({ ...prev, title: e.target.value }))
-                }
-                placeholder="Link title"
-                className="w-full"
-              />
+            <div className="space-y-4">
+              <div>
+                <label className="text-sm text-secondary mb-2 block">
+                  Title
+                </label>
+                <Input
+                  value={newLink.title}
+                  onChange={(e) =>
+                    setNewLink((prev) => ({ ...prev, title: e.target.value }))
+                  }
+                  placeholder="Link title"
+                  className="w-full"
+                />
+              </div>
+
+              <div>
+                <label className="text-sm text-secondary mb-2 block">URL</label>
+                <Input
+                  value={newLink.url}
+                  onChange={(e) =>
+                    setNewLink((prev) => ({ ...prev, url: e.target.value }))
+                  }
+                  placeholder="https://example.com"
+                  className="w-full"
+                />
+              </div>
+
+              <div>
+                <label className="text-sm text-secondary mb-2 block">
+                  Category
+                </label>
+                <select
+                  value={newLink.category}
+                  onChange={(e) =>
+                    setNewLink((prev) => ({
+                      ...prev,
+                      category: e.target.value as
+                        | "work"
+                        | "social"
+                        | "tools"
+                        | "other",
+                    }))
+                  }
+                  className="w-full bg-input border border-white/10 rounded-xl px-3 py-2 text-white text-sm"
+                >
+                  <option value="work">Work</option>
+                  <option value="social">Social</option>
+                  <option value="tools">Tools</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="text-sm text-secondary mb-2 block">
+                  Icon
+                </label>
+                <select
+                  value={newLink.icon}
+                  onChange={(e) =>
+                    setNewLink((prev) => ({ ...prev, icon: e.target.value }))
+                  }
+                  className="w-full bg-input border border-white/10 rounded-xl px-3 py-2 text-white text-sm"
+                >
+                  <option value="external-link">External Link</option>
+                  <option value="github">GitHub</option>
+                  <option value="linkedin">LinkedIn</option>
+                  <option value="globe">Website</option>
+                  <option value="file-text">Document</option>
+                  <option value="briefcase">Job/Work</option>
+                  <option value="mail">Email</option>
+                </select>
+              </div>
             </div>
 
-            <div>
-              <label className="text-sm text-secondary mb-2 block">URL</label>
-              <Input
-                value={newLink.url}
-                onChange={(e) =>
-                  setNewLink((prev) => ({ ...prev, url: e.target.value }))
-                }
-                placeholder="https://example.com"
-                className="w-full"
-              />
-            </div>
-
-            <div>
-              <label className="text-sm text-secondary mb-2 block">
-                Category
-              </label>
-              <select
-                value={newLink.category}
-                onChange={(e) =>
-                  setNewLink((prev) => ({
-                    ...prev,
-                    category: e.target.value as
-                      | "work"
-                      | "social"
-                      | "tools"
-                      | "other",
-                  }))
-                }
-                className="w-full bg-input border border-white/10 rounded-xl px-3 py-2 text-white text-sm"
+            <div className="flex gap-3 mt-6">
+              <Button
+                variant="secondary"
+                onClick={() => {
+                  setIsAddDialogOpen(false);
+                  setEditingLink(null);
+                  setNewLink({
+                    title: "",
+                    url: "",
+                    icon: "external-link",
+                    category: "other",
+                  });
+                }}
+                className="flex-1"
               >
-                <option value="work">Work</option>
-                <option value="social">Social</option>
-                <option value="tools">Tools</option>
-                <option value="other">Other</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="text-sm text-secondary mb-2 block">Icon</label>
-              <select
-                value={newLink.icon}
-                onChange={(e) =>
-                  setNewLink((prev) => ({ ...prev, icon: e.target.value }))
-                }
-                className="w-full bg-input border border-white/10 rounded-xl px-3 py-2 text-white text-sm"
+                Cancel
+              </Button>
+              <Button
+                variant="primary"
+                onClick={editingLink ? handleUpdateLink : handleAddLink}
+                disabled={!newLink.title || !newLink.url}
+                className="flex-1"
               >
-                <option value="external-link">External Link</option>
-                <option value="github">GitHub</option>
-                <option value="linkedin">LinkedIn</option>
-                <option value="globe">Website</option>
-                <option value="file-text">Document</option>
-                <option value="briefcase">Job/Work</option>
-                <option value="mail">Email</option>
-              </select>
+                {editingLink ? "Update" : "Add"} Link
+              </Button>
             </div>
           </div>
-
-          <div className="flex gap-3 mt-6">
-            <Button
-              variant="secondary"
-              onClick={() => {
-                setIsAddDialogOpen(false);
-                setEditingLink(null);
-                setNewLink({
-                  title: "",
-                  url: "",
-                  icon: "external-link",
-                  category: "other",
-                });
-              }}
-              className="flex-1"
-            >
-              Cancel
-            </Button>
-            <Button
-              variant="primary"
-              onClick={editingLink ? handleUpdateLink : handleAddLink}
-              disabled={!newLink.title || !newLink.url}
-              className="flex-1"
-            >
-              {editingLink ? "Update" : "Add"} Link
-            </Button>
-          </div>
-        </div>
-      </Dialog>
+        </Dialog>
       )}
     </div>
   );
 }
 
 // Wrapper component with error boundary
-function QuickLinksWidget({ className, compact, readOnly }: QuickLinksWidgetProps) {
+function QuickLinksWidget({
+  className,
+  compact,
+  readOnly,
+}: QuickLinksWidgetProps) {
   return (
     <ErrorBoundary
       fallback={WidgetErrorFallback}
       name="QuickLinksWidget"
       maxRetries={2}
     >
-      <QuickLinksWidgetCore className={className} compact={compact} readOnly={readOnly} />
+      <QuickLinksWidgetCore
+        className={className}
+        compact={compact}
+        readOnly={readOnly}
+      />
     </ErrorBoundary>
   );
 }
