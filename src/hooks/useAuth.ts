@@ -23,7 +23,9 @@ export function useAuth(): UseAuthReturn {
 
   const refresh = useCallback(async () => {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       setUser(user);
     } catch (error) {
       console.error("Error fetching user:", error);
@@ -35,7 +37,9 @@ export function useAuth(): UseAuthReturn {
     // Get initial session
     const getInitialSession = async () => {
       try {
-        const { data: { user } } = await supabase.auth.getUser();
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
         setUser(user);
       } catch (error) {
         console.error("Error fetching initial user:", error);
@@ -48,12 +52,12 @@ export function useAuth(): UseAuthReturn {
     getInitialSession();
 
     // Listen for auth state changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        setUser(session?.user ?? null);
-        setIsLoading(false);
-      }
-    );
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
+      setUser(session?.user ?? null);
+      setIsLoading(false);
+    });
 
     return () => {
       subscription.unsubscribe();

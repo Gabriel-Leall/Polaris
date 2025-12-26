@@ -76,8 +76,6 @@ export async function signUp(formData: FormData): Promise<AuthResult> {
       data: {
         full_name: fullName,
       },
-      // Skip email confirmation for immediate login
-      emailRedirectTo: undefined,
     },
   });
 

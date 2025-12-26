@@ -183,130 +183,98 @@ function MediaPlayerWidgetCore({ className }: MediaPlayerWidgetProps) {
   const volumePercentage = isMuted ? 0 : volume * 100
 
   return (
-    <div className={cn('bg-card rounded-3xl p-6 border border-glass', className)}>
-      {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h2 className="text-sm font-semibold text-white">Media Player</h2>
-          <p className="text-xs text-secondary mt-1">Focus Sounds</p>
+    <div className={cn('flex flex-col h-full', className)}>
+      {/* Compact Layout: Track Info + Controls + Volume in one row */}
+      <div className="flex items-center gap-4 h-full">
+        {/* Track Info */}
+        <div className="flex-1 min-w-0">
+          <h3 className="text-sm font-medium text-foreground truncate">
+            {currentTrack?.title || 'No track'}
+          </h3>
+          <p className="text-xs text-muted-foreground truncate">
+            {currentTrack?.artist || 'Select a track'}
+          </p>
         </div>
-        <div className="flex items-center gap-1">
+
+        {/* Playback Controls */}
+        <div className="flex items-center gap-1 shrink-0">
           <Button
-            variant="secondary"
+            variant="ghost"
             size="sm"
-            onClick={toggleShuffle}
-            className={cn('h-8 w-8 p-0', {
-              'text-primary': isShuffled,
-              'text-secondary': !isShuffled,
-            })}
+            onClick={handlePrevious}
+            className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground"
           >
-            <Shuffle className="h-4 w-4" />
+            <SkipBack className="h-4 w-4" />
           </Button>
+          
           <Button
-            variant="secondary"
-            size="sm"
-            onClick={toggleRepeat}
-            className={cn('h-8 w-8 p-0', {
-              'text-primary': repeatMode !== 'none',
-              'text-secondary': repeatMode === 'none',
-            })}
+            variant="primary"
+            onClick={handlePlayPause}
+            className="h-10 w-10 p-0 rounded-full"
           >
-            <Repeat className="h-4 w-4" />
+            {isPlaying ? (
+              <Pause className="h-4 w-4" />
+            ) : (
+              <Play className="h-4 w-4 ml-0.5" />
+            )}
+          </Button>
+          
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleNext}
+            className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground"
+          >
+            <SkipForward className="h-4 w-4" />
           </Button>
         </div>
-      </div>
 
-      {/* Current Track Info */}
-      {currentTrack && (
-        <div className="mb-6">
-          <h3 className="text-white font-medium text-sm mb-1">{currentTrack.title}</h3>
-          <p className="text-secondary text-xs">{currentTrack.artist}</p>
-        </div>
-      )}
-
-      {/* Progress Bar */}
-      <div className="mb-4">
-        <div
-          ref={progressRef}
-          className="relative h-2 bg-input rounded-full cursor-pointer"
-          onClick={handleProgressClick}
-        >
-          <div
-            className="absolute top-0 left-0 h-full bg-primary rounded-full transition-all"
-            style={{ width: `${progress}%` }}
-          />
-        </div>
-        <div className="flex justify-between text-xs text-secondary mt-2">
-          <span>{formatTime(currentTime)}</span>
-          <span>{currentTrack ? formatTime(currentTrack.duration) : '0:00'}</span>
-        </div>
-      </div>
-
-      {/* Controls */}
-      <div className="flex items-center justify-center gap-4 mb-6">
-        <Button
-          variant="secondary"
-          size="sm"
-          onClick={handlePrevious}
-          className="h-10 w-10 p-0"
-        >
-          <SkipBack className="h-4 w-4" />
-        </Button>
-        
-        <Button
-          variant="primary"
-          size="lg"
-          onClick={handlePlayPause}
-          className="h-12 w-12 p-0 rounded-full shadow-[0_0_20px_rgba(99,102,241,0.5)]"
-        >
-          {isPlaying ? (
-            <Pause className="h-5 w-5" />
-          ) : (
-            <Play className="h-5 w-5 ml-0.5" />
-          )}
-        </Button>
-        
-        <Button
-          variant="secondary"
-          size="sm"
-          onClick={handleNext}
-          className="h-10 w-10 p-0"
-        >
-          <SkipForward className="h-4 w-4" />
-        </Button>
-      </div>
-
-      {/* Volume Control */}
-      <div className="flex items-center gap-3">
-        <Button
-          variant="secondary"
-          size="sm"
-          onClick={toggleMute}
-          className="h-8 w-8 p-0"
-        >
-          {isMuted || volume === 0 ? (
-            <VolumeX className="h-4 w-4" />
-          ) : (
-            <Volume2 className="h-4 w-4" />
-          )}
-        </Button>
-        
-        <div className="flex-1">
-          <div
-            ref={volumeRef}
-            className="relative h-2 bg-input rounded-full cursor-pointer"
-            onClick={handleVolumeClick}
+        {/* Volume */}
+        <div className="flex items-center gap-2 shrink-0">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={toggleMute}
+            className="h-7 w-7 p-0 text-muted-foreground hover:text-foreground"
           >
+            {isMuted || volume === 0 ? (
+              <VolumeX className="h-3.5 w-3.5" />
+            ) : (
+              <Volume2 className="h-3.5 w-3.5" />
+            )}
+          </Button>
+          
+          <div className="w-16">
             <div
-              className="absolute top-0 left-0 h-full bg-primary/60 rounded-full transition-all"
-              style={{ width: `${volumePercentage}%` }}
-            />
+              ref={volumeRef}
+              className="relative h-1.5 bg-white/10 rounded-full cursor-pointer"
+              onClick={handleVolumeClick}
+            >
+              <div
+                className="absolute top-0 left-0 h-full bg-primary/70 rounded-full transition-all"
+                style={{ width: `${volumePercentage}%` }}
+              />
+            </div>
           </div>
         </div>
-        
-        <span className="text-xs text-secondary w-8 text-right">
-          {Math.round(volumePercentage)}
-        </span>
+
+        {/* Progress mini */}
+        <div className="w-20 shrink-0">
+          <div
+            ref={progressRef}
+            className="relative h-1.5 bg-white/10 rounded-full cursor-pointer"
+            onClick={handleProgressClick}
+          >
+            <div
+              className="absolute top-0 left-0 h-full bg-primary rounded-full transition-all"
+              style={{ width: `${progress}%` }}
+            />
+          </div>
+          <div className="flex justify-between text-[10px] text-muted-foreground mt-1">
+            <span>{formatTime(currentTime)}</span>
+            <span>{currentTrack ? formatTime(currentTrack.duration) : '0:00'}</span>
+          </div>
+        </div>
       </div>
     </div>
   )

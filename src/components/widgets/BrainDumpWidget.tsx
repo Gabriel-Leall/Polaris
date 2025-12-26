@@ -172,6 +172,7 @@ function BrainDumpWidgetCore() {
     content,
     isLocalMode,
     setUnsavedChanges,
+    persistLocalNote,
   ]);
 
   // Manual save function
@@ -205,6 +206,7 @@ function BrainDumpWidgetCore() {
     setLastSaved,
     isLocalMode,
     setUnsavedChanges,
+    persistLocalNote,
   ]);
 
   // Handle content change
@@ -235,16 +237,23 @@ function BrainDumpWidgetCore() {
   };
 
   return (
-    <div className="bg-card rounded-3xl p-6 h-full flex flex-col">
+    <div className="h-full flex flex-col">
       {/* Header */}
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-sm font-semibold text-white">Brain Dump</h2>
+      <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
+          <h2 className="text-sm font-medium tracking-tight text-foreground">Brain Dump</h2>
+          {isLocalMode && (
+            <span className="text-[10px] px-1.5 py-0.5 rounded bg-yellow-500/20 text-yellow-400">
+              Offline
+            </span>
+          )}
+        </div>
+        <div className="flex items-center gap-3">
           {/* Save Status */}
-          <div className="flex items-center gap-1 text-xs text-secondary">
+          <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
             {isSaving ? (
               <>
-                <Save className="w-3 h-3 animate-spin" />
+                <div className="w-3 h-3 border border-primary/50 border-t-primary rounded-full animate-spin" />
                 <span>Saving...</span>
               </>
             ) : hasUnsavedChanges ? (
@@ -254,7 +263,7 @@ function BrainDumpWidgetCore() {
               </>
             ) : (
               <>
-                <Save className="w-3 h-3" />
+                <Save className="w-3 h-3 text-primary" />
                 <span>Saved {formatLastSaved(lastSaved)}</span>
               </>
             )}
@@ -265,7 +274,7 @@ function BrainDumpWidgetCore() {
             <button
               onClick={handleManualSave}
               disabled={isSaving}
-              className="text-xs text-primary hover:text-primary-glow transition-colors disabled:opacity-50"
+              className="text-xs font-medium text-primary hover:text-primary/80 transition-colors disabled:opacity-50"
             >
               Save Now
             </button>
@@ -275,33 +284,21 @@ function BrainDumpWidgetCore() {
 
       {/* Error Display */}
       {error && (
-        <div className="flex items-center gap-2 mb-3 p-2 bg-status-rejected/10 border border-status-rejected/20 rounded-lg">
-          <AlertCircle className="w-4 h-4 text-status-rejected" />
-          <span className="text-xs text-status-rejected">{error}</span>
+        <div className="flex items-center gap-2 mb-3 p-2 bg-destructive/10 border border-destructive/20 rounded-lg">
+          <AlertCircle className="w-3.5 h-3.5 text-destructive" />
+          <span className="text-xs text-destructive">{error}</span>
         </div>
       )}
 
       {/* Content Area */}
-      <div className="flex-1 relative">
-        {/* Line Numbers Gutter */}
-        <div className="absolute left-0 top-0 bottom-0 w-12 bg-input/50 border-r border-glass rounded-l-xl flex flex-col text-xs text-muted font-mono">
-          {content.split("\n").map((_, index) => (
-            <div key={index} className="px-2 py-1 leading-5 text-right">
-              {index + 1}
-            </div>
-          ))}
-          {content === "" && (
-            <div className="px-2 py-1 leading-5 text-right">1</div>
-          )}
-        </div>
-
+      <div className="flex-1 relative min-h-0">
         {/* Textarea */}
         <Textarea
           value={content}
           onChange={handleContentChange}
-          placeholder="Start typing your thoughts, ideas, code snippets, or anything else..."
+          placeholder="Start typing your thoughts, ideas, code snippets..."
           disabled={isLoading || !userId}
-          className="pl-14 h-full min-h-[300px] font-mono text-sm leading-5 bg-input border-glass resize-none focus:ring-primary/50"
+          className="h-full w-full font-mono text-sm leading-relaxed bg-white/[0.02] border-white/10 resize-none focus:border-primary/30 rounded-lg p-3"
           style={{
             fontFamily: "JetBrains Mono, Geist Mono, monospace",
           }}
@@ -309,9 +306,9 @@ function BrainDumpWidgetCore() {
 
         {/* Loading Overlay */}
         {isLoading && (
-          <div className="absolute inset-0 bg-card/80 flex items-center justify-center rounded-xl">
-            <div className="flex items-center gap-2 text-sm text-secondary">
-              <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+          <div className="absolute inset-0 bg-card/90 flex items-center justify-center rounded-lg">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <div className="w-4 h-4 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
               <span>Loading notes...</span>
             </div>
           </div>
@@ -319,8 +316,8 @@ function BrainDumpWidgetCore() {
       </div>
 
       {/* Footer Info */}
-      <div className="mt-3 text-xs text-secondary flex items-center justify-between">
-        <span>{content.length} characters</span>
+      <div className="mt-2 text-[10px] text-muted-foreground flex items-center justify-between">
+        <span>{content.length} chars</span>
         <span>{content.split("\n").length} lines</span>
       </div>
     </div>

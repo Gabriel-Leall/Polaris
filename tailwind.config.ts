@@ -27,11 +27,19 @@ const config: Config = {
         'status-pending': '#EAB308',
         
         // Text colors (semantic tokens)
+        'foreground': '#FAFAFA',
         'muted': '#A1A1AA',
+        'muted-foreground': '#71717A',
         'code': '#71717A',
+        
+        // Semantic colors
+        'destructive': '#EF4444',
+        'success': '#22C55E',
+        'warning': '#EAB308',
         
         // Border
         'glass': 'rgba(255, 255, 255, 0.05)',
+        'border': 'rgba(255, 255, 255, 0.1)',
       },
       fontFamily: {
         sans: ['var(--font-inter)', 'Inter', 'Geist Sans', 'system-ui', 'sans-serif'],

@@ -1,5 +1,5 @@
 import { Sidebar, SidebarNav, DashboardLayout } from "@/components/layout";
-import { QuickLinksWidget } from "@/components/widgets/QuickLinksWidget";
+import { QuickLinksWidget } from "@/components/widgets";
 
 export default function QuickLinksPage() {
   return (

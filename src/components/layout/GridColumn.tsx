@@ -1,21 +1,17 @@
-import { ScrollArea } from "@/components/ui/scroll-area";
-
 interface GridColumnProps {
   children: React.ReactNode;
   className?: string;
   span?: "left" | "center" | "right" | number;
-  scrollable?: boolean;
 }
 
 /**
  * GridColumn - Responsive column component for the Bento Grid
- * Handles different column spans and scrollable content
+ * No-scroll design: content must fit within fixed height containers
  */
 function GridColumn({
   children,
   className,
   span = "center",
-  scrollable = true,
 }: GridColumnProps) {
   // Define responsive column spans based on the span prop
   const getColumnClasses = () => {
@@ -35,23 +31,17 @@ function GridColumn({
     }
   };
 
-  const content = scrollable ? (
-    <ScrollArea className="h-full">{children}</ScrollArea>
-  ) : (
-    children
-  );
-
   return (
     <div
       className={`
       col-span-1 
       md:col-span-1 
       ${getColumnClasses()}
-      h-full
+      h-full min-h-0 overflow-hidden
       ${className || ""}
     `}
     >
-      {content}
+      {children}
     </div>
   );
 }

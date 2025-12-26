@@ -1,10 +1,12 @@
-import { TasksWidget } from "@/components/widgets/TasksWidget";
-import { ZenTimerWidget } from "@/components/widgets/ZenTimerWidget";
-import { BrainDumpWidget } from "@/components/widgets/BrainDumpWidget";
-import { CalendarWidget } from "@/components/widgets/CalendarWidget";
-import { HabitTrackerWidget } from "@/components/widgets/HabitTrackerWidget";
-import { MediaPlayerWidget } from "@/components/widgets/MediaPlayerWidget";
-import { QuickLinksWidget } from "@/components/widgets/QuickLinksWidget";
+import {
+  TasksWidget,
+  ZenTimerWidget,
+  BrainDumpWidget,
+  CalendarWidget,
+  HabitTrackerWidget,
+  MediaPlayerWidget,
+  QuickLinksWidget,
+} from "@/components/widgets";
 import {
   DashboardLayout,
   Sidebar,
@@ -21,15 +23,17 @@ export default function Dashboard() {
         <SidebarNav activeItem="dashboard" />
       </Sidebar>
 
-      {/* Main Content Grid */}
+      {/* Main Content Grid - Tetris Layout */}
       <BentoGrid>
         {/* Left Column - Tasks & Quick Links */}
         <GridColumn span="left">
-          <div className="flex flex-col gap-4 h-full">
-            <div className="flex-1 min-h-0 bg-card rounded-2xl border border-white/5 p-4">
+          <div className="flex flex-col gap-3 h-full">
+            {/* Tasks - Expandable area */}
+            <div className="flex-1 min-h-0 bg-card rounded-2xl border border-white/5 p-4 overflow-hidden">
               <TasksWidget />
             </div>
-            <div className="h-[200px] shrink-0 bg-card rounded-2xl border border-white/5 p-4">
+            {/* Quick Links - Fixed compact */}
+            <div className="h-[180px] shrink-0 bg-card rounded-2xl border border-white/5 p-4">
               <QuickLinksWidget compact readOnly />
             </div>
           </div>
@@ -37,26 +41,32 @@ export default function Dashboard() {
 
         {/* Center Column - Brain Dump, Timer & Media */}
         <GridColumn span="center">
-          <div className="flex flex-col gap-4 h-full">
-            <div className="flex-[2] min-h-0 bg-card rounded-2xl border border-white/5 p-4">
+          <div className="flex flex-col gap-3 h-full">
+            {/* Brain Dump - Main focus area */}
+            <div className="flex-1 min-h-0 bg-card rounded-2xl border border-white/5 p-4 overflow-hidden">
               <BrainDumpWidget />
             </div>
-            <div className="h-[160px] shrink-0 bg-card rounded-2xl border border-white/5 p-4">
-              <ZenTimerWidget />
-            </div>
-            <div className="h-[120px] shrink-0 bg-card rounded-2xl border border-white/5 p-4">
-              <MediaPlayerWidget />
+            {/* Bottom row: Timer + Media side by side */}
+            <div className="h-[140px] shrink-0 flex gap-3">
+              <div className="flex-1 bg-card rounded-2xl border border-white/5 p-4">
+                <ZenTimerWidget />
+              </div>
+              <div className="flex-1 bg-card rounded-2xl border border-white/5 p-4">
+                <MediaPlayerWidget />
+              </div>
             </div>
           </div>
         </GridColumn>
 
         {/* Right Column - Calendar & Habit Tracker */}
         <GridColumn span="right">
-          <div className="flex flex-col gap-4 h-full">
-            <div className="h-[280px] shrink-0 bg-card rounded-2xl border border-white/5 p-4">
+          <div className="flex flex-col gap-3 h-full">
+            {/* Calendar - Fixed height */}
+            <div className="h-[260px] shrink-0 bg-card rounded-2xl border border-white/5 p-4">
               <CalendarWidget />
             </div>
-            <div className="flex-1 min-h-0 bg-card rounded-2xl border border-white/5 p-4">
+            {/* Habit Tracker - Expandable area */}
+            <div className="flex-1 min-h-0 bg-card rounded-2xl border border-white/5 p-4 overflow-hidden">
               <HabitTrackerWidget />
             </div>
           </div>

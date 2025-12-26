@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import {
   ErrorBoundary,
@@ -8,43 +9,37 @@ import {
 } from "@/components/ui/error-boundary";
 import {
   Home,
-  Target,
-  Brain,
+  CheckSquare,
+  FileText,
   Calendar,
-  Music,
   Link as LinkIcon,
-  Timer,
   Settings,
+  LogOut,
 } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
 
 interface NavItem {
   id: string;
   label: string;
   icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
-  active?: boolean;
+  href: string;
 }
 
 interface SidebarNavProps {
   activeItem?: string | undefined;
-  onItemClick?: ((itemId: string) => void) | undefined;
   className?: string | undefined;
 }
 
-const navPaths: Record<string, string> = {
-  dashboard: "/",
-  "quick-links": "/quick-links",
-};
-
 const navItems: NavItem[] = [
-  { id: "dashboard", label: "Dashboard", icon: Home },
-  { id: "zen-timer", label: "Zen Timer", icon: Timer },
-  { id: "tasks", label: "Tasks", icon: Target },
-  { id: "brain-dump", label: "Brain Dump", icon: Brain },
-  { id: "job-tracker", label: "Job Tracker", icon: Target },
-  { id: "calendar", label: "Calendar", icon: Calendar },
-  { id: "media-player", label: "Media Player", icon: Music },
-  { id: "quick-links", label: "Quick Links", icon: LinkIcon },
-  { id: "settings", label: "Settings", icon: Settings },
+  { id: "dashboard", label: "Dashboard", icon: Home, href: "/" },
+  { id: "tasks", label: "Tasks", icon: CheckSquare, href: "/tasks" },
+  { id: "notes", label: "Notes", icon: FileText, href: "/notes" },
+  { id: "calendar", label: "Calendar", icon: Calendar, href: "/calendar" },
+  { id: "quick-links", label: "Quick Links", icon: LinkIcon, href: "/quick-links" },
+];
+
+const bottomNavItems: NavItem[] = [
+  { id: "settings", label: "Settings", icon: Settings, href: "/settings" },
 ];
 
 /**
@@ -52,68 +47,129 @@ const navItems: NavItem[] = [
  * Implements Polaris design system with proper active states and hover effects
  */
 function SidebarNavCore({
-  activeItem = "dashboard",
-  onItemClick,
   className,
 }: SidebarNavProps) {
-  return (
-    <nav className={cn("space-y-1", className)}>
-      {navItems.map((item) => {
-        const Icon = item.icon;
-        const isActive = activeItem === item.id;
-        const href = navPaths[item.id] ?? "#";
+  const pathname = usePathname();
+  const { signOut, isAuthenticated, user } = useAuth();
 
-        return (
-          <Link
-            key={item.id}
-            href={href}
-            onClick={() => onItemClick?.(item.id)}
+  return (
+    <div className={cn("flex flex-col h-full", className)}>
+      {/* User info */}
+      {isAuthenticated && user && (
+        <div className="px-3 py-3 mb-4 border-b border-white/5">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
+              <span className="text-xs font-medium text-primary">
+                {user.email?.[0]?.toUpperCase() || "U"}
+              </span>
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium text-foreground truncate">
+                {user.email?.split("@")[0] || "User"}
+              </p>
+              <p className="text-[10px] text-muted-foreground truncate">
+                {user.email}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Main navigation */}
+      <nav className="flex-1 space-y-1">
+        {navItems.map((item) => {
+          const Icon = item.icon;
+          const isActive = pathname === item.href || 
+            (item.href !== "/" && pathname?.startsWith(item.href));
+
+          return (
+            <Link
+              key={item.id}
+              href={item.href}
+              className={cn(
+                "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 text-left",
+                "hover:bg-white/5 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary",
+                isActive
+                  ? "bg-white/5 text-white border border-primary/30"
+                  : "text-muted-foreground hover:border-white/10 border border-transparent"
+              )}
+            >
+              <Icon
+                className={cn(
+                  "w-4 h-4 transition-colors duration-200",
+                  isActive ? "text-primary" : "text-muted-foreground"
+                )}
+              />
+              <span className="truncate">{item.label}</span>
+
+              {/* Active indicator */}
+              {isActive && (
+                <div className="ml-auto">
+                  <div className="w-1.5 h-1.5 bg-primary rounded-full" />
+                </div>
+              )}
+            </Link>
+          );
+        })}
+      </nav>
+
+      {/* Bottom navigation */}
+      <div className="mt-auto pt-4 border-t border-white/5 space-y-1">
+        {bottomNavItems.map((item) => {
+          const Icon = item.icon;
+          const isActive = pathname === item.href;
+
+          return (
+            <Link
+              key={item.id}
+              href={item.href}
+              className={cn(
+                "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 text-left",
+                "hover:bg-white/5 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary",
+                isActive
+                  ? "bg-white/5 text-white border border-primary/30"
+                  : "text-muted-foreground hover:border-white/10 border border-transparent"
+              )}
+            >
+              <Icon
+                className={cn(
+                  "w-4 h-4 transition-colors duration-200",
+                  isActive ? "text-primary" : "text-muted-foreground"
+                )}
+              />
+              <span className="truncate">{item.label}</span>
+            </Link>
+          );
+        })}
+
+        {/* Logout button */}
+        {isAuthenticated && (
+          <button
+            onClick={() => signOut()}
             className={cn(
-              "w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium transition-all duration-200 text-left",
-              "hover:bg-white/5 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-sidebar",
-              isActive
-                ? "sidebar-active text-white border border-primary/20"
-                : "text-secondary hover:border-glass border border-transparent"
+              "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 text-left",
+              "hover:bg-destructive/10 hover:text-destructive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-destructive",
+              "text-muted-foreground border border-transparent"
             )}
           >
-            <Icon
-              className={cn(
-                "w-4 h-4 transition-colors duration-200",
-                isActive ? "text-primary" : "text-secondary"
-              )}
-            />
-            <span className="truncate">{item.label}</span>
-
-            {/* Active indicator */}
-            {isActive && (
-              <div className="ml-auto">
-                <div className="w-2 h-2 bg-primary rounded-full status-dot" />
-              </div>
-            )}
-          </Link>
-        );
-      })}
-    </nav>
+            <LogOut className="w-4 h-4" />
+            <span className="truncate">Logout</span>
+          </button>
+        )}
+      </div>
+    </div>
   );
 }
 
 // Wrapper component with error boundary
-function SidebarNav({
-  activeItem = "dashboard",
-  onItemClick,
-  className,
-}: SidebarNavProps) {
+function SidebarNav(props: SidebarNavProps) {
   return (
     <ErrorBoundary
       fallback={WidgetErrorFallback}
       name="SidebarNav"
       maxRetries={2}
     >
-      <SidebarNavCore
-        activeItem={activeItem}
-        onItemClick={onItemClick}
-        className={className}
-      />
+      <SidebarNavCore {...props} />
     </ErrorBoundary>
   );
 }

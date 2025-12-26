@@ -147,7 +147,7 @@ function TasksWidget({ className }: TasksWidgetProps) {
     } finally {
       setIsCreating(false);
     }
-  }, [newTaskLabel, isCreating, isLocalMode]);
+  }, [newTaskLabel, isCreating, isLocalMode, userId]);
 
   const handleToggleTask = useCallback(
     async (taskId: string, completed: boolean) => {
@@ -304,40 +304,45 @@ function TasksWidget({ className }: TasksWidgetProps) {
   }, [editValue, editingTaskId, isLocalMode]);
 
   return (
-    <div
-      className={cn("bg-card rounded-3xl p-6 border border-glass", className)}
-    >
+    <div className={cn("flex flex-col h-full", className)}>
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-sm font-semibold text-white">Tasks</h2>
-        <span className="text-xs text-muted">
+        <div className="flex items-center gap-2">
+          <h2 className="text-sm font-medium tracking-tight text-foreground">Tasks</h2>
+          {isLocalMode && (
+            <span className="text-[10px] px-1.5 py-0.5 rounded bg-yellow-500/20 text-yellow-400">
+              Offline
+            </span>
+          )}
+        </div>
+        <span className="text-xs text-muted-foreground">
           {tasks.filter((t) => !t.completed).length} active
         </span>
       </div>
 
       {/* Error Display */}
       {error && (
-        <div className="mb-4 p-3 bg-status-rejected/10 border border-status-rejected/20 rounded-xl">
-          <p className="text-xs text-status-rejected">{error}</p>
+        <div className="mb-3 p-2 bg-destructive/10 border border-destructive/20 rounded-lg">
+          <p className="text-xs text-destructive">{error}</p>
         </div>
       )}
 
       {/* New Task Input */}
-      <div className="flex gap-2 mb-4">
+      <div className="flex gap-2 mb-3">
         <Input
           placeholder="Add a new task..."
           value={newTaskLabel}
           onChange={(e) => setNewTaskLabel(e.target.value)}
           onKeyPress={handleKeyPress}
           disabled={isCreating}
-          className="flex-1"
+          className="flex-1 h-9 text-sm bg-white/5 border-white/10"
         />
         <Button
           onClick={handleCreateTask}
           disabled={!newTaskLabel.trim() || isCreating}
           variant="primary"
           size="sm"
-          className="px-3"
+          className="h-9 w-9 p-0"
         >
           {isCreating ? (
             <div className="w-4 h-4 border-2 border-border/60 border-t-primary rounded-full animate-spin" />
@@ -348,23 +353,26 @@ function TasksWidget({ className }: TasksWidgetProps) {
       </div>
 
       {/* Tasks List */}
-      <div className="space-y-2">
+      <div className="flex-1 overflow-y-auto space-y-1.5 min-h-0">
         {isLoading ? (
           <div className="flex items-center justify-center py-8">
-            <div className="w-6 h-6 border-2 border-primary/20 border-t-primary rounded-full animate-spin" />
+            <div className="w-5 h-5 border-2 border-primary/20 border-t-primary rounded-full animate-spin" />
           </div>
         ) : tasks.length === 0 ? (
-          <div className="py-8 flex flex-col items-center">
-            <p className="text-muted text-sm">No tasks yet</p>
-            <p className="text-code text-xs mt-1">Add your first task above</p>
+          <div className="flex flex-col items-center justify-center h-full py-6">
+            <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center mb-2">
+              <Plus className="w-4 h-4 text-muted-foreground" />
+            </div>
+            <p className="text-sm text-muted-foreground">No tasks yet</p>
+            <p className="text-xs text-muted-foreground/70 mt-1">Add your first task above</p>
           </div>
         ) : (
           tasks.map((task) => (
             <div
               key={task.id}
               className={cn(
-                "flex items-center gap-3 p-3 rounded-xl border border-glass hover:border-primary/30 transition-colors group",
-                task.completed && "opacity-60"
+                "flex items-center gap-2.5 p-2.5 rounded-lg border border-white/5 hover:border-white/10 hover:bg-white/[0.02] transition-all group",
+                task.completed && "opacity-50"
               )}
             >
               <Checkbox
@@ -439,7 +447,7 @@ function TasksWidget({ className }: TasksWidgetProps) {
                 onClick={() => handleDeleteTask(task.id)}
                 variant="secondary"
                 size="sm"
-                className="opacity-0 group-hover:opacity-100 transition-opacity p-1 h-6 w-6"
+                className="opacity-0 group-hover:opacity-100 transition-opacity p-1 h-6 w-6 hover:text-destructive"
               >
                 <X className="w-3 h-3" />
               </Button>
@@ -450,10 +458,10 @@ function TasksWidget({ className }: TasksWidgetProps) {
 
       {/* Footer Stats */}
       {tasks.length > 0 && (
-        <div className="mt-4 pt-4 border-t border-glass">
-          <div className="flex justify-between text-xs text-muted">
+        <div className="mt-auto pt-3 border-t border-white/5">
+          <div className="flex justify-between text-xs text-muted-foreground">
             <span>{tasks.filter((t) => t.completed).length} completed</span>
-            <span>{tasks.length} total</span>
+            <span className="text-primary font-medium">{tasks.length} total</span>
           </div>
         </div>
       )}

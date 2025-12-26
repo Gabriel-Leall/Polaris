@@ -104,51 +104,46 @@ function CalendarWidgetCore({ className }: CalendarWidgetProps) {
   };
 
   return (
-    <div
-      className={cn("bg-card rounded-3xl p-6", className)}
-    >
+    <div className={cn("flex flex-col h-full", className)}>
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h2 className="text-sm font-semibold text-white">
-            {monthName} {year}
-          </h2>
-          <p className="text-xs text-secondary mt-1">Calendar</p>
-        </div>
-        <div className="flex items-center gap-1">
+      <div className="flex items-center justify-between mb-3">
+        <h2 className="text-sm font-medium tracking-tight text-foreground">
+          {monthName} {year}
+        </h2>
+        <div className="flex items-center gap-0.5">
           <Button
-            variant="secondary"
+            variant="ghost"
             size="sm"
             onClick={() => navigateMonth("prev")}
-            className="h-8 w-8 p-0"
+            className="h-6 w-6 p-0 text-muted-foreground hover:text-foreground"
           >
-            <ChevronLeft className="h-4 w-4" />
+            <ChevronLeft className="h-3.5 w-3.5" />
           </Button>
           <Button
-            variant="secondary"
+            variant="ghost"
             size="sm"
             onClick={goToToday}
-            className="h-8 px-3 text-xs"
+            className="h-6 px-2 text-[10px] text-muted-foreground hover:text-foreground"
           >
             Today
           </Button>
           <Button
-            variant="secondary"
+            variant="ghost"
             size="sm"
             onClick={() => navigateMonth("next")}
-            className="h-8 w-8 p-0"
+            className="h-6 w-6 p-0 text-muted-foreground hover:text-foreground"
           >
-            <ChevronRight className="h-4 w-4" />
+            <ChevronRight className="h-3.5 w-3.5" />
           </Button>
         </div>
       </div>
 
       {/* Days of week header */}
-      <div className="grid grid-cols-7 gap-1 mb-2">
-        {["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"].map((day) => (
+      <div className="grid grid-cols-7 gap-0.5 mb-1">
+        {["S", "M", "T", "W", "T", "F", "S"].map((day, i) => (
           <div
-            key={day}
-            className="text-xs text-secondary py-2 font-medium flex justify-center"
+            key={i}
+            className="text-[10px] text-muted-foreground py-1 font-medium flex justify-center"
           >
             {day}
           </div>
@@ -156,35 +151,26 @@ function CalendarWidgetCore({ className }: CalendarWidgetProps) {
       </div>
 
       {/* Calendar grid */}
-      <div className="grid grid-cols-7 gap-1">
-        {calendarDays.map((calendarDay, index) => (
+      <div className="grid grid-cols-7 gap-0.5 flex-1">
+        {calendarDays.slice(0, 35).map((calendarDay, index) => (
           <button
             key={index}
             className={cn(
-              "relative h-8 w-full text-xs rounded-lg transition-colors hover:bg-white/5",
+              "relative h-6 w-full text-[11px] rounded-md transition-colors hover:bg-white/5",
               {
-                "text-white": calendarDay.isCurrentMonth,
-                "text-muted": !calendarDay.isCurrentMonth,
-                "bg-primary text-white hover:bg-primary/90":
-                  calendarDay.isToday,
-                "font-semibold": calendarDay.isToday,
+                "text-foreground": calendarDay.isCurrentMonth,
+                "text-muted-foreground/40": !calendarDay.isCurrentMonth,
+                "bg-primary text-white hover:bg-primary/90": calendarDay.isToday,
+                "font-medium": calendarDay.isToday,
               }
             )}
           >
             {calendarDay.day}
-            {calendarDay.hasEvent && calendarDay.isCurrentMonth && (
-              <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-primary rounded-full" />
+            {calendarDay.hasEvent && calendarDay.isCurrentMonth && !calendarDay.isToday && (
+              <div className="absolute bottom-0.5 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-primary rounded-full" />
             )}
           </button>
         ))}
-      </div>
-
-      {/* Footer */}
-      <div className="mt-4 pt-4 border-t border-white/5">
-        <p className="text-xs text-secondary flex justify-center">
-          {calendarDays.filter((d) => d.hasEvent && d.isCurrentMonth).length}{" "}
-          events this month
-        </p>
       </div>
     </div>
   );
