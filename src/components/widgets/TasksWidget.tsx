@@ -13,9 +13,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/hooks/useAuth";
 
-// Mock user ID for now - in a real app this would come from auth
-const MOCK_USER_ID = "123e4567-e89b-12d3-a456-426614174001";
 const LOCAL_TASKS_KEY = "polaris-local-tasks";
 
 interface TasksWidgetProps {
@@ -23,6 +22,7 @@ interface TasksWidgetProps {
 }
 
 function TasksWidget({ className }: TasksWidgetProps) {
+  const { userId, isLoading: authLoading } = useAuth();
   const [tasks, setTasks] = useState<TaskItem[]>([]);
   const [newTaskLabel, setNewTaskLabel] = useState("");
   const [isLoading, setIsLoading] = useState(true);
@@ -48,10 +48,19 @@ function TasksWidget({ className }: TasksWidgetProps) {
   };
 
   const loadTasks = useCallback(async () => {
+    if (!userId) {
+      // Use local mode if not authenticated
+      const local = loadLocalTasks();
+      setTasks(local);
+      setIsLocalMode(true);
+      setIsLoading(false);
+      return;
+    }
+
     try {
       setIsLoading(true);
       setError(null);
-      const fetchedTasks = await getTasks(MOCK_USER_ID);
+      const fetchedTasks = await getTasks(userId);
       setTasks(fetchedTasks);
       persistLocalTasks(fetchedTasks);
       setIsLocalMode(false);
@@ -65,15 +74,19 @@ function TasksWidget({ className }: TasksWidgetProps) {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [userId]);
 
-  // Load tasks on component mount
+  // Load tasks on component mount or when auth state changes
   useEffect(() => {
-    loadTasks();
-  }, [loadTasks]);
+    if (!authLoading) {
+      loadTasks();
+    }
+  }, [loadTasks, authLoading]);
 
   const handleCreateTask = useCallback(async () => {
     if (!newTaskLabel.trim() || isCreating) return;
+
+    const effectiveUserId = userId || "local-user";
 
     try {
       setIsCreating(true);
@@ -81,7 +94,7 @@ function TasksWidget({ className }: TasksWidgetProps) {
       const payload = {
         label: newTaskLabel.trim(),
         completed: false,
-        userId: MOCK_USER_ID,
+        userId: effectiveUserId,
       };
 
       if (isLocalMode) {
@@ -116,7 +129,7 @@ function TasksWidget({ className }: TasksWidgetProps) {
         id: crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(),
         label: newTaskLabel.trim(),
         completed: false,
-        userId: MOCK_USER_ID,
+        userId: effectiveUserId,
         createdAt: new Date(),
         updatedAt: new Date(),
       };

@@ -2,7 +2,7 @@ import { TasksWidget } from "@/components/widgets/TasksWidget";
 import { ZenTimerWidget } from "@/components/widgets/ZenTimerWidget";
 import { BrainDumpWidget } from "@/components/widgets/BrainDumpWidget";
 import { CalendarWidget } from "@/components/widgets/CalendarWidget";
-import { JobTrackerWidget } from "@/components/widgets/JobTrackerWidget";
+import { HabitTrackerWidget } from "@/components/widgets/HabitTrackerWidget";
 import { MediaPlayerWidget } from "@/components/widgets/MediaPlayerWidget";
 import { QuickLinksWidget } from "@/components/widgets/QuickLinksWidget";
 import {
@@ -25,26 +25,40 @@ export default function Dashboard() {
       <BentoGrid>
         {/* Left Column - Tasks & Quick Links */}
         <GridColumn span="left">
-          <div className="space-y-4 h-full">
-            <TasksWidget />
-            <QuickLinksWidget compact readOnly className="max-h-[360px]" />
+          <div className="flex flex-col gap-4 h-full">
+            <div className="flex-1 min-h-0 bg-card rounded-2xl border border-white/5 p-4">
+              <TasksWidget />
+            </div>
+            <div className="h-[200px] shrink-0 bg-card rounded-2xl border border-white/5 p-4">
+              <QuickLinksWidget compact readOnly />
+            </div>
           </div>
         </GridColumn>
 
         {/* Center Column - Brain Dump, Timer & Media */}
         <GridColumn span="center">
-          <div className="space-y-4 h-full flex flex-col">
-            <BrainDumpWidget />
-            <ZenTimerWidget />
-            <MediaPlayerWidget />
+          <div className="flex flex-col gap-4 h-full">
+            <div className="flex-[2] min-h-0 bg-card rounded-2xl border border-white/5 p-4">
+              <BrainDumpWidget />
+            </div>
+            <div className="h-[160px] shrink-0 bg-card rounded-2xl border border-white/5 p-4">
+              <ZenTimerWidget />
+            </div>
+            <div className="h-[120px] shrink-0 bg-card rounded-2xl border border-white/5 p-4">
+              <MediaPlayerWidget />
+            </div>
           </div>
         </GridColumn>
 
-        {/* Right Column - Calendar & Job Tracker */}
+        {/* Right Column - Calendar & Habit Tracker */}
         <GridColumn span="right">
-          <div className="space-y-4 h-full">
-            <CalendarWidget />
-            <JobTrackerWidget />
+          <div className="flex flex-col gap-4 h-full">
+            <div className="h-[280px] shrink-0 bg-card rounded-2xl border border-white/5 p-4">
+              <CalendarWidget />
+            </div>
+            <div className="flex-1 min-h-0 bg-card rounded-2xl border border-white/5 p-4">
+              <HabitTrackerWidget />
+            </div>
           </div>
         </GridColumn>
       </BentoGrid>

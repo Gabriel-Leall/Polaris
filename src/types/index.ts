@@ -1,4 +1,4 @@
-export type AppStatus = 'Interview' | 'Applied' | 'Rejected' | 'Offer';
+export type AppStatus = "Interview" | "Applied" | "Rejected" | "Offer";
 
 export interface EmailItem {
   id: string;
@@ -37,7 +37,7 @@ export interface JobApplication {
 export interface UserPreferences {
   id: string;
   userId: string;
-  theme: 'light' | 'dark';
+  theme: "light" | "dark";
   focusDuration: number;
   breakDuration: number;
   zenModeEnabled: boolean;
@@ -193,7 +193,7 @@ export interface Database {
         Row: {
           id: string;
           user_id: string;
-          theme: 'light' | 'dark';
+          theme: "light" | "dark";
           focus_duration: number;
           break_duration: number;
           zen_mode_enabled: boolean;
@@ -204,7 +204,7 @@ export interface Database {
         Insert: {
           id?: string;
           user_id: string;
-          theme?: 'light' | 'dark';
+          theme?: "light" | "dark";
           focus_duration?: number;
           break_duration?: number;
           zen_mode_enabled?: boolean;
@@ -215,7 +215,7 @@ export interface Database {
         Update: {
           id?: string;
           user_id?: string;
-          theme?: 'light' | 'dark';
+          theme?: "light" | "dark";
           focus_duration?: number;
           break_duration?: number;
           zen_mode_enabled?: boolean;

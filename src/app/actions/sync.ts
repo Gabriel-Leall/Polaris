@@ -67,7 +67,12 @@ export const syncLocalData = async (
 ): Promise<SyncResult> => {
   try {
     const validatedData = syncDataSchema.parse(data);
-    const { userId, tasks: localTasks, notes: localNotes, habits: localHabits } = validatedData;
+    const {
+      userId,
+      tasks: localTasks,
+      notes: localNotes,
+      habits: localHabits,
+    } = validatedData;
 
     const stats = {
       tasksCreated: 0,
@@ -79,20 +84,27 @@ export const syncLocalData = async (
     };
 
     // Fetch existing server data
-    const [serverTasksResult, serverNotesResult, serverHabitsResult] = await Promise.all([
-      supabase.from("tasks").select("*").eq("user_id", userId),
-      supabase.from("brain_dump_notes").select("*").eq("user_id", userId),
-      supabase.from("habits").select("*").eq("user_id", userId),
-    ]);
+    const [serverTasksResult, serverNotesResult, serverHabitsResult] =
+      await Promise.all([
+        supabase.from("tasks").select("*").eq("user_id", userId),
+        supabase.from("brain_dump_notes").select("*").eq("user_id", userId),
+        supabase.from("habits").select("*").eq("user_id", userId),
+      ]);
 
     if (serverTasksResult.error) {
-      throw new Error(`Failed to fetch tasks: ${serverTasksResult.error.message}`);
+      throw new Error(
+        `Failed to fetch tasks: ${serverTasksResult.error.message}`
+      );
     }
     if (serverNotesResult.error) {
-      throw new Error(`Failed to fetch notes: ${serverNotesResult.error.message}`);
+      throw new Error(
+        `Failed to fetch notes: ${serverNotesResult.error.message}`
+      );
     }
     if (serverHabitsResult.error) {
-      throw new Error(`Failed to fetch habits: ${serverHabitsResult.error.message}`);
+      throw new Error(
+        `Failed to fetch habits: ${serverHabitsResult.error.message}`
+      );
     }
 
     const serverTasks = serverTasksResult.data || [];
@@ -102,7 +114,7 @@ export const syncLocalData = async (
     // Sync Tasks
     for (const localTask of localTasks) {
       const localUpdatedAt = new Date(localTask.updatedAt);
-      
+
       // Find matching server task by label (since local items may not have server id)
       const serverTask = serverTasks.find((t) => t.label === localTask.label);
 
@@ -119,7 +131,7 @@ export const syncLocalData = async (
         if (!error) stats.tasksCreated++;
       } else {
         const serverUpdatedAt = new Date(serverTask.updated_at);
-        
+
         // Only update if local is newer
         if (localUpdatedAt > serverUpdatedAt) {
           const { error } = await supabase
@@ -139,7 +151,7 @@ export const syncLocalData = async (
     // Sync Notes
     for (const localNote of localNotes) {
       const localUpdatedAt = new Date(localNote.updatedAt);
-      
+
       // For brain dump, usually there's one per user, so we match by any existing note
       const serverNote = serverNotes[0]; // Brain dump is typically a single note
 
@@ -155,7 +167,7 @@ export const syncLocalData = async (
         if (!error) stats.notesCreated++;
       } else {
         const serverUpdatedAt = new Date(serverNote.updated_at);
-        
+
         // Only update if local is newer
         if (localUpdatedAt > serverUpdatedAt) {
           const { error } = await supabase
@@ -174,7 +186,7 @@ export const syncLocalData = async (
     // Sync Habits
     for (const localHabit of localHabits) {
       const localUpdatedAt = new Date(localHabit.updatedAt);
-      
+
       // Find matching server habit by name
       const serverHabit = serverHabits.find((h) => h.name === localHabit.name);
 
@@ -190,7 +202,7 @@ export const syncLocalData = async (
         if (!error) stats.habitsCreated++;
       } else {
         const serverUpdatedAt = new Date(serverHabit.updated_at);
-        
+
         // Only update if local is newer
         if (localUpdatedAt > serverUpdatedAt) {
           const { error } = await supabase
@@ -208,9 +220,21 @@ export const syncLocalData = async (
 
     // Fetch final merged data
     const [finalTasks, finalNotes, finalHabits] = await Promise.all([
-      supabase.from("tasks").select("*").eq("user_id", userId).order("created_at", { ascending: false }),
-      supabase.from("brain_dump_notes").select("*").eq("user_id", userId).order("updated_at", { ascending: false }),
-      supabase.from("habits").select("*").eq("user_id", userId).order("created_at", { ascending: true }),
+      supabase
+        .from("tasks")
+        .select("*")
+        .eq("user_id", userId)
+        .order("created_at", { ascending: false }),
+      supabase
+        .from("brain_dump_notes")
+        .select("*")
+        .eq("user_id", userId)
+        .order("updated_at", { ascending: false }),
+      supabase
+        .from("habits")
+        .select("*")
+        .eq("user_id", userId)
+        .order("created_at", { ascending: true }),
     ]);
 
     // Map to typed objects
@@ -261,7 +285,9 @@ export const syncLocalData = async (
 /**
  * Get all user data from server (for initial load after login)
  */
-export const getUserData = async (userId: string): Promise<{
+export const getUserData = async (
+  userId: string
+): Promise<{
   tasks: TaskItem[];
   notes: BrainDumpNote[];
   habits: Habit[];
@@ -270,9 +296,21 @@ export const getUserData = async (userId: string): Promise<{
     const validatedUserId = z.string().uuid().parse(userId);
 
     const [tasksResult, notesResult, habitsResult] = await Promise.all([
-      supabase.from("tasks").select("*").eq("user_id", validatedUserId).order("created_at", { ascending: false }),
-      supabase.from("brain_dump_notes").select("*").eq("user_id", validatedUserId).order("updated_at", { ascending: false }),
-      supabase.from("habits").select("*").eq("user_id", validatedUserId).order("created_at", { ascending: true }),
+      supabase
+        .from("tasks")
+        .select("*")
+        .eq("user_id", validatedUserId)
+        .order("created_at", { ascending: false }),
+      supabase
+        .from("brain_dump_notes")
+        .select("*")
+        .eq("user_id", validatedUserId)
+        .order("updated_at", { ascending: false }),
+      supabase
+        .from("habits")
+        .select("*")
+        .eq("user_id", validatedUserId)
+        .order("created_at", { ascending: true }),
     ]);
 
     if (tasksResult.error) {

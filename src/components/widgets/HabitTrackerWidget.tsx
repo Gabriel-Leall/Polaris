@@ -14,9 +14,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/hooks/useAuth";
 
-// Mock user ID for now - in a real app this would come from auth
-const MOCK_USER_ID = "123e4567-e89b-12d3-a456-426614174001";
 const LOCAL_HABITS_KEY = "polaris-local-habits";
 
 // Default habits for new users
@@ -35,6 +34,7 @@ interface HabitTrackerWidgetProps {
 }
 
 function HabitTrackerWidget({ className }: HabitTrackerWidgetProps) {
+  const { userId, isLoading: authLoading } = useAuth();
   const [habits, setHabits] = useState<Habit[]>([]);
   const [newHabitName, setNewHabitName] = useState("");
   const [isLoading, setIsLoading] = useState(true);
@@ -45,6 +45,7 @@ function HabitTrackerWidget({ className }: HabitTrackerWidgetProps) {
 
   // Get today's day index (0 = Sunday)
   const todayIndex = new Date().getDay();
+  const effectiveUserId = userId || "local-user";
 
   const persistLocalHabits = (nextHabits: Habit[]) => {
     localStorage.setItem(LOCAL_HABITS_KEY, JSON.stringify(nextHabits));
@@ -57,7 +58,7 @@ function HabitTrackerWidget({ className }: HabitTrackerWidgetProps) {
       const now = new Date();
       const defaultHabits: Habit[] = DEFAULT_HABITS.map((h, i) => ({
         id: `local-${i}`,
-        userId: MOCK_USER_ID,
+        userId: effectiveUserId,
         name: h.name,
         days: h.days,
         createdAt: now,
@@ -79,11 +80,20 @@ function HabitTrackerWidget({ className }: HabitTrackerWidgetProps) {
   };
 
   const loadHabits = useCallback(async () => {
+    if (!userId) {
+      // Use local mode if not authenticated
+      const local = loadLocalHabits();
+      setHabits(local);
+      setIsLocalMode(true);
+      setIsLoading(false);
+      return;
+    }
+
     try {
       setIsLoading(true);
       setError(null);
-      const fetchedHabits = await getHabits(MOCK_USER_ID);
-      
+      const fetchedHabits = await getHabits(userId);
+
       // If no habits on server, use local/default
       if (fetchedHabits.length === 0) {
         const local = loadLocalHabits();
@@ -104,11 +114,14 @@ function HabitTrackerWidget({ className }: HabitTrackerWidgetProps) {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userId]);
 
   useEffect(() => {
-    loadHabits();
-  }, [loadHabits]);
+    if (!authLoading) {
+      loadHabits();
+    }
+  }, [loadHabits, authLoading]);
 
   const handleToggleDay = useCallback(
     async (habitId: string, dayIndex: number) => {
@@ -152,16 +165,16 @@ function HabitTrackerWidget({ className }: HabitTrackerWidgetProps) {
 
       const newHabit: Habit = {
         id: `local-${Date.now()}`,
-        userId: MOCK_USER_ID,
+        userId: effectiveUserId,
         name: newHabitName.trim(),
         days: [false, false, false, false, false, false, false],
         createdAt: new Date(),
         updatedAt: new Date(),
       };
 
-      if (!isLocalMode) {
+      if (!isLocalMode && userId) {
         const created = await createHabit({
-          userId: MOCK_USER_ID,
+          userId: userId,
           name: newHabitName.trim(),
         });
         setHabits((prev) => [...prev, created]);
@@ -183,7 +196,7 @@ function HabitTrackerWidget({ className }: HabitTrackerWidgetProps) {
     } finally {
       setIsCreating(false);
     }
-  }, [newHabitName, isCreating, isLocalMode, habits]);
+  }, [newHabitName, isCreating, isLocalMode, habits, effectiveUserId, userId]);
 
   const handleDeleteHabit = useCallback(
     async (habitId: string) => {
@@ -216,9 +229,9 @@ function HabitTrackerWidget({ className }: HabitTrackerWidgetProps) {
       }))
     );
 
-    if (!isLocalMode) {
+    if (!isLocalMode && userId) {
       try {
-        const reset = await resetHabitWeek(MOCK_USER_ID);
+        const reset = await resetHabitWeek(userId);
         setHabits(reset);
       } catch {
         loadHabits();
@@ -229,7 +242,7 @@ function HabitTrackerWidget({ className }: HabitTrackerWidgetProps) {
         return current;
       });
     }
-  }, [isLocalMode, loadHabits]);
+  }, [isLocalMode, loadHabits, userId]);
 
   const getCompletionRate = (habit: Habit) => {
     const completed = habit.days.filter(Boolean).length;
@@ -378,7 +391,9 @@ function HabitTrackerWidget({ className }: HabitTrackerWidgetProps) {
                       : "border-white/20 hover:border-white/40 hover:bg-white/5",
                     dayIndex === todayIndex && !completed && "border-primary/50"
                   )}
-                  title={`${DAY_FULL_LABELS[dayIndex]} - ${completed ? "Completed" : "Not completed"}`}
+                  title={`${DAY_FULL_LABELS[dayIndex]} - ${
+                    completed ? "Completed" : "Not completed"
+                  }`}
                 >
                   {completed && (
                     <div className="w-2 h-2 rounded-full bg-white" />
@@ -393,8 +408,8 @@ function HabitTrackerWidget({ className }: HabitTrackerWidgetProps) {
                   getCompletionRate(habit) === 100
                     ? "text-green-400"
                     : getCompletionRate(habit) >= 50
-                      ? "text-primary"
-                      : "text-muted-foreground"
+                    ? "text-primary"
+                    : "text-muted-foreground"
                 )}
               >
                 {getCompletionRate(habit)}%
@@ -409,12 +424,18 @@ function HabitTrackerWidget({ className }: HabitTrackerWidgetProps) {
         <div className="mt-auto pt-3 border-t border-white/5">
           <div className="flex items-center justify-between text-xs text-muted-foreground">
             <span>
-              {habits.reduce((acc, h) => acc + h.days.filter(Boolean).length, 0)}/
-              {habits.length * 7} completed this week
+              {habits.reduce(
+                (acc, h) => acc + h.days.filter(Boolean).length,
+                0
+              )}
+              /{habits.length * 7} completed this week
             </span>
             <span className="text-primary font-medium">
               {Math.round(
-                (habits.reduce((acc, h) => acc + h.days.filter(Boolean).length, 0) /
+                (habits.reduce(
+                  (acc, h) => acc + h.days.filter(Boolean).length,
+                  0
+                ) /
                   (habits.length * 7)) *
                   100
               )}
