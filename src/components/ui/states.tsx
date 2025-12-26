@@ -53,7 +53,10 @@ interface LoadingStateProps {
 /**
  * LoadingState - Elegant loading state component
  */
-export function LoadingState({ message = "Loading...", className }: LoadingStateProps) {
+export function LoadingState({
+  message = "Loading...",
+  className,
+}: LoadingStateProps) {
   return (
     <div
       className={cn(

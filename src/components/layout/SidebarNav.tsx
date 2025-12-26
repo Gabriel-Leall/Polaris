@@ -35,7 +35,12 @@ const navItems: NavItem[] = [
   { id: "tasks", label: "Tasks", icon: CheckSquare, href: "/tasks" },
   { id: "notes", label: "Notes", icon: FileText, href: "/notes" },
   { id: "calendar", label: "Calendar", icon: Calendar, href: "/calendar" },
-  { id: "quick-links", label: "Quick Links", icon: LinkIcon, href: "/quick-links" },
+  {
+    id: "quick-links",
+    label: "Quick Links",
+    icon: LinkIcon,
+    href: "/quick-links",
+  },
 ];
 
 const bottomNavItems: NavItem[] = [
@@ -46,9 +51,7 @@ const bottomNavItems: NavItem[] = [
  * SidebarNav - Navigation component for the sidebar
  * Implements Polaris design system with proper active states and hover effects
  */
-function SidebarNavCore({
-  className,
-}: SidebarNavProps) {
+function SidebarNavCore({ className }: SidebarNavProps) {
   const pathname = usePathname();
   const { signOut, isAuthenticated, user } = useAuth();
 
@@ -79,7 +82,8 @@ function SidebarNavCore({
       <nav className="flex-1 space-y-1">
         {navItems.map((item) => {
           const Icon = item.icon;
-          const isActive = pathname === item.href || 
+          const isActive =
+            pathname === item.href ||
             (item.href !== "/" && pathname?.startsWith(item.href));
 
           return (

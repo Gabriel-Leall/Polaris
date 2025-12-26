@@ -208,7 +208,9 @@ function QuickLinksWidgetCore({
     <div className={cn("flex flex-col h-full", className)}>
       {/* Header */}
       <div className="flex items-center justify-between mb-3">
-        <h2 className="text-sm font-medium tracking-tight text-foreground">Quick Links</h2>
+        <h2 className="text-sm font-medium tracking-tight text-foreground">
+          Quick Links
+        </h2>
         {!readOnly && (
           <Button
             variant="ghost"
@@ -220,7 +222,10 @@ function QuickLinksWidgetCore({
           </Button>
         )}
         {readOnly && (
-          <a href="/quick-links" className="text-[10px] text-primary hover:text-primary/80">
+          <a
+            href="/quick-links"
+            className="text-[10px] text-primary hover:text-primary/80"
+          >
             Manage
           </a>
         )}

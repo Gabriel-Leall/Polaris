@@ -308,7 +308,9 @@ function TasksWidget({ className }: TasksWidgetProps) {
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <h2 className="text-sm font-medium tracking-tight text-foreground">Tasks</h2>
+          <h2 className="text-sm font-medium tracking-tight text-foreground">
+            Tasks
+          </h2>
           {isLocalMode && (
             <span className="text-[10px] px-1.5 py-0.5 rounded bg-yellow-500/20 text-yellow-400">
               Offline
@@ -364,7 +366,9 @@ function TasksWidget({ className }: TasksWidgetProps) {
               <Plus className="w-4 h-4 text-muted-foreground" />
             </div>
             <p className="text-sm text-muted-foreground">No tasks yet</p>
-            <p className="text-xs text-muted-foreground/70 mt-1">Add your first task above</p>
+            <p className="text-xs text-muted-foreground/70 mt-1">
+              Add your first task above
+            </p>
           </div>
         ) : (
           tasks.map((task) => (
@@ -461,7 +465,9 @@ function TasksWidget({ className }: TasksWidgetProps) {
         <div className="mt-auto pt-3 border-t border-white/5">
           <div className="flex justify-between text-xs text-muted-foreground">
             <span>{tasks.filter((t) => t.completed).length} completed</span>
-            <span className="text-primary font-medium">{tasks.length} total</span>
+            <span className="text-primary font-medium">
+              {tasks.length} total
+            </span>
           </div>
         </div>
       )}

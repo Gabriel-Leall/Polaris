@@ -1,8 +1,4 @@
-import {
-  DashboardLayout,
-  Sidebar,
-  SidebarNav,
-} from "@/components/layout";
+import { DashboardLayout, Sidebar, SidebarNav } from "@/components/layout";
 import { Settings } from "lucide-react";
 
 export default function SettingsPage() {

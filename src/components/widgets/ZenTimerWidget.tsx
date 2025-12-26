@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { useState, useEffect, useCallback } from "react";
 import { Play, Pause, RotateCcw } from "lucide-react";
@@ -124,7 +124,9 @@ const ZenTimerWidgetCore = ({ className }: ZenTimerWidgetProps) => {
     <div className={cn("flex flex-col h-full", className)}>
       {/* Header */}
       <div className="flex items-center justify-between mb-3">
-        <h2 className="text-sm font-medium tracking-tight text-foreground">Zen Timer</h2>
+        <h2 className="text-sm font-medium tracking-tight text-foreground">
+          Zen Timer
+        </h2>
         <Button
           variant="ghost"
           size="sm"

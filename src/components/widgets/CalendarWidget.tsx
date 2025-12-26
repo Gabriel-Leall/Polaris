@@ -160,15 +160,18 @@ function CalendarWidgetCore({ className }: CalendarWidgetProps) {
               {
                 "text-foreground": calendarDay.isCurrentMonth,
                 "text-muted-foreground/40": !calendarDay.isCurrentMonth,
-                "bg-primary text-white hover:bg-primary/90": calendarDay.isToday,
+                "bg-primary text-white hover:bg-primary/90":
+                  calendarDay.isToday,
                 "font-medium": calendarDay.isToday,
               }
             )}
           >
             {calendarDay.day}
-            {calendarDay.hasEvent && calendarDay.isCurrentMonth && !calendarDay.isToday && (
-              <div className="absolute bottom-0.5 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-primary rounded-full" />
-            )}
+            {calendarDay.hasEvent &&
+              calendarDay.isCurrentMonth &&
+              !calendarDay.isToday && (
+                <div className="absolute bottom-0.5 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-primary rounded-full" />
+              )}
           </button>
         ))}
       </div>

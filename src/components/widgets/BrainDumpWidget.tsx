@@ -241,7 +241,9 @@ function BrainDumpWidgetCore() {
       {/* Header */}
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
-          <h2 className="text-sm font-medium tracking-tight text-foreground">Brain Dump</h2>
+          <h2 className="text-sm font-medium tracking-tight text-foreground">
+            Brain Dump
+          </h2>
           {isLocalMode && (
             <span className="text-[10px] px-1.5 py-0.5 rounded bg-yellow-500/20 text-yellow-400">
               Offline

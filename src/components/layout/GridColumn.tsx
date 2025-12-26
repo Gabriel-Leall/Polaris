@@ -8,11 +8,7 @@ interface GridColumnProps {
  * GridColumn - Responsive column component for the Bento Grid
  * No-scroll design: content must fit within fixed height containers
  */
-function GridColumn({
-  children,
-  className,
-  span = "center",
-}: GridColumnProps) {
+function GridColumn({ children, className, span = "center" }: GridColumnProps) {
   // Define responsive column spans based on the span prop
   const getColumnClasses = () => {
     if (typeof span === "number") {
