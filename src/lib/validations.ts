@@ -69,6 +69,24 @@ export const updateBrainDumpNoteSchema = z.object({
   version: z.number().min(1, 'Version must be at least 1').optional()
 })
 
+// Habit validation schemas
+export const createHabitSchema = z.object({
+  userId: z.string().uuid('Invalid user ID'),
+  name: z.string().min(1, 'Habit name is required').max(100, 'Habit name too long'),
+  days: z.array(z.boolean()).length(7, 'Days must be an array of 7 booleans').default([false, false, false, false, false, false, false])
+})
+
+export const updateHabitSchema = z.object({
+  id: z.string().uuid('Invalid habit ID'),
+  name: z.string().min(1, 'Habit name is required').max(100, 'Habit name too long').optional(),
+  days: z.array(z.boolean()).length(7, 'Days must be an array of 7 booleans').optional()
+})
+
+export const toggleHabitDaySchema = z.object({
+  id: z.string().uuid('Invalid habit ID'),
+  dayIndex: z.number().min(0).max(6, 'Day index must be between 0 and 6')
+})
+
 export const userIdSchema = z.string().uuid('Invalid user ID')
 
 // Environment variable validation
@@ -87,3 +105,6 @@ export type CreateUserPreferencesInput = z.infer<typeof createUserPreferencesSch
 export type UpdateUserPreferencesInput = z.infer<typeof updateUserPreferencesSchema>
 export type CreateBrainDumpNoteInput = z.infer<typeof createBrainDumpNoteSchema>
 export type UpdateBrainDumpNoteInput = z.infer<typeof updateBrainDumpNoteSchema>
+export type CreateHabitInput = z.infer<typeof createHabitSchema>
+export type UpdateHabitInput = z.infer<typeof updateHabitSchema>
+export type ToggleHabitDayInput = z.infer<typeof toggleHabitDaySchema>

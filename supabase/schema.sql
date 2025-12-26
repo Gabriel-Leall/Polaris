@@ -161,3 +161,37 @@ CREATE TRIGGER update_user_preferences_updated_at BEFORE UPDATE ON public.user_p
 
 CREATE TRIGGER update_brain_dump_notes_updated_at BEFORE UPDATE ON public.brain_dump_notes
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+-- Habits table for Habit Tracker widget
+CREATE TABLE IF NOT EXISTS public.habits (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
+  name TEXT NOT NULL,
+  days JSONB DEFAULT '[false, false, false, false, false, false, false]'::jsonb,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Enable RLS on habits table
+ALTER TABLE public.habits ENABLE ROW LEVEL SECURITY;
+
+-- Habits policies
+CREATE POLICY "Users can view own habits" ON public.habits
+  FOR SELECT USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can insert own habits" ON public.habits
+  FOR INSERT WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can update own habits" ON public.habits
+  FOR UPDATE USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can delete own habits" ON public.habits
+  FOR DELETE USING (auth.uid() = user_id);
+
+-- Habits indexes
+CREATE INDEX IF NOT EXISTS habits_user_id_idx ON public.habits(user_id);
+CREATE INDEX IF NOT EXISTS habits_created_at_idx ON public.habits(created_at);
+
+-- Habits timestamp trigger
+CREATE TRIGGER update_habits_updated_at BEFORE UPDATE ON public.habits
+  FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();

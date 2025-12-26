@@ -55,6 +55,15 @@ export interface BrainDumpNote {
   updatedAt: Date;
 }
 
+export interface Habit {
+  id: string;
+  userId: string;
+  name: string;
+  days: boolean[]; // Array of 7 booleans (Sun-Sat)
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 export interface UserProfile {
   id: string;
   email?: string;
@@ -237,6 +246,32 @@ export interface Database {
           user_id?: string;
           content?: string;
           version?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
+      habits: {
+        Row: {
+          id: string;
+          user_id: string;
+          name: string;
+          days: boolean[];
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          name: string;
+          days?: boolean[];
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          name?: string;
+          days?: boolean[];
           created_at?: string;
           updated_at?: string;
         };
