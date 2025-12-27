@@ -7,15 +7,7 @@ import {
   ErrorBoundary,
   WidgetErrorFallback,
 } from "@/components/ui/error-boundary";
-import {
-  Home,
-  CheckSquare,
-  FileText,
-  Calendar,
-  Link as LinkIcon,
-  Settings,
-  LogOut,
-} from "lucide-react";
+import { Home, CheckSquare, FileText, Calendar, Settings, LogOut } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 
 interface NavItem {
@@ -35,12 +27,6 @@ const navItems: NavItem[] = [
   { id: "tasks", label: "Tasks", icon: CheckSquare, href: "/tasks" },
   { id: "notes", label: "Notes", icon: FileText, href: "/notes" },
   { id: "calendar", label: "Calendar", icon: Calendar, href: "/calendar" },
-  {
-    id: "quick-links",
-    label: "Quick Links",
-    icon: LinkIcon,
-    href: "/quick-links",
-  },
 ];
 
 const bottomNavItems: NavItem[] = [
@@ -57,29 +43,8 @@ function SidebarNavCore({ className }: SidebarNavProps) {
 
   return (
     <div className={cn("flex flex-col h-full", className)}>
-      {/* User info */}
-      {isAuthenticated && user && (
-        <div className="px-3 py-3 mb-4 border-b border-white/5">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
-              <span className="text-xs font-medium text-primary">
-                {user.email?.[0]?.toUpperCase() || "U"}
-              </span>
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-foreground truncate">
-                {user.email?.split("@")[0] || "User"}
-              </p>
-              <p className="text-[10px] text-muted-foreground truncate">
-                {user.email}
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* Main navigation */}
-      <nav className="flex-1 space-y-1">
+      <nav className="space-y-1">
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive =
@@ -118,7 +83,28 @@ function SidebarNavCore({ className }: SidebarNavProps) {
       </nav>
 
       {/* Bottom navigation */}
-      <div className="mt-auto pt-4 border-t border-white/5 space-y-1">
+      <div className="mt-auto pt-4 border-t border-white/5 space-y-3">
+        {/* User info pinned to bottom */}
+        {isAuthenticated && user && (
+          <div className="px-3 py-3 border border-white/5 rounded-xl">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
+                <span className="text-xs font-medium text-primary">
+                  {user.email?.[0]?.toUpperCase() || "U"}
+                </span>
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-foreground truncate">
+                  {user.email?.split("@")[0] || "User"}
+                </p>
+                <p className="text-[10px] text-muted-foreground truncate">
+                  {user.email}
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
         {bottomNavItems.map((item) => {
           const Icon = item.icon;
           const isActive = pathname === item.href;

@@ -311,11 +311,6 @@ function TasksWidget({ className }: TasksWidgetProps) {
           <h2 className="text-sm font-medium tracking-tight text-foreground">
             Tasks
           </h2>
-          {isLocalMode && (
-            <span className="text-[10px] px-1.5 py-0.5 rounded bg-yellow-500/20 text-yellow-400">
-              Offline
-            </span>
-          )}
         </div>
         <span className="text-xs text-muted-foreground">
           {tasks.filter((t) => !t.completed).length} active

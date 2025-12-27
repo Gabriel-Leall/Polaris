@@ -139,7 +139,7 @@ const ZenTimerWidgetCore = ({ className }: ZenTimerWidgetProps) => {
       </div>
 
       {/* Timer Display & Controls */}
-      <div className="flex-1 flex items-center justify-center gap-6">
+      <div className="flex-1 w-full flex items-center justify-center gap-6 text-center">
         {/* Play/Pause Button */}
         <Button
           variant="primary"

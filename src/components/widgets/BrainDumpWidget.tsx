@@ -244,11 +244,6 @@ function BrainDumpWidgetCore() {
           <h2 className="text-sm font-medium tracking-tight text-foreground">
             Brain Dump
           </h2>
-          {isLocalMode && (
-            <span className="text-[10px] px-1.5 py-0.5 rounded bg-yellow-500/20 text-yellow-400">
-              Offline
-            </span>
-          )}
         </div>
         <div className="flex items-center gap-3">
           {/* Save Status */}
@@ -300,7 +295,7 @@ function BrainDumpWidgetCore() {
           onChange={handleContentChange}
           placeholder="Start typing your thoughts, ideas, code snippets..."
           disabled={isLoading || !userId}
-          className="h-full w-full font-mono text-sm leading-relaxed bg-white/[0.02] border-white/10 resize-none focus:border-primary/30 rounded-lg p-3"
+          className="h-full w-full font-mono text-sm leading-relaxed bg-white/[0.02] border-white/10 resize-none focus:border-primary/30 rounded-lg p-4 scrollbar-none"
           style={{
             fontFamily: "JetBrains Mono, Geist Mono, monospace",
           }}

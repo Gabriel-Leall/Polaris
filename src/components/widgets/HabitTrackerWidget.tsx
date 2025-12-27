@@ -270,11 +270,6 @@ function HabitTrackerWidget({ className }: HabitTrackerWidgetProps) {
           <h3 className="text-sm font-medium tracking-tight text-foreground">
             Habit Tracker
           </h3>
-          {isLocalMode && (
-            <span className="text-[10px] px-1.5 py-0.5 rounded bg-yellow-500/20 text-yellow-400">
-              Offline
-            </span>
-          )}
         </div>
         <div className="flex items-center gap-1">
           <Button
