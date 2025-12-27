@@ -55,8 +55,14 @@ export function parseSpotifyUrl(url: string): SpotifyParsedUrl | null {
   try {
     const urlObj = new URL(trimmedUrl);
     
-    // Check if it's a Spotify domain
-    if (!urlObj.hostname.includes('spotify.com')) {
+    // Only accept http and https protocols
+    if (urlObj.protocol !== 'http:' && urlObj.protocol !== 'https:') {
+      return null;
+    }
+    
+    // Check if it's the correct Spotify domain (open.spotify.com)
+    const hostname = urlObj.hostname.replace('www.', '');
+    if (hostname !== 'open.spotify.com') {
       return null;
     }
 
@@ -98,6 +104,12 @@ export function parseYouTubeUrl(url: string): YouTubeParsedUrl | null {
 
   try {
     const urlObj = new URL(trimmedUrl);
+    
+    // Only accept http and https protocols
+    if (urlObj.protocol !== 'http:' && urlObj.protocol !== 'https:') {
+      return null;
+    }
+    
     const hostname = urlObj.hostname.replace('www.', '');
 
     // Handle youtu.be short URLs
