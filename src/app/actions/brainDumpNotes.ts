@@ -21,6 +21,7 @@ export const createBrainDumpNote = async (
     const insertData = {
       user_id: validatedData.userId,
       content: validatedData.content,
+      content_html: validatedData.contentHtml ?? null,
       version: validatedData.version,
     };
 
@@ -39,6 +40,7 @@ export const createBrainDumpNote = async (
       id: note.id,
       userId: note.user_id,
       content: note.content,
+      contentHtml: note.content_html,
       version: note.version,
       createdAt: new Date(note.created_at),
       updatedAt: new Date(note.updated_at),
@@ -59,9 +61,11 @@ export const updateBrainDumpNote = async (
     // Validate input data
     const validatedData = updateBrainDumpNoteSchema.parse({ id, ...data });
 
-    const updateData: Record<string, any> = {};
+    const updateData: Record<string, unknown> = {};
     if (validatedData.content !== undefined)
       updateData.content = validatedData.content;
+    if (validatedData.contentHtml !== undefined)
+      updateData.content_html = validatedData.contentHtml;
     if (validatedData.version !== undefined)
       updateData.version = validatedData.version;
 
@@ -84,6 +88,7 @@ export const updateBrainDumpNote = async (
       id: note.id,
       userId: note.user_id,
       content: note.content,
+      contentHtml: note.content_html,
       version: note.version,
       createdAt: new Date(note.created_at),
       updatedAt: new Date(note.updated_at),
@@ -145,6 +150,7 @@ export const getBrainDumpNote = async (
       id: note.id,
       userId: note.user_id,
       content: note.content,
+      contentHtml: note.content_html,
       version: note.version,
       createdAt: new Date(note.created_at),
       updatedAt: new Date(note.updated_at),
@@ -159,7 +165,8 @@ export const getBrainDumpNote = async (
 
 export const saveBrainDumpNote = async (
   userId: string,
-  content: string
+  content: string,
+  contentHtml?: string | null
 ): Promise<BrainDumpNote> => {
   try {
     // First, try to get existing note
@@ -169,6 +176,7 @@ export const saveBrainDumpNote = async (
       // Update existing note with incremented version
       return await updateBrainDumpNote(existingNote.id, {
         content,
+        contentHtml,
         version: existingNote.version + 1,
       });
     } else {
@@ -176,6 +184,7 @@ export const saveBrainDumpNote = async (
       return await createBrainDumpNote({
         userId,
         content,
+        contentHtml,
         version: 1,
       });
     }

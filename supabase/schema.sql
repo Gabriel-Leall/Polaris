@@ -195,3 +195,75 @@ CREATE INDEX IF NOT EXISTS habits_created_at_idx ON public.habits(created_at);
 -- Habits timestamp trigger
 CREATE TRIGGER update_habits_updated_at BEFORE UPDATE ON public.habits
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+
+-- ============================================
+-- Dashboard Layout Enhancement Tables
+-- ============================================
+
+-- Media Preferences table for Media Player widget
+CREATE TABLE IF NOT EXISTS public.media_preferences (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
+  source_type VARCHAR(20) NOT NULL CHECK (source_type IN ('spotify', 'youtube')),
+  source_url TEXT NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Quick Links table for Quick Links widget
+CREATE TABLE IF NOT EXISTS public.quick_links (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
+  url TEXT NOT NULL,
+  title VARCHAR(255) NOT NULL,
+  favicon_url TEXT,
+  position INTEGER DEFAULT 0,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Add content_html column to brain_dump_notes for rich text support
+ALTER TABLE public.brain_dump_notes ADD COLUMN IF NOT EXISTS content_html TEXT;
+
+-- Enable RLS on new tables
+ALTER TABLE public.media_preferences ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.quick_links ENABLE ROW LEVEL SECURITY;
+
+-- Media Preferences RLS policies
+CREATE POLICY "Users can view own media preferences" ON public.media_preferences
+  FOR SELECT USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can insert own media preferences" ON public.media_preferences
+  FOR INSERT WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can update own media preferences" ON public.media_preferences
+  FOR UPDATE USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can delete own media preferences" ON public.media_preferences
+  FOR DELETE USING (auth.uid() = user_id);
+
+-- Quick Links RLS policies
+CREATE POLICY "Users can view own quick links" ON public.quick_links
+  FOR SELECT USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can insert own quick links" ON public.quick_links
+  FOR INSERT WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can update own quick links" ON public.quick_links
+  FOR UPDATE USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can delete own quick links" ON public.quick_links
+  FOR DELETE USING (auth.uid() = user_id);
+
+-- Create indexes for better performance
+CREATE INDEX IF NOT EXISTS media_preferences_user_id_idx ON public.media_preferences(user_id);
+CREATE INDEX IF NOT EXISTS quick_links_user_id_idx ON public.quick_links(user_id);
+CREATE INDEX IF NOT EXISTS quick_links_position_idx ON public.quick_links(position);
+
+-- Create triggers for automatic timestamp updates
+CREATE TRIGGER update_media_preferences_updated_at BEFORE UPDATE ON public.media_preferences
+  FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_quick_links_updated_at BEFORE UPDATE ON public.quick_links
+  FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();

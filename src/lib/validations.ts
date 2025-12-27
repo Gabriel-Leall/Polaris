@@ -101,12 +101,14 @@ export const updateUserPreferencesSchema = z.object({
 export const createBrainDumpNoteSchema = z.object({
   userId: z.string().uuid("Invalid user ID"),
   content: z.string().default(""),
+  contentHtml: z.string().nullable().optional(),
   version: z.number().min(1, "Version must be at least 1").default(1),
 });
 
 export const updateBrainDumpNoteSchema = z.object({
   id: z.string().uuid("Invalid brain dump note ID"),
   content: z.string().optional(),
+  contentHtml: z.string().nullable().optional(),
   version: z.number().min(1, "Version must be at least 1").optional(),
 });
 
@@ -143,6 +145,38 @@ export const toggleHabitDaySchema = z.object({
 
 export const userIdSchema = z.string().uuid("Invalid user ID");
 
+// Media Preferences validation schemas
+export const mediaSourceTypeSchema = z.enum(["spotify", "youtube"] as const);
+
+export const createMediaPreferenceSchema = z.object({
+  userId: z.string().uuid("Invalid user ID"),
+  sourceType: mediaSourceTypeSchema,
+  sourceUrl: z.string().url("Invalid URL").min(1, "URL is required"),
+});
+
+export const updateMediaPreferenceSchema = z.object({
+  id: z.string().uuid("Invalid media preference ID"),
+  sourceType: mediaSourceTypeSchema.optional(),
+  sourceUrl: z.string().url("Invalid URL").optional(),
+});
+
+// Quick Links validation schemas
+export const createQuickLinkSchema = z.object({
+  userId: z.string().uuid("Invalid user ID"),
+  url: z.string().url("Invalid URL").min(1, "URL is required"),
+  title: z.string().min(1, "Title is required").max(255, "Title too long"),
+  faviconUrl: z.string().url("Invalid favicon URL").nullable().optional(),
+  position: z.number().min(0).default(0),
+});
+
+export const updateQuickLinkSchema = z.object({
+  id: z.string().uuid("Invalid quick link ID"),
+  url: z.string().url("Invalid URL").optional(),
+  title: z.string().min(1, "Title is required").max(255, "Title too long").optional(),
+  faviconUrl: z.string().url("Invalid favicon URL").nullable().optional(),
+  position: z.number().min(0).optional(),
+});
+
 // Environment variable validation
 export const envSchema = z.object({
   NEXT_PUBLIC_SUPABASE_URL: z.string().url("Invalid Supabase URL"),
@@ -178,3 +212,7 @@ export type UpdateBrainDumpNoteInput = z.infer<
 export type CreateHabitInput = z.infer<typeof createHabitSchema>;
 export type UpdateHabitInput = z.infer<typeof updateHabitSchema>;
 export type ToggleHabitDayInput = z.infer<typeof toggleHabitDaySchema>;
+export type CreateMediaPreferenceInput = z.infer<typeof createMediaPreferenceSchema>;
+export type UpdateMediaPreferenceInput = z.infer<typeof updateMediaPreferenceSchema>;
+export type CreateQuickLinkInput = z.infer<typeof createQuickLinkSchema>;
+export type UpdateQuickLinkInput = z.infer<typeof updateQuickLinkSchema>;

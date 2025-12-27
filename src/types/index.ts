@@ -50,6 +50,7 @@ export interface BrainDumpNote {
   id: string;
   userId: string;
   content: string;
+  contentHtml: string | null;
   version: number;
   createdAt: Date;
   updatedAt: Date;
@@ -60,6 +61,28 @@ export interface Habit {
   userId: string;
   name: string;
   days: boolean[]; // Array of 7 booleans (Sun-Sat)
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export type MediaSourceType = 'spotify' | 'youtube';
+
+export interface MediaPreference {
+  id: string;
+  userId: string;
+  sourceType: MediaSourceType;
+  sourceUrl: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface QuickLink {
+  id: string;
+  userId: string;
+  url: string;
+  title: string;
+  faviconUrl: string | null;
+  position: number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -229,6 +252,7 @@ export interface Database {
           id: string;
           user_id: string;
           content: string;
+          content_html: string | null;
           version: number;
           created_at: string;
           updated_at: string;
@@ -237,6 +261,7 @@ export interface Database {
           id?: string;
           user_id: string;
           content: string;
+          content_html?: string | null;
           version?: number;
           created_at?: string;
           updated_at?: string;
@@ -245,6 +270,7 @@ export interface Database {
           id?: string;
           user_id?: string;
           content?: string;
+          content_html?: string | null;
           version?: number;
           created_at?: string;
           updated_at?: string;
@@ -272,6 +298,64 @@ export interface Database {
           user_id?: string;
           name?: string;
           days?: boolean[];
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
+      media_preferences: {
+        Row: {
+          id: string;
+          user_id: string;
+          source_type: 'spotify' | 'youtube';
+          source_url: string;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          source_type: 'spotify' | 'youtube';
+          source_url: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          source_type?: 'spotify' | 'youtube';
+          source_url?: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
+      quick_links: {
+        Row: {
+          id: string;
+          user_id: string;
+          url: string;
+          title: string;
+          favicon_url: string | null;
+          position: number;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          url: string;
+          title: string;
+          favicon_url?: string | null;
+          position?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          url?: string;
+          title?: string;
+          favicon_url?: string | null;
+          position?: number;
           created_at?: string;
           updated_at?: string;
         };

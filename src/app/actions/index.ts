@@ -8,3 +8,5 @@ export * from "./brainDumpNotes";
 export * from "./habits";
 export * from "./sync";
 export * from "./auth";
+export * from "./mediaPreferences";
+export * from "./quickLinks";
