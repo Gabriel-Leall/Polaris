@@ -1,16 +1,214 @@
 "use client";
 
-import { useEffect, useCallback, useState } from "react";
+import { useEffect, useCallback, useState, useRef } from "react";
 import { useBrainDumpStore } from "@/store";
 import { useDebounce } from "@/hooks/useDebounce";
-import { Textarea, ErrorBoundary } from "@/components/ui";
+import { ErrorBoundary } from "@/components/ui";
 import { saveBrainDumpNote, getBrainDumpNote } from "@/app/actions";
 import { supabase } from "@/lib/supabase";
-import { Save, Clock, AlertCircle } from "lucide-react";
+import {
+  Save,
+  Clock,
+  AlertCircle,
+  Bold,
+  Italic,
+  Underline,
+  Code,
+  Link,
+  List,
+  ListOrdered,
+  Undo,
+  Redo,
+  Check,
+  Loader2,
+} from "lucide-react";
+import { useEditor, EditorContent, Editor } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
+import LinkExtension from "@tiptap/extension-link";
+import UnderlineExtension from "@tiptap/extension-underline";
+import Placeholder from "@tiptap/extension-placeholder";
 
 const LOCAL_BRAIN_DUMP_KEY = "polaris-brain-dump-local";
+const DEBOUNCE_DELAY = 1000; // 1 second debounce for auto-save
 
-function BrainDumpWidgetCore() {
+interface ToolbarButtonProps {
+  onClick: () => void;
+  isActive?: boolean;
+  disabled?: boolean;
+  children: React.ReactNode;
+  title: string;
+}
+
+const ToolbarButton = ({
+  onClick,
+  isActive,
+  disabled,
+  children,
+  title,
+}: ToolbarButtonProps) => (
+  <button
+    type="button"
+    onClick={onClick}
+    disabled={disabled}
+    title={title}
+    className={`p-1.5 rounded-md transition-colors ${
+      isActive
+        ? "bg-primary/20 text-primary"
+        : "text-muted-foreground hover:text-foreground hover:bg-white/5"
+    } ${disabled ? "opacity-50 cursor-not-allowed" : ""}`}
+  >
+    {children}
+  </button>
+);
+
+
+interface EditorToolbarProps {
+  editor: Editor | null;
+}
+
+const EditorToolbar = ({ editor }: EditorToolbarProps) => {
+  if (!editor) return null;
+
+  const addLink = useCallback(() => {
+    const previousUrl = editor.getAttributes("link").href;
+    const url = window.prompt("Enter URL:", previousUrl);
+
+    if (url === null) return;
+
+    if (url === "") {
+      editor.chain().focus().extendMarkRange("link").unsetLink().run();
+      return;
+    }
+
+    editor.chain().focus().extendMarkRange("link").setLink({ href: url }).run();
+  }, [editor]);
+
+  return (
+    <div className="flex items-center gap-0.5 p-1.5 border-b border-white/10 bg-white/[0.02]">
+      <ToolbarButton
+        onClick={() => editor.chain().focus().toggleBold().run()}
+        isActive={editor.isActive("bold")}
+        title="Bold (Ctrl+B)"
+      >
+        <Bold className="w-4 h-4" />
+      </ToolbarButton>
+
+      <ToolbarButton
+        onClick={() => editor.chain().focus().toggleItalic().run()}
+        isActive={editor.isActive("italic")}
+        title="Italic (Ctrl+I)"
+      >
+        <Italic className="w-4 h-4" />
+      </ToolbarButton>
+
+      <ToolbarButton
+        onClick={() => editor.chain().focus().toggleUnderline().run()}
+        isActive={editor.isActive("underline")}
+        title="Underline (Ctrl+U)"
+      >
+        <Underline className="w-4 h-4" />
+      </ToolbarButton>
+
+      <div className="w-px h-4 bg-white/10 mx-1" />
+
+      <ToolbarButton
+        onClick={() => editor.chain().focus().toggleCode().run()}
+        isActive={editor.isActive("code")}
+        title="Inline Code"
+      >
+        <Code className="w-4 h-4" />
+      </ToolbarButton>
+
+      <ToolbarButton
+        onClick={addLink}
+        isActive={editor.isActive("link")}
+        title="Add Link"
+      >
+        <Link className="w-4 h-4" />
+      </ToolbarButton>
+
+      <div className="w-px h-4 bg-white/10 mx-1" />
+
+      <ToolbarButton
+        onClick={() => editor.chain().focus().toggleBulletList().run()}
+        isActive={editor.isActive("bulletList")}
+        title="Bullet List"
+      >
+        <List className="w-4 h-4" />
+      </ToolbarButton>
+
+      <ToolbarButton
+        onClick={() => editor.chain().focus().toggleOrderedList().run()}
+        isActive={editor.isActive("orderedList")}
+        title="Ordered List"
+      >
+        <ListOrdered className="w-4 h-4" />
+      </ToolbarButton>
+
+      <div className="w-px h-4 bg-white/10 mx-1" />
+
+      <ToolbarButton
+        onClick={() => editor.chain().focus().undo().run()}
+        disabled={!editor.can().undo()}
+        title="Undo (Ctrl+Z)"
+      >
+        <Undo className="w-4 h-4" />
+      </ToolbarButton>
+
+      <ToolbarButton
+        onClick={() => editor.chain().focus().redo().run()}
+        disabled={!editor.can().redo()}
+        title="Redo (Ctrl+Shift+Z)"
+      >
+        <Redo className="w-4 h-4" />
+      </ToolbarButton>
+    </div>
+  );
+};
+
+
+interface SaveIndicatorProps {
+  isSaving: boolean;
+  lastSaved: Date | null;
+  hasError: boolean;
+}
+
+const SaveIndicator = ({ isSaving, lastSaved, hasError }: SaveIndicatorProps) => {
+  if (hasError) {
+    return (
+      <div className="flex items-center gap-1.5 text-red-400 text-xs">
+        <AlertCircle className="w-3 h-3" />
+        <span>Save failed</span>
+      </div>
+    );
+  }
+
+  if (isSaving) {
+    return (
+      <div className="flex items-center gap-1.5 text-muted-foreground text-xs">
+        <Loader2 className="w-3 h-3 animate-spin" />
+        <span>Saving...</span>
+      </div>
+    );
+  }
+
+  if (lastSaved) {
+    return (
+      <div className="flex items-center gap-1.5 text-muted-foreground text-xs">
+        <Check className="w-3 h-3 text-green-400" />
+        <span>Saved</span>
+      </div>
+    );
+  }
+
+  return null;
+};
+
+interface BrainDumpWidgetProps {
+  className?: string;
+}
+
+const BrainDumpWidgetContent = ({ className }: BrainDumpWidgetProps) => {
   const {
     content,
     isLoading,
@@ -24,311 +222,240 @@ function BrainDumpWidgetCore() {
     setUnsavedChanges,
   } = useBrainDumpStore();
 
-  const [error, setError] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
-  const [isLocalMode, setIsLocalMode] = useState(false);
+  const [noteId, setNoteId] = useState<string | null>(null);
+  const [saveError, setSaveError] = useState(false);
+  const [editorHtml, setEditorHtml] = useState<string>("");
+  const isInitialLoad = useRef(true);
+  const lastSavedContent = useRef<string>("");
 
-  const loadLocalNote = () => {
-    if (typeof window === "undefined")
-      return { content: "", updatedAt: null as Date | null };
-    const raw = localStorage.getItem(LOCAL_BRAIN_DUMP_KEY);
-    if (!raw) return { content: "", updatedAt: null as Date | null };
-    try {
-      const parsed = JSON.parse(raw) as { content: string; updatedAt?: string };
-      return {
-        content: parsed.content ?? "",
-        updatedAt: parsed.updatedAt ? new Date(parsed.updatedAt) : null,
-      };
-    } catch {
-      return { content: "", updatedAt: null as Date | null };
-    }
-  };
+  // Debounce the editor HTML for auto-save
+  const debouncedHtml = useDebounce(editorHtml, DEBOUNCE_DELAY);
 
-  const persistLocalNote = (value: string) => {
-    const payload = { content: value, updatedAt: new Date().toISOString() };
-    localStorage.setItem(LOCAL_BRAIN_DUMP_KEY, JSON.stringify(payload));
-    setLastSaved(new Date(payload.updatedAt));
-    setUnsavedChanges(false);
-  };
 
-  // Debounce content changes for auto-save
-  const debouncedContent = useDebounce(content, 2000); // 2 second delay
+  // Initialize Tiptap editor with markdown shortcuts support
+  const editor = useEditor({
+    extensions: [
+      StarterKit.configure({
+        // Enable markdown-style input rules for bold, italic, code
+        bold: {
+          HTMLAttributes: {
+            class: "font-bold",
+          },
+        },
+        italic: {
+          HTMLAttributes: {
+            class: "italic",
+          },
+        },
+        code: {
+          HTMLAttributes: {
+            class: "bg-white/10 px-1 py-0.5 rounded text-sm font-mono",
+          },
+        },
+        bulletList: {
+          HTMLAttributes: {
+            class: "list-disc list-inside space-y-1",
+          },
+        },
+        orderedList: {
+          HTMLAttributes: {
+            class: "list-decimal list-inside space-y-1",
+          },
+        },
+      }),
+      UnderlineExtension,
+      LinkExtension.configure({
+        openOnClick: true,
+        HTMLAttributes: {
+          class: "text-primary underline hover:text-primary/80",
+        },
+      }),
+      Placeholder.configure({
+        placeholder: "Add a brain dump...",
+        emptyEditorClass:
+          "before:content-[attr(data-placeholder)] before:text-muted-foreground before:float-left before:h-0 before:pointer-events-none",
+      }),
+    ],
+    content: "",
+    editorProps: {
+      attributes: {
+        class:
+          "prose prose-invert prose-sm max-w-none focus:outline-none min-h-[200px] p-4",
+      },
+    },
+    onUpdate: ({ editor }) => {
+      const html = editor.getHTML();
+      const text = editor.getText();
+      setEditorHtml(html);
+      setContent(text);
+      setUnsavedChanges(html !== lastSavedContent.current);
+    },
+  });
 
-  // Get current user
+
+  // Get current user on mount
   useEffect(() => {
     const getCurrentUser = async () => {
-      try {
-        const {
-          data: { user },
-        } = await supabase.auth.getUser();
-        if (user) {
-          setUserId(user.id);
-          setIsLocalMode(false);
-          return;
-        }
-      } catch (err) {
-        console.error("Error getting user:", err);
-        setError("Failed to authenticate user (using local notes)");
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (user) {
+        setUserId(user.id);
       }
-
-      // Fallback to local mode when no user is available
-      setIsLocalMode(true);
-      setUserId("local-user");
     };
-
     getCurrentUser();
   }, []);
 
-  // Load existing note on mount
+  // Load saved content on mount
   useEffect(() => {
-    const loadNote = async () => {
-      if (!userId) return;
+    const loadContent = async () => {
+      if (!userId || !editor) return;
 
+      setLoading(true);
       try {
-        setLoading(true);
-        setError(null);
-
-        if (isLocalMode || userId === "local-user") {
-          const local = loadLocalNote();
-          setContent(local.content);
-          setLastSaved(local.updatedAt);
-          setUnsavedChanges(false);
-          return;
-        }
-
         const note = await getBrainDumpNote(userId);
         if (note) {
+          setNoteId(note.id);
+          // Prefer HTML content if available, otherwise use plain text
+          const contentToLoad = note.contentHtml || note.content || "";
+          editor.commands.setContent(contentToLoad);
+          setEditorHtml(contentToLoad);
           setContent(note.content);
+          lastSavedContent.current = contentToLoad;
           setLastSaved(note.updatedAt);
-          setUnsavedChanges(false);
         } else {
-          // fallback if no remote note
-          const local = loadLocalNote();
-          setContent(local.content);
-          setLastSaved(local.updatedAt);
-          setUnsavedChanges(false);
+          // Try to load from local storage as fallback
+          const localContent = localStorage.getItem(LOCAL_BRAIN_DUMP_KEY);
+          if (localContent) {
+            editor.commands.setContent(localContent);
+            setEditorHtml(localContent);
+            setContent(editor.getText());
+          }
         }
-      } catch (err) {
-        console.error("Error loading brain dump note:", err);
-        const local = loadLocalNote();
-        setContent(local.content);
-        setLastSaved(local.updatedAt);
-        setUnsavedChanges(false);
-        setIsLocalMode(true);
-        setError("Failed to load remote notes (using local notes)");
+      } catch (error) {
+        console.error("Failed to load brain dump:", error);
+        // Try local storage fallback
+        const localContent = localStorage.getItem(LOCAL_BRAIN_DUMP_KEY);
+        if (localContent) {
+          editor.commands.setContent(localContent);
+          setEditorHtml(localContent);
+          setContent(editor.getText());
+        }
       } finally {
         setLoading(false);
+        isInitialLoad.current = false;
       }
     };
 
-    loadNote();
-  }, [
-    userId,
-    setContent,
-    setLoading,
-    setLastSaved,
-    isLocalMode,
-    setUnsavedChanges,
-  ]);
+    loadContent();
+  }, [userId, editor, setLoading, setContent, setLastSaved]);
 
-  // Auto-save when content changes (debounced)
+
+  // Auto-save with debouncing
   useEffect(() => {
-    const autoSave = async () => {
-      if (!userId || !hasUnsavedChanges || isSaving || isLoading) return;
+    const saveContent = async () => {
+      // Skip if initial load or no changes
+      if (isInitialLoad.current || !hasUnsavedChanges) return;
+      if (!userId || !debouncedHtml) return;
+      if (debouncedHtml === lastSavedContent.current) return;
+
+      setSaving(true);
+      setSaveError(false);
 
       try {
-        setSaving(true);
-        setError(null);
-        if (isLocalMode || userId === "local-user") {
-          persistLocalNote(debouncedContent);
-          return;
-        }
+        // Save to local storage first (immediate backup)
+        localStorage.setItem(LOCAL_BRAIN_DUMP_KEY, debouncedHtml);
 
-        const savedNote = await saveBrainDumpNote(userId, debouncedContent);
-        setLastSaved(savedNote.updatedAt);
+        // Save to database
+        const plainText = editor?.getText() || "";
+        const savedNote = await saveBrainDumpNote(userId, plainText, debouncedHtml);
+        
+        setNoteId(savedNote.id);
+        setLastSaved(new Date());
+        lastSavedContent.current = debouncedHtml;
         setUnsavedChanges(false);
-      } catch (err) {
-        console.error("Error auto-saving brain dump note:", err);
-        persistLocalNote(debouncedContent);
-        setIsLocalMode(true);
-        setError("Failed to save notes remotely (saved locally)");
+      } catch (error) {
+        console.error("Failed to save brain dump:", error);
+        setSaveError(true);
       } finally {
         setSaving(false);
       }
     };
 
-    if (debouncedContent !== content) {
-      // Content has been debounced, trigger auto-save
-      autoSave();
-    }
+    saveContent();
   }, [
-    debouncedContent,
+    debouncedHtml,
     userId,
     hasUnsavedChanges,
-    isSaving,
-    isLoading,
+    editor,
     setSaving,
     setLastSaved,
-    content,
-    isLocalMode,
     setUnsavedChanges,
-    persistLocalNote,
   ]);
 
-  // Manual save function
-  const handleManualSave = useCallback(async () => {
-    if (!userId || isSaving) return;
+  if (isLoading) {
+    return (
+      <div className={`bg-card rounded-3xl border border-white/5 flex flex-col ${className}`}>
+        <div className="flex items-center justify-between p-4 border-b border-white/10">
+          <h2 className="text-sm font-semibold text-white">Brain Dump</h2>
+        </div>
+        <div className="flex-1 flex items-center justify-center p-4">
+          <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
+        </div>
+      </div>
+    );
+  }
 
-    try {
-      setSaving(true);
-      setError(null);
-      if (isLocalMode || userId === "local-user") {
-        persistLocalNote(content);
-        return;
-      }
-
-      const savedNote = await saveBrainDumpNote(userId, content);
-      setLastSaved(savedNote.updatedAt);
-      setUnsavedChanges(false);
-    } catch (err) {
-      console.error("Error manually saving brain dump note:", err);
-      persistLocalNote(content);
-      setIsLocalMode(true);
-      setError("Failed to save notes remotely (saved locally)");
-    } finally {
-      setSaving(false);
-    }
-  }, [
-    userId,
-    content,
-    isSaving,
-    setSaving,
-    setLastSaved,
-    isLocalMode,
-    setUnsavedChanges,
-    persistLocalNote,
-  ]);
-
-  // Handle content change
-  const handleContentChange = useCallback(
-    (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-      const newContent = e.target.value;
-      setContent(newContent);
-      setUnsavedChanges(true);
-      setError(null);
-    },
-    [setContent, setUnsavedChanges]
-  );
-
-  // Format last saved time
-  const formatLastSaved = (date: Date | null) => {
-    if (!date) return "Never";
-    const now = new Date();
-    const diff = now.getTime() - date.getTime();
-    const minutes = Math.floor(diff / 60000);
-
-    if (minutes < 1) return "Just now";
-    if (minutes < 60) return `${minutes}m ago`;
-
-    const hours = Math.floor(minutes / 60);
-    if (hours < 24) return `${hours}h ago`;
-
-    return date.toLocaleDateString();
-  };
 
   return (
-    <div className="h-full flex flex-col">
+    <div className={`bg-card rounded-3xl border border-white/5 flex flex-col overflow-hidden ${className}`}>
       {/* Header */}
-      <div className="flex items-center justify-between mb-3">
-        <div className="flex items-center gap-2">
-          <h2 className="text-sm font-medium tracking-tight text-foreground">
-            Brain Dump
-          </h2>
-        </div>
-        <div className="flex items-center gap-3">
-          {/* Save Status */}
-          <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-            {isSaving ? (
-              <>
-                <div className="w-3 h-3 border border-primary/50 border-t-primary rounded-full animate-spin" />
-                <span>Saving...</span>
-              </>
-            ) : hasUnsavedChanges ? (
-              <>
-                <Clock className="w-3 h-3" />
-                <span>Unsaved</span>
-              </>
-            ) : (
-              <>
-                <Save className="w-3 h-3 text-primary" />
-                <span>Saved {formatLastSaved(lastSaved)}</span>
-              </>
-            )}
-          </div>
-
-          {/* Manual Save Button */}
-          {hasUnsavedChanges && (
-            <button
-              onClick={handleManualSave}
-              disabled={isSaving}
-              className="text-xs font-medium text-primary hover:text-primary/80 transition-colors disabled:opacity-50"
-            >
-              Save Now
-            </button>
-          )}
-        </div>
-      </div>
-
-      {/* Error Display */}
-      {error && (
-        <div className="flex items-center gap-2 mb-3 p-2 bg-destructive/10 border border-destructive/20 rounded-lg">
-          <AlertCircle className="w-3.5 h-3.5 text-destructive" />
-          <span className="text-xs text-destructive">{error}</span>
-        </div>
-      )}
-
-      {/* Content Area */}
-      <div className="flex-1 relative min-h-0">
-        {/* Textarea */}
-        <Textarea
-          value={content}
-          onChange={handleContentChange}
-          placeholder="Start typing your thoughts, ideas, code snippets..."
-          disabled={isLoading || !userId}
-          className="h-full w-full font-mono text-sm leading-relaxed bg-white/[0.02] border-white/10 resize-none focus:border-primary/30 rounded-lg p-4 scrollbar-none"
-          style={{
-            fontFamily: "JetBrains Mono, Geist Mono, monospace",
-          }}
+      <div className="flex items-center justify-between p-4 border-b border-white/10">
+        <h2 className="text-sm font-semibold text-white">Brain Dump</h2>
+        <SaveIndicator
+          isSaving={isSaving}
+          lastSaved={lastSaved}
+          hasError={saveError}
         />
-
-        {/* Loading Overlay */}
-        {isLoading && (
-          <div className="absolute inset-0 bg-card/90 flex items-center justify-center rounded-lg">
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <div className="w-4 h-4 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
-              <span>Loading notes...</span>
-            </div>
-          </div>
-        )}
       </div>
 
-      {/* Footer Info */}
-      <div className="mt-2 text-[10px] text-muted-foreground flex items-center justify-between">
-        <span>{content.length} chars</span>
-        <span>{content.split("\n").length} lines</span>
+      {/* Formatting Toolbar */}
+      <EditorToolbar editor={editor} />
+
+      {/* Editor Content */}
+      <div className="flex-1 overflow-auto">
+        <EditorContent
+          editor={editor}
+          className="h-full [&_.ProseMirror]:min-h-[200px] [&_.ProseMirror]:p-4 [&_.ProseMirror]:focus:outline-none"
+        />
       </div>
     </div>
   );
-}
+};
 
-// Wrapper component with error boundary
-function BrainDumpWidget() {
+const BrainDumpWidget = ({ className }: BrainDumpWidgetProps) => {
   return (
-    <ErrorBoundary>
-      <BrainDumpWidgetCore />
+    <ErrorBoundary
+      fallback={
+        <div className={`bg-card rounded-3xl border border-white/5 flex flex-col ${className}`}>
+          <div className="flex items-center justify-between p-4 border-b border-white/10">
+            <h2 className="text-sm font-semibold text-white">Brain Dump</h2>
+          </div>
+          <div className="flex-1 flex items-center justify-center p-4">
+            <div className="text-center">
+              <AlertCircle className="w-8 h-8 text-red-400 mx-auto mb-2" />
+              <p className="text-sm text-muted-foreground">
+                Failed to load editor
+              </p>
+            </div>
+          </div>
+        </div>
+      }
+    >
+      <BrainDumpWidgetContent className={className} />
     </ErrorBoundary>
   );
-}
+};
 
 export default BrainDumpWidget;
-export { BrainDumpWidget };

@@ -1,67 +1,45 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
-import { Play, Pause, RotateCcw } from "lucide-react";
+import { useEffect, useCallback, useRef } from "react";
+import { Play, Pause, RotateCcw, Sparkles, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   ErrorBoundary,
   WidgetErrorFallback,
 } from "@/components/ui/error-boundary";
 import { useZenStore } from "@/store/zenStore";
+import { formatTime } from "@/lib/timer-utils";
 import { cn } from "@/lib/utils";
 
 interface ZenTimerWidgetProps {
   className?: string | undefined;
 }
 
-interface TimerState {
-  minutes: number;
-  seconds: number;
-  isRunning: boolean;
-  totalSeconds: number;
-  initialDuration: number;
-}
+const CIRCLE_RADIUS = 45;
+const CIRCLE_CIRCUMFERENCE = 2 * Math.PI * CIRCLE_RADIUS;
 
 const ZenTimerWidgetCore = ({ className }: ZenTimerWidgetProps) => {
-  const { isZenMode, setZenMode } = useZenStore();
+  const {
+    isZenMode,
+    setZenMode,
+    timeRemaining,
+    isTimerRunning,
+    initialDuration,
+    startTimer,
+    stopTimer,
+    resetTimer,
+    tick,
+  } = useZenStore();
 
-  const [timerState, setTimerState] = useState<TimerState>({
-    minutes: 25,
-    seconds: 0,
-    isRunning: false,
-    totalSeconds: 25 * 60,
-    initialDuration: 25 * 60,
-  });
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  // Timer effect
+  // Timer tick effect
   useEffect(() => {
     let interval: NodeJS.Timeout | null = null;
 
-    if (timerState.isRunning && timerState.totalSeconds > 0) {
+    if (isTimerRunning && timeRemaining > 0) {
       interval = setInterval(() => {
-        setTimerState((prev) => {
-          const newTotalSeconds = prev.totalSeconds - 1;
-          const newMinutes = Math.floor(newTotalSeconds / 60);
-          const newSeconds = newTotalSeconds % 60;
-
-          // Auto-pause when timer reaches zero
-          if (newTotalSeconds <= 0) {
-            return {
-              ...prev,
-              minutes: 0,
-              seconds: 0,
-              totalSeconds: 0,
-              isRunning: false,
-            };
-          }
-
-          return {
-            ...prev,
-            minutes: newMinutes,
-            seconds: newSeconds,
-            totalSeconds: newTotalSeconds,
-          };
-        });
+        tick();
       }, 1000);
     }
 
@@ -70,146 +48,225 @@ const ZenTimerWidgetCore = ({ className }: ZenTimerWidgetProps) => {
         clearInterval(interval);
       }
     };
-  }, [timerState.isRunning, timerState.totalSeconds]);
+  }, [isTimerRunning, timeRemaining, tick]);
 
-  // Zen mode integration - activate zen mode when timer starts
+  // Timer completion effect - play notification sound
   useEffect(() => {
-    if (timerState.isRunning && !isZenMode) {
-      setZenMode(true);
-    } else if (
-      !timerState.isRunning &&
-      isZenMode &&
-      timerState.totalSeconds === timerState.initialDuration
-    ) {
-      // Only deactivate zen mode if timer was reset to initial state
-      setZenMode(false);
+    if (timeRemaining === 0 && !isTimerRunning && initialDuration > 0) {
+      // Play notification sound when timer completes
+      if (audioRef.current) {
+        audioRef.current.play().catch(() => {
+          // Ignore autoplay errors
+        });
+      }
+      // Exit Zen Mode when timer completes
+      if (isZenMode) {
+        setZenMode(false);
+      }
     }
-  }, [
-    timerState.isRunning,
-    isZenMode,
-    setZenMode,
-    timerState.totalSeconds,
-    timerState.initialDuration,
-  ]);
+  }, [timeRemaining, isTimerRunning, initialDuration, isZenMode, setZenMode]);
 
   const handlePlayPause = useCallback(() => {
-    setTimerState((prev) => ({
-      ...prev,
-      isRunning: !prev.isRunning,
-    }));
-  }, []);
+    if (isTimerRunning) {
+      stopTimer();
+    } else {
+      startTimer();
+    }
+  }, [isTimerRunning, startTimer, stopTimer]);
 
   const handleReset = useCallback(() => {
-    setTimerState((prev) => ({
-      ...prev,
-      minutes: Math.floor(prev.initialDuration / 60),
-      seconds: prev.initialDuration % 60,
-      totalSeconds: prev.initialDuration,
-      isRunning: false,
-    }));
-  }, []);
+    resetTimer();
+  }, [resetTimer]);
 
-  const formatTime = (minutes: number, seconds: number): string => {
-    return `${minutes.toString().padStart(2, "0")}:${seconds
-      .toString()
-      .padStart(2, "0")}`;
-  };
+  const handleZenToggle = useCallback(() => {
+    setZenMode(!isZenMode);
+  }, [isZenMode, setZenMode]);
 
-  const progress =
-    ((timerState.initialDuration - timerState.totalSeconds) /
-      timerState.initialDuration) *
-    100;
+  // Calculate progress for circular indicator
+  const progress = initialDuration > 0 
+    ? ((initialDuration - timeRemaining) / initialDuration) * 100 
+    : 0;
+  
+  // Calculate stroke dashoffset for SVG circle
+  const strokeDashoffset = CIRCLE_CIRCUMFERENCE - (progress / 100) * CIRCLE_CIRCUMFERENCE;
+
+  const isCompleted = timeRemaining === 0;
+  const canReset = timeRemaining !== initialDuration || isTimerRunning;
 
   return (
     <div className={cn("flex flex-col h-full", className)}>
+      {/* Hidden audio element for notification sound */}
+      <audio ref={audioRef} preload="auto">
+        <source src="/sounds/timer-complete.mp3" type="audio/mpeg" />
+        <source src="/sounds/timer-complete.wav" type="audio/wav" />
+      </audio>
+
       {/* Header */}
       <div className="flex items-center justify-between mb-3">
         <h2 className="text-sm font-medium tracking-tight text-foreground">
           Zen Timer
         </h2>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={handleReset}
-          disabled={timerState.totalSeconds === timerState.initialDuration}
-          className="h-7 w-7 p-0 text-muted-foreground hover:text-foreground"
-        >
-          <RotateCcw className="h-3.5 w-3.5" />
-        </Button>
+        <div className="flex items-center gap-1">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleReset}
+            disabled={!canReset}
+            className="h-7 w-7 p-0 text-muted-foreground hover:text-foreground"
+            aria-label="Reset timer"
+          >
+            <RotateCcw className="h-3.5 w-3.5" />
+          </Button>
+        </div>
       </div>
 
       {/* Timer Display & Controls */}
-      <div className="flex-1 w-full flex items-center justify-center gap-6 text-center">
-        {/* Play/Pause Button */}
-        <Button
-          variant="primary"
-          onClick={handlePlayPause}
-          disabled={timerState.totalSeconds === 0}
-          className={cn(
-            "h-12 w-12 rounded-full p-0 transition-all duration-200 shrink-0",
-            timerState.isRunning && "shadow-[0_0_20px_rgba(99,102,241,0.4)]"
-          )}
-        >
-          {timerState.isRunning ? (
-            <Pause className="h-5 w-5" />
-          ) : (
-            <Play className="h-5 w-5 ml-0.5" />
-          )}
-        </Button>
-
-        {/* Time Display */}
-        <div className="text-center">
-          <div className="text-4xl font-bold text-foreground font-mono tracking-tight">
-            {formatTime(timerState.minutes, timerState.seconds)}
-          </div>
-          <div className="text-xs text-muted-foreground mt-1">
-            {timerState.isRunning ? "Focus time" : "Ready to focus"}
-          </div>
-        </div>
-
-        {/* Progress Ring */}
-        <div className="relative w-12 h-12 shrink-0">
-          <svg className="w-full h-full -rotate-90" viewBox="0 0 36 36">
+      <div className="flex-1 w-full flex items-center justify-center gap-6">
+        {/* Circular Progress Timer */}
+        <div className={cn(
+          "relative flex items-center justify-center transition-all duration-300",
+          isZenMode && "scale-110"
+        )}>
+          {/* SVG Circular Progress */}
+          <svg 
+            className={cn(
+              "w-28 h-28 -rotate-90 transition-all duration-300",
+              isZenMode && "w-32 h-32"
+            )} 
+            viewBox="0 0 100 100"
+          >
+            {/* Background circle */}
             <circle
-              cx="18"
-              cy="18"
-              r="16"
+              cx="50"
+              cy="50"
+              r={CIRCLE_RADIUS}
               fill="none"
               stroke="currentColor"
-              strokeWidth="2"
+              strokeWidth="4"
               className="text-white/10"
             />
+            {/* Progress circle */}
             <circle
-              cx="18"
-              cy="18"
-              r="16"
+              cx="50"
+              cy="50"
+              r={CIRCLE_RADIUS}
               fill="none"
               stroke="currentColor"
-              strokeWidth="2"
-              strokeDasharray={`${progress} 100`}
+              strokeWidth="4"
               strokeLinecap="round"
-              className="text-primary transition-all duration-1000"
+              strokeDasharray={CIRCLE_CIRCUMFERENCE}
+              strokeDashoffset={strokeDashoffset}
+              className={cn(
+                "transition-all duration-1000 ease-linear",
+                isZenMode 
+                  ? "text-primary drop-shadow-[0_0_8px_rgba(99,102,241,0.8)]" 
+                  : "text-primary"
+              )}
             />
           </svg>
-          <div className="absolute inset-0 flex items-center justify-center">
-            <span className="text-[10px] font-medium text-primary">
-              {Math.round(progress)}%
+          
+          {/* Time Display in Center */}
+          <div className={cn(
+            "absolute inset-0 flex flex-col items-center justify-center",
+            isZenMode && "drop-shadow-[0_0_10px_rgba(99,102,241,0.5)]"
+          )}>
+            <span className={cn(
+              "font-mono font-bold text-foreground tracking-tight transition-all duration-300",
+              isZenMode ? "text-3xl" : "text-2xl",
+              isCompleted && "text-primary animate-pulse"
+            )}>
+              {formatTime(timeRemaining)}
             </span>
+            {isCompleted && (
+              <span className="text-[10px] text-primary font-medium mt-1">
+                Complete!
+              </span>
+            )}
           </div>
+
+          {/* Zen Mode Glow Effect */}
+          {isZenMode && (
+            <div className="absolute inset-0 rounded-full bg-primary/10 blur-xl -z-10 animate-pulse" />
+          )}
+        </div>
+
+        {/* Controls */}
+        <div className="flex flex-col items-center gap-3">
+          {/* Play/Pause Button */}
+          <Button
+            variant="primary"
+            onClick={handlePlayPause}
+            disabled={isCompleted}
+            className={cn(
+              "h-12 w-12 rounded-full p-0 transition-all duration-200",
+              isTimerRunning && "shadow-[0_0_20px_rgba(99,102,241,0.5)]",
+              isZenMode && "shadow-[0_0_30px_rgba(99,102,241,0.6)] scale-110"
+            )}
+            aria-label={isTimerRunning ? "Pause timer" : "Start timer"}
+          >
+            {isTimerRunning ? (
+              <Pause className="h-5 w-5" />
+            ) : (
+              <Play className="h-5 w-5 ml-0.5" />
+            )}
+          </Button>
+
+          {/* Zen Mode Toggle Button */}
+          <Button
+            variant={isZenMode ? "primary" : "secondary"}
+            size="sm"
+            onClick={handleZenToggle}
+            className={cn(
+              "h-8 px-3 rounded-full transition-all duration-200",
+              isZenMode && "shadow-[0_0_15px_rgba(99,102,241,0.4)]"
+            )}
+            aria-label={isZenMode ? "Exit Zen Mode" : "Enter Zen Mode"}
+          >
+            {isZenMode ? (
+              <>
+                <X className="h-3.5 w-3.5 mr-1.5" />
+                <span className="text-xs">Exit Zen</span>
+              </>
+            ) : (
+              <>
+                <Sparkles className="h-3.5 w-3.5 mr-1.5" />
+                <span className="text-xs">Zen</span>
+              </>
+            )}
+          </Button>
         </div>
       </div>
 
-      {/* Zen Mode Indicator */}
-      {isZenMode && (
-        <div className="flex justify-center mt-2">
-          <div className="inline-flex items-center gap-1.5 px-2 py-1 bg-primary/10 rounded-full border border-primary/20">
-            <div className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse" />
-            <span className="text-[10px] text-primary font-medium">
-              Zen Mode
-            </span>
-          </div>
+      {/* Status Indicator */}
+      <div className="flex justify-center mt-2">
+        <div className={cn(
+          "inline-flex items-center gap-1.5 px-2 py-1 rounded-full border transition-all duration-300",
+          isZenMode 
+            ? "bg-primary/10 border-primary/20" 
+            : "bg-white/5 border-white/10"
+        )}>
+          <div className={cn(
+            "w-1.5 h-1.5 rounded-full",
+            isTimerRunning 
+              ? "bg-primary animate-pulse" 
+              : isCompleted 
+                ? "bg-green-500" 
+                : "bg-muted-foreground"
+          )} />
+          <span className={cn(
+            "text-[10px] font-medium",
+            isZenMode ? "text-primary" : "text-muted-foreground"
+          )}>
+            {isZenMode 
+              ? "Zen Mode Active" 
+              : isTimerRunning 
+                ? "Focus time" 
+                : isCompleted 
+                  ? "Session complete" 
+                  : "Ready to focus"}
+          </span>
         </div>
-      )}
+      </div>
     </div>
   );
 };
