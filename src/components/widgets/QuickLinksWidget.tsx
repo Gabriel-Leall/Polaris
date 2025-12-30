@@ -234,6 +234,7 @@ function QuickLinksWidgetCore({
               {/* Favicon */}
               <div className="flex-shrink-0 w-4 h-4 relative">
                 {link.faviconUrl ? (
+                  /* eslint-disable-next-line @next/next/no-img-element */
                   <img
                     src={link.faviconUrl}
                     alt=""
@@ -327,9 +328,9 @@ function QuickLinksWidget({
       maxRetries={2}
     >
       <QuickLinksWidgetCore
-        className={className}
-        compact={compact}
-        readOnly={readOnly}
+        className={className ?? ""}
+        compact={compact ?? false}
+        readOnly={readOnly ?? false}
       />
     </ErrorBoundary>
   );

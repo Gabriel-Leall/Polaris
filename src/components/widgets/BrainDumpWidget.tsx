@@ -7,8 +7,6 @@ import { ErrorBoundary } from "@/components/ui";
 import { saveBrainDumpNote, getBrainDumpNote } from "@/app/actions";
 import { supabase } from "@/lib/supabase";
 import {
-  Save,
-  Clock,
   AlertCircle,
   Bold,
   Italic,
@@ -67,9 +65,8 @@ interface EditorToolbarProps {
 }
 
 const EditorToolbar = ({ editor }: EditorToolbarProps) => {
-  if (!editor) return null;
-
   const addLink = useCallback(() => {
+    if (!editor) return;
     const previousUrl = editor.getAttributes("link").href;
     const url = window.prompt("Enter URL:", previousUrl);
 
@@ -82,6 +79,8 @@ const EditorToolbar = ({ editor }: EditorToolbarProps) => {
 
     editor.chain().focus().extendMarkRange("link").setLink({ href: url }).run();
   }, [editor]);
+
+  if (!editor) return null;
 
   return (
     <div className="flex items-center gap-0.5 p-1.5 border-b border-white/10 bg-white/[0.02]">
@@ -210,7 +209,6 @@ interface BrainDumpWidgetProps {
 
 const BrainDumpWidgetContent = ({ className }: BrainDumpWidgetProps) => {
   const {
-    content,
     isLoading,
     isSaving,
     lastSaved,
@@ -223,7 +221,7 @@ const BrainDumpWidgetContent = ({ className }: BrainDumpWidgetProps) => {
   } = useBrainDumpStore();
 
   const [userId, setUserId] = useState<string | null>(null);
-  const [noteId, setNoteId] = useState<string | null>(null);
+  const [, setNoteId] = useState<string | null>(null);
   const [saveError, setSaveError] = useState(false);
   const [editorHtml, setEditorHtml] = useState<string>("");
   const isInitialLoad = useRef(true);
@@ -434,26 +432,29 @@ const BrainDumpWidgetContent = ({ className }: BrainDumpWidgetProps) => {
   );
 };
 
+const BrainDumpErrorFallback = () => (
+  <div className="bg-card rounded-3xl border border-white/5 flex flex-col">
+    <div className="flex items-center justify-between p-4 border-b border-white/10">
+      <h2 className="text-sm font-semibold text-white">Brain Dump</h2>
+    </div>
+    <div className="flex-1 flex items-center justify-center p-4">
+      <div className="text-center">
+        <AlertCircle className="w-8 h-8 text-red-400 mx-auto mb-2" />
+        <p className="text-sm text-muted-foreground">
+          Failed to load editor
+        </p>
+      </div>
+    </div>
+  </div>
+);
+
 const BrainDumpWidget = ({ className }: BrainDumpWidgetProps) => {
   return (
     <ErrorBoundary
-      fallback={
-        <div className={`bg-card rounded-3xl border border-white/5 flex flex-col ${className}`}>
-          <div className="flex items-center justify-between p-4 border-b border-white/10">
-            <h2 className="text-sm font-semibold text-white">Brain Dump</h2>
-          </div>
-          <div className="flex-1 flex items-center justify-center p-4">
-            <div className="text-center">
-              <AlertCircle className="w-8 h-8 text-red-400 mx-auto mb-2" />
-              <p className="text-sm text-muted-foreground">
-                Failed to load editor
-              </p>
-            </div>
-          </div>
-        </div>
-      }
+      fallback={BrainDumpErrorFallback}
+      className={className ?? ""}
     >
-      <BrainDumpWidgetContent className={className} />
+      <BrainDumpWidgetContent className={className ?? ""} />
     </ErrorBoundary>
   );
 };

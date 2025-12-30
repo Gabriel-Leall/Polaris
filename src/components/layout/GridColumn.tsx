@@ -1,3 +1,5 @@
+import { cn } from "@/lib/utils";
+
 interface GridColumnProps {
   children: React.ReactNode;
   className?: string;
@@ -7,6 +9,11 @@ interface GridColumnProps {
 /**
  * GridColumn - Responsive column component for the Bento Grid
  * No-scroll design: content must fit within fixed height containers
+ * 
+ * Layout distribution (12-column grid):
+ * - Left: 3 columns (Tasks + Quick Links)
+ * - Center: 5 columns (Brain Dump + Zen Timer - main focus area)
+ * - Right: 4 columns (Calendar + Habits + Media Player)
  */
 function GridColumn({ children, className, span = "center" }: GridColumnProps) {
   // Define responsive column spans based on the span prop
@@ -17,11 +24,11 @@ function GridColumn({ children, className, span = "center" }: GridColumnProps) {
 
     switch (span) {
       case "left":
-        return "lg:col-span-3"; // Tasks column
+        return "lg:col-span-3"; // Tasks + Quick Links column
       case "center":
-        return "lg:col-span-6"; // Brain dump (main focus area)
+        return "lg:col-span-5"; // Brain Dump + Zen Timer (main focus area)
       case "right":
-        return "lg:col-span-3"; // Context column
+        return "lg:col-span-4"; // Calendar + Habits + Media Player
       default:
         return "lg:col-span-4";
     }
@@ -29,13 +36,12 @@ function GridColumn({ children, className, span = "center" }: GridColumnProps) {
 
   return (
     <div
-      className={`
-      col-span-1 
-      md:col-span-1 
-      ${getColumnClasses()}
-      h-full min-h-0 overflow-hidden
-      ${className || ""}
-    `}
+      className={cn(
+        "col-span-1 md:col-span-1",
+        getColumnClasses(),
+        "h-full min-h-0 overflow-hidden",
+        className
+      )}
     >
       {children}
     </div>

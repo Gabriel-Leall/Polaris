@@ -302,7 +302,7 @@ function MediaPlayerWidget({ className }: MediaPlayerWidgetProps) {
       name="MediaPlayerWidget"
       maxRetries={2}
     >
-      <MediaPlayerWidgetCore className={className} />
+      <MediaPlayerWidgetCore className={className ?? ""} />
     </ErrorBoundary>
   );
 }

@@ -5,7 +5,6 @@ import { Plus, X, RotateCcw } from "lucide-react";
 import { Habit } from "@/types";
 import {
   createHabit,
-  updateHabit,
   toggleHabitDay,
   deleteHabit,
   getHabits,
@@ -176,6 +175,7 @@ function HabitTrackerWidget({ className }: HabitTrackerWidgetProps) {
         const created = await createHabit({
           userId: userId,
           name: newHabitName.trim(),
+          days: [false, false, false, false, false, false, false],
         });
         setHabits((prev) => [...prev, created]);
         persistLocalHabits([...habits, created]);
@@ -274,8 +274,8 @@ function HabitTrackerWidget({ className }: HabitTrackerWidgetProps) {
         <div className="flex items-center gap-1">
           <Button
             variant="ghost"
-            size="icon"
-            className="h-6 w-6 text-muted-foreground hover:text-foreground"
+            size="sm"
+            className="h-6 w-6 p-0 text-muted-foreground hover:text-foreground"
             onClick={handleResetWeek}
             title="Reset week"
           >
@@ -283,8 +283,8 @@ function HabitTrackerWidget({ className }: HabitTrackerWidgetProps) {
           </Button>
           <Button
             variant="ghost"
-            size="icon"
-            className="h-6 w-6 text-muted-foreground hover:text-foreground"
+            size="sm"
+            className="h-6 w-6 p-0 text-muted-foreground hover:text-foreground"
             onClick={() => setShowAddForm(!showAddForm)}
           >
             <Plus className="h-4 w-4" />

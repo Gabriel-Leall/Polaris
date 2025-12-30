@@ -12,3 +12,4 @@ export * from "./global-error-boundary";
 export * from "./error-testing-panel";
 export * from "./interactive-card";
 export * from "./states";
+export * from "./skeleton";

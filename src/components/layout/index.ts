@@ -9,3 +9,6 @@ export { default as DashboardLayout } from './DashboardLayout'
 export { default as GridColumn } from './GridColumn'
 export { default as WidgetCard } from './WidgetCard'
 export { ZenModeBlurWrapper } from './ZenModeBlurWrapper'
+
+// Magic UI Enhanced Components
+export { PolarisGrid, GridColumn as PolarisGridColumn } from './PolarisGrid'

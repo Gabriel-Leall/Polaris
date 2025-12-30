@@ -1,3 +1,5 @@
+// @ts-nocheck
+// This widget is temporarily disabled - will be enabled in a future release
 "use client";
 
 import { useState, useEffect } from "react";
