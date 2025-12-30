@@ -1,14 +1,10 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import {
-  ExternalLink,
-  Plus,
-  Trash2,
-  Globe,
-  Loader2,
-} from "lucide-react";
-import { Button, Input } from "@/components/ui";
+import { Plus, Trash2, Globe, Loader2, ExternalLink } from "lucide-react";
+import { Dock, DockIcon } from "@/components/ui/dock";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   ErrorBoundary,
   WidgetErrorFallback,
@@ -33,6 +29,45 @@ interface QuickLinksWidgetProps {
   readOnly?: boolean;
 }
 
+const getMockupLinks = (userId: string | null): QuickLink[] => [
+  {
+    id: "mock-1",
+    url: "https://github.com",
+    title: "GitHub",
+    favicon: "https://www.google.com/s2/favicons?domain=github.com&sz=64",
+    userId: userId || "mock-user",
+    createdAt: null,
+    updatedAt: null,
+  },
+  {
+    id: "mock-2",
+    url: "https://linkedin.com",
+    title: "LinkedIn",
+    favicon: "https://www.google.com/s2/favicons?domain=linkedin.com&sz=64",
+    userId: userId || "mock-user",
+    createdAt: null,
+    updatedAt: null,
+  },
+  {
+    id: "mock-3",
+    url: "https://stackoverflow.com",
+    title: "Stack Overflow",
+    favicon: "https://www.google.com/s2/favicons?domain=stackoverflow.com&sz=64",
+    userId: userId || "mock-user",
+    createdAt: null,
+    updatedAt: null,
+  },
+  {
+    id: "mock-4",
+    url: "https://dev.to",
+    title: "DEV",
+    favicon: "https://www.google.com/s2/favicons?domain=dev.to&sz=64",
+    userId: userId || "mock-user",
+    createdAt: null,
+    updatedAt: null,
+  },
+];
+
 function QuickLinksWidgetCore({
   className,
   compact = false,
@@ -46,12 +81,12 @@ function QuickLinksWidgetCore({
   const [urlError, setUrlError] = useState<string | null>(null);
   const [showInput, setShowInput] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [hoveredLink, setHoveredLink] = useState<string | null>(null);
 
-  // Load links from database
   const loadLinks = useCallback(async () => {
     try {
       setIsLoading(true);
-      
+
       if (userId) {
         const fetchedLinks = await getQuickLinks(userId);
         if (fetchedLinks && fetchedLinks.length > 0) {
@@ -59,71 +94,11 @@ function QuickLinksWidgetCore({
           return;
         }
       }
-      
-      // Load mockup data if no links exist or user not authenticated
-      const mockupLinks = [
-        {
-          id: "mock-1",
-          url: "https://github.com",
-          title: "GitHub",
-          favicon: "https://www.google.com/s2/favicons?domain=github.com&sz=32",
-          userId: userId || "mock-user",
-          createdAt: null,
-          updatedAt: null,
-        },
-        {
-          id: "mock-2", 
-          url: "https://linkedin.com",
-          title: "LinkedIn",
-          favicon: "https://www.google.com/s2/favicons?domain=linkedin.com&sz=32",
-          userId: userId || "mock-user",
-          createdAt: null,
-          updatedAt: null,
-        },
-        {
-          id: "mock-3",
-          url: "https://stackoverflow.com",
-          title: "Stack Overflow",
-          favicon: "https://www.google.com/s2/favicons?domain=stackoverflow.com&sz=32",
-          userId: userId || "mock-user",
-          createdAt: null,
-          updatedAt: null,
-        },
-        {
-          id: "mock-4",
-          url: "https://dev.to",
-          title: "DEV Community",
-          favicon: "https://www.google.com/s2/favicons?domain=dev.to&sz=32",
-          userId: userId || "mock-user",
-          createdAt: null,
-          updatedAt: null,
-        }
-      ];
-      setLinks(mockupLinks);
+
+      setLinks(getMockupLinks(userId));
     } catch (error) {
       console.error("Failed to load quick links:", error);
-      // Show mockups on error too
-      const mockupLinks = [
-        {
-          id: "mock-1",
-          url: "https://github.com",
-          title: "GitHub",
-          favicon: "https://www.google.com/s2/favicons?domain=github.com&sz=32",
-          userId: userId || "mock-user",
-          createdAt: null,
-          updatedAt: null,
-        },
-        {
-          id: "mock-2", 
-          url: "https://linkedin.com",
-          title: "LinkedIn",
-          favicon: "https://www.google.com/s2/favicons?domain=linkedin.com&sz=32",
-          userId: userId || "mock-user",
-          createdAt: null,
-          updatedAt: null,
-        }
-      ];
-      setLinks(mockupLinks);
+      setLinks(getMockupLinks(userId));
     } finally {
       setIsLoading(false);
     }
@@ -133,14 +108,12 @@ function QuickLinksWidgetCore({
     loadLinks();
   }, [loadLinks]);
 
-  // Handle adding a new link
   const handleAddLink = async () => {
     if (!newUrl.trim()) {
       setUrlError("Please enter a URL");
       return;
     }
 
-    // Add protocol if missing
     let urlToAdd = newUrl.trim();
     if (!urlToAdd.startsWith("http://") && !urlToAdd.startsWith("https://")) {
       urlToAdd = `https://${urlToAdd}`;
@@ -151,11 +124,6 @@ function QuickLinksWidgetCore({
       return;
     }
 
-    if (!userId) {
-      setUrlError("Please sign in to add links");
-      return;
-    }
-
     try {
       setIsAdding(true);
       setUrlError(null);
@@ -163,15 +131,28 @@ function QuickLinksWidgetCore({
       const title = extractTitleFromUrl(urlToAdd);
       const faviconUrl = getFaviconUrl(urlToAdd);
 
-      const newLink = await createQuickLink({
-        userId,
-        url: urlToAdd,
-        title,
-        faviconUrl,
-        position: links.length,
-      });
+      if (userId) {
+        const newLink = await createQuickLink({
+          userId,
+          url: urlToAdd,
+          title,
+          faviconUrl,
+          position: links.length,
+        });
+        setLinks((prev) => [...prev, newLink]);
+      } else {
+        const newLink: QuickLink = {
+          id: `local-${Date.now()}`,
+          url: urlToAdd,
+          title,
+          favicon: faviconUrl,
+          userId: "local-user",
+          createdAt: null,
+          updatedAt: null,
+        };
+        setLinks((prev) => [...prev, newLink]);
+      }
 
-      setLinks((prev) => [...prev, newLink]);
       setNewUrl("");
       setShowInput(false);
     } catch (error) {
@@ -182,11 +163,12 @@ function QuickLinksWidgetCore({
     }
   };
 
-  // Handle deleting a link
   const handleDeleteLink = async (id: string) => {
     try {
       setDeletingId(id);
-      await deleteQuickLink(id);
+      if (userId && !id.startsWith("mock-") && !id.startsWith("local-")) {
+        await deleteQuickLink(id);
+      }
       setLinks((prev) => prev.filter((link) => link.id !== id));
     } catch (error) {
       console.error("Failed to delete quick link:", error);
@@ -195,12 +177,10 @@ function QuickLinksWidgetCore({
     }
   };
 
-  // Open link in new tab
   const openLink = (url: string) => {
     window.open(url, "_blank", "noopener,noreferrer");
   };
 
-  // Handle key press in input
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       handleAddLink();
@@ -211,8 +191,6 @@ function QuickLinksWidgetCore({
     }
   };
 
-  const displayedLinks = compact ? links.slice(0, 6) : links;
-
   return (
     <div className={cn("flex flex-col h-full", className)}>
       {/* Header */}
@@ -220,16 +198,6 @@ function QuickLinksWidgetCore({
         <h2 className="text-sm font-medium tracking-tight text-foreground">
           Quick Links
         </h2>
-        {!readOnly && (
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setShowInput(!showInput)}
-            className="h-6 w-6 p-0 text-muted-foreground hover:text-foreground"
-          >
-            <Plus className="h-4 w-4" />
-          </Button>
-        )}
         {readOnly && (
           <a
             href="/quick-links"
@@ -252,7 +220,7 @@ function QuickLinksWidgetCore({
               }}
               onKeyDown={handleKeyPress}
               placeholder="Enter URL (e.g., github.com)"
-              className="flex-1 h-8 text-sm"
+              className="flex-1 h-8 text-sm bg-white/5 border-white/10"
               autoFocus
               disabled={isAdding}
             />
@@ -263,111 +231,130 @@ function QuickLinksWidgetCore({
               disabled={isAdding || !newUrl.trim()}
               className="h-8 px-3"
             >
-              {isAdding ? (
-                <Loader2 className="h-3 w-3 animate-spin" />
-              ) : (
-                "Add"
-              )}
+              {isAdding ? <Loader2 className="h-3 w-3 animate-spin" /> : "Add"}
             </Button>
           </div>
-          {urlError && (
-            <p className="text-xs text-destructive">{urlError}</p>
-          )}
+          {urlError && <p className="text-xs text-destructive">{urlError}</p>}
         </div>
       )}
 
       {/* Loading State */}
       {isLoading && (
-        <div className="flex items-center justify-center h-full py-4">
+        <div className="flex items-center justify-center flex-1 py-4">
           <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
         </div>
       )}
 
-      {/* Links List */}
-      {!isLoading && (
-        <div className="flex-1 overflow-y-auto space-y-1 min-h-0">
-          {displayedLinks.map((link) => (
-            <div
-              key={link.id}
-              className="group flex items-center gap-2.5 p-2 rounded-lg hover:bg-white/5 transition-colors"
-            >
-              {/* Favicon */}
-              <div className="flex-shrink-0 w-4 h-4 relative">
-                {link.faviconUrl ? (
-                  /* eslint-disable-next-line @next/next/no-img-element */
-                  <img
-                    src={link.faviconUrl}
-                    alt=""
-                    className="w-4 h-4 rounded-sm"
-                    onError={(e) => {
-                      // Hide broken image and show fallback
-                      e.currentTarget.style.display = "none";
-                      const fallback = e.currentTarget.nextElementSibling;
-                      if (fallback) {
-                        (fallback as HTMLElement).style.display = "flex";
-                      }
-                    }}
-                  />
-                ) : null}
-                <div
-                  className={cn(
-                    "w-4 h-4 items-center justify-center text-muted-foreground",
-                    link.faviconUrl ? "hidden" : "flex"
-                  )}
-                >
-                  <Globe className="h-3.5 w-3.5" />
-                </div>
-              </div>
-
-              {/* Link Title */}
-              <div className="flex-1 min-w-0">
+      {/* Dock Style Links */}
+      {!isLoading && links.length > 0 && (
+        <div className="flex-1 flex items-center justify-center py-8">
+          <Dock
+            iconSize={56}
+            iconMagnification={72}
+            iconDistance={140}
+            direction="middle"
+            className="bg-transparent border-none h-auto py-0 px-0 gap-4"
+          >
+            {links.map((link) => (
+              <DockIcon
+                key={link.id}
+                className="relative group"
+                onMouseEnter={() => setHoveredLink(link.id)}
+                onMouseLeave={() => setHoveredLink(null)}
+              >
                 <button
                   onClick={() => openLink(link.url)}
-                  className="text-left w-full"
+                  className="flex items-center justify-center w-full h-full rounded-2xl bg-white/10 hover:bg-white/15 transition-all duration-200 overflow-hidden"
+                  title={link.title}
                 >
-                  <p className="text-foreground text-sm font-medium truncate hover:text-primary transition-colors">
-                    {link.title}
-                  </p>
+                  {link.favicon ? (
+                    /* eslint-disable-next-line @next/next/no-img-element */
+                    <img
+                      src={link.favicon}
+                      alt={link.title}
+                      className="w-8 h-8 object-contain"
+                      onError={(e) => {
+                        e.currentTarget.style.display = "none";
+                        const fallback = e.currentTarget.nextElementSibling;
+                        if (fallback) {
+                          (fallback as HTMLElement).style.display = "flex";
+                        }
+                      }}
+                    />
+                  ) : null}
+                  <Globe
+                    className={cn(
+                      "w-7 h-7 text-muted-foreground",
+                      link.favicon ? "hidden" : "block"
+                    )}
+                  />
                 </button>
-              </div>
 
-              {/* Delete Button (on hover) */}
-              {!readOnly && (
-                <div className="flex items-center opacity-0 group-hover:opacity-100 transition-opacity">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => handleDeleteLink(link.id)}
-                    disabled={deletingId === link.id}
-                    className="h-6 w-6 p-0 text-destructive hover:text-destructive/80"
+                {/* Tooltip */}
+                {hoveredLink === link.id && (
+                  <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-card border border-white/10 rounded-lg text-xs text-foreground whitespace-nowrap z-50 shadow-lg">
+                    {link.title}
+                  </div>
+                )}
+
+                {/* Delete button on hover */}
+                {!readOnly && hoveredLink === link.id && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDeleteLink(link.id);
+                    }}
+                    className="absolute -top-1 -right-1 w-5 h-5 bg-destructive rounded-full flex items-center justify-center transition-opacity z-50"
+                    title="Remove link"
                   >
                     {deletingId === link.id ? (
-                      <Loader2 className="h-3 w-3 animate-spin" />
+                      <Loader2 className="w-2.5 h-2.5 animate-spin text-white" />
                     ) : (
-                      <Trash2 className="h-3 w-3" />
+                      <Trash2 className="w-2.5 h-2.5 text-white" />
                     )}
-                  </Button>
-                </div>
-              )}
-            </div>
-          ))}
+                  </button>
+                )}
+              </DockIcon>
+            ))}
+
+            {/* Add Link Button */}
+            {!readOnly && (
+              <DockIcon>
+                <button
+                  onClick={() => setShowInput(!showInput)}
+                  className={cn(
+                    "flex items-center justify-center w-full h-full rounded-2xl transition-all duration-200",
+                    showInput
+                      ? "bg-primary/30 text-primary"
+                      : "bg-white/5 hover:bg-white/10 text-muted-foreground hover:text-foreground"
+                  )}
+                  title="Add quick link"
+                >
+                  <Plus className="w-6 h-6" />
+                </button>
+              </DockIcon>
+            )}
+          </Dock>
         </div>
       )}
 
       {/* Empty State */}
-      {!isLoading && displayedLinks.length === 0 && (
-        <div className="flex flex-col items-center justify-center h-full py-4">
+      {!isLoading && links.length === 0 && (
+        <div className="flex flex-col items-center justify-center flex-1 py-4">
           <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center mb-2">
-            <ExternalLink className="h-4 w-4 text-muted-foreground" />
+            <ExternalLink className="w-4 h-4 text-muted-foreground" />
           </div>
           <p className="text-sm text-muted-foreground">No quick links</p>
-          {!readOnly && !showInput && (
-            <button
+          {!readOnly && (
+            <Button
+              variant="ghost"
+              size="sm"
               onClick={() => setShowInput(true)}
-              className="text-xs text-primary hover:underline mt-1"
+              className="mt-2 text-primary"
             >
+              <Plus className="w-4 h-4 mr-1" />
               Add your first link
-            </button>
+            </Button>
           )}
         </div>
       )}
@@ -375,23 +362,14 @@ function QuickLinksWidgetCore({
   );
 }
 
-// Wrapper component with error boundary
-function QuickLinksWidget({
-  className,
-  compact,
-  readOnly,
-}: QuickLinksWidgetProps) {
+function QuickLinksWidget(props: QuickLinksWidgetProps) {
   return (
     <ErrorBoundary
       fallback={WidgetErrorFallback}
       name="QuickLinksWidget"
       maxRetries={2}
     >
-      <QuickLinksWidgetCore
-        className={className ?? ""}
-        compact={compact ?? false}
-        readOnly={readOnly ?? false}
-      />
+      <QuickLinksWidgetCore {...props} />
     </ErrorBoundary>
   );
 }

@@ -32,62 +32,66 @@ function TasksWidget({ className }: TasksWidgetProps) {
   const [editingTaskId, setEditingTaskId] = useState<string | null>(null);
   const [editValue, setEditValue] = useState("");
 
+  const getMockupTasks = (): TaskItem[] => [
+    {
+      id: "mock-1",
+      label: "Review job applications",
+      completed: false,
+      userId: "mock-user",
+      createdAt: null,
+      updatedAt: null,
+    },
+    {
+      id: "mock-2", 
+      label: "Update LinkedIn profile",
+      completed: true,
+      userId: "mock-user",
+      createdAt: null,
+      updatedAt: null,
+    },
+    {
+      id: "mock-3",
+      label: "Prepare for technical interview",
+      completed: false,
+      userId: "mock-user",
+      createdAt: null,
+      updatedAt: null,
+    },
+    {
+      id: "mock-4",
+      label: "Send follow-up emails",
+      completed: false,
+      userId: "mock-user",
+      createdAt: null,
+      updatedAt: null,
+    },
+    {
+      id: "mock-5",
+      label: "Research company culture",
+      completed: true,
+      userId: "mock-user",
+      createdAt: null,
+      updatedAt: null,
+    }
+  ];
+
   const persistLocalTasks = (nextTasks: TaskItem[]) => {
     localStorage.setItem(LOCAL_TASKS_KEY, JSON.stringify(nextTasks));
   };
 
   const loadLocalTasks = () => {
+    if (typeof window === "undefined") {
+      return getMockupTasks();
+    }
     const raw = localStorage.getItem(LOCAL_TASKS_KEY);
     if (!raw) {
-      // Return mockup data if no local tasks exist
-      return [
-        {
-          id: "mock-1",
-          label: "Review job applications",
-          completed: false,
-          userId: "mock-user",
-          createdAt: null,
-          updatedAt: null,
-        },
-        {
-          id: "mock-2", 
-          label: "Update LinkedIn profile",
-          completed: true,
-          userId: "mock-user",
-          createdAt: null,
-          updatedAt: null,
-        },
-        {
-          id: "mock-3",
-          label: "Prepare for technical interview",
-          completed: false,
-          userId: "mock-user",
-          createdAt: null,
-          updatedAt: null,
-        },
-        {
-          id: "mock-4",
-          label: "Send follow-up emails",
-          completed: false,
-          userId: "mock-user",
-          createdAt: null,
-          updatedAt: null,
-        },
-        {
-          id: "mock-5",
-          label: "Research company culture",
-          completed: true,
-          userId: "mock-user",
-          createdAt: null,
-          updatedAt: null,
-        }
-      ] as TaskItem[];
+      return getMockupTasks();
     }
     try {
       const parsed = JSON.parse(raw) as TaskItem[];
-      return parsed;
+      return parsed.length > 0 ? parsed : getMockupTasks();
     } catch {
-      return [] as TaskItem[];
+      return getMockupTasks();
     }
   };
 
@@ -376,19 +380,28 @@ function TasksWidget({ className }: TasksWidgetProps) {
           onChange={(e) => setNewTaskLabel(e.target.value)}
           onKeyPress={handleKeyPress}
           disabled={isCreating}
-          className="flex-1 h-9 text-sm bg-white/5 border-white/10"
+          className="flex-1 h-9 text-sm bg-white/5 border-white/10 focus:border-primary/50 focus:ring-1 focus:ring-primary/30"
         />
         <Button
           onClick={handleCreateTask}
           disabled={!newTaskLabel.trim() || isCreating}
           variant="primary"
           size="sm"
-          className="h-9 w-9 p-0"
+          className={cn(
+            "h-9 w-9 p-0 transition-all duration-200",
+            newTaskLabel.trim() 
+              ? "bg-primary hover:bg-primary/90 hover:shadow-glow-sm scale-100" 
+              : "bg-white/10 hover:bg-white/20 text-muted-foreground"
+          )}
+          title={newTaskLabel.trim() ? "Add task" : "Type a task first"}
         >
           {isCreating ? (
-            <div className="w-4 h-4 border-2 border-border/60 border-t-primary rounded-full animate-spin" />
+            <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
           ) : (
-            <Plus className="w-4 h-4" />
+            <Plus className={cn(
+              "w-4 h-4 transition-transform duration-200",
+              newTaskLabel.trim() && "group-hover:rotate-90"
+            )} />
           )}
         </Button>
       </div>
