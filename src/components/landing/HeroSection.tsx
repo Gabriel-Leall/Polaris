@@ -1,5 +1,7 @@
 'use client';
 
+import Link from 'next/link';
+
 export const HeroSection = () => {
   return (
     <div className="@container w-full">
@@ -88,7 +90,10 @@ export const HeroSection = () => {
         </div>
         
         {/* CTA Button */}
-        <button className="group relative flex min-w-[160px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-14 px-8 bg-[#6366F1] hover:bg-blue-600 text-white transition-all duration-300 shadow-[0_0_20px_rgba(99,102,241,0.4)] hover:shadow-[0_0_30px_rgba(99,102,241,0.6)] hover:scale-105">
+        <Link 
+          href="/signup"
+          className="group relative flex min-w-[160px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-14 px-8 bg-[#6366F1] hover:bg-blue-600 text-white transition-all duration-300 shadow-[0_0_20px_rgba(99,102,241,0.4)] hover:shadow-[0_0_30px_rgba(99,102,241,0.6)] hover:scale-105"
+        >
           <span className="absolute inset-0 flex items-center justify-center w-full h-full text-white duration-300 -translate-x-full group-hover:translate-x-0 ease">
             <span className="material-symbols-outlined">rocket_launch</span>
           </span>
@@ -98,7 +103,7 @@ export const HeroSection = () => {
           <span className="relative invisible font-bold tracking-wider uppercase text-sm">
             Initiate System
           </span>
-        </button>
+        </Link>
         
         {/* Status Indicator */}
         <div className="bg-[rgba(26,25,48,0.3)] backdrop-blur-[8px] border border-[rgba(255,255,255,0.1)] flex items-center justify-center p-3 rounded-xl min-w-[280px] shadow-lg">

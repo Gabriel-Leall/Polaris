@@ -68,8 +68,8 @@ function QuickLinksWidgetCore({
           title: "GitHub",
           favicon: "https://www.google.com/s2/favicons?domain=github.com&sz=32",
           userId: userId || "mock-user",
-          createdAt: new Date(),
-          updatedAt: new Date(),
+          createdAt: null,
+          updatedAt: null,
         },
         {
           id: "mock-2", 
@@ -77,8 +77,8 @@ function QuickLinksWidgetCore({
           title: "LinkedIn",
           favicon: "https://www.google.com/s2/favicons?domain=linkedin.com&sz=32",
           userId: userId || "mock-user",
-          createdAt: new Date(),
-          updatedAt: new Date(),
+          createdAt: null,
+          updatedAt: null,
         },
         {
           id: "mock-3",
@@ -86,8 +86,8 @@ function QuickLinksWidgetCore({
           title: "Stack Overflow",
           favicon: "https://www.google.com/s2/favicons?domain=stackoverflow.com&sz=32",
           userId: userId || "mock-user",
-          createdAt: new Date(),
-          updatedAt: new Date(),
+          createdAt: null,
+          updatedAt: null,
         },
         {
           id: "mock-4",
@@ -95,8 +95,8 @@ function QuickLinksWidgetCore({
           title: "DEV Community",
           favicon: "https://www.google.com/s2/favicons?domain=dev.to&sz=32",
           userId: userId || "mock-user",
-          createdAt: new Date(),
-          updatedAt: new Date(),
+          createdAt: null,
+          updatedAt: null,
         }
       ];
       setLinks(mockupLinks);
@@ -110,8 +110,8 @@ function QuickLinksWidgetCore({
           title: "GitHub",
           favicon: "https://www.google.com/s2/favicons?domain=github.com&sz=32",
           userId: userId || "mock-user",
-          createdAt: new Date(),
-          updatedAt: new Date(),
+          createdAt: null,
+          updatedAt: null,
         },
         {
           id: "mock-2", 
@@ -119,8 +119,8 @@ function QuickLinksWidgetCore({
           title: "LinkedIn",
           favicon: "https://www.google.com/s2/favicons?domain=linkedin.com&sz=32",
           userId: userId || "mock-user",
-          createdAt: new Date(),
-          updatedAt: new Date(),
+          createdAt: null,
+          updatedAt: null,
         }
       ];
       setLinks(mockupLinks);

@@ -20,4 +20,9 @@ export * from "./dock";
 export * from "./blur-fade";
 export * from "./animated-theme-toggler";
 export { default as PolarisThemeToggle } from "./polaris-theme-toggle";
-export * from "./polaris-skeleton";
+export { 
+  Skeleton as PolarisSkeleton, 
+  SkeletonCard as PolarisSkeletonCard, 
+  SkeletonWidget as PolarisSkeletonWidget, 
+  SkeletonList as PolarisSkeletonList 
+} from "./polaris-skeleton";

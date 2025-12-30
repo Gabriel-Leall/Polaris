@@ -63,10 +63,7 @@ const MOCKUP_CONTENT = `<h1>Job Search Notes</h1>
 <li>Update portfolio with recent projects</li>
 <li>Connect with recruiters on LinkedIn</li>
 <li>Practice mock interviews with peers</li>
-</ol>
-
-<hr>
-<p><em>Last updated: ${new Date().toLocaleDateString()}</em></p>`;
+</ol>`;
 
 interface ToolbarButtonProps {
   onClick: () => void;
@@ -272,6 +269,7 @@ const BrainDumpWidgetContent = ({ className }: BrainDumpWidgetProps) => {
 
   // Initialize Tiptap editor with markdown shortcuts support
   const editor = useEditor({
+    immediatelyRender: false, // Fix SSR hydration mismatch
     extensions: [
       StarterKit.configure({
         // Enable markdown-style input rules for bold, italic, code
