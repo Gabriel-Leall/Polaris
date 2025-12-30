@@ -38,7 +38,51 @@ function TasksWidget({ className }: TasksWidgetProps) {
 
   const loadLocalTasks = () => {
     const raw = localStorage.getItem(LOCAL_TASKS_KEY);
-    if (!raw) return [] as TaskItem[];
+    if (!raw) {
+      // Return mockup data if no local tasks exist
+      return [
+        {
+          id: "mock-1",
+          label: "Review job applications",
+          completed: false,
+          userId: "mock-user",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          id: "mock-2", 
+          label: "Update LinkedIn profile",
+          completed: true,
+          userId: "mock-user",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          id: "mock-3",
+          label: "Prepare for technical interview",
+          completed: false,
+          userId: "mock-user",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          id: "mock-4",
+          label: "Send follow-up emails",
+          completed: false,
+          userId: "mock-user",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          id: "mock-5",
+          label: "Research company culture",
+          completed: true,
+          userId: "mock-user",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        }
+      ] as TaskItem[];
+    }
     try {
       const parsed = JSON.parse(raw) as TaskItem[];
       return parsed;

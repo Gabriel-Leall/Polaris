@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/error-boundary";
 import { Home, CheckSquare, FileText, Calendar, Settings, LogOut } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import PolarisThemeToggle from "@/components/ui/polaris-theme-toggle";
 
 interface NavItem {
   id: string;
@@ -104,6 +105,13 @@ function SidebarNavCore({ className }: SidebarNavProps) {
             </div>
           </div>
         )}
+
+        {/* Theme Toggle */}
+        <PolarisThemeToggle 
+          variant="sidebar" 
+          showLabel 
+          className="mb-2"
+        />
 
         {bottomNavItems.map((item) => {
           const Icon = item.icon;

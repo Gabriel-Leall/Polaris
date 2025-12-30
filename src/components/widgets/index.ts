@@ -9,3 +9,6 @@ export { default as CalendarWidget } from "./CalendarWidget";
 export { default as MediaPlayerWidget } from "./MediaPlayerWidget";
 export { default as QuickLinksWidget } from "./QuickLinksWidget";
 export { default as HabitTrackerWidget } from "./HabitTrackerWidget";
+
+// Magic UI Enhanced Widgets
+export { default as QuickLinksDock } from "./QuickLinksDock";

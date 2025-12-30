@@ -11,11 +11,12 @@ import {
   DashboardLayout,
   Sidebar,
   SidebarNav,
-  BentoGrid,
-  GridColumn,
+  PolarisGrid,
+  PolarisGridColumn,
   ZenModeBlurWrapper,
 } from "@/components/layout";
 import { WidgetCard } from "@/components/layout/WidgetCard";
+import QuickLinksDock from "@/components/widgets/QuickLinksDock";
 
 /**
  * Dashboard - Main page component
@@ -50,10 +51,10 @@ export default function Dashboard() {
         <SidebarNav activeItem="dashboard" />
       </Sidebar>
 
-      {/* Main Content Grid - Bento Layout */}
-      <BentoGrid id="main-content" role="main" aria-label="Dashboard widgets">
+      {/* Main Content Grid - Enhanced Bento Layout */}
+      <PolarisGrid id="main-content" role="main" aria-label="Dashboard widgets">
         {/* Left Column - Tasks & Quick Links */}
-        <GridColumn span="left">
+        <PolarisGridColumn span="left">
           <div className="flex flex-col gap-4 h-full">
             {/* Tasks Widget - Blurred in Zen Mode */}
             <ZenModeBlurWrapper 
@@ -83,10 +84,10 @@ export default function Dashboard() {
               </WidgetCard>
             </ZenModeBlurWrapper>
           </div>
-        </GridColumn>
+        </PolarisGridColumn>
 
         {/* Center Column - Brain Dump & Timer (Main Focus Area) */}
-        <GridColumn span="center">
+        <PolarisGridColumn span="center">
           <div className="flex flex-col gap-4 h-full">
             {/* Brain Dump Widget - NOT blurred in Zen Mode */}
             <ZenModeBlurWrapper 
@@ -118,10 +119,10 @@ export default function Dashboard() {
               </WidgetCard>
             </ZenModeBlurWrapper>
           </div>
-        </GridColumn>
+        </PolarisGridColumn>
 
         {/* Right Column - Calendar, Habits & Media */}
-        <GridColumn span="right">
+        <PolarisGridColumn span="right">
           <div className="flex flex-col gap-4 h-full">
             {/* Calendar Widget - Blurred in Zen Mode */}
             <ZenModeBlurWrapper 
@@ -164,8 +165,11 @@ export default function Dashboard() {
               </WidgetCard>
             </ZenModeBlurWrapper>
           </div>
-        </GridColumn>
-      </BentoGrid>
+        </PolarisGridColumn>
+      </PolarisGrid>
+
+      {/* Floating Quick Links Dock */}
+      <QuickLinksDock position="bottom" />
     </DashboardLayout>
   );
 }

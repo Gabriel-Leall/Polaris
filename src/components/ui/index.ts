@@ -13,3 +13,11 @@ export * from "./error-testing-panel";
 export * from "./interactive-card";
 export * from "./states";
 export * from "./skeleton";
+
+// Magic UI Components
+export * from "./bento-grid";
+export * from "./dock";
+export * from "./blur-fade";
+export * from "./animated-theme-toggler";
+export { default as PolarisThemeToggle } from "./polaris-theme-toggle";
+export * from "./polaris-skeleton";

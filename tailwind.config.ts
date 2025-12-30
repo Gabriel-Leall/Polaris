@@ -10,57 +10,73 @@ const config: Config = {
   theme: {
   	extend: {
   		colors: {
+  			// Polaris Design System - Deep Midnight Theme
   			main: '#09090B',
-  			card: {
-  				DEFAULT: 'hsl(var(--card))',
-  				foreground: 'hsl(var(--card-foreground))'
-  			},
+  			card: '#121214',
   			sidebar: '#0C0C0E',
-  			input: 'hsl(var(--input))',
+  			input: '#18181B',
+  			
+  			// Primary colors
   			primary: {
-  				DEFAULT: 'hsl(var(--primary))',
-  				foreground: 'hsl(var(--primary-foreground))'
+  				DEFAULT: '#6366F1',
+  				foreground: '#FAFAFA'
   			},
   			'primary-glow': '#818CF8',
+  			
+  			// Secondary colors
   			secondary: {
-  				DEFAULT: 'hsl(var(--secondary))',
-  				foreground: 'hsl(var(--secondary-foreground))'
+  				DEFAULT: '#A1A1AA',
+  				foreground: '#FAFAFA'
   			},
+  			
+  			// Status colors
   			'status-interview': '#6366F1',
   			'status-applied': '#3B82F6',
   			'status-rejected': '#EF4444',
   			'status-pending': '#EAB308',
-  			foreground: 'hsl(var(--foreground))',
+  			
+  			// Text colors
+  			foreground: '#FAFAFA',
   			muted: {
-  				DEFAULT: 'hsl(var(--muted))',
-  				foreground: 'hsl(var(--muted-foreground))'
+  				DEFAULT: '#A1A1AA',
+  				foreground: '#71717A'
   			},
   			'muted-foreground': '#71717A',
   			code: '#71717A',
+  			
+  			// Semantic colors
   			destructive: {
-  				DEFAULT: 'hsl(var(--destructive))',
-  				foreground: 'hsl(var(--destructive-foreground))'
+  				DEFAULT: '#EF4444',
+  				foreground: '#FAFAFA'
   			},
   			success: '#22C55E',
   			warning: '#EAB308',
+  			
+  			// Glass and borders
   			glass: 'rgba(255, 255, 255, 0.05)',
-  			border: 'hsl(var(--border))',
-  			background: 'hsl(var(--background))',
+  			border: 'rgba(255, 255, 255, 0.1)',
+  			
+  			// Background
+  			background: '#09090B',
+  			
+  			// Popover and accent (fallback to Polaris colors)
   			popover: {
-  				DEFAULT: 'hsl(var(--popover))',
-  				foreground: 'hsl(var(--popover-foreground))'
+  				DEFAULT: '#121214',
+  				foreground: '#FAFAFA'
   			},
   			accent: {
-  				DEFAULT: 'hsl(var(--accent))',
-  				foreground: 'hsl(var(--accent-foreground))'
+  				DEFAULT: '#6366F1',
+  				foreground: '#FAFAFA'
   			},
-  			ring: 'hsl(var(--ring))',
+  			ring: '#6366F1',
+  			
+  			// Chart colors (using Polaris palette)
   			chart: {
-  				'1': 'hsl(var(--chart-1))',
-  				'2': 'hsl(var(--chart-2))',
-  				'3': 'hsl(var(--chart-3))',
-  				'4': 'hsl(var(--chart-4))',
-  				'5': 'hsl(var(--chart-5))'
+  				'1': '#6366F1',
+  				'2': '#3B82F6',
+  				'3': '#22C55E',
+  				'4': '#EAB308',
+  				'5': '#EF4444'
   			}
   		},
   		fontFamily: {

@@ -1,0 +1,99 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #111022;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #242348;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #6366F1;
+}
+
+/* Deep Space Grid Background */
+.deep-space-grid {
+  background-image: 
+    radial-gradient(circle at center, #1a1930 1px, transparent 1px),
+    radial-gradient(circle at center, #0a0a1a 1px, transparent 1px);
+  background-size: 80px 80px, 40px 40px;
+  background-position: 0 0, 20px 20px;
+  transform: perspective(1000px) rotateX(75deg) translateY(-50%);
+  transform-origin: bottom center;
+  height: 200%;
+  width: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0.2;
+  animation: bg-grid-pan 60s linear infinite;
+  pointer-events: none;
+}
+
+/* Floating Particles */
+.floating-particles {
+  position: absolute;
+  inset: 0;
+  background: 
+    radial-gradient(circle at 10% 20%, rgba(255,255,255,0.05) 1px, transparent 1px),
+    radial-gradient(circle at 70% 80%, rgba(255,255,255,0.08) 1px, transparent 1px);
+  background-size: 300px 300px, 200px 200px;
+  animation: move-particles 120s linear infinite;
+  pointer-events: none;
+  opacity: 0.3;
+}
+
+/* Custom Animations */
+@keyframes bg-grid-pan {
+  0% { 
+    transform: translateY(-50%) perspective(1000px) rotateX(75deg); 
+  }
+  100% { 
+    transform: translateY(0%) perspective(1000px) rotateX(75deg); 
+  }
+}
+
+@keyframes move-particles {
+  from { 
+    background-position: 0 0, 0 0; 
+  }
+  to { 
+    background-position: 300px 300px, -200px -200px; 
+  }
+}
+
+@keyframes spin-slow {
+  from { 
+    transform: rotate(0deg); 
+  }
+  to { 
+    transform: rotate(360deg); 
+  }
+}
+
+@keyframes spin-reverse-slow {
+  from { 
+    transform: rotate(0deg); 
+  }
+  to { 
+    transform: rotate(-360deg); 
+  }
+}
+
+/* Utility Classes */
+.animate-spin-slow {
+  animation: spin-slow 8s linear infinite;
+}
+
+.animate-spin-reverse-slow {
+  animation: spin-reverse-slow 10s linear infinite;
+}

@@ -49,29 +49,89 @@ function QuickLinksWidgetCore({
 
   // Load links from database
   const loadLinks = useCallback(async () => {
-    if (!userId) {
-      setIsLoading(false);
-      return;
-    }
-
     try {
       setIsLoading(true);
-      const fetchedLinks = await getQuickLinks(userId);
-      setLinks(fetchedLinks);
+      
+      if (userId) {
+        const fetchedLinks = await getQuickLinks(userId);
+        if (fetchedLinks && fetchedLinks.length > 0) {
+          setLinks(fetchedLinks);
+          return;
+        }
+      }
+      
+      // Load mockup data if no links exist or user not authenticated
+      const mockupLinks = [
+        {
+          id: "mock-1",
+          url: "https://github.com",
+          title: "GitHub",
+          favicon: "https://www.google.com/s2/favicons?domain=github.com&sz=32",
+          userId: userId || "mock-user",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          id: "mock-2", 
+          url: "https://linkedin.com",
+          title: "LinkedIn",
+          favicon: "https://www.google.com/s2/favicons?domain=linkedin.com&sz=32",
+          userId: userId || "mock-user",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          id: "mock-3",
+          url: "https://stackoverflow.com",
+          title: "Stack Overflow",
+          favicon: "https://www.google.com/s2/favicons?domain=stackoverflow.com&sz=32",
+          userId: userId || "mock-user",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          id: "mock-4",
+          url: "https://dev.to",
+          title: "DEV Community",
+          favicon: "https://www.google.com/s2/favicons?domain=dev.to&sz=32",
+          userId: userId || "mock-user",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        }
+      ];
+      setLinks(mockupLinks);
     } catch (error) {
       console.error("Failed to load quick links:", error);
+      // Show mockups on error too
+      const mockupLinks = [
+        {
+          id: "mock-1",
+          url: "https://github.com",
+          title: "GitHub",
+          favicon: "https://www.google.com/s2/favicons?domain=github.com&sz=32",
+          userId: userId || "mock-user",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          id: "mock-2", 
+          url: "https://linkedin.com",
+          title: "LinkedIn",
+          favicon: "https://www.google.com/s2/favicons?domain=linkedin.com&sz=32",
+          userId: userId || "mock-user",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        }
+      ];
+      setLinks(mockupLinks);
     } finally {
       setIsLoading(false);
     }
   }, [userId]);
 
   useEffect(() => {
-    if (isAuthenticated && userId) {
-      loadLinks();
-    } else {
-      setIsLoading(false);
-    }
-  }, [isAuthenticated, userId, loadLinks]);
+    loadLinks();
+  }, [loadLinks]);
 
   // Handle adding a new link
   const handleAddLink = async () => {
