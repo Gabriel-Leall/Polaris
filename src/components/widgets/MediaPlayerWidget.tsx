@@ -208,7 +208,7 @@ function MediaPlayerWidgetCore({ className }: MediaPlayerWidgetProps) {
           </div>
 
           {/* Embed Container */}
-          <div className="flex-1 relative rounded-xl overflow-hidden bg-black/20 min-h-[80px]">
+          <div className="flex-1 relative rounded-xl overflow-hidden bg-black/20 min-h-[60px]">
             {/* Loading Overlay */}
             {loadingState === "loading" && (
               <div className="absolute inset-0 flex items-center justify-center bg-card/80 z-10">

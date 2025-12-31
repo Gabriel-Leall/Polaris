@@ -126,11 +126,12 @@ export default function Dashboard() {
           <div className="flex flex-col gap-4 h-full">
             {/* Calendar Widget - Blurred in Zen Mode */}
             <ZenModeBlurWrapper 
-              className="shrink-0"
+              className="h-[40%]"
               aria-label="Calendar section"
             >
               <WidgetCard 
                 scrollable={false}
+                className="h-full"
                 aria-label="Calendar"
               >
                 <CalendarWidget />
@@ -139,11 +140,12 @@ export default function Dashboard() {
 
             {/* Habit Tracker Widget - Blurred in Zen Mode */}
             <ZenModeBlurWrapper 
-              className="shrink-0"
+              className="h-[30%]"
               aria-label="Habit Tracker section"
             >
               <WidgetCard 
                 scrollable={false}
+                className="h-full"
                 aria-label="Habit Tracker"
               >
                 <HabitTrackerWidget />
@@ -153,7 +155,7 @@ export default function Dashboard() {
             {/* Media Player Widget - NOT blurred in Zen Mode */}
             <ZenModeBlurWrapper 
               excludeFromBlur 
-              className="flex-1 min-h-[180px]"
+              className="h-[30%]"
               aria-label="Media Player section - remains active during Zen Mode"
             >
               <WidgetCard 
