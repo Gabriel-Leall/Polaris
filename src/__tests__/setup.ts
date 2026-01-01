@@ -26,24 +26,35 @@ const localStorageMock = {
   },
 };
 
-Object.defineProperty(window, "localStorage", {
+// Only define localStorage on window if window exists (browser environment)
+if (typeof window !== 'undefined') {
+  Object.defineProperty(window, "localStorage", {
+    value: localStorageMock,
+    writable: true,
+    configurable: true,
+  });
+}
+
+// Make localStorage available globally
+Object.defineProperty(globalThis, "localStorage", {
   value: localStorageMock,
   writable: true,
   configurable: true,
 });
 
-// Make localStorage available globally without touching read-only globals
-vi.stubGlobal("localStorage", localStorageMock);
-
 // Provide a Jest-compatible global for tests that still reference jest.* APIs
-vi.stubGlobal("jest", {
-  ...vi,
-  fn: vi.fn,
-  mock: vi.mock,
-  spyOn: vi.spyOn,
-  clearAllMocks: vi.clearAllMocks,
-  resetAllMocks: vi.resetAllMocks,
-  restoreAllMocks: vi.restoreAllMocks,
+Object.defineProperty(globalThis, "jest", {
+  value: {
+    ...vi,
+    fn: vi.fn,
+    mock: vi.mock,
+    spyOn: vi.spyOn,
+    clearAllMocks: vi.clearAllMocks,
+    resetAllMocks: vi.resetAllMocks,
+    restoreAllMocks: vi.restoreAllMocks,
+  },
+  writable: true,
+  configurable: true,
 });
 
 beforeEach(() => {
