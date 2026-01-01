@@ -16,7 +16,7 @@ import {
   ZenModeBlurWrapper,
 } from "@/components/layout";
 import { WidgetCard } from "@/components/layout/WidgetCard";
-import QuickLinksDock from "@/components/widgets/QuickLinksDock";
+import { QuickLinksDock } from "@/components/widgets";
 
 /**
  * Dashboard - Main page component
