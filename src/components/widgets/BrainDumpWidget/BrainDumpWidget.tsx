@@ -4,7 +4,6 @@ import { useState } from "react";
 import { EditorContent } from "@tiptap/react";
 import { Loader2, AlertCircle } from "lucide-react";
 import { ErrorBoundary } from "@/components/ui";
-import { cn } from "@/lib/utils";
 import { useBrainDumpEditor } from "./hooks/useBrainDumpEditor";
 import { useBrainDumpSync } from "./hooks/useBrainDumpSync";
 import { EditorToolbar } from "./components/EditorToolbar";

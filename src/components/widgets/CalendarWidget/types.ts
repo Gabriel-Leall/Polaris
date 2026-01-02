@@ -10,7 +10,7 @@ export interface DayData {
 
 export interface CalendarWidgetProps {
   className?: string | undefined;
-  initialData?: DayData;
+  initialData?: DayData | undefined;
 }
 
 export interface TaskModalProps {

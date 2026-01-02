@@ -1,21 +1,21 @@
-import { Inter, JetBrains_Mono } from 'next/font/google'
+import { Inter, JetBrains_Mono } from "next/font/google";
 // import localFont from 'next/font/local' // Uncomment if using local Geist fonts
 
 // Primary font for UI elements - Inter with Geist Sans fallback
 export const inter = Inter({
-  subsets: ['latin'],
-  display: 'swap',
-  variable: '--font-inter',
-  fallback: ['Geist Sans', 'system-ui', 'sans-serif'],
-})
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-inter",
+  fallback: ["Geist Sans", "system-ui", "sans-serif"],
+});
 
 // Monospace font for code elements - JetBrains Mono with Geist Mono fallback
 export const jetbrainsMono = JetBrains_Mono({
-  subsets: ['latin'],
-  display: 'swap',
-  variable: '--font-jetbrains-mono',
-  fallback: ['Geist Mono', 'Monaco', 'Consolas', 'monospace'],
-})
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-jetbrains-mono",
+  fallback: ["Geist Mono", "Monaco", "Consolas", "monospace"],
+});
 
 // Optional: Geist fonts as local fonts (if available)
 // Uncomment these if you have Geist fonts locally installed
@@ -49,4 +49,4 @@ export const geistMono = localFont({
 export const fontClasses = {
   sans: inter.variable,
   mono: jetbrainsMono.variable,
-}
+};

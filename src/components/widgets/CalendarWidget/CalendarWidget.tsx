@@ -13,9 +13,10 @@ import { TaskModal } from './components/TaskModal';
 import { formatDateKey, formatSelectedDayDate } from './utils/calendarUtils';
 import { CalendarWidgetProps } from './types';
 
-function CalendarWidgetCore({ className, initialData = {} }: CalendarWidgetProps) {
+function CalendarWidgetCore({ className, initialData }: CalendarWidgetProps) {
+  const initialDataValue = initialData || {};
   const { currentDate, goToPreviousMonth, goToNextMonth, goToToday } = useCalendarNavigation();
-  const { dayData, getTasksForDay, addTask, deleteTask, toggleComplete, updateTask } = useCalendarTasks(initialData);
+  const { dayData, getTasksForDay, addTask, deleteTask, toggleComplete, updateTask } = useCalendarTasks(initialDataValue);
   
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
   const [newTaskText, setNewTaskText] = useState('');

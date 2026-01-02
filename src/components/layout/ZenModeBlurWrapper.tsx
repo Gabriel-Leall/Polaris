@@ -72,13 +72,17 @@ export function ZenModeBlurWrapper({
         ],
         className
       )}
-      aria-hidden={shouldBlur}
-      aria-label={ariaLabel}
-      tabIndex={shouldBlur ? -1 : undefined}
-      role={shouldBlur ? "presentation" : undefined}
-      inert={shouldBlur ? true : undefined}
     >
-      {children}
+      <div
+        aria-hidden={shouldBlur}
+        aria-label={ariaLabel}
+        tabIndex={shouldBlur ? -1 : undefined}
+        role={shouldBlur ? "presentation" : undefined}
+        // @ts-ignore - inert is not yet in React types but is a valid HTML attribute
+        inert={shouldBlur ? true : undefined}
+      >
+        {children}
+      </div>
     </BlurFade>
   );
 }

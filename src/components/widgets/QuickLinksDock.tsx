@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { ExternalLink, Plus, Trash2, Globe } from "lucide-react";
+import { useState, useEffect, useCallback } from "react";
+import { Plus, Trash2, Globe } from "lucide-react";
 import { Dock, DockIcon } from "@/components/ui/dock";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 import { useAuth } from "@/hooks/useAuth";
 import {
   extractTitleFromUrl,
@@ -24,34 +25,40 @@ interface QuickLinksDockProps {
   position?: "bottom" | "top";
 }
 
-const QuickLinksDock = ({ 
-  className, 
-  position = "bottom" 
+const QuickLinksDock = ({
+  className,
+  position = "bottom",
 }: QuickLinksDockProps) => {
   const { userId, isAuthenticated } = useAuth();
   const [links, setLinks] = useState<QuickLink[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [showAddForm, setShowAddForm] = useState(false);
   const [newUrl, setNewUrl] = useState("");
   const [isAdding, setIsAdding] = useState(false);
+
+  const loadLinks = useCallback(async () => {
+    if (!userId) return;
+
+    try {
+      const userLinks = await getQuickLinks(userId);
+      setLinks(userLinks || []);
+    } catch (error) {
+      console.error("Failed to load quick links:", error);
+    }
+  }, [userId]);
+
+  const handleFaviconError = (linkId: string) => {
+    setLinks((prev) =>
+      prev.map((link) =>
+        link.id === linkId ? { ...link, faviconUrl: null } : link
+      )
+    );
+  };
 
   useEffect(() => {
     if (isAuthenticated && userId) {
       loadLinks();
     }
-  }, [isAuthenticated, userId]);
-
-  const loadLinks = async () => {
-    try {
-      setIsLoading(true);
-      const userLinks = await getQuickLinks();
-      setLinks(userLinks || []);
-    } catch (error) {
-      console.error("Failed to load quick links:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  }, [isAuthenticated, userId, loadLinks]);
 
   const handleAddLink = async () => {
     if (!newUrl.trim() || !userId) return;
@@ -59,23 +66,24 @@ const QuickLinksDock = ({
     try {
       setIsAdding(true);
       const url = newUrl.startsWith("http") ? newUrl : `https://${newUrl}`;
-      
+
       if (!isValidUrl(url)) {
         return;
       }
 
       const title = extractTitleFromUrl(url);
-      const favicon = getFaviconUrl(url);
+      const faviconUrl = getFaviconUrl(url);
 
       const newLink = await createQuickLink({
         url,
         title,
-        favicon,
+        faviconUrl,
         userId,
+        position: links.length,
       });
 
       if (newLink) {
-        setLinks(prev => [...prev, newLink]);
+        setLinks((prev) => [...prev, newLink]);
         setNewUrl("");
         setShowAddForm(false);
       }
@@ -89,7 +97,7 @@ const QuickLinksDock = ({
   const handleDeleteLink = async (linkId: string) => {
     try {
       await deleteQuickLink(linkId);
-      setLinks(prev => prev.filter(link => link.id !== linkId));
+      setLinks((prev) => prev.filter((link) => link.id !== linkId));
     } catch (error) {
       console.error("Failed to delete quick link:", error);
     }
@@ -104,11 +112,13 @@ const QuickLinksDock = ({
   }
 
   return (
-    <div className={cn(
-      "fixed left-1/2 transform -translate-x-1/2 z-50",
-      position === "bottom" ? "bottom-6" : "top-6",
-      className
-    )}>
+    <div
+      className={cn(
+        "fixed left-1/2 transform -translate-x-1/2 z-50",
+        position === "bottom" ? "bottom-6" : "top-6",
+        className
+      )}
+    >
       <Dock className="bg-card/90 border-white/5">
         {/* Quick Links */}
         {links.map((link) => (
@@ -124,24 +134,26 @@ const QuickLinksDock = ({
                 className="flex items-center justify-center w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
                 title={link.title}
               >
-                {link.favicon ? (
-                  <img
-                    src={link.favicon}
+                {link.faviconUrl ? (
+                  <Image
+                    src={link.faviconUrl}
                     alt={link.title}
-                    className="w-5 h-5 rounded-sm"
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      target.style.display = "none";
-                      target.nextElementSibling?.classList.remove("hidden");
-                    }}
+                    width={20}
+                    height={20}
+                    className="rounded-sm"
+                    onError={() => handleFaviconError(link.id)}
+                    unoptimized
+                    loading="lazy"
                   />
                 ) : null}
-                <Globe className={cn(
-                  "w-5 h-5 text-muted-foreground",
-                  link.favicon ? "hidden" : "block"
-                )} />
+                <Globe
+                  className={cn(
+                    "w-5 h-5 text-muted-foreground",
+                    link.faviconUrl ? "hidden" : "block"
+                  )}
+                />
               </button>
-              
+
               {/* Delete button on hover */}
               <button
                 onClick={() => handleDeleteLink(link.id)}

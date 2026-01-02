@@ -1,5 +1,3 @@
-import { cn } from "@/lib/utils";
-
 interface DashboardLayoutProps {
   children: React.ReactNode;
   className?: string;
@@ -13,20 +11,20 @@ interface DashboardLayoutProps {
 function DashboardLayout({ children, className }: DashboardLayoutProps) {
   return (
     <main
-      className={cn(
-        "w-full bg-main text-white",
-        "flex flex-col",
-        "h-auto min-h-screen lg:h-screen",
-        "overflow-y-auto lg:overflow-hidden",
-        className
-      )}
+      className={`
+      w-full bg-main text-white
+      flex flex-col
+      h-auto min-h-screen lg:h-screen
+      overflow-y-auto lg:overflow-hidden
+      ${className || ""}
+    `}
     >
       <div
-        className={cn(
-          "flex gap-4 h-full",
-          "p-4 md:p-5 lg:p-6",
-          "flex-col md:flex-row"
-        )}
+        className={`
+        flex gap-4 h-full
+        p-4 md:p-5 lg:p-6
+        flex-col md:flex-row
+      `}
       >
         {children}
       </div>
