@@ -7,9 +7,7 @@ export { default as BrainDumpWidget } from "./BrainDumpWidget";
 export { default as QuickLinksWidget } from "./QuickLinksWidget";
 export { default as TasksWidget } from "./TasksWidget";
 export { default as CalendarWidget } from "./CalendarWidget";
-
-// Single-file widgets (simple widgets)
-export { default as ZenTimerWidget } from "./ZenTimerWidget";
+export { ZenTimerWidget } from "./ZenTimerWidget";
 export { default as MediaPlayerWidget } from "./MediaPlayerWidget";
 export { default as HabitTrackerWidget } from "./HabitTrackerWidget";
 export { default as JobTrackerWidget } from "./JobTrackerWidget";
