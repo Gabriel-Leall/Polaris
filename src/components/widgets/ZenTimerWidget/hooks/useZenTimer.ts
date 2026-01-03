@@ -7,7 +7,6 @@ const timerReducer = (state: TimerState, action: TimerAction): TimerState => {
       return {
         ...state,
         status: "RUNNING",
-        // Define o momento exato no futuro: AGORA + tempo que falta
         endTime: Date.now() + state.timeLeft * 1000,
       };
     case "PAUSE":
@@ -16,8 +15,51 @@ const timerReducer = (state: TimerState, action: TimerAction): TimerState => {
       return {
         ...state,
         status: "IDLE",
+        mode: "WORK",
         endTime: null,
-        timeLeft: state.initialDuration,
+        timeLeft: state.workDuration,
+        currentCycle: 1,
+      };
+    case "SET_CONFIG":
+      const workSecs = action.payload.work * 60;
+      return {
+        ...state,
+        workDuration: workSecs,
+        breakDuration: action.payload.break * 60,
+        totalCycles: action.payload.cycles,
+        timeLeft: workSecs,
+        status: "IDLE",
+        mode: "WORK",
+        currentCycle: 1,
+        endTime: null,
+      };
+    case "SWITCH_MODE":
+      const isWork = state.mode === "WORK";
+      const nextMode = isWork ? "BREAK" : "WORK";
+      const nextCycle = !isWork ? state.currentCycle + 1 : state.currentCycle;
+
+      // Se terminou todos os ciclos
+      if (!isWork && state.currentCycle >= state.totalCycles) {
+        return {
+          ...state,
+          status: "IDLE",
+          mode: "WORK",
+          currentCycle: 1,
+          timeLeft: state.workDuration,
+          endTime: null,
+        };
+      }
+
+      const nextDuration =
+        nextMode === "WORK" ? state.workDuration : state.breakDuration;
+
+      return {
+        ...state,
+        mode: nextMode,
+        currentCycle: nextCycle,
+        timeLeft: nextDuration,
+        endTime: Date.now() + nextDuration * 1000,
+        status: "RUNNING",
       };
     case "TICK":
       if (state.status !== "RUNNING" || !state.endTime) return state;
@@ -28,22 +70,22 @@ const timerReducer = (state: TimerState, action: TimerAction): TimerState => {
       return {
         ...state,
         timeLeft: diff,
-        status: diff <= 0 ? "IDLE" : state.status,
-        endTime: diff <= 0 ? null : state.endTime,
       };
     default:
       return state;
   }
 };
 
-export const useZenTimer = (minutes: number = 25) => {
-  const initialSeconds = minutes * 60;
-
+export const useZenTimer = (initialWork: number = 25) => {
   const [state, dispatch] = useReducer(timerReducer, {
     status: "IDLE",
-    timeLeft: initialSeconds,
+    mode: "WORK",
+    timeLeft: initialWork * 60,
     endTime: null,
-    initialDuration: initialSeconds,
+    workDuration: initialWork * 60,
+    breakDuration: 5 * 60,
+    totalCycles: 1,
+    currentCycle: 1,
   });
 
   const intervalRef = useRef<NodeJS.Timeout | null>(null);

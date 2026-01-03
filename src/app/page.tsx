@@ -15,6 +15,7 @@ import {
   GridColumn,
 } from "@/components/layout";
 import { WidgetCard } from "@/components/layout/WidgetCard";
+import { ZenModeBlurWrapper } from "@/components/ui/ZenModeBlurWrapper";
 
 export default function Dashboard() {
   return (
@@ -29,46 +30,60 @@ export default function Dashboard() {
         {/* Left Column - Tasks & Quick Links */}
         <GridColumn span="left">
           <div className="flex flex-col gap-4 h-full">
-            <WidgetCard scrollable={false} className="flex-1 min-h-0">
-              <TasksWidget />
-            </WidgetCard>
+            <ZenModeBlurWrapper className="flex-1 min-h-0">
+              <WidgetCard scrollable={false} className="h-full">
+                <TasksWidget />
+              </WidgetCard>
+            </ZenModeBlurWrapper>
 
-            <WidgetCard scrollable={false} className="shrink-0 h-[180px]">
-              <QuickLinksWidget compact readOnly />
-            </WidgetCard>
+            <ZenModeBlurWrapper className="shrink-0 h-[180px]">
+              <WidgetCard scrollable={false} className="h-full">
+                <QuickLinksWidget compact readOnly />
+              </WidgetCard>
+            </ZenModeBlurWrapper>
           </div>
         </GridColumn>
 
         {/* Center Column - Brain Dump & Timer */}
         <GridColumn span="center">
           <div className="flex flex-col gap-4 h-full">
-            <WidgetCard scrollable={false} className="flex-1 min-h-0">
-              <BrainDumpWidget />
-            </WidgetCard>
+            <ZenModeBlurWrapper excludeFromBlur className="flex-1 min-h-0">
+              <WidgetCard scrollable={false} className="h-full">
+                <BrainDumpWidget />
+              </WidgetCard>
+            </ZenModeBlurWrapper>
 
-            <WidgetCard
-              scrollable={false}
+            <ZenModeBlurWrapper
+              excludeFromBlur
               className="shrink-0 h-[25%] min-h-[180px]"
             >
-              <ZenTimerWidget />
-            </WidgetCard>
+              <WidgetCard scrollable={false} className="h-full">
+                <ZenTimerWidget />
+              </WidgetCard>
+            </ZenModeBlurWrapper>
           </div>
         </GridColumn>
 
         {/* Right Column - Calendar, Habits & Media */}
         <GridColumn span="right">
           <div className="flex flex-col gap-4 h-full">
-            <WidgetCard scrollable={false} className="shrink-0 h-auto">
-              <CalendarWidget />
-            </WidgetCard>
+            <ZenModeBlurWrapper className="shrink-0 h-auto">
+              <WidgetCard scrollable={false} className="h-full">
+                <CalendarWidget />
+              </WidgetCard>
+            </ZenModeBlurWrapper>
 
-            <WidgetCard scrollable={false} className="shrink-0 h-auto">
-              <HabitTrackerWidget />
-            </WidgetCard>
+            <ZenModeBlurWrapper className="shrink-0 h-auto">
+              <WidgetCard scrollable={false} className="h-full">
+                <HabitTrackerWidget />
+              </WidgetCard>
+            </ZenModeBlurWrapper>
 
-            <WidgetCard scrollable={false} className="flex-1 min-h-0">
-              <MediaPlayerWidget />
-            </WidgetCard>
+            <ZenModeBlurWrapper excludeFromBlur className="flex-1 min-h-0">
+              <WidgetCard scrollable={false} className="h-full">
+                <MediaPlayerWidget />
+              </WidgetCard>
+            </ZenModeBlurWrapper>
           </div>
         </GridColumn>
       </BentoGrid>
