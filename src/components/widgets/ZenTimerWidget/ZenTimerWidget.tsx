@@ -19,7 +19,8 @@ const ZenTimerWidgetCore = ({
 }: {
   className?: string | undefined;
 }) => {
-  const { isZenMode, toggleZenMode, setZenMode, startTimer, stopTimer } = useZenStore();
+  const { isZenMode, toggleZenMode, setZenMode, startTimer, stopTimer } =
+    useZenStore();
   const { state, dispatch } = useZenTimer(25);
   const { playFinishSound } = useTimerAudio();
   const [isConfiguring, setIsConfiguring] = useState(false);

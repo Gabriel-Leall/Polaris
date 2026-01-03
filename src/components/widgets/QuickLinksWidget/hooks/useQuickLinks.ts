@@ -42,7 +42,8 @@ const getMockupLinks = (userId: string | null): QuickLink[] => [
     id: "mock-3",
     url: "https://stackoverflow.com",
     title: "Stack Overflow",
-    faviconUrl: "https://www.google.com/s2/favicons?domain=stackoverflow.com&sz=64",
+    faviconUrl:
+      "https://www.google.com/s2/favicons?domain=stackoverflow.com&sz=64",
     userId: userId || "mock-user",
     position: 2,
     createdAt: new Date(),
@@ -73,6 +74,9 @@ export const useQuickLinks = () => {
   const [urlError, setUrlError] = useState<string | null>(null);
   const [showInput, setShowInput] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editUrl, setEditUrl] = useState("");
+  const [isUpdating, setIsUpdating] = useState(false);
 
   const loadLinks = useCallback(async () => {
     try {
@@ -161,18 +165,92 @@ export const useQuickLinks = () => {
   const handleDeleteLink = async (id: string) => {
     try {
       setDeletingId(id);
-      
+
       // Only call API for real links (not mock or local)
       if (userId && !id.startsWith("mock-") && !id.startsWith("local-")) {
         await deleteQuickLink(id);
       }
-      
+
       setLinks((prev) => prev.filter((link) => link.id !== id));
     } catch (error) {
       console.error("Failed to delete quick link:", error);
     } finally {
       setDeletingId(null);
     }
+  };
+
+  const handleUpdateLink = async (id: string) => {
+    if (!editUrl.trim()) {
+      setUrlError("Please enter a URL");
+      return;
+    }
+
+    let urlToUpdate = editUrl.trim();
+    if (
+      !urlToUpdate.startsWith("http://") &&
+      !urlToUpdate.startsWith("https://")
+    ) {
+      urlToUpdate = `https://${urlToUpdate}`;
+    }
+
+    if (!isValidUrl(urlToUpdate)) {
+      setUrlError("Please enter a valid URL");
+      return;
+    }
+
+    try {
+      setIsUpdating(true);
+      setUrlError(null);
+
+      const title = extractTitleFromUrl(urlToUpdate);
+      const faviconUrl = getFaviconUrl(urlToUpdate);
+
+      if (userId && !id.startsWith("local-") && !id.startsWith("mock-")) {
+        const updatedLink = await updateQuickLink(id, {
+          url: urlToUpdate,
+          title,
+          faviconUrl,
+        });
+        setLinks((prev) =>
+          prev.map((link) => (link.id === id ? updatedLink : link))
+        );
+      } else {
+        // Local storage fallback
+        setLinks((prev) =>
+          prev.map((link) =>
+            link.id === id
+              ? {
+                  ...link,
+                  url: urlToUpdate,
+                  title,
+                  faviconUrl,
+                  updatedAt: new Date(),
+                }
+              : link
+          )
+        );
+      }
+
+      setEditingId(null);
+      setEditUrl("");
+    } catch (error) {
+      console.error("Failed to update quick link:", error);
+      setUrlError("Failed to update link. Please try again.");
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
+  const startEditing = (link: QuickLink) => {
+    setEditingId(link.id);
+    setEditUrl(link.url);
+    setUrlError(null);
+  };
+
+  const cancelEditing = () => {
+    setEditingId(null);
+    setEditUrl("");
+    setUrlError(null);
   };
 
   const openLink = (url: string) => {
@@ -207,13 +285,20 @@ export const useQuickLinks = () => {
     urlError,
     showInput,
     deletingId,
-    
+    editingId,
+    editUrl,
+    isUpdating,
+
     // Actions
     handleAddLink,
     handleDeleteLink,
+    handleUpdateLink,
+    startEditing,
+    cancelEditing,
     openLink,
     handleKeyPress,
     handleUrlChange,
+    setEditUrl,
     toggleInput,
   };
 };

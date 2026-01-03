@@ -20,6 +20,7 @@ import type { QuickLinksWidgetProps } from "./types";
  */
 function QuickLinksWidgetCore({
   className,
+  compact = false,
   readOnly = false,
 }: QuickLinksWidgetProps) {
   const {
@@ -30,11 +31,18 @@ function QuickLinksWidgetCore({
     urlError,
     showInput,
     deletingId,
+    editingId,
+    editUrl,
+    isUpdating,
     handleAddLink,
     handleDeleteLink,
+    handleUpdateLink,
+    startEditing,
+    cancelEditing,
     openLink,
     handleKeyPress,
     handleUrlChange,
+    setEditUrl,
     toggleInput,
   } = useQuickLinks();
 
@@ -55,15 +63,34 @@ function QuickLinksWidgetCore({
         )}
       </div>
 
-      {/* URL Input Field */}
-      {showInput && !readOnly && (
+      {/* URL Input Field (Add) */}
+      {showInput && !readOnly && !editingId && (
         <AddLinkForm
           newUrl={newUrl}
           onUrlChange={handleUrlChange}
           onSubmit={handleAddLink}
           onKeyPress={handleKeyPress}
+          onCancel={toggleInput}
           isAdding={isAdding}
           urlError={urlError}
+        />
+      )}
+
+      {/* URL Input Field (Edit) */}
+      {editingId && !readOnly && (
+        <AddLinkForm
+          newUrl={editUrl}
+          onUrlChange={setEditUrl}
+          onSubmit={() => handleUpdateLink(editingId)}
+          onKeyPress={(e) => {
+            if (e.key === "Enter") handleUpdateLink(editingId);
+            if (e.key === "Escape") cancelEditing();
+          }}
+          onCancel={cancelEditing}
+          isAdding={isUpdating || false}
+          urlError={urlError}
+          submitLabel="Update"
+          placeholder="Edit URL"
         />
       )}
 
@@ -81,9 +108,11 @@ function QuickLinksWidgetCore({
           onDeleteLink={handleDeleteLink}
           onOpenLink={openLink}
           onAddClick={toggleInput}
+          onStartEditing={startEditing}
           readOnly={readOnly}
           deletingId={deletingId}
           showInput={showInput}
+          compact={compact}
         />
       )}
 

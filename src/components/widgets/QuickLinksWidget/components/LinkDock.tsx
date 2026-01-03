@@ -15,18 +15,28 @@ export const LinkDock = ({
   onDeleteLink,
   onOpenLink,
   onAddClick,
+  onStartEditing,
   readOnly = false,
   deletingId,
   showInput,
+  compact = false,
 }: LinkDockProps) => {
   return (
-    <div className="flex-1 flex items-center justify-center py-8">
+    <div
+      className={cn(
+        "flex-1 flex items-center justify-center",
+        compact ? "py-4" : "py-8"
+      )}
+    >
       <Dock
-        iconSize={56}
-        iconMagnification={72}
-        iconDistance={140}
+        iconSize={compact ? 40 : 56}
+        iconMagnification={compact ? 60 : 72}
+        iconDistance={compact ? 100 : 140}
         direction="middle"
-        className="bg-transparent border-none h-auto py-0 px-0 gap-4"
+        className={cn(
+          "bg-transparent border-none h-[70px] gap-4",
+          compact ? "p-0" : "p-2"
+        )}
       >
         {links.map((link) => (
           <LinkItem
@@ -34,8 +44,10 @@ export const LinkDock = ({
             link={link}
             onDelete={onDeleteLink}
             onOpen={onOpenLink}
+            onStartEditing={onStartEditing}
             readOnly={readOnly}
             isDeleting={deletingId === link.id}
+            compact={compact}
           />
         ))}
 
@@ -48,11 +60,13 @@ export const LinkDock = ({
                 "flex items-center justify-center w-full h-full rounded-2xl transition-all duration-200",
                 showInput
                   ? "bg-primary/30 text-primary"
+                  : compact
+                  ? "bg-black/10 dark:bg-white/10 hover:bg-black/20 dark:hover:bg-white/20 text-muted-foreground hover:text-foreground"
                   : "bg-white/5 hover:bg-white/10 text-muted-foreground hover:text-foreground"
               )}
               title="Add quick link"
             >
-              <Plus className="w-6 h-6" />
+              <Plus className={cn(compact ? "w-5 h-5" : "w-6 h-6")} />
             </button>
           </DockIcon>
         )}
