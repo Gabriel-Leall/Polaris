@@ -62,12 +62,12 @@ export const getEditorExtensions = () => [
     },
     bulletList: {
       HTMLAttributes: {
-        class: "list-disc list-inside space-y-1",
+        class: "list-disc list-outside ml-4 space-y-0",
       },
     },
     orderedList: {
       HTMLAttributes: {
-        class: "list-decimal list-inside space-y-1",
+        class: "list-decimal list-outside ml-4 space-y-0",
       },
     },
   }),
@@ -79,15 +79,13 @@ export const getEditorExtensions = () => [
     },
   }),
   Placeholder.configure({
-    placeholder: "Add a brain dump...",
-    emptyEditorClass:
-      "before:content-[attr(data-placeholder)] before:text-muted-foreground before:float-left before:h-0 before:pointer-events-none",
+    placeholder: "Escreva e Revise aqui..",
   }),
 ];
 
 export const getEditorProps = () => ({
   attributes: {
     class:
-      "prose prose-invert prose-sm max-w-none focus:outline-none min-h-[200px] p-4",
+      "tiptap prose prose-invert prose-sm max-w-none focus:outline-none focus:ring-0 focus:ring-offset-0 h-full min-h-full p-8 [&_p]:leading-[1.5] [&_p]:my-0 [&_ul]:my-2 [&_ol]:my-2 [&_li]:my-0 [&_ul]:pl-0 [&_ol]:pl-0 [&_h1]:leading-none [&_h2]:leading-none [&_h3]:leading-none",
   },
 });

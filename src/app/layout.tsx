@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { inter, jetbrainsMono } from "./fonts";
 import { GlobalErrorBoundary } from "@/components/ui/global-error-boundary";
+import { Toaster } from "@/components/ui/toaster";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -16,7 +17,10 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable}`}>
       <body className="font-sans antialiased">
-        <GlobalErrorBoundary>{children}</GlobalErrorBoundary>
+        <GlobalErrorBoundary>
+          {children}
+          <Toaster />
+        </GlobalErrorBoundary>
       </body>
     </html>
   );
