@@ -98,6 +98,21 @@ export const updateUserPreferencesSchema = z.object({
   sidebarCollapsed: z.boolean().optional(),
 });
 
+// Brain Dump Schemas
+export const brainDumpInputSchema = z.object({
+  content: z
+    .string()
+    .min(1, "O conteúdo não pode estar vazio")
+    .max(5000, "O conteúdo é muito longo (máximo 5000 caracteres)"),
+});
+
+export const brainDumpTagsSchema = z.object({
+  tags: z
+    .array(z.string().min(1).max(20))
+    .min(1, "Pelo menos uma tag deve ser gerada")
+    .max(5, "No máximo 5 tags são permitidas"),
+});
+
 export const createBrainDumpNoteSchema = z.object({
   userId: z.string().uuid("Invalid user ID"),
   content: z.string().default(""),
@@ -172,7 +187,11 @@ export const createQuickLinkSchema = z.object({
 export const updateQuickLinkSchema = z.object({
   id: z.string().uuid("Invalid quick link ID"),
   url: z.string().url("Invalid URL").optional(),
-  title: z.string().min(1, "Title is required").max(255, "Title too long").optional(),
+  title: z
+    .string()
+    .min(1, "Title is required")
+    .max(255, "Title too long")
+    .optional(),
   faviconUrl: z.string().url("Invalid favicon URL").nullable().optional(),
   position: z.number().min(0).optional(),
 });
@@ -212,7 +231,11 @@ export type UpdateBrainDumpNoteInput = z.infer<
 export type CreateHabitInput = z.infer<typeof createHabitSchema>;
 export type UpdateHabitInput = z.infer<typeof updateHabitSchema>;
 export type ToggleHabitDayInput = z.infer<typeof toggleHabitDaySchema>;
-export type CreateMediaPreferenceInput = z.infer<typeof createMediaPreferenceSchema>;
-export type UpdateMediaPreferenceInput = z.infer<typeof updateMediaPreferenceSchema>;
+export type CreateMediaPreferenceInput = z.infer<
+  typeof createMediaPreferenceSchema
+>;
+export type UpdateMediaPreferenceInput = z.infer<
+  typeof updateMediaPreferenceSchema
+>;
 export type CreateQuickLinkInput = z.infer<typeof createQuickLinkSchema>;
 export type UpdateQuickLinkInput = z.infer<typeof updateQuickLinkSchema>;

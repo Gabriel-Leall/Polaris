@@ -1,38 +1,30 @@
 "use server";
 
 import { Client } from "@notionhq/client";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { generateTagsFromContent } from "@/lib/gemini";
+import { brainDumpInputSchema, brainDumpTagsSchema } from "@/lib/validations";
 
 const notion = new Client({
   auth: process.env.NOTION_TOKEN || "",
 });
-
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 
 /**
  * Gera sugestões de tags usando o Gemini
  */
 export async function generateBrainDumpTags(content: string) {
   try {
-    // Tente usar o modelo mais estável
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    // Validação de entrada com Zod
+    const validatedInput = brainDumpInputSchema.parse({ content });
+    const cleanContent = validatedInput.content.replace(/<[^>]*>/g, "");
 
-    const prompt = `Analise o seguinte texto de uma nota pessoal e sugira exatamente 3 tags curtas (uma palavra cada) para categorizá-la. Retorne apenas as tags separadas por vírgula, sem explicações. Texto: ${content
-      .replace(/<[^>]*>/g, "")
-      .substring(0, 1000)}`;
+    const tags = await generateTagsFromContent(cleanContent);
 
-    const result = await model.generateContent({
-      contents: [{ role: "user", parts: [{ text: prompt }] }],
-    });
-    const response = await result.response;
-    const tags = response
-      .text()
-      .split(",")
-      .map((tag) => tag.trim().replace(/#/g, ""));
+    // Validação de saída com Zod
+    const validatedOutput = brainDumpTagsSchema.parse({ tags });
 
-    return { success: true, tags };
+    return { success: true, tags: validatedOutput.tags };
   } catch (error) {
-    console.error("Erro Gemini:", error);
+    console.error("Erro na geração de tags:", error);
     return { success: false, tags: ["Geral"] };
   }
 }
