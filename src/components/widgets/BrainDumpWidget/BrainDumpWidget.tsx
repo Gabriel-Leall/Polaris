@@ -1,11 +1,24 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { EditorContent } from "@tiptap/react";
-import { Loader2, AlertCircle, Maximize2 } from "lucide-react";
+import {
+  Loader2,
+  AlertCircle,
+  Maximize2,
+  Key,
+  Sparkles,
+} from "lucide-react";
 import { ErrorBoundary, Button } from "@/components/ui";
 import { cn } from "@/lib/utils";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 import { useBrainDumpEditor } from "./hooks/useBrainDumpEditor";
 import { useBrainDumpSync } from "./hooks/useBrainDumpSync";
 import { EditorToolbar } from "./components/EditorToolbar";
@@ -16,6 +29,7 @@ import { BrainDumpWidgetProps } from "./types";
 import {
   syncBrainDumpToNotion,
   generateBrainDumpTags,
+  getRecentNotionTags,
 } from "@/app/actions/notion";
 import { useToast } from "@/hooks/use-toast";
 
@@ -25,9 +39,22 @@ const BrainDumpWidgetContent = ({ className }: BrainDumpWidgetProps) => {
   const [isSyncing, setIsSyncing] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [showTagReview, setShowTagReview] = useState(false);
+  const [showApiSettings, setShowApiSettings] = useState(false);
+  const [geminiApiKey, setGeminiApiKey] = useState<string>("");
   const [suggestedTags, setSuggestedTags] = useState<string[]>([]);
+  const [allAvailableTags, setAllAvailableTags] = useState<string[]>([]);
   const [newTag, setNewTag] = useState("");
   const { toast } = useToast();
+
+  useEffect(() => {
+    const savedKey = localStorage.getItem("polaris_gemini_api_key");
+    if (savedKey) setGeminiApiKey(savedKey);
+
+    // Busca tags iniciais
+    getRecentNotionTags().then((res) => {
+      if (res.success) setAllAvailableTags(res.tags);
+    });
+  }, []);
 
   const handleEditorUpdate = (html: string, text: string) => {
     setEditorHtml(html);
@@ -44,30 +71,41 @@ const BrainDumpWidgetContent = ({ className }: BrainDumpWidgetProps) => {
     if (!editorHtml || isSyncing) return;
 
     setIsSyncing(true);
-    try {
-      const result = await generateBrainDumpTags(editorHtml);
-      if (result.success) {
-        setSuggestedTags(result.tags);
-        setShowTagReview(true);
-      } else {
-        toast({
-          title: "Erro na IA",
-          description:
-            "Não foi possível gerar tags, mas você pode adicionar manualmente.",
-          variant: "destructive",
-        });
-        setSuggestedTags(["Geral"]);
-        setShowTagReview(true);
+
+    // Se tiver chave de API, tenta gerar tags
+    if (geminiApiKey) {
+      try {
+        const result = await generateBrainDumpTags(editorHtml, geminiApiKey);
+        if (result.success) {
+          setSuggestedTags(result.tags);
+        } else {
+          toast({
+            title: "Dica",
+            description:
+              "Não foi possível gerar tags automática, você pode adicionar manualmente.",
+          });
+          setSuggestedTags([]);
+        }
+      } catch (error) {
+        setSuggestedTags([]);
       }
-    } catch (error) {
-      toast({
-        title: "Erro inesperado",
-        description: "Falha ao conectar com a IA.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsSyncing(false);
+    } else {
+      // Sem chave de API, pula para manual
+      setSuggestedTags([]);
     }
+
+    setShowTagReview(true);
+    setIsSyncing(false);
+  };
+
+  const saveApiKey = (key: string) => {
+    localStorage.setItem("polaris_gemini_api_key", key);
+    setGeminiApiKey(key);
+    setShowApiSettings(false);
+    toast({
+      title: "Chave Salva",
+      description: "Sua chave do Gemini foi configurada com sucesso.",
+    });
   };
 
   const handleFinalSync = async () => {
@@ -109,10 +147,14 @@ const BrainDumpWidgetContent = ({ className }: BrainDumpWidgetProps) => {
     }
   };
 
-  const addTag = () => {
-    if (newTag && !suggestedTags.includes(newTag)) {
-      setSuggestedTags([...suggestedTags, newTag]);
+  const addTag = (tagToAdd?: string) => {
+    const tag = tagToAdd || newTag;
+    if (tag && !suggestedTags.includes(tag)) {
+      setSuggestedTags([...suggestedTags, tag]);
       setNewTag("");
+      if (!allAvailableTags.includes(tag)) {
+        setAllAvailableTags([...allAvailableTags, tag]);
+      }
     }
   };
 
@@ -152,11 +194,13 @@ const BrainDumpWidgetContent = ({ className }: BrainDumpWidgetProps) => {
           onSync={startSyncProcess}
           isSyncing={isSyncing}
           isReady={isReadyToSync}
+          onSettingsClick={() => setShowApiSettings(true)}
         />
 
         {showTagReview && (
           <TagReview
             suggestedTags={suggestedTags}
+            allAvailableTags={allAvailableTags}
             newTag={newTag}
             setNewTag={setNewTag}
             addTag={addTag}
@@ -224,6 +268,7 @@ const BrainDumpWidgetContent = ({ className }: BrainDumpWidgetProps) => {
           {showTagReview && (
             <TagReview
               suggestedTags={suggestedTags}
+              allAvailableTags={allAvailableTags}
               newTag={newTag}
               setNewTag={setNewTag}
               addTag={addTag}
@@ -234,6 +279,56 @@ const BrainDumpWidgetContent = ({ className }: BrainDumpWidgetProps) => {
               isExpanded={true}
             />
           )}
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={showApiSettings} onOpenChange={setShowApiSettings}>
+        <DialogContent className="max-w-md bg-[#09090b] border-white/10 text-white shadow-2xl">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-xl">
+              <Sparkles className="h-5 w-5 text-primary" />
+              Configuração de IA
+            </DialogTitle>
+            <DialogDescription className="text-white/40">
+              Personalize sua experiência com a IA do Google Gemini. Sua chave
+              será salva localmente no seu navegador.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-6 py-4">
+            <div className="space-y-2">
+              <label className="text-xs font-medium text-white/60 uppercase tracking-widest flex items-center gap-2">
+                <Key className="h-3 w-3" />
+                Gemini API Key
+              </label>
+              <Input
+                type="password"
+                value={geminiApiKey}
+                onChange={(e) => setGeminiApiKey(e.target.value)}
+                placeholder="Insira sua chave aqui..."
+                className="bg-white/5 border-white/10 text-white placeholder:text-white/20 focus-visible:ring-primary h-12"
+              />
+              <p className="text-[10px] text-white/30 leading-relaxed">
+                Você pode obter sua chave no{" "}
+                <a
+                  href="https://aistudio.google.com/app/apikey"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-primary hover:underline"
+                >
+                  Google AI Studio
+                </a>
+                . Deixe em branco para usar tags manuais.
+              </p>
+            </div>
+
+            <Button
+              className="w-full h-12 bg-primary hover:bg-primary/90 text-primary-foreground shadow-glow-sm transition-all"
+              onClick={() => saveApiKey(geminiApiKey)}
+            >
+              Salvar Configurações
+            </Button>
+          </div>
         </DialogContent>
       </Dialog>
     </>

@@ -1,4 +1,4 @@
-import { Minimize2 } from "lucide-react";
+import { Minimize2, Settings2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { SaveIndicator } from "./SaveIndicator";
@@ -16,6 +16,7 @@ export const BrainDumpHeader = ({
   isSyncing,
   isReady,
   onMinimize,
+  onSettingsClick,
   isExpanded = false,
 }: BrainDumpHeaderProps) => {
   if (isExpanded) {
@@ -36,6 +37,15 @@ export const BrainDumpHeader = ({
             lastSaved={lastSaved}
             hasError={saveError}
           />
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onSettingsClick}
+            className="h-9 w-9 p-0 hover:bg-white/5 text-white/20 hover:text-white"
+            title="Configurações de IA"
+          >
+            <Settings2 className="h-4 w-4" />
+          </Button>
           <SyncButton
             onClick={onSync}
             isSyncing={isSyncing}
@@ -65,11 +75,22 @@ export const BrainDumpHeader = ({
             Brain Dump
           </h2>
         </div>
-        <SaveIndicator
-          isSaving={isSaving}
-          lastSaved={lastSaved}
-          hasError={saveError}
-        />
+        <div className="flex items-center gap-2">
+          <SaveIndicator
+            isSaving={isSaving}
+            lastSaved={lastSaved}
+            hasError={saveError}
+          />
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onSettingsClick}
+            className="h-7 w-7 p-0 text-white/20 hover:text-white hover:bg-white/5"
+            title="Configurações de IA"
+          >
+            <Settings2 className="h-4 w-4" />
+          </Button>
+        </div>
       </div>
 
       <div className="px-6 pb-4">

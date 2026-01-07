@@ -11,13 +11,17 @@ const notion = new Client({
 /**
  * Gera sugestões de tags usando o Gemini
  */
-export async function generateBrainDumpTags(content: string) {
+export async function generateBrainDumpTags(
+  content: string,
+  userApiKey?: string
+) {
   try {
     // Validação de entrada com Zod
     const validatedInput = brainDumpInputSchema.parse({ content });
     const cleanContent = validatedInput.content.replace(/<[^>]*>/g, "");
 
-    const tags = await generateTagsFromContent(cleanContent);
+    // Passamos a chave do usuário se existir, senão usa a do env
+    const tags = await generateTagsFromContent(cleanContent, userApiKey);
 
     // Validação de saída com Zod
     const validatedOutput = brainDumpTagsSchema.parse({ tags });
@@ -26,6 +30,39 @@ export async function generateBrainDumpTags(content: string) {
   } catch (error) {
     console.error("Erro na geração de tags:", error);
     return { success: false, tags: ["Geral"] };
+  }
+}
+
+/**
+ * Busca as tags utilizadas recentemente no Notion para sugestão/autocomplete
+ */
+export async function getRecentNotionTags() {
+  try {
+    const databaseId = process.env.NOTION_DATABASE_ID;
+    if (!databaseId) return { success: false, tags: [] };
+
+    const response = await notion.databases.retrieve({
+      database_id: databaseId,
+    });
+
+    // Verificação de tipo para o Notion SDK e acesso seguro às propriedades
+    if (!("properties" in response)) {
+      return { success: false, tags: [] };
+    }
+
+    const fullResponse = response as any;
+    const tagsProperty = fullResponse.properties["Tags"];
+    if (tagsProperty?.type === "multi_select") {
+      const tags = tagsProperty.multi_select.options.map(
+        (opt: any) => opt.name
+      );
+      return { success: true, tags };
+    }
+
+    return { success: true, tags: [] };
+  } catch (error) {
+    console.error("Erro ao buscar tags do Notion:", error);
+    return { success: false, tags: [] };
   }
 }
 

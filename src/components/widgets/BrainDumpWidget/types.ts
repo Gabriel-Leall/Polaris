@@ -33,9 +33,10 @@ export interface SyncButtonProps {
 
 export interface TagReviewProps {
   suggestedTags: string[];
+  allAvailableTags?: string[];
   newTag: string;
   setNewTag: (tag: string) => void;
-  addTag: () => void;
+  addTag: (tag?: string) => void;
   removeTag: (tag: string) => void;
   onCancel: () => void;
   onConfirm: () => void;
@@ -55,4 +56,5 @@ export interface BrainDumpHeaderProps {
   onExpand?: () => void;
   onMinimize?: () => void;
   isExpanded?: boolean;
+  onSettingsClick?: () => void;
 }
