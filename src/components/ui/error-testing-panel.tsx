@@ -19,15 +19,11 @@ import {
 import { useErrorTesting, errorScenarios } from "@/lib/error-testing";
 import { cn } from "@/lib/utils";
 
-type ErrorTestingPanelProps = {
-  className?: string;
-};
-
 /**
  * ErrorTestingPanel - Development tool for testing error scenarios
  * Only available in development mode
  */
-function ErrorTestingPanel({ className }: ErrorTestingPanelProps) {
+function ErrorTestingPanel() {
   const errorTester = useErrorTesting();
   const [isOpen, setIsOpen] = useState(false);
   const [expandedScenario, setExpandedScenario] = useState<string | null>(null);
@@ -61,7 +57,7 @@ function ErrorTestingPanel({ className }: ErrorTestingPanelProps) {
   return (
     <>
       {/* Floating trigger button */}
-      <div className={cn("fixed bottom-4 right-4 z-50", className)}>
+      <div className="fixed bottom-4 right-4 z-50">
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <DialogTrigger asChild>
             <Button

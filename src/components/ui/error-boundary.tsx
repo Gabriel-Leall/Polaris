@@ -105,7 +105,7 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    this.setState({ hasError: true, error, errorInfo })
+    this.setState({ errorInfo })
     
     // Log the error
     ErrorLogger.log(error, errorInfo, this.props.name)
@@ -180,7 +180,6 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
   }
 
   render() {
-    const { className, children } = this.props
     const content = this.state.hasError
       ? (() => {
           const FallbackComponent = this.props.fallback || DefaultErrorFallback
@@ -195,9 +194,9 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
             />
           )
         })()
-      : children
+      : this.props.children
 
-    return <div className={cn('relative', className)}>{content}</div>
+    return <div className={cn('relative', this.props.className)}>{content}</div>
   }
 }
 
@@ -237,7 +236,7 @@ function DefaultErrorFallback({
     if (message.includes('database') || message.includes('supabase')) return 'Database Error'
     if (message.includes('timeout')) return 'Timeout Error'
     if (message.includes('validation')) return 'Validation Error'
-    return 'Unexpected Error'
+    return 'Application Error'
   }
 
   const ErrorIcon = getErrorIcon()
