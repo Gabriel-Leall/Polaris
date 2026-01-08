@@ -2,13 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { EditorContent } from "@tiptap/react";
-import {
-  Loader2,
-  AlertCircle,
-  Maximize2,
-  Key,
-  Sparkles,
-} from "lucide-react";
+import { Loader2, AlertCircle, Maximize2, Key, Sparkles } from "lucide-react";
 import { ErrorBoundary, Button } from "@/components/ui";
 import { cn } from "@/lib/utils";
 import {

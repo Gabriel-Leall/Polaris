@@ -3,7 +3,7 @@
 // Examples: Sidebar, BentoGrid, DashboardLayout
 
 export { default as Sidebar } from './Sidebar'
-export { default as SidebarNav } from './SidebarNav'
+export { default as SidebarNav, SidebarUser } from './SidebarNav'
 export { default as BentoGrid } from './BentoGrid'
 export { default as DashboardLayout } from './DashboardLayout'
 export { default as GridColumn } from './GridColumn'
