@@ -10,7 +10,7 @@ interface TrackInputProps {
   onSetInitialState: () => void;
 }
 
-export function TrackInput({
+function TrackInput({
   onAddTrack,
   playlistEmpty,
   onSetInitialState,
@@ -58,11 +58,14 @@ export function TrackInput({
         className="h-8 w-8 p-0 bg-white/5 hover:bg-white/10 border border-white/5 shrink-0 transition-all"
       >
         {isAdding ? (
-          <Loader2 className="h-3.5 w-3.5 text-zinc-400 animate-spin" />
+          <Loader2 className="h-3.5 w-3.5 text-secondary animate-spin" />
         ) : (
-          <Plus className="h-3.5 w-3.5 text-zinc-400" />
+          <Plus className="h-3.5 w-3.5 text-secondary" />
         )}
       </Button>
     </form>
   );
 }
+
+export { TrackInput };
+export default TrackInput;

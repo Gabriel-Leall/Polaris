@@ -1,3 +1,5 @@
+"use client";
+
 import { Loader2, Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -19,8 +21,8 @@ export const SyncButton = ({
       className={cn(
         "transition-all duration-200 gap-2",
         isReady
-          ? "bg-primary text-white hover:bg-primary/90 shadow-[0_0_15px_rgba(99,102,241,0.3)] hover:shadow-[0_0_20px_rgba(99,102,241,0.5)]"
-          : "bg-white/5 text-white/20 hover:bg-white/10 hover:text-white/40",
+          ? "bg-primary text-foreground hover:bg-primary-glow shadow-glow"
+          : "bg-glass text-muted/20 hover:bg-white/10 hover:text-muted/40",
         className
       )}
     >

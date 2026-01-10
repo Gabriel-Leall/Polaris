@@ -113,7 +113,7 @@ function MediaPlayerWidgetCore({ className }: MediaPlayerWidgetProps) {
   );
 }
 
-export default function MediaPlayerWidget({
+function MediaPlayerWidget({
   className,
 }: MediaPlayerWidgetProps) {
   return (
@@ -126,3 +126,6 @@ export default function MediaPlayerWidget({
     </ErrorBoundary>
   );
 }
+
+export { MediaPlayerWidget };
+export default MediaPlayerWidget;
