@@ -1,6 +1,7 @@
 import { Play, Pause, SkipBack, SkipForward, Repeat } from "lucide-react";
 import { Button } from "@/components/ui";
 import { cn } from "@/lib/utils";
+import { Track } from "../types";
 
 interface PlayerControlsProps {
   isPlaying: boolean;
@@ -12,6 +13,7 @@ interface PlayerControlsProps {
   onToggleLoop: () => void;
   currentIndex: number;
   playlistLength: number;
+  currentTrack?: Track;
 }
 
 export function PlayerControls({
@@ -24,9 +26,10 @@ export function PlayerControls({
   onToggleLoop,
   currentIndex,
   playlistLength,
+  currentTrack,
 }: PlayerControlsProps) {
   return (
-    <div className="flex-1 flex flex-col justify-center gap-3">
+    <div className="flex-1 flex flex-col justify-center gap-3 min-w-0">
       <div className="flex items-center justify-between px-1">
         <div className="flex items-center gap-1">
           <Button
@@ -78,11 +81,16 @@ export function PlayerControls({
       </div>
 
       {!playlistEmpty && (
-        <div className="flex items-center justify-between px-2">
-          <span className="text-[9px] font-black text-white/20 uppercase tracking-widest truncate max-w-[80px]">
-            Now Playing
-          </span>
-          <div className="flex items-center gap-1.5">
+        <div className="flex items-center justify-between px-2 gap-4">
+          <div className="flex flex-col min-w-0 flex-1">
+            <span className="text-[10px] font-bold text-white/90 truncate leading-tight">
+              {currentTrack?.title || "Unknown Title"}
+            </span>
+            <span className="text-[8px] font-medium text-white/40 truncate uppercase tracking-widest leading-tight">
+              {currentTrack?.author || "Unknown Artist"}
+            </span>
+          </div>
+          <div className="flex items-center gap-1.5 shrink-0">
             <span className="text-[9px] font-black text-indigo-500/80 tabular-nums">
               {currentIndex + 1}/{playlistLength}
             </span>

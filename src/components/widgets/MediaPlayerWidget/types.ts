@@ -1,6 +1,8 @@
 export interface Track {
   id: string;
   url: string;
+  title?: string;
+  author?: string;
 }
 
 export interface MediaPlayerStore {

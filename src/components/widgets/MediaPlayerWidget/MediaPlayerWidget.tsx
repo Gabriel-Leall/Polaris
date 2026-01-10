@@ -97,6 +97,7 @@ function MediaPlayerWidgetCore({ className }: MediaPlayerWidgetProps) {
             onToggleLoop={toggleLoop}
             currentIndex={currentIndex}
             playlistLength={playlist.length}
+            currentTrack={currentTrack}
           />
         </div>
 
