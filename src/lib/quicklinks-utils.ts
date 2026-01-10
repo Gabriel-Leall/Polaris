@@ -109,5 +109,12 @@ export function extractTitleFromUrl(url: string): string {
     part.charAt(0).toUpperCase() + part.slice(1).toLowerCase()
   );
 
-  return capitalizedParts.join(' ') || domain;
+  if (capitalizedParts.length > 0) {
+    return capitalizedParts.join(' ');
+  }
+
+  // Fallback: If all parts were filtered (e.g., app.io), capitalize all original parts
+  return parts.map(part => 
+    part.charAt(0).toUpperCase() + part.slice(1).toLowerCase()
+  ).join(' ');
 }
