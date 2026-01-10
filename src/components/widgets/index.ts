@@ -7,10 +7,10 @@ export { default as BrainDumpWidget } from "./BrainDumpWidget";
 export { default as QuickLinksWidget } from "./QuickLinksWidget";
 export { default as TasksWidget } from "./TasksWidget";
 export { default as CalendarWidget } from "./CalendarWidget";
-export { ZenTimerWidget } from "./ZenTimerWidget";
+export { default as ZenTimerWidget } from "./ZenTimerWidget";
 export { default as MediaPlayerWidget } from "./MediaPlayerWidget";
 export { default as HabitTrackerWidget } from "./HabitTrackerWidget";
 export { default as JobTrackerWidget } from "./JobTrackerWidget";
 
-// Magic UI Enhanced Widgets
-export { default as QuickLinksDock } from "./QuickLinksDock";
+// Magic UI Enhanced Widgets (re-exported from folders)
+export { QuickLinksDock } from "./QuickLinksWidget/components/QuickLinksDock";

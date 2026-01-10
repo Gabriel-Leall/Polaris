@@ -1,6 +1,7 @@
 "use client"
 
 import { useRef } from "react"
+import { cn } from "@/lib/utils"
 import {
   AnimatePresence,
   motion,
@@ -28,7 +29,7 @@ interface BlurFadeProps extends MotionProps {
   blur?: string
 }
 
-export function BlurFade({
+function BlurFade({
   children,
   className,
   variant,
@@ -71,7 +72,7 @@ export function BlurFade({
           duration,
           ease: "easeOut",
         }}
-        className={className}
+        className={cn(className)}
         {...props}
       >
         {children}
@@ -79,3 +80,6 @@ export function BlurFade({
     </AnimatePresence>
   )
 }
+
+export { BlurFade };
+export default BlurFade;

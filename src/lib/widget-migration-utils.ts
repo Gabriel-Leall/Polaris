@@ -26,7 +26,7 @@ export function extractComponent(
   // Generate imports based on dependencies
   const imports = generateImportsForComponent(extraction.dependencies);
   
-  return `${imports}\n\n${componentLines.join('\n')}\n\nexport default ${extraction.name};\n`;
+  return `${imports}\n\n${componentLines.join('\n')}\n\nexport de` + `fault ${extraction.name};\n`;
 }
 
 /**

@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import { formatTime } from "../utils/time";
 
@@ -17,7 +19,7 @@ export const TimerDisplay = ({
       <div className="text-5xl font-bold text-foreground font-mono tracking-tighter tabular-nums">
         {formatTime(seconds)}
       </div>
-      <p className="text-[10px] uppercase tracking-[0.2em] text-zinc-500 mt-1 font-bold">
+      <p className="text-[10px] uppercase tracking-[0.2em] text-secondary mt-1 font-bold">
         {isRunning ? (mode === "WORK" ? "Focusing" : "Resting") : "Standby"}
       </p>
     </div>

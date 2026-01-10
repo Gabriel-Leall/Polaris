@@ -127,3 +127,5 @@ export {
   ToastClose,
   ToastAction,
 };
+
+export default Toast;

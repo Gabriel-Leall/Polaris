@@ -1,3 +1,5 @@
+'use client';
+
 import {
   AlertCircle,
   Check,
@@ -5,10 +7,10 @@ import {
 } from "lucide-react";
 import { SaveIndicatorProps } from "../types";
 
-export const SaveIndicator = ({ isSaving, lastSaved, hasError }: SaveIndicatorProps) => {
+const SaveIndicator = ({ isSaving, lastSaved, hasError }: SaveIndicatorProps) => {
   if (hasError) {
     return (
-      <div className="flex items-center gap-1.5 text-red-400 text-xs">
+      <div className="flex items-center gap-1.5 text-status-rejected text-xs">
         <AlertCircle className="w-3 h-3" />
         <span>Save failed</span>
       </div>
@@ -17,7 +19,7 @@ export const SaveIndicator = ({ isSaving, lastSaved, hasError }: SaveIndicatorPr
 
   if (isSaving) {
     return (
-      <div className="flex items-center gap-1.5 text-muted-foreground text-xs">
+      <div className="flex items-center gap-1.5 text-secondary text-xs">
         <Loader2 className="w-3 h-3 animate-spin" />
         <span>Saving...</span>
       </div>
@@ -26,8 +28,8 @@ export const SaveIndicator = ({ isSaving, lastSaved, hasError }: SaveIndicatorPr
 
   if (lastSaved) {
     return (
-      <div className="flex items-center gap-1.5 text-muted-foreground text-xs">
-        <Check className="w-3 h-3 text-green-400" />
+      <div className="flex items-center gap-1.5 text-secondary text-xs">
+        <Check className="w-3 h-3 text-status-applied" />
         <span>Saved</span>
       </div>
     );
@@ -35,3 +37,5 @@ export const SaveIndicator = ({ isSaving, lastSaved, hasError }: SaveIndicatorPr
 
   return null;
 };
+export { SaveIndicator };
+export default SaveIndicator;

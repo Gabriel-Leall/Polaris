@@ -85,7 +85,7 @@ export function parseError(error: unknown): AppError {
     return {
       type: ErrorType.VALIDATION,
       message: 'Invalid input data',
-      details: error.errors,
+      details: error.issues,
       retryable: false
     }
   }

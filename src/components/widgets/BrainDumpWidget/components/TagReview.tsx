@@ -28,18 +28,18 @@ export const TagReview = ({
 
   const renderTagSelector = () => (
     <div className="flex flex-wrap items-center gap-2 mb-4">
-      <span className="text-[10px] uppercase tracking-wider text-white/40 mr-2 flex items-center gap-1">
+      <span className="text-[10px] uppercase tracking-wider text-muted mr-2 flex items-center gap-1">
         Tags:
       </span>
       {suggestedTags.map((tag) => (
         <span
           key={tag}
-          className="flex items-center gap-1.5 px-2.5 py-1 bg-primary/20 border border-primary/30 rounded-full text-xs text-primary-foreground animate-in zoom-in-95"
+          className="flex items-center gap-1.5 px-2.5 py-1 bg-primary/20 border border-primary/30 rounded-full text-xs text-primary animate-in zoom-in-95"
         >
           {tag}
           <button
             onClick={() => removeTag(tag)}
-            className="hover:text-white transition-colors"
+            className="hover:text-foreground transition-colors"
           >
             <X className="h-3 w-3" />
           </button>
@@ -57,12 +57,12 @@ export const TagReview = ({
             }
           }}
           placeholder="Adicionar tag..."
-          className="bg-white/5 border border-white/10 rounded-lg px-3 py-1 text-xs text-white/80 focus:outline-none focus:border-primary/50 w-32 placeholder:text-white/20 transition-all"
+          className="bg-input border border-glass rounded-lg px-3 py-1 text-xs text-secondary focus:outline-none focus:border-primary/50 w-32 placeholder:text-muted transition-all"
         />
         {newTag && (
           <button
             onClick={() => addTag()}
-            className="p-1 hover:bg-white/10 rounded-md transition-colors text-white/40 hover:text-white"
+            className="p-1 hover:bg-white/10 rounded-md transition-colors text-muted hover:text-foreground"
           >
             <Plus className="h-3.5 w-3.5" />
           </button>
@@ -70,15 +70,15 @@ export const TagReview = ({
 
         {/* Sugestões de autocomplete */}
         {filteredSuggestions.length > 0 && (
-          <div className="absolute top-full left-0 mt-1 w-48 bg-[#1a1a1c] border border-white/10 rounded-xl py-1 shadow-2xl z-50 overflow-hidden animate-in slide-in-from-top-1">
-            <div className="px-2 py-1 text-[9px] uppercase tracking-widest text-white/30 border-b border-white/5 mb-1">
+          <div className="absolute top-full left-0 mt-1 w-48 bg-card border border-glass rounded-xl py-1 shadow-2xl z-50 overflow-hidden animate-in slide-in-from-top-1">
+            <div className="px-2 py-1 text-[9px] uppercase tracking-widest text-muted border-b border-glass mb-1">
               Sugestões
             </div>
             {filteredSuggestions.map((suggestion) => (
               <button
                 key={suggestion}
                 onClick={() => addTag(suggestion)}
-                className="w-full text-left px-3 py-2 text-xs text-white/70 hover:bg-primary/20 hover:text-white transition-colors flex items-center justify-between group"
+                className="w-full text-left px-3 py-2 text-xs text-secondary hover:bg-primary/20 hover:text-foreground transition-colors flex items-center justify-between group"
               >
                 {suggestion}
                 <Search className="h-2.5 w-2.5 opacity-0 group-hover:opacity-40" />
@@ -92,7 +92,7 @@ export const TagReview = ({
 
   if (isExpanded) {
     return (
-      <div className="absolute bottom-0 left-0 right-0 p-8 bg-[#09090b]/95 backdrop-blur-xl border-t border-white/10 animate-in slide-in-from-bottom-4 shadow-[0_-20px_50px_rgba(0,0,0,0.5)]">
+      <div className="absolute bottom-0 left-0 right-0 p-8 bg-main/95 backdrop-blur-xl border-t border-glass animate-in slide-in-from-bottom-4 shadow-[0_-20px_50px_rgba(0,0,0,0.5)]">
         <div className="max-w-2xl mx-auto">
           {renderTagSelector()}
           <div className="flex justify-end gap-3 mt-6">

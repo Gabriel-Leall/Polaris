@@ -34,7 +34,7 @@ interface ZenModeBlurWrapperProps {
  * - Blurred widgets are removed from tab order
  * - Screen readers will skip blurred content
  */
-export function ZenModeBlurWrapper({
+function ZenModeBlurWrapper({
   children,
   className,
   excludeFromBlur = false,
@@ -87,4 +87,5 @@ export function ZenModeBlurWrapper({
   );
 }
 
+export { ZenModeBlurWrapper };
 export default ZenModeBlurWrapper;

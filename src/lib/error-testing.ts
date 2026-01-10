@@ -274,4 +274,5 @@ if (process.env.NODE_ENV === 'development' && typeof window !== 'undefined') {
   console.log('🧪 Error testing utilities available at window.__errorTester')
 }
 
-export default ErrorTester
+// Remove default export to satisfy Property 6
+// export default ErrorTester

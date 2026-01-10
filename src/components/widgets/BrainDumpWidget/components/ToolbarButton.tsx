@@ -1,3 +1,5 @@
+'use client';
+
 import { ToolbarButtonProps } from "../types";
 
 export const ToolbarButton = ({

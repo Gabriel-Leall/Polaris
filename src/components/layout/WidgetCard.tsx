@@ -21,13 +21,13 @@ function WidgetCard({
 }: WidgetCardProps) {
   return (
     <div className={`
-      bg-card rounded-3xl border border-glass
+      bg-card rounded-3xl border border-white/5
       flex flex-col h-full
       ${className || ''}
     `}>
       {/* Header */}
       {title && (
-        <div className="flex items-center justify-between p-6 border-b border-glass">
+        <div className="flex items-center justify-between p-6 border-b border-white/5">
           <h2 className="text-sm font-semibold text-white">{title}</h2>
           {actions && (
             <div className="flex items-center gap-2 text-secondary">

@@ -180,6 +180,7 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
   }
 
   render() {
+    const { className, children } = this.props
     const content = this.state.hasError
       ? (() => {
           const FallbackComponent = this.props.fallback || DefaultErrorFallback
@@ -194,9 +195,9 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
             />
           )
         })()
-      : this.props.children
+      : children
 
-    return <div className={cn('relative', this.props.className)}>{content}</div>
+    return <div className={cn('relative', className)}>{content}</div>
   }
 }
 
@@ -229,14 +230,14 @@ function DefaultErrorFallback({
   }
 
   const getErrorType = () => {
-    if (!error) return 'Unknown Error'
+    if (!error) return 'Technical Error'
     
     const message = error.message.toLowerCase()
-    if (message.includes('network') || message.includes('fetch')) return 'Network Error'
-    if (message.includes('database') || message.includes('supabase')) return 'Database Error'
-    if (message.includes('timeout')) return 'Timeout Error'
-    if (message.includes('validation')) return 'Validation Error'
-    return 'Application Error'
+    if (message.includes('network') || message.includes('fetch')) return 'Connection Problem'
+    if (message.includes('database') || message.includes('supabase')) return 'Storage Error'
+    if (message.includes('timeout')) return 'Request Timeout'
+    if (message.includes('validation')) return 'Invalid Information'
+    return 'Unknown Problem'
   }
 
   const ErrorIcon = getErrorIcon()

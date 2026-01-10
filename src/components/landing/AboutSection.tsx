@@ -25,19 +25,19 @@ export const AboutSection = () => {
             <h3 className="text-white text-2xl font-bold pt-4">Why Polaris?</h3>
             <ul className="space-y-3">
               <li className="text-gray-300 flex items-start gap-3">
-                <span className="text-[#06B6D4] mt-1">→</span>
+                <span className="text-primary mt-1">→</span>
                 <span>Designed specifically for knowledge workers and developers</span>
               </li>
               <li className="text-gray-300 flex items-start gap-3">
-                <span className="text-[#06B6D4] mt-1">→</span>
+                <span className="text-primary mt-1">→</span>
                 <span>Minimalist interface that eliminates cognitive overhead</span>
               </li>
               <li className="text-gray-300 flex items-start gap-3">
-                <span className="text-[#06B6D4] mt-1">→</span>
+                <span className="text-primary mt-1">→</span>
                 <span>Built with modern web technologies for speed and reliability</span>
               </li>
               <li className="text-gray-300 flex items-start gap-3">
-                <span className="text-[#06B6D4] mt-1">→</span>
+                <span className="text-primary mt-1">→</span>
                 <span>Privacy-first approach—your data stays yours</span>
               </li>
             </ul>
@@ -48,11 +48,11 @@ export const AboutSection = () => {
             <h3 className="text-white text-xl font-bold mb-6">By the Numbers</h3>
             <div className="space-y-6">
               <div className="text-center">
-                <div className="text-3xl font-black text-[#06B6D4] mb-1">2,000+</div>
+                <div className="text-3xl font-black text-primary mb-1">2,000+</div>
                 <div className="text-gray-400 text-sm font-mono">Active Users</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-black text-[#6366F1] mb-1">50M+</div>
+                <div className="text-3xl font-black text-primary mb-1">50M+</div>
                 <div className="text-gray-400 text-sm font-mono">Focus Minutes</div>
               </div>
               <div className="text-center">

@@ -15,27 +15,27 @@ export interface MarkdownShortcut {
  */
 export const markdownShortcuts: MarkdownShortcut[] = [
   {
-    pattern: /\*\*([^*]+)\*\*/g,
+    pattern: /\*\*([\s\S]+?)\*\*/,
     type: 'bold',
     wrapper: '**',
   },
   {
-    pattern: /__([^_]+)__/g,
+    pattern: /__([\s\S]+?)__/,
     type: 'bold',
     wrapper: '__',
   },
   {
-    pattern: /(?<!\*)\*([^*]+)\*(?!\*)/g,
+    pattern: /(?<!\*)\*([^*]+?)\*(?!\*)/,
     type: 'italic',
     wrapper: '*',
   },
   {
-    pattern: /(?<!_)_([^_]+)_(?!_)/g,
+    pattern: /(?<!_)_([^_]+?)_(?!_)/,
     type: 'italic',
     wrapper: '_',
   },
   {
-    pattern: /`([^`]+)`/g,
+    pattern: /`([\s\S]+?)`/,
     type: 'code',
     wrapper: '`',
   },
@@ -85,15 +85,15 @@ export function markdownToHtml(text: string): string {
   let html = text;
 
   // Bold: **text** or __text__
-  html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
-  html = html.replace(/__([^_]+)__/g, '<strong>$1</strong>');
+  html = html.replace(/\*\*([\s\S]+?)\*\*/g, '<strong>$1</strong>');
+  html = html.replace(/__([\s\S]+?)__/g, '<strong>$1</strong>');
 
   // Italic: *text* or _text_ (not preceded/followed by same char)
-  html = html.replace(/(?<!\*)\*([^*]+)\*(?!\*)/g, '<em>$1</em>');
-  html = html.replace(/(?<!_)_([^_]+)_(?!_)/g, '<em>$1</em>');
+  html = html.replace(/(?<!\*)\*([^*]+?)\*(?!\*)/g, '<em>$1</em>');
+  html = html.replace(/(?<!_)_([^_]+?)_(?!_)/g, '<em>$1</em>');
 
   // Code: `text`
-  html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+  html = html.replace(/`([\s\S]+?)`/g, '<code>$1</code>');
 
   return html;
 }

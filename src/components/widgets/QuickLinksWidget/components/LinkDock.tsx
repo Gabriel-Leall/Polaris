@@ -4,7 +4,24 @@ import { Plus } from "lucide-react";
 import { Dock, DockIcon } from "@/components/ui/dock";
 import { cn } from "@/lib/utils";
 import { LinkItem } from "./LinkItem";
-import type { LinkDockProps } from "../types";
+
+export interface LinkDockProps {
+  links: import("@/types").QuickLink[];
+  onDeleteLink: (id: string) => void;
+  onOpenLink: (url: string) => void;
+  onAddClick: () => void;
+  onUpdateLink?: (id: string) => void;
+  onStartEditing?: (link: import("@/types").QuickLink) => void;
+  onCancelEditing?: () => void;
+  onEditUrlChange?: (url: string) => void;
+  readOnly?: boolean;
+  deletingId: string | null;
+  editingId?: string | null;
+  editUrl?: string;
+  isUpdating?: boolean;
+  showInput: boolean;
+  compact?: boolean;
+}
 
 /**
  * Dock container component - renders links in a macOS-style dock layout

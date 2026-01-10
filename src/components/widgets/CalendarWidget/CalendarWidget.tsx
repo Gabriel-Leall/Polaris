@@ -59,7 +59,7 @@ function CalendarWidgetCore({ className, initialData }: CalendarWidgetProps) {
     toggleComplete(selectedDay, taskId);
   };
 
-  const handleStartEdit = (task: any) => {
+  const handleStartEdit = (task: TaskEntry) => {
     setEditingId(task.id);
     setEditText(task.text);
   };

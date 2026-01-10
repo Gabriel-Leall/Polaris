@@ -3,14 +3,16 @@
 import React from 'react'
 import { AlertTriangle, RefreshCw, Home, Bug } from 'lucide-react'
 import { ErrorBoundary, ErrorLogger } from './error-boundary'
+import { cn } from '@/lib/utils'
 
 interface GlobalErrorFallbackProps {
   error: Error | null
   retry: () => void
   errorInfo?: React.ErrorInfo | null
+  className?: string
 }
 
-function GlobalErrorFallback({ error, retry, errorInfo }: GlobalErrorFallbackProps) {
+function GlobalErrorFallback({ error, retry, errorInfo, className }: GlobalErrorFallbackProps) {
   const handleReload = () => {
     window.location.reload()
   }
@@ -39,7 +41,7 @@ function GlobalErrorFallback({ error, retry, errorInfo }: GlobalErrorFallbackPro
   }
 
   return (
-    <div className="min-h-screen bg-main flex items-center justify-center p-6">
+    <div className={cn('min-h-screen bg-main flex items-center justify-center p-6', className)}>
       <div className="bg-card rounded-3xl p-8 border border-status-rejected/20 max-w-md w-full flex flex-col items-center">
         <div className="mb-6">
           <AlertTriangle className="w-16 h-16 text-status-rejected mx-auto mb-4" />

@@ -6,6 +6,66 @@ import { beforeAll, afterAll, beforeEach, vi } from "vitest";
 process.env.NEXT_PUBLIC_SUPABASE_URL = "https://test.supabase.co";
 process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = "test-anon-key";
 
+// Mock Supabase globally
+vi.mock("@/lib/supabase", () => {
+  return {
+    __esModule: true,
+    supabase: {
+      auth: {
+        getSession: vi.fn(() => Promise.resolve({ data: { session: null }, error: null })),
+        getUser: vi.fn(() => Promise.resolve({ data: { user: { id: "test-user-id", email: "test@example.com" } }, error: null })),
+        onAuthStateChange: vi.fn(() => ({
+          data: { subscription: { unsubscribe: vi.fn() } },
+        })),
+        signInWithPassword: vi.fn(() => Promise.resolve({ data: { user: {} }, error: null })),
+        signUp: vi.fn(() => Promise.resolve({ data: { user: {} }, error: null })),
+        signOut: vi.fn(() => Promise.resolve({ error: null })),
+      },
+      from: vi.fn(() => ({
+        select: vi.fn().mockReturnThis(),
+        insert: vi.fn().mockReturnThis(),
+        update: vi.fn().mockReturnThis(),
+        delete: vi.fn().mockReturnThis(),
+        eq: vi.fn().mockReturnThis(),
+        single: vi.fn().mockReturnThis(),
+      })),
+    },
+  };
+});
+
+// Mock Next.js navigation
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({
+    push: vi.fn(),
+    replace: vi.fn(),
+    prefetch: vi.fn(),
+    back: vi.fn(),
+  }),
+  usePathname: () => "/",
+  useSearchParams: () => new URLSearchParams(),
+}));
+
+// Mock motion/react to avoid issues in JS DOM
+vi.mock("motion/react", () => ({
+  motion: {
+    div: ({ children, ...props }: any) => {
+      const { initial, animate, exit, transition, ...rest } = props;
+      return {
+        type: 'div',
+        props: { ...rest, children },
+      };
+    },
+    aside: ({ children, ...props }: any) => {
+      const { initial, animate, exit, transition, ...rest } = props;
+      return {
+        type: 'aside',
+        props: { ...rest, children },
+      };
+    },
+  },
+  AnimatePresence: ({ children }: any) => children,
+}));
+
 // Mock localStorage for testing
 const storage: Record<string, string> = {};
 

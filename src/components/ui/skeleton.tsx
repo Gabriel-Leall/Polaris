@@ -43,6 +43,23 @@ export function SkeletonText({ lines = 3, className }: SkeletonTextProps) {
   );
 }
 
+/**
+ * WidgetSkeleton - Specialized skeleton for dashboard widgets
+ */
+export function WidgetSkeleton({ className }: SkeletonProps) {
+  return (
+    <div className={cn("flex flex-col gap-4 p-6 h-full", className)}>
+      <div className="flex items-center gap-3">
+        <Skeleton className="h-8 w-8 rounded-lg" />
+        <Skeleton className="h-6 w-32" />
+      </div>
+      <div className="flex-1 space-y-4">
+        <Skeleton className="h-full w-full rounded-2xl" />
+      </div>
+    </div>
+  );
+}
+
 interface SkeletonCardProps {
   className?: string;
   hasHeader?: boolean;

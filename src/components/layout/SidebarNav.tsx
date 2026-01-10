@@ -21,6 +21,7 @@ import {
   LogOut,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { useUIStore } from "@/store/uiStore";
 
 interface NavItem {
   id: string;
@@ -53,24 +54,36 @@ const mainNavItems: NavItem[] = [
 function SidebarNavCore({ className }: SidebarNavProps) {
   const pathname = usePathname();
   const { signOut, isAuthenticated, user } = useAuth();
+  const { isSidebarCollapsed } = useUIStore();
 
   return (
     <div className={cn("flex flex-col gap-6", className)}>
       {/* Search Bar */}
       <div className="relative group px-1">
-        <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none text-muted-foreground group-focus-within:text-white transition-colors">
+        <div
+          className={cn(
+            "absolute inset-y-0 left-3 flex items-center pointer-events-none text-muted-foreground group-focus-within:text-white transition-colors",
+            isSidebarCollapsed && "left-0 w-full justify-center"
+          )}
+        >
           <Search className="w-4 h-4" />
         </div>
-        <input
-          type="text"
-          placeholder="Search..."
-          className="w-full bg-white/[0.03] border border-white/10 rounded-xl py-2 pl-10 pr-12 text-sm focus:outline-none focus:ring-1 focus:ring-primary/50 focus:bg-white/[0.05] transition-all"
-        />
-        <div className="absolute inset-y-0 right-3 flex items-center gap-1">
-          <kbd className="hidden sm:inline-flex h-5 select-none items-center gap-1 rounded border border-white/10 bg-white/5 px-1.5 font-mono text-[10px] font-medium text-muted-foreground">
-            ⌘ F
-          </kbd>
-        </div>
+        {!isSidebarCollapsed ? (
+          <>
+            <input
+              type="text"
+              placeholder="Search..."
+              className="w-full bg-white/[0.03] border border-white/10 rounded-xl py-2 pl-10 pr-12 text-sm focus:outline-none focus:ring-1 focus:ring-primary/50 focus:bg-white/[0.05] transition-all"
+            />
+            <div className="absolute inset-y-0 right-3 flex items-center gap-1">
+              <kbd className="hidden sm:inline-flex h-5 select-none items-center gap-1 rounded border border-white/10 bg-white/5 px-1.5 font-mono text-[10px] font-medium text-muted-foreground">
+                ⌘ F
+              </kbd>
+            </div>
+          </>
+        ) : (
+          <div className="w-full h-9 bg-white/[0.03] border border-white/10 rounded-xl cursor-pointer hover:bg-white/[0.05] transition-all" />
+        )}
       </div>
 
       {/* Main navigation */}
@@ -89,16 +102,19 @@ function SidebarNavCore({ className }: SidebarNavProps) {
                 "group relative w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 text-left overflow-hidden",
                 isActive
                   ? "bg-white/[0.08] text-white border border-white/10"
-                  : "text-muted-foreground hover:text-white border border-transparent hover:bg-white/[0.03]"
+                  : "text-muted-foreground hover:text-white border border-transparent hover:bg-white/[0.03]",
+                isSidebarCollapsed && "justify-center px-0 h-11"
               )}
             >
               <Icon
                 className={cn(
-                  "w-4 h-4 transition-colors duration-300 relative z-10",
+                  "w-4 h-4 transition-colors duration-300 relative z-10 shrink-0",
                   isActive ? "text-primary" : "group-hover:text-white"
                 )}
               />
-              <span className="truncate relative z-10">{item.label}</span>
+              {!isSidebarCollapsed && (
+                <span className="truncate relative z-10">{item.label}</span>
+              )}
 
               {/* Efeito de Glow lateral */}
               <div
@@ -131,6 +147,7 @@ function SidebarNavCore({ className }: SidebarNavProps) {
  */
 export function SidebarUser() {
   const { isAuthenticated, user, signOut } = useAuth();
+  const { isSidebarCollapsed } = useUIStore();
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -169,7 +186,10 @@ export function SidebarUser() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 10, scale: 0.95 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
-            className="absolute bottom-full left-0 w-full mb-2 p-2 bg-sidebar border border-white/10 rounded-2xl shadow-2xl z-50 overflow-hidden"
+            className={cn(
+              "absolute bottom-full left-0 w-full mb-2 p-2 bg-sidebar border border-white/10 rounded-2xl shadow-2xl z-50 overflow-hidden",
+              isSidebarCollapsed && "w-[200px]"
+            )}
           >
             <button
               onClick={handleGoToProfile}
@@ -193,29 +213,34 @@ export function SidebarUser() {
         onClick={() => setIsOpen(!isOpen)}
         className={cn(
           "w-full flex items-center gap-3 p-2 bg-white/[0.03] border border-white/10 rounded-2xl hover:bg-white/[0.06] transition-all group",
-          isOpen && "bg-white/[0.08] border-white/20"
+          isOpen && "bg-white/[0.08] border-white/20",
+          isSidebarCollapsed && "justify-center p-1.5"
         )}
       >
         <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary/30 to-primary/10 flex items-center justify-center border border-white/5 shrink-0 overflow-hidden">
           <span className="text-sm font-bold text-primary">{userInitial}</span>
         </div>
-        <div className="flex-1 min-w-0 text-left">
-          <p className="text-sm font-semibold text-white truncate capitalize">
-            {userName}
-          </p>
-          <p className="text-[10px] text-muted-foreground truncate">
-            {userEmail}
-          </p>
-        </div>
-        <div
-          className={cn(
-            "flex flex-col gap-0.5 text-muted-foreground group-hover:text-white transition-all",
-            isOpen ? "rotate-180" : ""
-          )}
-        >
-          <ChevronUp className="w-3 h-3" />
-          <ChevronDown className="w-3 h-3" />
-        </div>
+        {!isSidebarCollapsed && (
+          <>
+            <div className="flex-1 min-w-0 text-left">
+              <p className="text-sm font-semibold text-white truncate capitalize">
+                {userName}
+              </p>
+              <p className="text-[10px] text-muted-foreground truncate">
+                {userEmail}
+              </p>
+            </div>
+            <div
+              className={cn(
+                "flex flex-col gap-0.5 text-muted-foreground group-hover:text-white transition-all",
+                isOpen ? "rotate-180" : ""
+              )}
+            >
+              <ChevronUp className="w-3 h-3" />
+              <ChevronDown className="w-3 h-3" />
+            </div>
+          </>
+        )}
       </button>
     </div>
   );

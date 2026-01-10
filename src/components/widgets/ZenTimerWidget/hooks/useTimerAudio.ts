@@ -7,8 +7,9 @@ export const useTimerAudio = () => {
   const playFinishSound = useCallback(() => {
     // Inicializa o contexto apenas no primeiro clique (regra de segurança do navegador)
     if (!audioContextRef.current) {
-      audioContextRef.current = new (window.AudioContext ||
-        (window as any).webkitAudioContext)();
+      const AudioContextClass = window.AudioContext || 
+        (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+      audioContextRef.current = new AudioContextClass();
     }
 
     const ctx = audioContextRef.current;
