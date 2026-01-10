@@ -10,7 +10,11 @@ interface TrackInputProps {
   onSetInitialState: () => void;
 }
 
-export function TrackInput({ onAddTrack, playlistEmpty, onSetInitialState }: TrackInputProps) {
+export function TrackInput({
+  onAddTrack,
+  playlistEmpty,
+  onSetInitialState,
+}: TrackInputProps) {
   const [inputUrl, setInputUrl] = useState("");
 
   const handleAddTrack = (e: React.FormEvent) => {

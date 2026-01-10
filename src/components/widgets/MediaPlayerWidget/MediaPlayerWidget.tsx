@@ -2,7 +2,10 @@
 
 import { Music2 } from "lucide-react";
 import Image from "next/image";
-import { ErrorBoundary, WidgetErrorFallback } from "@/components/ui/error-boundary";
+import {
+  ErrorBoundary,
+  WidgetErrorFallback,
+} from "@/components/ui/error-boundary";
 import { cn } from "@/lib/utils";
 import { useMediaPlayer } from "./hooks/useMediaPlayer";
 import { MediaPlayerHeader } from "./components/MediaPlayerHeader";
@@ -39,12 +42,12 @@ function MediaPlayerWidgetCore({ className }: MediaPlayerWidgetProps) {
 
   return (
     <div className={cn("flex flex-col h-full p-4", className)}>
-      <MediaPlayerHeader 
-        playlistLength={playlist.length} 
-        onClear={clearPlaylist} 
+      <MediaPlayerHeader
+        playlistLength={playlist.length}
+        onClear={clearPlaylist}
       />
 
-      <TrackInput 
+      <TrackInput
         onAddTrack={addToPlaylist}
         playlistEmpty={playlist.length === 0}
         onSetInitialState={() => {
@@ -109,7 +112,9 @@ function MediaPlayerWidgetCore({ className }: MediaPlayerWidgetProps) {
   );
 }
 
-export default function MediaPlayerWidget({ className }: MediaPlayerWidgetProps) {
+export default function MediaPlayerWidget({
+  className,
+}: MediaPlayerWidgetProps) {
   return (
     <ErrorBoundary
       fallback={WidgetErrorFallback}

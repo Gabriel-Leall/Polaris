@@ -3,16 +3,16 @@ const nextConfig = {
   experimental: {
     turbo: {
       rules: {
-        '*.svg': {
-          loaders: ['@svgr/webpack'],
-          as: '*.js',
+        "*.svg": {
+          loaders: ["@svgr/webpack"],
+          as: "*.js",
         },
       },
     },
   },
   images: {
-    domains: ['lh3.googleusercontent.com', 'img.youtube.com'],
-    formats: ['image/webp', 'image/avif'],
+    domains: ["lh3.googleusercontent.com", "img.youtube.com"],
+    formats: ["image/webp", "image/avif"],
   },
   typescript: {
     ignoreBuildErrors: false,

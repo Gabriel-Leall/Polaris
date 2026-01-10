@@ -36,7 +36,7 @@ export function PlayerControls({
             disabled={playlistEmpty}
             className="h-8 w-8 p-0 text-zinc-600 hover:text-white transition-colors"
           >
-            < SkipBack className="h-4 w-4 fill-current" />
+            <SkipBack className="h-4 w-4 fill-current" />
           </Button>
 
           <Button
@@ -73,9 +73,7 @@ export function PlayerControls({
               : "text-zinc-600 hover:text-white"
           )}
         >
-          <Repeat
-            className={cn("h-4 w-4", isLooping && "animate-spin-slow")}
-          />
+          <Repeat className={cn("h-4 w-4", isLooping && "animate-spin-slow")} />
         </Button>
       </div>
 

@@ -6,7 +6,10 @@ interface MediaPlayerHeaderProps {
   onClear: () => void;
 }
 
-export function MediaPlayerHeader({ playlistLength, onClear }: MediaPlayerHeaderProps) {
+export function MediaPlayerHeader({
+  playlistLength,
+  onClear,
+}: MediaPlayerHeaderProps) {
   return (
     <div className="flex items-center justify-between mb-5">
       <h2 className="text-[11px] font-black text-white/40 uppercase tracking-[0.3em]">
