@@ -1,85 +1,59 @@
 'use client'
 
-import { useRef, useEffect } from 'react'
-import { Play, Pause, SkipBack, SkipForward, Volume2, VolumeX, Shuffle, Repeat } from 'lucide-react'
-import { Button } from '@/components/ui'
+import { useRef, useEffect, useState } from 'react'
+import { Play, Pause, SkipBack, SkipForward, Volume2, VolumeX, Plus, Music2, Trash2, Repeat } from 'lucide-react'
+import { Button, Input } from '@/components/ui'
 import { ErrorBoundary, WidgetErrorFallback } from '@/components/ui/error-boundary'
 import { cn } from '@/lib/utils'
 import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
 
 interface Track {
   id: string
-  title: string
-  artist: string
-  duration: number
-  url?: string
+  url: string
 }
 
 interface MediaPlayerStore {
-  currentTrack: Track | null
   isPlaying: boolean
   volume: number
   isMuted: boolean
-  isShuffled: boolean
-  repeatMode: 'none' | 'one' | 'all'
-  currentTime: number
+  isLooping: boolean
+  currentIndex: number
   playlist: Track[]
-  setCurrentTrack: (track: Track | null) => void
   setIsPlaying: (playing: boolean) => void
   setVolume: (volume: number) => void
   setIsMuted: (muted: boolean) => void
-  toggleShuffle: () => void
-  toggleRepeat: () => void
-  setCurrentTime: (time: number) => void
-  setPlaylist: (tracks: Track[]) => void
+  setIsLooping: (looping: boolean) => void
+  setCurrentIndex: (index: number) => void
+  addToPlaylist: (track: Track) => void
+  clearPlaylist: () => void
+  nextTrack: () => void
+  prevTrack: () => void
 }
 
 const useMediaPlayerStore = create<MediaPlayerStore>()(
-  persist(
-    (set) => ({
-      currentTrack: null,
-      isPlaying: false,
-      volume: 0.7,
-      isMuted: false,
-      isShuffled: false,
-      repeatMode: 'none',
-      currentTime: 0,
-      playlist: [
-        {
-          id: '1',
-          title: 'Focus Flow',
-          artist: 'Ambient Sounds',
-          duration: 180,
-        },
-        {
-          id: '2',
-          title: 'Deep Work',
-          artist: 'Lo-Fi Beats',
-          duration: 240,
-        },
-        {
-          id: '3',
-          title: 'Coding Zone',
-          artist: 'Electronic Chill',
-          duration: 200,
-        },
-      ],
-      setCurrentTrack: (track) => set({ currentTrack: track }),
-      setIsPlaying: (playing) => set({ isPlaying: playing }),
-      setVolume: (volume) => set({ volume }),
-      setIsMuted: (muted) => set({ isMuted: muted }),
-      toggleShuffle: () => set((state) => ({ isShuffled: !state.isShuffled })),
-      toggleRepeat: () => set((state) => ({
-        repeatMode: state.repeatMode === 'none' ? 'all' : state.repeatMode === 'all' ? 'one' : 'none'
-      })),
-      setCurrentTime: (time) => set({ currentTime: time }),
-      setPlaylist: (tracks) => set({ playlist: tracks }),
-    }),
-    {
-      name: 'media-player-store',
-    }
-  )
+  (set) => ({
+    isPlaying: false,
+    volume: 0.7,
+    isMuted: false,
+    isLooping: false,
+    currentIndex: 0,
+    playlist: [],
+    setIsPlaying: (playing) => set({ isPlaying: playing }),
+    setVolume: (volume) => set({ volume }),
+    setIsMuted: (muted) => set({ isMuted: muted }),
+    setIsLooping: (looping) => set({ isLooping: looping }),
+    setCurrentIndex: (index) => set({ currentIndex: index }),
+    addToPlaylist: (track) => set((state) => ({ 
+      playlist: [...state.playlist, track] 
+    })),
+    clearPlaylist: () => set({ playlist: [], currentIndex: 0, isPlaying: false, isLooping: false }),
+    nextTrack: () => set((state) => ({
+      currentIndex: state.playlist.length > 0 ? (state.currentIndex + 1) % state.playlist.length : 0
+    })),
+    prevTrack: () => set((state) => ({
+      currentIndex: state.playlist.length > 0 ? (state.currentIndex - 1 + state.playlist.length) % state.playlist.length : 0
+    })),
+  })
 )
 
 interface MediaPlayerWidgetProps {
@@ -88,231 +62,292 @@ interface MediaPlayerWidgetProps {
 
 function MediaPlayerWidgetCore({ className }: MediaPlayerWidgetProps) {
   const {
-    currentTrack,
     isPlaying,
     volume,
     isMuted,
-    // isShuffled,
-    // repeatMode,
-    currentTime,
+    isLooping,
+    currentIndex,
     playlist,
-    setCurrentTrack,
     setIsPlaying,
     setVolume,
     setIsMuted,
-    // toggleShuffle,
-    // toggleRepeat,
-    setCurrentTime,
+    setIsLooping,
+    setCurrentIndex,
+    addToPlaylist,
+    clearPlaylist,
+    nextTrack,
+    prevTrack,
   } = useMediaPlayerStore()
 
-  // const [isDragging, setIsDragging] = useState(false) // Future enhancement for drag interactions
-  const progressRef = useRef<HTMLDivElement>(null)
+  const [inputUrl, setInputUrl] = useState('')
+  const [origin, setOrigin] = useState('')
+  const iframeRef = useRef<HTMLIFrameElement>(null)
   const volumeRef = useRef<HTMLDivElement>(null)
 
-  // Initialize with first track if none selected
   useEffect(() => {
-    if (!currentTrack && playlist.length > 0) {
-      setCurrentTrack(playlist[0])
+    if (typeof window !== 'undefined') {
+      setOrigin(window.location.origin)
     }
-  }, [currentTrack, playlist, setCurrentTrack])
+  }, [])
 
-  // Simulate playback progress
-  useEffect(() => {
-    if (!isPlaying || !currentTrack) return
+  const currentTrack = playlist[currentIndex]
 
-    const interval = setInterval(() => {
-      const newTime = currentTime >= currentTrack.duration ? 0 : currentTime + 1
-      if (newTime === 0) {
-        setIsPlaying(false)
+  const extractVideoId = (url: string): string | null => {
+    if (!url) return null
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/
+    const match = url.match(regExp)
+    return (match && match[2].length === 11) ? match[2] : (url.length === 11 ? url : null)
+  }
+
+  const handleAddTrack = (e: React.FormEvent) => {
+    e.preventDefault()
+    const id = extractVideoId(inputUrl)
+    if (id) {
+      const isFirst = playlist.length === 0
+      addToPlaylist({ id, url: inputUrl })
+      if (isFirst) {
+        setCurrentIndex(0)
+        setIsPlaying(true)
       }
-      setCurrentTime(newTime)
+      setInputUrl('')
+    }
+  }
+
+  const togglePlay = () => {
+    const nextState = !isPlaying
+    setIsPlaying(nextState)
+    if (iframeRef.current) {
+      const command = nextState ? 'playVideo' : 'pauseVideo'
+      const win = iframeRef.current.contentWindow
+      win?.postMessage(JSON.stringify({ event: 'command', func: command, args: '' }), '*')
+      
+      if (nextState) {
+        // Forçar unMute ao dar play
+        win?.postMessage(JSON.stringify({ event: 'command', func: 'unMute', args: '' }), '*')
+        win?.postMessage(JSON.stringify({ event: 'command', func: 'setVolume', args: [Math.round(volume * 100)] }), '*')
+      }
+    }
+  }
+
+  const toggleMute = () => {
+    const nextMuted = !isMuted
+    setIsMuted(nextMuted)
+    if (iframeRef.current) {
+      const command = nextMuted ? 'mute' : 'unMute'
+      iframeRef.current.contentWindow?.postMessage(
+        JSON.stringify({ event: 'command', func: command, args: '' }), 
+        '*'
+      )
+    }
+  }
+
+  const toggleLoop = () => {
+    setIsLooping(!isLooping)
+  }
+
+  useEffect(() => {
+    if (!iframeRef.current || !currentTrack) return
+    
+    const sendCommand = (func: string, args: any = '') => {
+      iframeRef.current?.contentWindow?.postMessage(
+        JSON.stringify({ event: 'command', func, args }), 
+        '*'
+      )
+    }
+
+    const timer = setTimeout(() => {
+      // Seqüência de comandos para "acordar" o player
+      sendCommand('unMute')
+      sendCommand('setVolume', [Math.round(volume * 100)])
+      
+      if (isPlaying) {
+        sendCommand('playVideo')
+      } else {
+        sendCommand('pauseVideo')
+      }
     }, 1000)
 
-    return () => clearInterval(interval)
-  }, [isPlaying, currentTrack, currentTime, setCurrentTime, setIsPlaying])
+    // Reforço para garantir o som
+    const timer2 = setTimeout(() => {
+      sendCommand('unMute')
+      sendCommand('setVolume', [Math.round(volume * 100)])
+      if (isPlaying) sendCommand('playVideo')
+    }, 2500)
 
-  const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60)
-    const secs = seconds % 60
-    return `${mins}:${secs.toString().padStart(2, '0')}`
-  }
-
-  const handlePlayPause = () => {
-    setIsPlaying(!isPlaying)
-  }
-
-  const handlePrevious = () => {
-    if (!currentTrack) return
-    const currentIndex = playlist.findIndex(track => track.id === currentTrack.id)
-    const prevIndex = currentIndex > 0 ? currentIndex - 1 : playlist.length - 1
-    setCurrentTrack(playlist[prevIndex])
-    setCurrentTime(0)
-  }
-
-  const handleNext = () => {
-    if (!currentTrack) return
-    const currentIndex = playlist.findIndex(track => track.id === currentTrack.id)
-    const nextIndex = currentIndex < playlist.length - 1 ? currentIndex + 1 : 0
-    setCurrentTrack(playlist[nextIndex])
-    setCurrentTime(0)
-  }
-
-  const handleProgressClick = (e: React.MouseEvent) => {
-    if (!progressRef.current || !currentTrack) return
-    const rect = progressRef.current.getBoundingClientRect()
-    const clickX = e.clientX - rect.left
-    const percentage = clickX / rect.width
-    const newTime = Math.floor(percentage * currentTrack.duration)
-    setCurrentTime(Math.max(0, Math.min(newTime, currentTrack.duration)))
-  }
+    return () => {
+      clearTimeout(timer)
+      clearTimeout(timer2)
+    }
+  }, [currentTrack?.id, isPlaying, volume, origin])
 
   const handleVolumeClick = (e: React.MouseEvent) => {
     if (!volumeRef.current) return
     const rect = volumeRef.current.getBoundingClientRect()
-    const clickX = e.clientX - rect.left
-    const percentage = clickX / rect.width
-    setVolume(Math.max(0, Math.min(percentage, 1)))
+    const percentage = Math.max(0, Math.min((e.clientX - rect.left) / rect.width, 1))
+    setVolume(percentage)
     if (isMuted) setIsMuted(false)
   }
 
-  const toggleMute = () => {
-    setIsMuted(!isMuted)
-  }
-
-  const progress = currentTrack ? (currentTime / currentTrack.duration) * 100 : 0
-  const volumePercentage = isMuted ? 0 : volume * 100
-
   return (
-    <div className={cn('bg-card rounded-3xl p-6 border border-white/5', className)}>
-      {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h2 className="text-sm font-semibold text-white">Media Player</h2>
-          <p className="text-xs text-zinc-500 mt-1">Focus Sounds</p>
-        </div>
-        <div className="flex items-center gap-1">
-          <Button
-            variant="secondary"
-            size="sm"
-            onClick={toggleShuffle}
-            className={cn('h-8 w-8 p-0', {
-              'text-primary': isShuffled,
-              'text-zinc-500': !isShuffled,
-            })}
+    <div className={cn('flex flex-col h-full p-4', className)}>
+      {/* Header Minimal - Music no canto esquerdo */}
+      <div className="flex items-center justify-between mb-5">
+        <h2 className="text-[11px] font-black text-white/40 uppercase tracking-[0.3em]">Music</h2>
+        {playlist.length > 0 && (
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            onClick={clearPlaylist}
+            className="h-6 w-6 p-0 text-zinc-600 hover:text-red-400/80 transition-colors"
           >
-            <Shuffle className="h-4 w-4" />
+            <Trash2 className="h-3 w-3" />
           </Button>
-          <Button
-            variant="secondary"
-            size="sm"
-            onClick={toggleRepeat}
-            className={cn('h-8 w-8 p-0', {
-              'text-primary': repeatMode !== 'none',
-              'text-zinc-500': repeatMode === 'none',
-            })}
-          >
-            <Repeat className="h-4 w-4" />
-          </Button>
-        </div>
+        )}
       </div>
 
-      {/* Current Track Info */}
-      {currentTrack && (
-        <div className="mb-6">
-          <h3 className="text-white font-medium text-sm mb-1">{currentTrack.title}</h3>
-          <p className="text-zinc-500 text-xs">{currentTrack.artist}</p>
-        </div>
-      )}
+      {/* Input de URL */}
+      <form onSubmit={handleAddTrack} className="flex gap-2 mb-6">
+        <Input 
+          value={inputUrl}
+          onChange={(e) => setInputUrl(e.target.value)}
+          placeholder="Paste YouTube Link..."
+          className="h-8 bg-black/20 border-white/5 text-[11px] focus:ring-1 focus:ring-indigo-500/30 placeholder:opacity-30"
+        />
+        <Button size="sm" type="submit" className="h-8 w-8 p-0 bg-white/5 hover:bg-white/10 border border-white/5 shrink-0 transition-all">
+          <Plus className="h-3.5 w-3.5 text-zinc-400" />
+        </Button>
+      </form>
 
-      {/* Progress Bar */}
-      <div className="mb-4">
-        <div
-          ref={progressRef}
-          className="relative h-2 bg-white/10 rounded-full cursor-pointer"
-          onClick={handleProgressClick}
-        >
-          <div
-            className="absolute top-0 left-0 h-full bg-primary rounded-full transition-all"
-            style={{ width: `${progress}%` }}
-          />
-        </div>
-        <div className="flex justify-between text-xs text-zinc-500 mt-2">
-          <span>{formatTime(currentTime)}</span>
-          <span>{currentTrack ? formatTime(currentTrack.duration) : '0:00'}</span>
-        </div>
-      </div>
+      {/* Player Layout Horizontal */}
+      <div className="flex flex-col gap-5">
+        <div className="flex items-center gap-5">
+          {/* Capa Lateral Aumentada (h-20 w-20 = 80px) */}
+          <div className="relative h-20 w-20 shrink-0 rounded-xl overflow-hidden bg-black/40 border border-white/10 shadow-2xl group flex items-center justify-center">
+            {currentTrack ? (
+              <>
+                <img 
+                  src={`https://img.youtube.com/vi/${currentTrack.id}/mqdefault.jpg`}
+                  alt="Track"
+                  className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500 group-hover:scale-110"
+                />
+                <iframe
+                  key={`${currentTrack.id}-${isLooping}`}
+                  ref={iframeRef}
+                  className="absolute bottom-0 right-0 w-[1px] h-[1px] opacity-0.01 pointer-events-none"
+                  src={`https://www.youtube.com/embed/${currentTrack.id}?enablejsapi=1&autoplay=1&mute=0&controls=0&origin=${typeof window !== 'undefined' ? window.location.origin : ''}`}
+                  allow="autoplay; encrypted-media"
+                />
+              </>
+            ) : (
+              <div className="absolute inset-0 flex items-center justify-center bg-white/5">
+                <Music2 className="h-7 w-7 text-zinc-800" />
+              </div>
+            )}
+            <div className="absolute inset-0 ring-1 ring-inset ring-white/10 rounded-xl pointer-events-none" />
+          </div>
 
-      {/* Controls */}
-      <div className="flex items-center justify-center gap-4 mb-6">
-        <Button
-          variant="secondary"
-          size="sm"
-          onClick={handlePrevious}
-          className="h-10 w-10 p-0"
-        >
-          <SkipBack className="h-4 w-4" />
-        </Button>
-        
-        <Button
-          variant="primary"
-          size="lg"
-          onClick={handlePlayPause}
-          className="h-12 w-12 p-0 rounded-full shadow-[0_0_20px_rgba(99,102,241,0.5)]"
-        >
-          {isPlaying ? (
-            <Pause className="h-5 w-5" />
-          ) : (
-            <Play className="h-5 w-5 ml-0.5" />
-          )}
-        </Button>
-        
-        <Button
-          variant="secondary"
-          size="sm"
-          onClick={handleNext}
-          className="h-10 w-10 p-0"
-        >
-          <SkipForward className="h-4 w-4" />
-        </Button>
-      </div>
+          {/* Controles à frente da capa */}
+          <div className="flex-1 flex flex-col justify-center gap-3">
+            <div className="flex items-center justify-between px-1">
+              <div className="flex items-center gap-1">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={prevTrack}
+                  disabled={playlist.length === 0}
+                  className="h-8 w-8 p-0 text-zinc-600 hover:text-white transition-colors"
+                >
+                  <SkipBack className="h-4 w-4 fill-current" />
+                </Button>
 
-      {/* Volume Control */}
-      <div className="flex items-center gap-3">
-        <Button
-          variant="secondary"
-          size="sm"
-          onClick={toggleMute}
-          className="h-8 w-8 p-0"
-        >
-          {isMuted || volume === 0 ? (
-            <VolumeX className="h-4 w-4" />
-          ) : (
-            <Volume2 className="h-4 w-4" />
-          )}
-        </Button>
-        
-        <div className="flex-1">
-          <div
-            ref={volumeRef}
-            className="relative h-2 bg-white/10 rounded-full cursor-pointer"
-            onClick={handleVolumeClick}
-          >
-            <div
-              className="absolute top-0 left-0 h-full bg-white/40 rounded-full transition-all"
-              style={{ width: `${volumePercentage}%` }}
-            />
+                <Button
+                  onClick={togglePlay}
+                  disabled={playlist.length === 0}
+                  className="h-10 w-10 rounded-full bg-white text-black hover:scale-105 flex items-center justify-center transition-all active:scale-95 shadow-lg shadow-white/5"
+                >
+                  {isPlaying ? <Pause className="h-5 w-5 fill-current" /> : <Play className="h-5 w-5 fill-current ml-0.5" />}
+                </Button>
+
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={nextTrack}
+                  disabled={playlist.length === 0}
+                  className="h-8 w-8 p-0 text-zinc-600 hover:text-white transition-colors"
+                >
+                  <SkipForward className="h-4 w-4 fill-current" />
+                </Button>
+              </div>
+
+              {/* Botão de Loop */}
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={toggleLoop}
+                className={cn(
+                  "h-8 w-8 p-0 transition-all duration-300",
+                  isLooping ? "text-indigo-500 bg-indigo-500/10" : "text-zinc-600 hover:text-white"
+                )}
+              >
+                <Repeat className={cn("h-4 w-4", isLooping && "animate-spin-slow")} />
+              </Button>
+            </div>
+
+            {playlist.length > 0 && (
+              <div className="flex items-center justify-between px-2">
+                <span className="text-[9px] font-black text-white/20 uppercase tracking-widest truncate max-w-[80px]">
+                  Now Playing
+                </span>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[9px] font-black text-indigo-500/80 tabular-nums">
+                    {currentIndex + 1}/{playlist.length}
+                  </span>
+                  <div className="h-1 w-1 rounded-full bg-indigo-500 animate-pulse" />
+                </div>
+              </div>
+            )}
           </div>
         </div>
-        
-        <span className="text-xs text-zinc-500 w-8 text-right">
-          {Math.round(volumePercentage)}
-        </span>
+
+        {/* UI Externo: Scroller de Áudio Premium */}
+        <div className="group/vol pt-2">
+          <div className="flex items-center gap-3">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={toggleMute}
+              className="h-7 w-7 p-0 text-zinc-600 hover:text-white shrink-0 transition-colors"
+            >
+              {isMuted || volume === 0 ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
+            </Button>
+            
+            <div className="flex-1 flex flex-col gap-1.5">
+              <div 
+                ref={volumeRef}
+                onClick={handleVolumeClick}
+                className="relative h-1.5 w-full bg-white/5 rounded-full cursor-pointer overflow-hidden backdrop-blur-sm"
+              >
+                {/* Track background */}
+                <div className="absolute inset-0 bg-white/5 group-hover/vol:bg-white/10 transition-colors" />
+                
+                {/* Fill level */}
+                <div 
+                  className="absolute inset-y-0 left-0 bg-gradient-to-r from-indigo-600 to-indigo-400 transition-all duration-300 group-hover/vol:brightness-110 shadow-[0_0_10px_rgba(99,102,241,0.5)]"
+                  style={{ width: `${isMuted ? 0 : volume * 100}%` }}
+                />
+              </div>
+            </div>
+
+            <span className="text-[10px] text-zinc-700 w-8 text-right tabular-nums font-bold group-hover/vol:text-indigo-400 transition-colors duration-300">
+              {Math.round(isMuted ? 0 : volume * 100)}%
+            </span>
+          </div>
+        </div>
       </div>
     </div>
   )
 }
 
-// Wrapper component with error boundary
 function MediaPlayerWidget({ className }: MediaPlayerWidgetProps) {
   return (
     <ErrorBoundary 
