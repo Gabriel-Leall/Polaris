@@ -37,7 +37,7 @@ export function PlayerControls({
             size="sm"
             onClick={onPrev}
             disabled={playlistEmpty}
-            className="h-8 w-8 p-0 text-zinc-600 hover:text-white transition-colors"
+            className="h-8 w-8 p-0 text-muted hover:text-white transition-colors"
           >
             <SkipBack className="h-4 w-4 fill-current" />
           </Button>
@@ -59,7 +59,7 @@ export function PlayerControls({
             size="sm"
             onClick={onNext}
             disabled={playlistEmpty}
-            className="h-8 w-8 p-0 text-zinc-600 hover:text-white transition-colors"
+            className="h-8 w-8 p-0 text-muted hover:text-white transition-colors"
           >
             <SkipForward className="h-4 w-4 fill-current" />
           </Button>
@@ -72,8 +72,8 @@ export function PlayerControls({
           className={cn(
             "h-8 w-8 p-0 transition-all duration-300",
             isLooping
-              ? "text-indigo-500 bg-indigo-500/10"
-              : "text-zinc-600 hover:text-white"
+              ? "text-primary bg-primary/10"
+              : "text-muted hover:text-white"
           )}
         >
           <Repeat className={cn("h-4 w-4", isLooping && "animate-spin-slow")} />
@@ -91,10 +91,10 @@ export function PlayerControls({
             </span>
           </div>
           <div className="flex items-center gap-1.5 shrink-0">
-            <span className="text-[9px] font-black text-indigo-500/80 tabular-nums">
+            <span className="text-[9px] font-black text-primary/80 tabular-nums">
               {currentIndex + 1}/{playlistLength}
             </span>
-            <div className="h-1 w-1 rounded-full bg-indigo-500 animate-pulse" />
+            <div className="h-1 w-1 rounded-full bg-primary animate-pulse" />
           </div>
         </div>
       )}

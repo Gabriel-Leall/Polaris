@@ -277,7 +277,7 @@ const BrainDumpWidgetContent = ({ className }: BrainDumpWidgetProps) => {
       </Dialog>
 
       <Dialog open={showApiSettings} onOpenChange={setShowApiSettings}>
-        <DialogContent className="max-w-md bg-[#09090b] border-white/10 text-white shadow-2xl">
+        <DialogContent className="max-w-md bg-main border-white/10 text-white shadow-2xl">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2 text-xl">
               <Sparkles className="h-5 w-5 text-primary" />

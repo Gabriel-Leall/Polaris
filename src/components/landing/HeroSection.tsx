@@ -11,21 +11,21 @@ export const HeroSection = () => {
         <div className="relative flex items-center justify-center size-64 md:size-80 lg:size-96">
           {/* Pulsing Background Orbs */}
           <div
-            className="absolute inset-0 rounded-full bg-gradient-to-tr from-[#6366F1]/20 to-[#06B6D4]/20 blur-3xl opacity-30 animate-pulse"
+            className="absolute inset-0 rounded-full bg-gradient-to-tr from-primary/20 to-primary-glow/20 blur-3xl opacity-30 animate-pulse"
             style={{ animationDelay: "0s", animationDuration: "3s" }}
           />
           <div
-            className="absolute inset-4 rounded-full bg-gradient-to-tr from-[#6366F1]/15 to-[#06B6D4]/15 blur-2xl opacity-25 animate-pulse"
+            className="absolute inset-4 rounded-full bg-gradient-to-tr from-primary/15 to-primary-glow/15 blur-2xl opacity-25 animate-pulse"
             style={{ animationDelay: "0.5s", animationDuration: "3s" }}
           />
           <div
-            className="absolute inset-8 rounded-full bg-gradient-to-tr from-[#6366F1]/10 to-[#06B6D4]/10 blur-xl opacity-20 animate-pulse"
+            className="absolute inset-8 rounded-full bg-gradient-to-tr from-primary/10 to-primary-glow/10 blur-xl opacity-20 animate-pulse"
             style={{ animationDelay: "1s", animationDuration: "3s" }}
           />
 
-          {/* Outer Ring - Cyan */}
+          {/* Outer Ring - Cyan replaced with primary-glow */}
           <svg
-            className="absolute inset-0 w-full h-full animate-spin text-[#06B6D4] drop-shadow-[0_0_8px_rgba(6,182,212,0.5)]"
+            className="absolute inset-0 w-full h-full animate-spin text-primary-glow drop-shadow-[0_0_8px_rgba(129,140,248,0.5)]"
             fill="none"
             viewBox="0 0 100 100"
             style={{ animationDuration: "8s" }}
@@ -48,7 +48,7 @@ export const HeroSection = () => {
 
           {/* Inner Ring - Purple */}
           <svg
-            className="absolute inset-4 w-[calc(100%-2rem)] h-[calc(100%-2rem)] text-[#6366F1] drop-shadow-[0_0_8px_rgba(99,102,241,0.5)]"
+            className="absolute inset-4 w-[calc(100%-2rem)] h-[calc(100%-2rem)] text-primary drop-shadow-[0_0_8px_rgba(99,102,241,0.5)]"
             fill="none"
             viewBox="0 0 100 100"
             style={{
@@ -88,7 +88,7 @@ export const HeroSection = () => {
           >
             Enter Your Flow State
           </h1>
-          <h2 className="text-indigo-200/70 text-base md:text-lg font-light tracking-wide font-mono">
+          <h2 className="text-muted/70 text-base md:text-lg font-light tracking-wide font-mono">
             Aligning productivity vectors. System ready.
           </h2>
         </div>
@@ -96,7 +96,7 @@ export const HeroSection = () => {
         {/* CTA Button */}
         <Link
           href="/signup"
-          className="group relative flex min-w-[160px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-14 px-8 bg-[#6366F1] hover:bg-blue-600 text-white transition-all duration-300 shadow-[0_0_20px_rgba(99,102,241,0.4)] hover:shadow-[0_0_30px_rgba(99,102,241,0.6)] hover:scale-105"
+          className="group relative flex min-w-[160px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-14 px-8 bg-primary hover:bg-blue-600 text-white transition-all duration-300 shadow-[0_0_20px_rgba(99,102,241,0.4)] hover:shadow-[0_0_30px_rgba(99,102,241,0.6)] hover:scale-105"
         >
           <span className="absolute inset-0 flex items-center justify-center w-full h-full text-white duration-300 -translate-x-full group-hover:translate-x-0 ease">
             <Rocket className="h-5 w-5" />

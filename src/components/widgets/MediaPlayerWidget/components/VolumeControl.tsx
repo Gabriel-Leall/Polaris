@@ -9,7 +9,7 @@ interface VolumeControlProps {
   volumeRef: React.RefObject<HTMLDivElement>;
 }
 
-export function VolumeControl({
+function VolumeControl({
   volume,
   isMuted,
   onToggleMute,
@@ -23,7 +23,7 @@ export function VolumeControl({
           variant="ghost"
           size="sm"
           onClick={onToggleMute}
-          className="h-7 w-7 p-0 text-zinc-600 hover:text-white shrink-0 transition-colors"
+          className="h-7 w-7 p-0 text-muted hover:text-white shrink-0 transition-colors"
         >
           {isMuted || volume === 0 ? (
             <VolumeX className="h-4 w-4" />
@@ -41,16 +41,19 @@ export function VolumeControl({
             <div className="absolute inset-0 bg-white/5 group-hover/vol:bg-white/10 transition-colors" />
 
             <div
-              className="absolute inset-y-0 left-0 bg-gradient-to-r from-indigo-600 to-indigo-400 transition-all duration-300 group-hover/vol:brightness-110 shadow-[0_0_10px_rgba(99,102,241,0.5)]"
+              className="absolute inset-y-0 left-0 bg-gradient-to-r from-primary to-primary-glow transition-all duration-300 group-hover/vol:brightness-110 shadow-[0_0_10px_rgba(99,102,241,0.5)]"
               style={{ width: `${isMuted ? 0 : volume * 100}%` }}
             />
           </div>
         </div>
 
-        <span className="text-[10px] text-zinc-700 w-8 text-right tabular-nums font-bold group-hover/vol:text-indigo-400 transition-colors duration-300">
+        <span className="text-[10px] text-muted w-8 text-right tabular-nums font-bold group-hover/vol:text-primary-glow transition-colors duration-300">
           {Math.round(isMuted ? 0 : volume * 100)}%
         </span>
       </div>
     </div>
   );
 }
+
+export { VolumeControl };
+export default VolumeControl;

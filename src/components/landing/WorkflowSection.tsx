@@ -6,8 +6,8 @@ export const WorkflowSection = () => {
       icon: LayoutDashboard,
       title: "Plan",
       description: "Chart your course. Organize tasks and set objectives.",
-      color: "#06B6D4", // neon-cyan
-      hoverBorder: "hover:border-[#06B6D4]/50",
+      color: "var(--primary-glow)", 
+      hoverBorder: "hover:border-primary-glow/50",
       justify: "md:justify-start",
       align: "md:items-start",
     },
@@ -15,8 +15,8 @@ export const WorkflowSection = () => {
       icon: Target,
       title: "Focus",
       description: "Engage warp drive. Eliminate distractions and deep dive.",
-      color: "#6366F1", // primary
-      hoverBorder: "hover:border-[#6366F1]/50",
+      color: "var(--primary)",
+      hoverBorder: "hover:border-primary/50",
       justify: "md:justify-center",
       align: "items-center",
     },
@@ -25,8 +25,8 @@ export const WorkflowSection = () => {
       title: "Review",
       description:
         "Log your mission. Analyze progress and optimize trajectory.",
-      color: "#6366F1", // neon-purple
-      hoverBorder: "hover:border-[#6366F1]/50",
+      color: "var(--primary)",
+      hoverBorder: "hover:border-primary/50",
       justify: "md:justify-end",
       align: "md:items-end",
     },
@@ -44,7 +44,7 @@ export const WorkflowSection = () => {
         >
           Your Workflow, Supercharged
         </h2>
-        <p className="text-indigo-200/70 text-lg font-light tracking-wide font-mono max-w-2xl">
+        <p className="text-muted/70 text-lg font-light tracking-wide font-mono max-w-2xl">
           Seamlessly integrate Polaris into your daily routine.
         </p>
 
@@ -57,16 +57,16 @@ export const WorkflowSection = () => {
             viewBox="0 0 800 500"
           >
             <path
-              className="transition-colors duration-500 hover:stroke-[#06B6D4]"
+              className="transition-colors duration-500 hover:stroke-primary-glow"
               d="M100,50 C200,50 200,150 300,150 L500,150 C600,150 600,250 700,250"
-              stroke="#242348"
+              stroke="var(--glass)"
               strokeDasharray="8 8"
               strokeWidth="2"
             />
             <path
-              className="transition-colors duration-500 hover:stroke-[#6366F1]"
+              className="transition-colors duration-500 hover:stroke-primary"
               d="M700,250 C600,250 600,350 500,350 L300,350 C200,350 200,450 100,450"
-              stroke="#242348"
+              stroke="var(--glass)"
               strokeDasharray="8 8"
               strokeWidth="2"
             />
@@ -80,7 +80,7 @@ export const WorkflowSection = () => {
                 className={`flex items-center ${step.justify}`}
               >
                 <div
-                  className={`bg-[rgba(26,25,48,0.3)] backdrop-blur-[8px] border border-[rgba(255,255,255,0.1)] p-6 rounded-xl flex flex-col ${step.align} gap-2 max-w-sm w-full relative group ${step.hoverBorder} transition-colors`}
+                  className={`bg-card/30 backdrop-blur-[8px] border border-glass p-6 rounded-xl flex flex-col ${step.align} gap-2 max-w-sm w-full relative group ${step.hoverBorder} transition-colors`}
                 >
                   <step.icon
                     className="h-10 w-10 mb-2"
@@ -89,7 +89,7 @@ export const WorkflowSection = () => {
                   <h3 className="text-white text-2xl font-bold">
                     {step.title}
                   </h3>
-                  <p className="text-indigo-300/80 font-mono text-sm">
+                  <p className="text-muted/80 font-mono text-sm">
                     {step.description}
                   </p>
                 </div>
