@@ -6,6 +6,7 @@ import {
   createQuickLink,
   deleteQuickLink,
   getQuickLinks,
+  updateQuickLink,
 } from "@/app/actions/quickLinks";
 import {
   extractTitleFromUrl,
@@ -84,17 +85,19 @@ export const useQuickLinks = () => {
 
       if (userId) {
         const fetchedLinks = await getQuickLinks(userId);
-        if (fetchedLinks && fetchedLinks.length > 0) {
-          setLinks(fetchedLinks);
-          return;
-        }
+        setLinks(fetchedLinks || []);
+        return;
       }
 
-      // Fallback to mock data
-      setLinks(getMockupLinks(userId));
+      // Fallback to mock data for non-authenticated users only
+      setLinks(getMockupLinks(null));
     } catch (error) {
       console.error("Failed to load quick links:", error);
-      setLinks(getMockupLinks(userId));
+      if (!userId) {
+        setLinks(getMockupLinks(null));
+      } else {
+        setLinks([]);
+      }
     } finally {
       setIsLoading(false);
     }

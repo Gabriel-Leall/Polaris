@@ -3,8 +3,8 @@ import { Editor } from "@tiptap/react";
 import { useBrainDumpStore } from "@/store";
 import { useDebounce } from "@/hooks/useDebounce";
 import { saveBrainDumpNote, getBrainDumpNote } from "@/app/actions";
-import { supabase } from "@/lib/supabase";
-import { LOCAL_BRAIN_DUMP_KEY, DEBOUNCE_DELAY, MOCKUP_CONTENT } from "../utils/editorConfig";
+import { useAuth } from "@/hooks/useAuth";
+import { LOCAL_BRAIN_DUMP_KEY, DEBOUNCE_DELAY } from "../utils/editorConfig";
 
 export const useBrainDumpSync = (editor: Editor | null, editorHtml: string) => {
   const {
@@ -19,7 +19,7 @@ export const useBrainDumpSync = (editor: Editor | null, editorHtml: string) => {
     setUnsavedChanges,
   } = useBrainDumpStore();
 
-  const [userId, setUserId] = useState<string | null>(null);
+  const { userId, isLoading: authLoading } = useAuth();
   const [, setNoteId] = useState<string | null>(null);
   const [saveError, setSaveError] = useState(false);
   const isInitialLoad = useRef(true);
@@ -28,23 +28,10 @@ export const useBrainDumpSync = (editor: Editor | null, editorHtml: string) => {
   // Debounce the editor HTML for auto-save
   const debouncedHtml = useDebounce(editorHtml, DEBOUNCE_DELAY);
 
-  // Get current user on mount
-  useEffect(() => {
-    const getCurrentUser = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      if (user) {
-        setUserId(user.id);
-      }
-    };
-    getCurrentUser();
-  }, []);
-
   // Load saved content on mount
   useEffect(() => {
     const loadContent = async () => {
-      if (!userId || !editor) return;
+      if (!userId || !editor || authLoading) return;
 
       setLoading(true);
       try {
@@ -63,11 +50,8 @@ export const useBrainDumpSync = (editor: Editor | null, editorHtml: string) => {
           if (localContent) {
             editor.commands.setContent(localContent);
             setContent(editor.getText());
-          } else {
-            // Load mockup content if no saved content exists
-            editor.commands.setContent(MOCKUP_CONTENT);
-            setContent(editor.getText());
           }
+          // No mockup content fallback here
         }
       } catch (error) {
         console.error("Failed to load brain dump:", error);
@@ -76,10 +60,6 @@ export const useBrainDumpSync = (editor: Editor | null, editorHtml: string) => {
         if (localContent) {
           editor.commands.setContent(localContent);
           setContent(editor.getText());
-        } else {
-          // Load mockup content if no saved content exists
-          editor.commands.setContent(MOCKUP_CONTENT);
-          setContent(editor.getText());
         }
       } finally {
         setLoading(false);
@@ -87,8 +67,10 @@ export const useBrainDumpSync = (editor: Editor | null, editorHtml: string) => {
       }
     };
 
-    loadContent();
-  }, [userId, editor, setLoading, setContent, setLastSaved]);
+    if (!authLoading) {
+      loadContent();
+    }
+  }, [userId, authLoading, editor, setLoading, setContent, setLastSaved]);
 
   // Auto-save with debouncing
   useEffect(() => {
