@@ -1,3 +1,4 @@
+import { motion } from "motion/react";
 import { TimerIcon, ArchiveIcon, LoopIcon } from "@radix-ui/react-icons";
 
 export const FeaturesSection = () => {
@@ -28,24 +29,35 @@ export const FeaturesSection = () => {
   return (
     <div className="@container w-full py-20">
       <div className="flex flex-col items-center justify-center gap-12 text-center">
-        <h2
-          className="text-white text-4xl md:text-5xl font-black leading-tight tracking-tight bg-clip-text text-transparent bg-gradient-to-b from-white to-white/70"
-          style={{
-            textShadow:
-              "0 0 20px rgba(255, 255, 255, 0.5), 0 0 30px rgba(99, 102, 241, 0.4)",
-          }}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
         >
-          Unleash Your Potential
-        </h2>
-        <p className="text-indigo-200/70 text-lg font-light tracking-wide font-mono max-w-2xl">
-          Key features engineered to elevate your productivity to interstellar
-          levels.
-        </p>
+          <h2
+            className="text-white text-4xl md:text-5xl font-black leading-tight tracking-tight bg-clip-text text-transparent bg-gradient-to-b from-white to-white/70"
+            style={{
+              textShadow:
+                "0 0 20px rgba(255, 255, 255, 0.5), 0 0 30px rgba(99, 102, 241, 0.4)",
+            }}
+          >
+            Unleash Your Potential
+          </h2>
+          <p className="text-indigo-200/70 text-lg font-light tracking-wide font-mono max-w-2xl mt-4">
+            Key features engineered to elevate your productivity to interstellar
+            levels.
+          </p>
+        </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-5xl">
           {features.map((feature, index) => (
-            <div
+            <motion.div
               key={feature.title}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: index * 0.1 }}
               className="bg-[rgba(26,25,48,0.3)] backdrop-blur-[8px] border border-[rgba(255,255,255,0.1)] p-8 rounded-xl flex flex-col items-center gap-4 text-center group relative overflow-hidden transition-all duration-300"
             >
               {/* Hover Background Gradient */}
@@ -80,10 +92,11 @@ export const FeaturesSection = () => {
               <p className="text-indigo-300/80 font-mono text-sm">
                 {feature.description}
               </p>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>
     </div>
   );
 };
+
