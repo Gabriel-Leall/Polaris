@@ -23,14 +23,15 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
+
 interface Task {
   id: string;
   title: string;
   priority: "high" | "medium" | "low";
-  dueDate?: string;
+  dueDate?: string | undefined;
   tags?: string[];
   completed: boolean;
-  completedAt?: string;
+  completedAt?: string | undefined;
 }
 
 export default function TasksPage() {
@@ -139,12 +140,7 @@ export default function TasksPage() {
   const completedTasks = filteredTasks.filter((t) => t.completed);
 
   return (
-    <DashboardLayout>
-      <Sidebar>
-        <SidebarNav activeItem="tasks" />
-      </Sidebar>
-
-      <main className="flex-1 flex flex-col min-w-0 overflow-hidden relative">
+    <main className="flex-1 flex flex-col min-w-0 overflow-hidden relative">
         {/* Abstract Background Gradients */}
         <div className="absolute top-0 left-0 w-full h-[500px] bg-gradient-to-b from-primary/10 via-transparent to-transparent pointer-events-none opacity-20"></div>
 
