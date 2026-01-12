@@ -1,8 +1,6 @@
-// @ts-nocheck
-// This widget is temporarily disabled - will be enabled in a future release
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Plus, Edit2, Trash2, Building2, Calendar } from "lucide-react";
 import { JobApplication, AppStatus } from "@/types";
 import {
@@ -28,6 +26,7 @@ import {
   DataErrorFallback,
 } from "@/components/ui/error-boundary";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/hooks/useAuth";
 
 interface JobApplicationFormData {
   companyName: string;
@@ -50,40 +49,8 @@ const statusOptions: AppStatus[] = [
   "Rejected",
 ];
 
-const mockEmails: JobApplication[] = [
-  {
-    id: "mock-1",
-    userId: "local",
-    companyName: "Stripe",
-    position: "Frontend Engineer - Interview",
-    status: "Interview",
-    notes: "Onsite scheduled next week",
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-  {
-    id: "mock-2",
-    userId: "local",
-    companyName: "Vercel",
-    position: "Senior React Dev - Applied",
-    status: "Applied",
-    notes: "Awaiting recruiter response",
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-  {
-    id: "mock-3",
-    userId: "local",
-    companyName: "Airbnb",
-    position: "Frontend - Rejected",
-    status: "Rejected",
-    notes: "Feedback requested",
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-];
-
 function JobTrackerWidgetCore() {
+  const { userId, isLoading: authLoading } = useAuth();
   const [jobApplications, setJobApplications] = useState<JobApplication[]>([]);
   const [filteredApplications, setFilteredApplications] = useState<
     JobApplication[]
@@ -95,7 +62,6 @@ function JobTrackerWidgetCore() {
     useState<JobApplication | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [isMock, setIsMock] = useState(false);
 
   const [formData, setFormData] = useState<JobApplicationFormData>({
     companyName: "",
@@ -104,33 +70,35 @@ function JobTrackerWidgetCore() {
     notes: "",
   });
 
-  // Mock user ID - in real app this would come from auth
-  const userId = "user-123";
+  const loadJobApplications = useCallback(async () => {
+    if (!userId) {
+      setJobApplications([]);
+      setIsLoading(false);
+      return;
+    }
 
-  const loadJobApplications = async () => {
     try {
       setIsLoading(true);
       setError(null);
       const applications = await getJobApplications(userId);
       setJobApplications(applications);
-      setIsMock(false);
     } catch (err) {
-      setIsMock(true);
-      setJobApplications(mockEmails);
       setError(
         err instanceof Error
           ? err.message
-          : "Failed to load job applications (showing mock data)"
+          : "Failed to load job applications"
       );
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [userId]);
 
-  // Load job applications on mount
+  // Load job applications on mount or when userId changes
   useEffect(() => {
-    loadJobApplications();
-  }, []);
+    if (!authLoading) {
+      loadJobApplications();
+    }
+  }, [authLoading, loadJobApplications]);
 
   // Filter applications when filter changes
   useEffect(() => {
@@ -144,6 +112,8 @@ function JobTrackerWidgetCore() {
   }, [jobApplications, filterStatus]);
 
   const handleCreateApplication = async () => {
+    if (!userId) return;
+    
     try {
       if (!formData.companyName.trim() || !formData.position.trim()) {
         setError("Company name and position are required");
@@ -271,11 +241,21 @@ function JobTrackerWidgetCore() {
     }).format(date);
   };
 
+  if (authLoading || (isLoading && jobApplications.length === 0)) {
+    return (
+      <div className="bg-card rounded-3xl p-6 h-full flex items-center justify-center">
+        <div className="text-secondary text-sm animate-pulse">
+          Loading Job Tracker...
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-card rounded-3xl p-6 h-full flex flex-col">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-sm font-semibold text-white">Email Tracker</h2>
+        <h2 className="text-sm font-semibold text-white">Job Tracker</h2>
         <div className="flex items-center gap-2">
           {/* Filter Dropdown */}
           <select
@@ -305,7 +285,7 @@ function JobTrackerWidgetCore() {
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>Add Email</DialogTitle>
+                <DialogTitle>Add Job Application</DialogTitle>
               </DialogHeader>
               <div className="space-y-4">
                 <div>
@@ -384,7 +364,7 @@ function JobTrackerWidgetCore() {
                     onClick={handleCreateApplication}
                     className="flex-1"
                   >
-                    Add Email
+                    Add Application
                   </Button>
                   <Button
                     variant="secondary"
@@ -399,21 +379,9 @@ function JobTrackerWidgetCore() {
         </div>
       </div>
 
-      {isMock && (
-        <div className="mb-3 p-3 rounded-xl border border-glass bg-white/5 text-xs text-secondary">
-          Showing mock emails while the backend is unavailable.
-        </div>
-      )}
-
       {/* Content */}
       <div className="flex-1 min-h-0">
-        {isLoading ? (
-          <div className="flex items-center justify-center h-32">
-            <div className="text-secondary text-sm">
-              Loading applications...
-            </div>
-          </div>
-        ) : error && jobApplications.length === 0 ? (
+        {error && jobApplications.length === 0 ? (
           <div className="flex items-center justify-center h-32">
             <div className="text-status-rejected text-sm">{error}</div>
           </div>
@@ -622,3 +590,4 @@ function JobTrackerWidget() {
 
 export default JobTrackerWidget;
 export { JobTrackerWidget };
+

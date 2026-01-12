@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Trash2, Globe, Loader2, Edit2 } from "lucide-react";
 import { DockIcon } from "@/components/ui/dock";
 import { cn } from "@/lib/utils";
+import { MotionValue } from "motion/react";
 import type { LinkItemProps } from "../types";
 
 /**
@@ -22,7 +23,7 @@ export const LinkItem = ({
   magnification,
   distance,
 }: LinkItemProps & {
-  mouseX?: any;
+  mouseX?: MotionValue<number>;
   size?: number;
   magnification?: number;
   distance?: number;

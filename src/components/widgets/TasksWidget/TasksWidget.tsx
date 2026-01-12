@@ -10,7 +10,7 @@ import { TaskStats } from "./components/TaskStats";
 import { EmptyState } from "./components/EmptyState";
 import { TasksWidgetProps } from "./types";
 
-function TasksWidget({ className }: TasksWidgetProps) {
+export function TasksWidget({ className }: TasksWidgetProps) {
   const {
     tasks,
     isLoading,

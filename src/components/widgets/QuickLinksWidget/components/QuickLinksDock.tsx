@@ -25,7 +25,7 @@ interface QuickLinksDockProps {
   position?: "bottom" | "top";
 }
 
-const QuickLinksDock = ({
+export const QuickLinksDock = ({
   className,
   position = "bottom",
 }: QuickLinksDockProps) => {

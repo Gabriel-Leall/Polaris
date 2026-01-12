@@ -22,7 +22,7 @@ export function MediaPlayerHeader({
           variant="ghost"
           size="sm"
           onClick={onClear}
-          className="h-6 w-6 p-0 text-zinc-600 hover:text-red-400/80 transition-colors"
+          className="h-6 w-6 p-0 text-muted-foreground hover:text-red-400/80 transition-colors"
         >
           <Trash2 className="h-3 w-3" />
         </Button>

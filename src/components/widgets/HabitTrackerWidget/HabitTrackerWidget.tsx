@@ -32,7 +32,7 @@ interface HabitTrackerWidgetProps {
   className?: string;
 }
 
-function HabitTrackerWidget({ className }: HabitTrackerWidgetProps) {
+export function HabitTrackerWidget({ className }: HabitTrackerWidgetProps) {
   const { userId, isLoading: authLoading } = useAuth();
   const [habits, setHabits] = useState<Habit[]>([]);
   const [newHabitName, setNewHabitName] = useState("");
