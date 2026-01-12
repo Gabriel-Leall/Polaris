@@ -1,4 +1,4 @@
-import { WidgetSkeleton } from "@/components/ui/Skeleton";
+import { WidgetSkeleton } from "@/components/ui/skeleton";
 import { BentoGrid, GridColumn } from "@/components/layout";
 
 export default function DashboardLoading() {

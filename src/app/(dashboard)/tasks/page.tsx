@@ -23,24 +23,47 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import {
-  DashboardLayout,
-  Sidebar,
-  SidebarNav,
-} from "@/components/layout";
-
 interface Task {
   id: string;
   title: string;
   priority: "high" | "medium" | "low";
-  dueDate?: string | undefined;
-  tags?: string[] | undefined;
+  dueDate?: string;
+  tags?: string[];
   completed: boolean;
-  completedAt?: string | undefined;
+  completedAt?: string;
 }
 
 export default function TasksPage() {
-  const [tasks, setTasks] = useState<Task[]>([]);
+  const [tasks, setTasks] = useState<Task[]>([
+    {
+      id: "1",
+      title: "Update resume for Google application",
+      priority: "high",
+      dueDate: "2026-01-09",
+      tags: ["UX Design"],
+      completed: false,
+    },
+    {
+      id: "2",
+      title: "Follow up with recruiter regarding Design Lead role",
+      priority: "medium",
+      dueDate: "2026-01-08",
+      completed: false,
+    },
+    {
+      id: "3",
+      title: "Research interview questions for Stripe",
+      priority: "low",
+      completed: false,
+    },
+    {
+      id: "4",
+      title: "Update LinkedIn Profile",
+      priority: "medium",
+      completed: true,
+      completedAt: "Completed Yesterday",
+    },
+  ]);
 
   const [activeFilter, setActiveFilter] = useState("All Tasks");
   const [newTaskTitle, setNewTaskTitle] = useState("");
@@ -434,6 +457,5 @@ export default function TasksPage() {
           <div className="h-24"></div>
         </div>
       </main>
-    </DashboardLayout>
   );
 }
