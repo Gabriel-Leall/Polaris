@@ -7,14 +7,11 @@ import {
   MediaPlayerWidget,
   QuickLinksWidget,
 } from "@/components/widgets";
-import {
-  BentoGrid,
-  GridColumn,
-} from "@/components/layout";
+import { BentoGrid, GridColumn } from "@/components/layout";
 import { WidgetCard } from "@/components/layout/WidgetCard";
 import { ZenModeBlurWrapper } from "@/components/ui/ZenModeBlurWrapper";
 import { Suspense } from "react";
-import { WidgetSkeleton } from "@/components/ui/Skeleton";
+import { WidgetSkeleton } from "@/components/ui/skeleton";
 
 export default function Dashboard() {
   return (
@@ -88,3 +85,10 @@ export default function Dashboard() {
               <Suspense fallback={<WidgetSkeleton />}>
                 <MediaPlayerWidget />
               </Suspense>
+            </WidgetCard>
+          </ZenModeBlurWrapper>
+        </div>
+      </GridColumn>
+    </BentoGrid>
+  );
+}

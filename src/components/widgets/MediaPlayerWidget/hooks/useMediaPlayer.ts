@@ -32,7 +32,7 @@ export function useMediaPlayer() {
 
   const currentTrack = playlist[currentIndex];
 
-  const sendCommand = useCallback((func: string, args: any = "") => {
+  const sendCommand = useCallback((func: string, args: unknown = "") => {
     iframeRef.current?.contentWindow?.postMessage(
       JSON.stringify({ event: "command", func, args }),
       "*"
