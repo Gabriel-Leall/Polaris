@@ -12,16 +12,7 @@ vi.mock("@/lib/supabase", () => {
     __esModule: true,
     supabase: {
       auth: {
-        getSession: vi.fn(() => Promise.resolve({ 
-          data: { 
-            session: { 
-              user: { id: "test-user-id", email: "test@example.com" },
-              access_token: "test-token",
-              expires_at: Math.floor(Date.now() / 1000) + 3600
-            } 
-          }, 
-          error: null 
-        })),
+        getSession: vi.fn(() => Promise.resolve({ data: { session: null }, error: null })),
         getUser: vi.fn(() => Promise.resolve({ data: { user: { id: "test-user-id", email: "test@example.com" } }, error: null })),
         onAuthStateChange: vi.fn(() => ({
           data: { subscription: { unsubscribe: vi.fn() } },
