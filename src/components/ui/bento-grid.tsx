@@ -20,7 +20,7 @@ interface BentoCardProps extends ComponentPropsWithoutRef<"div"> {
 }
 
 // Polaris Dashboard Grid - Adapted from Magic UI Bento Grid
-const BentoGrid = ({ children, className, ...props }: BentoGridProps) => {
+export const BentoGrid = ({ children, className, ...props }: BentoGridProps) => {
   return (
     <div
       className={cn(
@@ -34,7 +34,7 @@ const BentoGrid = ({ children, className, ...props }: BentoGridProps) => {
   )
 }
 
-const BentoCard = ({
+export const BentoCard = ({
   name,
   className,
   background,
@@ -107,4 +107,4 @@ const BentoCard = ({
   </div>
 )
 
-export { BentoCard, BentoGrid }
+export default BentoGrid;

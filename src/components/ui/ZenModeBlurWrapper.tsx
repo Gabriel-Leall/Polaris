@@ -34,3 +34,5 @@ export const ZenModeBlurWrapper = ({
     </div>
   );
 };
+
+export default ZenModeBlurWrapper;

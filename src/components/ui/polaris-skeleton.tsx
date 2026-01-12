@@ -105,3 +105,5 @@ export {
   SkeletonWidget, 
   SkeletonList 
 };
+
+export default Skeleton;
