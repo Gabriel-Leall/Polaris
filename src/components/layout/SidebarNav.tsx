@@ -146,15 +146,16 @@ function SidebarNavCore({ className }: SidebarNavProps) {
  * Includes avatar, email and dropdown menu for logout/profile
  */
 export function SidebarUser() {
-  const { user, signOut } = useAuth();
+  const { user } = useAuth();
   const { isSidebarCollapsed } = useUIStore();
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
   const userEmail = user?.email || "guest@polaris.com";
-  const userName = userEmail.split("@")[0];
-  const userInitial = userEmail[0].toUpperCase();
+  const fullName = user?.user_metadata?.full_name;
+  const userName = fullName || userEmail.split("@")[0];
+  const userInitial = (userName[0] || "G").toUpperCase();
 
   // Close menu when clicking outside
   useEffect(() => {
