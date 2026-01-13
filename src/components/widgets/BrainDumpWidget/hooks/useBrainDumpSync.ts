@@ -48,7 +48,16 @@ export const useBrainDumpSync = (editor: Editor | null, editorHtml: string) => {
           // Try to load from local storage as fallback
           const localContent = localStorage.getItem(LOCAL_BRAIN_DUMP_KEY);
           if (localContent) {
-            editor.commands.setContent(localContent);
+            let contentToSet = localContent;
+            try {
+              const parsed = JSON.parse(localContent);
+              if (parsed && typeof parsed === 'object' && 'content' in parsed) {
+                contentToSet = parsed.content;
+              }
+            } catch (e) {
+              // Not JSON, use as is
+            }
+            editor.commands.setContent(contentToSet);
             setContent(editor.getText());
           }
           // No mockup content fallback here
@@ -58,7 +67,16 @@ export const useBrainDumpSync = (editor: Editor | null, editorHtml: string) => {
         // Try local storage fallback
         const localContent = localStorage.getItem(LOCAL_BRAIN_DUMP_KEY);
         if (localContent) {
-          editor.commands.setContent(localContent);
+          let contentToSet = localContent;
+          try {
+            const parsed = JSON.parse(localContent);
+            if (parsed && typeof parsed === 'object' && 'content' in parsed) {
+              contentToSet = parsed.content;
+            }
+          } catch (e) {
+            // Not JSON, use as is
+          }
+          editor.commands.setContent(contentToSet);
           setContent(editor.getText());
         }
       } finally {
