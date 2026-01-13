@@ -11,15 +11,95 @@ import { getUserPreferences } from "./userPreferences";
 async function getNotionConfig(userId: string) {
   const preferences = await getUserPreferences(userId);
   
-  const token = preferences?.notionApiKey || process.env.NOTION_TOKEN;
-  const databaseId = preferences?.notionDatabaseId || process.env.NOTION_DATABASE_ID;
+  const token = preferences?.notionApiKey;
+  const databaseId = preferences?.notionDatabaseId;
 
-  if (!token || !databaseId) {
-    throw new Error("Configuração do Notion não encontrada (Token ou Database ID ausente)");
+  if (!token) {
+    throw new Error("Notion não conectado. Por favor, vá em configurações e conecte sua conta.");
+  }
+
+  if (!databaseId) {
+    throw new Error("Banco de dados do Notion não selecionado. Por favor, escolha um nas configurações.");
   }
 
   const client = new Client({ auth: token });
   return { client, databaseId };
+}
+
+export async function getNotionAuthUrl() {
+  const clientId = process.env.NOTION_CLIENT_ID;
+  const redirectUri = `${process.env.NEXT_PUBLIC_APP_URL}/api/auth/notion/callback`;
+  
+  if (!clientId) {
+    throw new Error("NOTION_CLIENT_ID não configurado no servidor.");
+  }
+
+  return `https://api.notion.com/v1/oauth/authorize?client_id=${clientId}&response_type=code&owner=user&redirect_uri=${encodeURIComponent(redirectUri)}`;
+}
+
+export async function exchangeNotionCodeForToken(code: string) {
+  const clientId = process.env.NOTION_CLIENT_ID;
+  const clientSecret = process.env.NOTION_CLIENT_SECRET;
+  const redirectUri = `${process.env.NEXT_PUBLIC_APP_URL}/api/auth/notion/callback`;
+
+  if (!clientId || !clientSecret) {
+    throw new Error("Credenciais do Notion (ID/Secret) não configuradas.");
+  }
+
+  const auth = Buffer.from(`${clientId}:${clientSecret}`).toString("base64");
+
+  const response = await fetch("https://api.notion.com/v1/oauth/token", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Basic ${auth}`,
+    },
+    body: JSON.stringify({
+      grant_type: "authorization_code",
+      code,
+      redirect_uri: redirectUri,
+    }),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.error_description || data.error || "Falha ao trocar código pelo token");
+  }
+
+  return {
+    accessToken: data.access_token,
+    workspaceName: data.workspace_name,
+    workspaceIcon: data.workspace_icon,
+    botId: data.bot_id,
+    duplicatedTemplateId: data.duplicated_template_id,
+  };
+}
+
+export async function listNotionDatabases(userId: string) {
+  try {
+    const preferences = await getUserPreferences(userId);
+    const token = preferences?.notionApiKey;
+
+    if (!token) {
+      return { success: false, error: "Notion não conectado." };
+    }
+
+    const client = new Client({ auth: token });
+    const response = await client.search({
+      filter: { property: "object", value: "database" } as any,
+    });
+
+    const databases = response.results.map((db: any) => ({
+      id: db.id,
+      title: db.title?.[0]?.plain_text || "Sem título",
+    }));
+
+    return { success: true, databases };
+  } catch (error) {
+    console.error("Erro ao listar bases do Notion:", error);
+    return { success: false, error: "Falha ao buscar bases de dados." };
+  }
 }
 
 /**

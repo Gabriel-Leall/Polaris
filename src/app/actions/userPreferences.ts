@@ -1,6 +1,6 @@
 "use server";
 
-import { supabase } from "@/lib/supabase";
+import { createSupabaseServerClient } from "@/lib/supabase-server";
 import { UserPreferences } from "@/types";
 import {
   createUserPreferencesSchema,
@@ -32,6 +32,8 @@ export const updateUserPreferences = async (
   preferences: Partial<UpdateUserPreferencesInput>
 ): Promise<UserPreferences> => {
   try {
+    const supabase = await createSupabaseServerClient();
+    
     // Validate input data
     const validatedData = updateUserPreferencesSchema.parse({
       id,
@@ -82,6 +84,8 @@ export const getUserPreferences = async (
   userId: string
 ): Promise<UserPreferences | null> => {
   try {
+    const supabase = await createSupabaseServerClient();
+    
     // Validate user ID
     const validatedUserId = userIdSchema.parse(userId);
 
@@ -113,6 +117,8 @@ export const createUserPreferences = async (
   data: CreateUserPreferencesInput
 ): Promise<UserPreferences> => {
   try {
+    const supabase = await createSupabaseServerClient();
+    
     // Validate input data
     const validatedData = createUserPreferencesSchema.parse(data);
 
