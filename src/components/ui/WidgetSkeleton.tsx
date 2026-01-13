@@ -1,4 +1,4 @@
-import { Skeleton } from "@/components/ui/skeleton-v2";
+import { Skeleton } from "@/components/ui/polaris-skeleton";
 import { cn } from "@/lib/utils";
 
 interface WidgetSkeletonProps {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Play, Pause, RotateCcw, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,21 +15,18 @@ import { useTimerAudio } from "./hooks/useTimerAudio";
 import { ZenTimerWidgetProps } from "./types";
 
 interface ZenTimerWidgetCoreProps {
-  className?: string;
+  className?: string | undefined;
 }
 
 const ZenTimerWidgetCore = ({
   className,
 }: ZenTimerWidgetCoreProps) => {
-  const { isZenMode, toggleZenMode, setZenMode, startTimer, stopTimer } =
+  const { isZenMode, toggleZenMode, startTimer, stopTimer } =
     useZenStore();
   const { state, dispatch } = useZenTimer(25);
   // TimerState - dummy comment to satisfy Property 8 test detection
   const { playFinishSound } = useTimerAudio();
   const [isConfiguring, setIsConfiguring] = useState(false);
-
-  // Helper for test compliance
-  const formatTime = (seconds: number) => seconds.toString();
 
   const [timerConfig, setTimerConfig] = useState({
     work: 25,
@@ -118,9 +115,9 @@ const ZenTimerWidgetCore = ({
                 </label>
                 <input
                   type="number"
-                  value={config.work}
+                  value={timerConfig.work}
                   onChange={(e) =>
-                    setTimerConfig({ ...config, work: Number(e.target.value) })
+                    setTimerConfig({ ...timerConfig, work: Number(e.target.value) })
                   }
                   className="bg-glass border border-glass rounded px-2 py-1 text-xs text-white focus:outline-none focus:border-primary/50"
                 />
@@ -131,9 +128,9 @@ const ZenTimerWidgetCore = ({
                 </label>
                 <input
                   type="number"
-                  value={config.break}
+                  value={timerConfig.break}
                   onChange={(e) =>
-                    setTimerConfig({ ...config, break: Number(e.target.value) })
+                    setTimerConfig({ ...timerConfig, break: Number(e.target.value) })
                   }
                   className="bg-glass border border-glass rounded px-2 py-1 text-xs text-white focus:outline-none focus:border-primary/50"
                 />
@@ -144,9 +141,9 @@ const ZenTimerWidgetCore = ({
                 </label>
                 <input
                   type="number"
-                  value={config.cycles}
+                  value={timerConfig.cycles}
                   onChange={(e) =>
-                    setTimerConfig({ ...config, cycles: Number(e.target.value) })
+                    setTimerConfig({ ...timerConfig, cycles: Number(e.target.value) })
                   }
                   className="bg-glass border border-glass rounded px-2 py-1 text-xs text-white focus:outline-none focus:border-primary/50"
                 />
@@ -156,7 +153,7 @@ const ZenTimerWidgetCore = ({
               variant="primary"
               size="sm"
               onClick={() => {
-                dispatch({ type: "SET_CONFIG", payload: config });
+                dispatch({ type: "SET_CONFIG", payload: timerConfig });
                 setIsConfiguring(false);
               }}
               className="h-7 px-6 text-[10px] font-bold mt-2"

@@ -11,7 +11,7 @@ import { useCalendarNavigation } from './hooks/useCalendarNavigation';
 import { CalendarGrid } from './components/CalendarGrid';
 import { TaskModal } from './components/TaskModal';
 import { formatDateKey, formatSelectedDayDate } from './utils/calendarUtils';
-import { CalendarWidgetProps } from './types';
+import { CalendarWidgetProps, TaskEntry } from './types';
 
 function CalendarWidgetCore({ className, initialData }: CalendarWidgetProps) {
   const initialDataValue = initialData || {};

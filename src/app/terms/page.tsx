@@ -24,7 +24,7 @@ export default function TermsPage() {
           <section className="space-y-4">
             <h2 className="text-xl font-semibold text-white">1. Acceptance of Terms</h2>
             <p>
-              By accessing and using Polaris ("the Service"), you agree to be bound by these Terms of Use and all applicable laws and regulations. If you do not agree with any of these terms, you are prohibited from using or accessing this site.
+              By accessing and using Polaris (&quot;the Service&quot;), you agree to be bound by these Terms of Use and all applicable laws and regulations. If you do not agree with any of these terms, you are prohibited from using or accessing this site.
             </p>
           </section>
 
@@ -50,7 +50,7 @@ export default function TermsPage() {
           <section className="space-y-4">
             <h2 className="text-xl font-semibold text-white">4. Disclaimer</h2>
             <p>
-              The materials on Polaris are provided on an 'as is' basis. Polaris makes no warranties, expressed or implied, and hereby disclaims all other warranties including, without limitation, implied warranties of merchantability or fitness for a particular purpose.
+              The materials on Polaris are provided on an &apos;as is&apos; basis. Polaris makes no warranties, expressed or implied, and hereby disclaims all other warranties including, without limitation, implied warranties of merchantability or fitness for a particular purpose.
             </p>
           </section>
 

@@ -24,17 +24,17 @@ export default function PrivacyPage() {
           <section className="space-y-4">
             <h2 className="text-xl font-semibold text-white">1. Introduction</h2>
             <p>
-              Polaris ("we", "us", or "our") operates the Polaris productivity platform. This page informs you of our policies regarding the collection, use, and disclosure of personal data when you use our Service and the choices you have associated with that data.
+              Polaris (&quot;we&quot;, &quot;us&quot;, or &quot;our&quot;) operates the Polaris productivity platform. This page informs you of our policies regarding the collection, use, and disclosure of personal data when you use our Service and the choices you have associated with that data.
             </p>
           </section>
 
           <section className="space-y-4">
             <h2 className="text-xl font-semibold text-white">2. Data We Collect</h2>
-            <p>While using our Service, we may ask you to provide us with certain personally identifiable information that can be used to contact or identify you ("Personal Data").</p>
+            <p>While using our Service, we may ask you to provide us with certain personally identifiable information that can be used to contact or identify you (&quot;Personal Data&quot;).</p>
             <ul className="list-disc pl-6 space-y-2">
               <li><strong>Account Information:</strong> When you sign up, we collect your email address and full name.</li>
               <li><strong>Integration Credentials:</strong> To enable Notion synchronization, we store the OAuth access tokens provided by Notion after your authorization. These tokens are stored securely and encrypted.</li>
-              <li><strong>Content:</strong> We store the notes you create in the "Brain Dump" widget to sync them across your devices and with Notion.</li>
+              <li><strong>Content:</strong> We store the notes you create in the &quot;Brain Dump&quot; widget to sync them across your devices and with Notion.</li>
             </ul>
           </section>
 

@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
+import Image from "next/image";
 import { 
   Settings, 
   Brain, 
@@ -42,13 +43,7 @@ export default function SettingsPage() {
   const [availableDatabases, setAvailableDatabases] = useState<{id: string, title: string}[]>([]);
   const [isConnectingNotion, setIsConnectingNotion] = useState(false);
 
-  useEffect(() => {
-    if (userId) {
-      loadSettings();
-    }
-  }, [userId]);
-
-  const loadSettings = async () => {
+  const loadSettings = useCallback(async () => {
     if (!userId) return;
     setIsLoading(true);
     try {
@@ -82,7 +77,13 @@ export default function SettingsPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [userId, toast]);
+
+  useEffect(() => {
+    if (userId) {
+      loadSettings();
+    }
+  }, [userId, loadSettings]);
 
   const handleSaveAll = async () => {
     if (!userId || !prefsId) return;
@@ -324,7 +325,7 @@ export default function SettingsPage() {
                   onClick={handleConnectNotion}
                   disabled={isConnectingNotion}
                 >
-                  {isConnectingNotion ? <Loader2 className="w-4 h-4 animate-spin" /> : <img src="https://www.notion.so/images/favicon.ico" className="w-4 h-4" alt="Notion" />}
+                  {isConnectingNotion ? <Loader2 className="w-4 h-4 animate-spin" /> : <Image src="https://www.notion.so/images/favicon.ico" width={16} height={16} className="w-4 h-4" alt="Notion" />}
                   Conectar ao Notion
                 </Button>
               ) : (

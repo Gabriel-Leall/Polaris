@@ -85,12 +85,12 @@ Dock.displayName = "Dock";
 
 export interface DockIconProps
   extends Omit<MotionProps & React.HTMLAttributes<HTMLDivElement>, "children"> {
-  size?: number;
-  magnification?: number;
-  disableMagnification?: boolean;
-  distance?: number;
-  mouseX?: MotionValue<number>;
-  className?: string;
+  size?: number | undefined;
+  magnification?: number | undefined;
+  disableMagnification?: boolean | undefined;
+  distance?: number | undefined;
+  mouseX?: MotionValue<number> | undefined;
+  className?: string | undefined;
   children?: React.ReactNode;
   props?: PropsWithChildren;
 }
