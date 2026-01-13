@@ -12,10 +12,13 @@ import { WidgetCard } from "@/components/layout/WidgetCard";
 import { ZenModeBlurWrapper } from "@/components/ui/ZenModeBlurWrapper";
 import { Suspense } from "react";
 import { WidgetSkeleton } from "@/components/ui/skeleton";
+import { DashboardNotifications } from "@/components/dashboard/DashboardNotifications";
 
 export default function Dashboard() {
   return (
-    <BentoGrid>
+    <>
+      <DashboardNotifications />
+      <BentoGrid>
       {/* Left Column - Tasks & Quick Links */}
       <GridColumn span="left">
         <div className="flex flex-col gap-4 h-full">
@@ -90,5 +93,6 @@ export default function Dashboard() {
         </div>
       </GridColumn>
     </BentoGrid>
+    </>
   );
 }
