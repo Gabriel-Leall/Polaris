@@ -2,7 +2,13 @@
 
 import { useState, useEffect } from "react";
 import { EditorContent } from "@tiptap/react";
-import { Loader2, AlertCircle, Maximize2, Key, Sparkles, Database } from "lucide-react";
+import { 
+  Loader2, 
+  AlertCircle, 
+  Maximize2, 
+  Settings, 
+  ChevronRight 
+} from "lucide-react";
 import { ErrorBoundary, Button } from "@/components/ui";
 import { cn } from "@/lib/utils";
 import {
@@ -12,7 +18,6 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
 import { useBrainDumpEditor } from "./hooks/useBrainDumpEditor";
 import { useBrainDumpSync } from "./hooks/useBrainDumpSync";
 import { EditorToolbar } from "./components/EditorToolbar";
@@ -27,7 +32,6 @@ import {
 } from "@/app/actions/notion";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
-import { getOrCreateUserPreferences, updateUserPreferences } from "@/app/actions/userPreferences";
 
 const BrainDumpWidgetContent = ({ className }: BrainDumpWidgetProps) => {
   const [editorHtml, setEditorHtml] = useState<string>("");
@@ -42,24 +46,12 @@ const BrainDumpWidgetContent = ({ className }: BrainDumpWidgetProps) => {
   const [newTag, setNewTag] = useState("");
   const { toast } = useToast();
   const { userId } = useAuth();
-  const [notionToken, setNotionToken] = useState("");
-  const [notionDbId, setNotionDbId] = useState("");
-  const [prefsId, setPrefsId] = useState<string | null>(null);
 
   useEffect(() => {
     const savedKey = localStorage.getItem("polaris_gemini_api_key");
     if (savedKey) setGeminiApiKey(savedKey);
 
     if (userId) {
-      // Busca preferências do usuário para o Notion
-      getOrCreateUserPreferences(userId).then((prefs) => {
-        if (prefs) {
-          setNotionToken(prefs.notionApiKey || "");
-          setNotionDbId(prefs.notionDatabaseId || "");
-          setPrefsId(prefs.id);
-        }
-      });
-
       // Busca tags iniciais
       getRecentNotionTags(userId).then((res) => {
         if (res.success) setAllAvailableTags(res.tags);
@@ -107,38 +99,6 @@ const BrainDumpWidgetContent = ({ className }: BrainDumpWidgetProps) => {
 
     setShowTagReview(true);
     setIsSyncing(false);
-  };
-
-  const saveSettings = async () => {
-    // Salva Gemini localmente (para privacidade, o usuário pode não querer no banco)
-    localStorage.setItem("polaris_gemini_api_key", geminiApiKey);
-    
-    // Salva Notion no Supabase
-    if (userId && prefsId) {
-      try {
-        await updateUserPreferences(prefsId, {
-          notionApiKey: notionToken,
-          notionDatabaseId: notionDbId,
-        });
-        toast({
-          title: "Configurações Salvas",
-          description: "Suas preferências foram atualizadas com sucesso.",
-        });
-      } catch (error) {
-        toast({
-          title: "Erro ao salvar",
-          description: "Não foi possível salvar as configurações do Notion.",
-          variant: "destructive",
-        });
-      }
-    } else {
-      toast({
-        title: "Sucesso",
-        description: "Chave do Gemini salva localmente.",
-      });
-    }
-    
-    setShowApiSettings(false);
   };
 
   const handleFinalSync = async () => {
@@ -329,71 +289,24 @@ const BrainDumpWidgetContent = ({ className }: BrainDumpWidgetProps) => {
         <DialogContent className="max-w-md bg-main border-white/10 text-white shadow-2xl">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2 text-xl">
-              <Sparkles className="h-5 w-5 text-primary" />
-              Configurações de Integração
+              <Settings className="h-5 w-5 text-primary" />
+              Configurações
             </DialogTitle>
             <DialogDescription className="text-white/40">
-              Personalize sua experiência com IA e Notion.
+              Para gerenciar sua chave do Gemini, conexão com Notion e banco de dados, acesse a página central de configurações.
             </DialogDescription>
           </DialogHeader>
 
-          <div className="space-y-6 py-4">
-            {/* Gemini Section */}
-            <div className="space-y-4">
-              <h3 className="text-sm font-semibold text-white/80 border-b border-white/5 pb-2">Google Gemini (Auto-Tags)</h3>
-              <div className="space-y-2">
-                <label className="text-[10px] font-medium text-white/60 uppercase tracking-widest flex items-center gap-2">
-                  <Key className="h-3 w-3" />
-                  Gemini API Key
-                </label>
-                <Input
-                  type="password"
-                  value={geminiApiKey}
-                  onChange={(e) => setGeminiApiKey(e.target.value)}
-                  placeholder="Insira sua chave aqui..."
-                  className="bg-white/5 border-white/10 text-white placeholder:text-white/20 focus-visible:ring-primary h-12"
-                />
-              </div>
-            </div>
-
-            {/* Notion Section */}
-            <div className="space-y-4">
-              <h3 className="text-sm font-semibold text-white/80 border-b border-white/5 pb-2">Notion Sync</h3>
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <label className="text-[10px] font-medium text-white/60 uppercase tracking-widest flex items-center gap-2">
-                    <Key className="h-3 w-3" />
-                    Internal Integration Token
-                  </label>
-                  <Input
-                    type="password"
-                    value={notionToken}
-                    onChange={(e) => setNotionToken(e.target.value)}
-                    placeholder="secret_..."
-                    className="bg-white/5 border-white/10 text-white placeholder:text-white/20 focus-visible:ring-primary h-12"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-[10px] font-medium text-white/60 uppercase tracking-widest flex items-center gap-2">
-                    <Database className="h-3 w-3" />
-                    Database ID
-                  </label>
-                  <Input
-                    type="text"
-                    value={notionDbId}
-                    onChange={(e) => setNotionDbId(e.target.value)}
-                    placeholder="ID do banco de dados..."
-                    className="bg-white/5 border-white/10 text-white placeholder:text-white/20 focus-visible:ring-primary h-12"
-                  />
-                </div>
-              </div>
-            </div>
-
+          <div className="py-4">
             <Button
-              className="w-full h-12 bg-primary hover:bg-primary/90 text-primary-foreground shadow-glow-sm transition-all"
-              onClick={saveSettings}
+              className="w-full h-12 bg-primary hover:bg-primary/90 text-white gap-2"
+              onClick={() => {
+                setShowApiSettings(false);
+                window.location.href = "/settings";
+              }}
             >
-              Salvar Configurações
+              Ir para Configurações Gerais
+              <ChevronRight className="w-4 h-4" />
             </Button>
           </div>
         </DialogContent>
