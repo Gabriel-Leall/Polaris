@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { EditorContent } from "@tiptap/react";
-import { Loader2, AlertCircle, Maximize2, Key, Sparkles } from "lucide-react";
+import { Loader2, AlertCircle, Maximize2, Key, Sparkles, Database } from "lucide-react";
 import { ErrorBoundary, Button } from "@/components/ui";
 import { cn } from "@/lib/utils";
 import {
@@ -26,6 +26,8 @@ import {
   getRecentNotionTags,
 } from "@/app/actions/notion";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
+import { getOrCreateUserPreferences, updateUserPreferences } from "@/app/actions/userPreferences";
 
 const BrainDumpWidgetContent = ({ className }: BrainDumpWidgetProps) => {
   const [editorHtml, setEditorHtml] = useState<string>("");
@@ -39,16 +41,31 @@ const BrainDumpWidgetContent = ({ className }: BrainDumpWidgetProps) => {
   const [allAvailableTags, setAllAvailableTags] = useState<string[]>([]);
   const [newTag, setNewTag] = useState("");
   const { toast } = useToast();
+  const { userId } = useAuth();
+  const [notionToken, setNotionToken] = useState("");
+  const [notionDbId, setNotionDbId] = useState("");
+  const [prefsId, setPrefsId] = useState<string | null>(null);
 
   useEffect(() => {
     const savedKey = localStorage.getItem("polaris_gemini_api_key");
     if (savedKey) setGeminiApiKey(savedKey);
 
-    // Busca tags iniciais
-    getRecentNotionTags().then((res) => {
-      if (res.success) setAllAvailableTags(res.tags);
-    });
-  }, []);
+    if (userId) {
+      // Busca preferências do usuário para o Notion
+      getOrCreateUserPreferences(userId).then((prefs) => {
+        if (prefs) {
+          setNotionToken(prefs.notionApiKey || "");
+          setNotionDbId(prefs.notionDatabaseId || "");
+          setPrefsId(prefs.id);
+        }
+      });
+
+      // Busca tags iniciais
+      getRecentNotionTags(userId).then((res) => {
+        if (res.success) setAllAvailableTags(res.tags);
+      });
+    }
+  }, [userId]);
 
   const handleEditorUpdate = (html: string, text: string) => {
     setEditorHtml(html);
@@ -92,20 +109,52 @@ const BrainDumpWidgetContent = ({ className }: BrainDumpWidgetProps) => {
     setIsSyncing(false);
   };
 
-  const saveApiKey = (key: string) => {
-    localStorage.setItem("polaris_gemini_api_key", key);
-    setGeminiApiKey(key);
+  const saveSettings = async () => {
+    // Salva Gemini localmente (para privacidade, o usuário pode não querer no banco)
+    localStorage.setItem("polaris_gemini_api_key", geminiApiKey);
+    
+    // Salva Notion no Supabase
+    if (userId && prefsId) {
+      try {
+        await updateUserPreferences(prefsId, {
+          notionApiKey: notionToken,
+          notionDatabaseId: notionDbId,
+        });
+        toast({
+          title: "Configurações Salvas",
+          description: "Suas preferências foram atualizadas com sucesso.",
+        });
+      } catch (error) {
+        toast({
+          title: "Erro ao salvar",
+          description: "Não foi possível salvar as configurações do Notion.",
+          variant: "destructive",
+        });
+      }
+    } else {
+      toast({
+        title: "Sucesso",
+        description: "Chave do Gemini salva localmente.",
+      });
+    }
+    
     setShowApiSettings(false);
-    toast({
-      title: "Chave Salva",
-      description: "Sua chave do Gemini foi configurada com sucesso.",
-    });
   };
 
   const handleFinalSync = async () => {
     setIsSyncing(true);
     try {
+      if (!userId) {
+        toast({
+          title: "Erro",
+          description: "Você precisa estar logado para sincronizar.",
+          variant: "destructive",
+        });
+        return;
+      }
+
       const result = await syncBrainDumpToNotion(
+        userId,
         editorHtml,
         noteTitle || "Brain Dump Polaris",
         suggestedTags
@@ -281,44 +330,68 @@ const BrainDumpWidgetContent = ({ className }: BrainDumpWidgetProps) => {
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2 text-xl">
               <Sparkles className="h-5 w-5 text-primary" />
-              Configuração de IA
+              Configurações de Integração
             </DialogTitle>
             <DialogDescription className="text-white/40">
-              Personalize sua experiência com a IA do Google Gemini. Sua chave
-              será salva localmente no seu navegador.
+              Personalize sua experiência com IA e Notion.
             </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-6 py-4">
-            <div className="space-y-2">
-              <label className="text-xs font-medium text-white/60 uppercase tracking-widest flex items-center gap-2">
-                <Key className="h-3 w-3" />
-                Gemini API Key
-              </label>
-              <Input
-                type="password"
-                value={geminiApiKey}
-                onChange={(e) => setGeminiApiKey(e.target.value)}
-                placeholder="Insira sua chave aqui..."
-                className="bg-white/5 border-white/10 text-white placeholder:text-white/20 focus-visible:ring-primary h-12"
-              />
-              <p className="text-[10px] text-white/30 leading-relaxed">
-                Você pode obter sua chave no{" "}
-                <a
-                  href="https://aistudio.google.com/app/apikey"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-primary hover:underline"
-                >
-                  Google AI Studio
-                </a>
-                . Deixe em branco para usar tags manuais.
-              </p>
+            {/* Gemini Section */}
+            <div className="space-y-4">
+              <h3 className="text-sm font-semibold text-white/80 border-b border-white/5 pb-2">Google Gemini (Auto-Tags)</h3>
+              <div className="space-y-2">
+                <label className="text-[10px] font-medium text-white/60 uppercase tracking-widest flex items-center gap-2">
+                  <Key className="h-3 w-3" />
+                  Gemini API Key
+                </label>
+                <Input
+                  type="password"
+                  value={geminiApiKey}
+                  onChange={(e) => setGeminiApiKey(e.target.value)}
+                  placeholder="Insira sua chave aqui..."
+                  className="bg-white/5 border-white/10 text-white placeholder:text-white/20 focus-visible:ring-primary h-12"
+                />
+              </div>
+            </div>
+
+            {/* Notion Section */}
+            <div className="space-y-4">
+              <h3 className="text-sm font-semibold text-white/80 border-b border-white/5 pb-2">Notion Sync</h3>
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <label className="text-[10px] font-medium text-white/60 uppercase tracking-widest flex items-center gap-2">
+                    <Key className="h-3 w-3" />
+                    Internal Integration Token
+                  </label>
+                  <Input
+                    type="password"
+                    value={notionToken}
+                    onChange={(e) => setNotionToken(e.target.value)}
+                    placeholder="secret_..."
+                    className="bg-white/5 border-white/10 text-white placeholder:text-white/20 focus-visible:ring-primary h-12"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-[10px] font-medium text-white/60 uppercase tracking-widest flex items-center gap-2">
+                    <Database className="h-3 w-3" />
+                    Database ID
+                  </label>
+                  <Input
+                    type="text"
+                    value={notionDbId}
+                    onChange={(e) => setNotionDbId(e.target.value)}
+                    placeholder="ID do banco de dados..."
+                    className="bg-white/5 border-white/10 text-white placeholder:text-white/20 focus-visible:ring-primary h-12"
+                  />
+                </div>
+              </div>
             </div>
 
             <Button
               className="w-full h-12 bg-primary hover:bg-primary/90 text-primary-foreground shadow-glow-sm transition-all"
-              onClick={() => saveApiKey(geminiApiKey)}
+              onClick={saveSettings}
             >
               Salvar Configurações
             </Button>

@@ -20,6 +20,8 @@ const mapUserPreferencesRow = (prefs: UserPreferencesRow): UserPreferences => ({
   breakDuration: prefs.break_duration,
   zenModeEnabled: prefs.zen_mode_enabled,
   sidebarCollapsed: prefs.sidebar_collapsed,
+  notionApiKey: prefs.notion_api_key,
+  notionDatabaseId: prefs.notion_database_id,
   createdAt: new Date(prefs.created_at),
   updatedAt: new Date(prefs.updated_at),
 });
@@ -50,6 +52,10 @@ export const updateUserPreferences = async (
       updateData.zen_mode_enabled = validatedData.zenModeEnabled;
     if (validatedData.sidebarCollapsed !== undefined)
       updateData.sidebar_collapsed = validatedData.sidebarCollapsed;
+    if (validatedData.notionApiKey !== undefined)
+      updateData.notion_api_key = validatedData.notionApiKey;
+    if (validatedData.notionDatabaseId !== undefined)
+      updateData.notion_database_id = validatedData.notionDatabaseId;
 
     const { data: prefs, error } = await supabase
       .from("user_preferences")
@@ -119,6 +125,8 @@ export const createUserPreferences = async (
         break_duration: validatedData.breakDuration,
         zen_mode_enabled: validatedData.zenModeEnabled,
         sidebar_collapsed: validatedData.sidebarCollapsed,
+        notion_api_key: validatedData.notionApiKey,
+        notion_database_id: validatedData.notionDatabaseId,
       })
       .select()
       .single();

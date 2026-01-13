@@ -48,6 +48,8 @@ CREATE TABLE IF NOT EXISTS public.user_preferences (
   break_duration INTEGER DEFAULT 5,
   zen_mode_enabled BOOLEAN DEFAULT FALSE,
   sidebar_collapsed BOOLEAN DEFAULT FALSE,
+  notion_api_key TEXT,
+  notion_database_id TEXT,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );

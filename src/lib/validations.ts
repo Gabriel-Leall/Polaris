@@ -79,6 +79,8 @@ export const createUserPreferencesSchema = z.object({
     .default(5),
   zenModeEnabled: z.boolean().default(false),
   sidebarCollapsed: z.boolean().default(false),
+  notionApiKey: z.string().optional().nullable(),
+  notionDatabaseId: z.string().optional().nullable(),
 });
 
 export const updateUserPreferencesSchema = z.object({
@@ -96,6 +98,8 @@ export const updateUserPreferencesSchema = z.object({
     .optional(),
   zenModeEnabled: z.boolean().optional(),
   sidebarCollapsed: z.boolean().optional(),
+  notionApiKey: z.string().optional().nullable(),
+  notionDatabaseId: z.string().optional().nullable(),
 });
 
 // Brain Dump Schemas

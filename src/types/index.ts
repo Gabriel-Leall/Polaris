@@ -42,6 +42,8 @@ export interface UserPreferences {
   breakDuration: number;
   zenModeEnabled: boolean;
   sidebarCollapsed: boolean;
+  notionApiKey?: string | null;
+  notionDatabaseId?: string | null;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -221,6 +223,8 @@ export interface Database {
           break_duration: number;
           zen_mode_enabled: boolean;
           sidebar_collapsed: boolean;
+          notion_api_key: string | null;
+          notion_database_id: string | null;
           created_at: string;
           updated_at: string;
         };
@@ -232,6 +236,8 @@ export interface Database {
           break_duration?: number;
           zen_mode_enabled?: boolean;
           sidebar_collapsed?: boolean;
+          notion_api_key?: string | null;
+          notion_database_id?: string | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -243,6 +249,8 @@ export interface Database {
           break_duration?: number;
           zen_mode_enabled?: boolean;
           sidebar_collapsed?: boolean;
+          notion_api_key?: string | null;
+          notion_database_id?: string | null;
           created_at?: string;
           updated_at?: string;
         };
