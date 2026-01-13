@@ -5,11 +5,17 @@ export const LandingFooter = () => {
         <p className="text-[#9392c9] text-xs font-normal leading-normal font-mono">
           Polaris v1.0. System ready.
         </p>
-        <div className="flex gap-4 justify-center">
-          <a className="text-gray-400 hover:text-white text-sm font-mono transition-colors" href="#">
+        <div className="flex gap-6 justify-center">
+          <a className="text-gray-400 hover:text-white text-[10px] font-mono transition-colors" href="/privacy">
+            Privacy Policy
+          </a>
+          <a className="text-gray-400 hover:text-white text-[10px] font-mono transition-colors" href="/terms">
+            Terms of Use
+          </a>
+          <a className="text-gray-400 hover:text-white text-[10px] font-mono transition-colors" href="#">
             Twitter
           </a>
-          <a className="text-gray-400 hover:text-white text-sm font-mono transition-colors" href="#">
+          <a className="text-gray-400 hover:text-white text-[10px] font-mono transition-colors" href="#">
             GitHub
           </a>
         </div>
