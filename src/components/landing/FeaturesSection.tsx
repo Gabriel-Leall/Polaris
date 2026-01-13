@@ -1,3 +1,5 @@
+"use client";
+
 import { motion } from "motion/react";
 import { TimerIcon, ArchiveIcon, LoopIcon } from "@radix-ui/react-icons";
 

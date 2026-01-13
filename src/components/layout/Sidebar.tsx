@@ -2,9 +2,10 @@
 
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
-import { Command, PanelLeftClose, PanelLeftOpen } from "lucide-react";
+import { PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import { SidebarUser } from "./SidebarNav";
 import { useUIStore } from "@/store/uiStore";
+import { Logo } from "@/components/ui/logo";
 
 interface SidebarProps {
   children?: React.ReactNode;
@@ -34,9 +35,7 @@ function Sidebar({ children, className }: SidebarProps) {
         )}
       >
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center shrink-0 shadow-lg shadow-primary/20">
-            <Command className="w-5 h-5 text-white" />
-          </div>
+          <Logo size={40} />
           {!isSidebarCollapsed && (
             <h1 className="text-xl font-bold text-white tracking-tight">
               Polaris

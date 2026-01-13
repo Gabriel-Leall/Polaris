@@ -11,7 +11,16 @@ const nextConfig = {
     },
   },
   images: {
-    domains: ["lh3.googleusercontent.com", "img.youtube.com"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "lh3.googleusercontent.com",
+      },
+      {
+        protocol: "https",
+        hostname: "img.youtube.com",
+      },
+    ],
     formats: ["image/webp", "image/avif"],
   },
   typescript: {

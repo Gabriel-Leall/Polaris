@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { MediaPlayerStore, Track } from "../types";
+import { MediaPlayerStore } from "../types";
 
 export const useMediaPlayerStore = create<MediaPlayerStore>()((set) => ({
   isPlaying: false,

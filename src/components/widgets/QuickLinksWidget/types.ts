@@ -14,7 +14,7 @@ export interface LinkDockProps {
   onOpenLink: (url: string) => void;
   onAddClick: () => void;
   onUpdateLink?: (id: string) => void;
-  onStartEditing?: (link: import("@/types").QuickLink) => void;
+  onStartEditing?: ((link: import("@/types").QuickLink) => void) | undefined;
   onCancelEditing?: () => void;
   onEditUrlChange?: (url: string) => void;
   readOnly?: boolean;
@@ -31,7 +31,7 @@ export interface LinkItemProps {
   onDelete: (id: string) => void;
   onOpen: (url: string) => void;
   onUpdate?: (id: string) => void;
-  onStartEditing?: (link: import("@/types").QuickLink) => void;
+  onStartEditing?: ((link: import("@/types").QuickLink) => void) | undefined;
   onCancelEditing?: () => void;
   onEditUrlChange?: (url: string) => void;
   readOnly?: boolean;

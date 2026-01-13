@@ -58,17 +58,6 @@ export async function middleware(request: NextRequest) {
     }
   );
 
-  // Refresh session if expired
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  // Public routes that don't require authentication
-  const publicRoutes = ["/login", "/signup", "/auth/callback"];
-  const isPublicRoute = publicRoutes.some((route) =>
-    request.nextUrl.pathname.startsWith(route)
-  );
-
   // Allow static files and API routes
   const isStaticOrApi =
     request.nextUrl.pathname.startsWith("/_next") ||
@@ -79,6 +68,28 @@ export async function middleware(request: NextRequest) {
     return response;
   }
 
+  // Public routes that don't require authentication
+  const publicRoutes = ["/login", "/signup", "/auth/callback", "/landing"];
+  const isPublicRoute = publicRoutes.some((route) =>
+    request.nextUrl.pathname.startsWith(route)
+  );
+
+  // Optimization: Only check session if not a public route OR if it's an auth route (to redirect)
+  const authRoutes = ["/login", "/signup"];
+  const isAuthRoute = authRoutes.some((route) =>
+    request.nextUrl.pathname.startsWith(route)
+  );
+
+  // If it's a public route and NOT an auth route (like /landing), we can skip the session check
+  if (isPublicRoute && !isAuthRoute) {
+    return response;
+  }
+
+  // Refresh session if expired
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
   // Redirect unauthenticated users to login
   if (!user && !isPublicRoute) {
     const redirectUrl = new URL("/login", request.url);
@@ -86,8 +97,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(redirectUrl);
   }
 
-  // Redirect authenticated users away from auth pages
-  if (user && isPublicRoute) {
+  if (user && isAuthRoute) {
     return NextResponse.redirect(new URL("/", request.url));
   }
 

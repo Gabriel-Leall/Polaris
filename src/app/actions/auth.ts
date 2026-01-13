@@ -30,7 +30,7 @@ export async function signIn(formData: FormData): Promise<AuthResult> {
   if (!validation.success) {
     return {
       success: false,
-      error: validation.error.errors[0].message,
+      error: validation.error.issues[0].message,
     };
   }
 
@@ -63,7 +63,7 @@ export async function signUp(formData: FormData): Promise<AuthResult> {
   if (!validation.success) {
     return {
       success: false,
-      error: validation.error.errors[0].message,
+      error: validation.error.issues[0].message,
     };
   }
 
@@ -108,7 +108,7 @@ export async function signUp(formData: FormData): Promise<AuthResult> {
 export async function signOut(): Promise<void> {
   const supabase = await createSupabaseServerClient();
   await supabase.auth.signOut();
-  redirect("/login");
+  redirect("/landing");
 }
 
 /**

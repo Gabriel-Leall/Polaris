@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { Logo } from '@/components/ui/logo';
 
 export const LandingHeader = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -25,11 +26,7 @@ export const LandingHeader = () => {
         <header className="flex items-center justify-between whitespace-nowrap">
           {/* Logo - Esquerda */}
           <div className="flex items-center gap-3">
-            <div className="size-8 relative flex items-center justify-center">
-              <div className="absolute inset-0 rounded-full border border-[primary]/50 animate-spin-slow"></div>
-              <div className="absolute inset-1 rounded-full border border-[primary]/50 animate-spin-reverse-slow"></div>
-              <div className="size-2 bg-white rounded-full shadow-[0_0_10px_white]"></div>
-            </div>
+            <Logo size={40} />
             <h1 className="text-white text-xl font-bold tracking-wide">
               POLARIS
             </h1>

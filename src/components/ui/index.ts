@@ -13,6 +13,7 @@ export * from "./error-testing-panel";
 export * from "./interactive-card";
 export * from "./states";
 export * from "./skeleton";
+export * from "./logo";
 
 // Magic UI Components
 export * from "./bento-grid";

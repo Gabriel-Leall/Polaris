@@ -8,7 +8,7 @@ import { WorkflowSection } from '@/components/landing/WorkflowSection';
 import { AboutSection } from '@/components/landing/AboutSection';
 import { LandingFooter } from '@/components/landing/LandingFooter';
 import { BackgroundEffects } from '@/components/landing/BackgroundEffects';
-import './globals.css';
+
 
 const inter = Inter({ 
   subsets: ['latin'],
@@ -19,7 +19,11 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: 'Polaris - Focus Orbit',
   description: 'Enter your flow state with Polaris - Your AI-powered productivity command center',
-  viewport: 'width=device-width, initial-scale=1.0',
+};
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1.0,
 };
 
 export default function LandingPage() {

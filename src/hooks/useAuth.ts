@@ -34,18 +34,25 @@ export function useAuth(): UseAuthReturn {
   }, []);
 
   useEffect(() => {
+    let mounted = true;
+
     // Get initial session
     const getInitialSession = async () => {
       try {
         const {
-          data: { user },
-        } = await supabase.auth.getUser();
-        setUser(user);
+          data: { session },
+        } = await supabase.auth.getSession();
+        
+        if (mounted) {
+          setUser(session?.user ?? null);
+          setIsLoading(false);
+        }
       } catch (error) {
         console.error("Error fetching initial user:", error);
-        setUser(null);
-      } finally {
-        setIsLoading(false);
+        if (mounted) {
+          setUser(null);
+          setIsLoading(false);
+        }
       }
     };
 
@@ -54,12 +61,15 @@ export function useAuth(): UseAuthReturn {
     // Listen for auth state changes
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      setUser(session?.user ?? null);
-      setIsLoading(false);
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (mounted) {
+        setUser(session?.user ?? null);
+        setIsLoading(false);
+      }
     });
 
     return () => {
+      mounted = false;
       subscription.unsubscribe();
     };
   }, []);

@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useUIStore } from "@/store/uiStore";
+import { signOut as signOutServerAction } from "@/app/actions/auth";
 
 interface NavItem {
   id: string;
@@ -53,7 +54,6 @@ const mainNavItems: NavItem[] = [
  */
 function SidebarNavCore({ className }: SidebarNavProps) {
   const pathname = usePathname();
-  const { signOut, isAuthenticated, user } = useAuth();
   const { isSidebarCollapsed } = useUIStore();
 
   return (
@@ -146,7 +146,7 @@ function SidebarNavCore({ className }: SidebarNavProps) {
  * Includes avatar, email and dropdown menu for logout/profile
  */
 export function SidebarUser() {
-  const { isAuthenticated, user, signOut } = useAuth();
+  const { user, signOut } = useAuth();
   const { isSidebarCollapsed } = useUIStore();
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
@@ -168,8 +168,8 @@ export function SidebarUser() {
   }, []);
 
   const handleLogout = async () => {
-    await signOut();
     setIsOpen(false);
+    await signOutServerAction();
   };
 
   const handleGoToProfile = () => {

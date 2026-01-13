@@ -6,6 +6,7 @@ import { signUp } from "@/app/actions/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Mail, Lock, User, Loader2 } from "lucide-react";
+import { Logo } from "@/components/ui/logo";
 
 export default function SignUpPage() {
   const [error, setError] = useState<string | null>(null);
@@ -27,7 +28,8 @@ export default function SignUpPage() {
     <main className="min-h-screen bg-main flex items-center justify-center p-6">
       <div className="w-full max-w-md">
         {/* Logo/Brand */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-8 flex flex-col items-center gap-4">
+          <Logo size={80} />
           <h1 className="text-3xl font-bold text-white tracking-tight">
             Polaris
           </h1>
