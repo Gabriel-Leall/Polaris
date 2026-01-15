@@ -22,7 +22,10 @@ async function getNotionConfig(userId: string) {
     throw new Error("Banco de dados do Notion não selecionado. Por favor, escolha um nas configurações.");
   }
 
-  const client = new Client({ auth: token });
+  const client = new Client({ 
+    auth: token,
+    notionVersion: "2025-09-03",
+  });
   return { client, databaseId };
 }
 
@@ -86,14 +89,42 @@ export async function listNotionDatabases(userId: string) {
     }
 
     const client = new Client({ auth: token });
+    
+    // Buscamos sem filtros restritivos para garantir que tudo o que a conexão vê seja retornado
     const response = await client.search({
-      filter: { property: "object", value: "database" } as any,
+      sort: {
+        direction: "descending",
+        timestamp: "last_edited_time",
+      },
     });
+    
+    console.log(`[Notion Debug] Itens brutos encontrados: ${response.results.length}`);
 
-    const databases = response.results.map((db: any) => ({
-      id: db.id,
-      title: db.title?.[0]?.plain_text || "Sem título",
-    }));
+    const databases = response.results
+      .map((item: any) => {
+        let title = "Sem título";
+        const type = item.object;
+        
+        if (type === "database") {
+          title = item.title?.[0]?.plain_text || item.title?.[0]?.text?.content || "Database sem nome";
+        } else if (type === "page") {
+          const titleProp = Object.values(item.properties || {}).find((p: any) => p.type === "title") as any;
+          title = titleProp?.title?.[0]?.plain_text || titleProp?.title?.[0]?.text?.content || "Página sem nome";
+        } else if (type === "data_source") {
+          // O tipo data_source geralmente tem o nome em um lugar diferente
+          title = item.name || item.data_source?.name || "Fonte de Dados";
+        }
+
+        console.log(`[Notion Debug] -> Processado: "${title}" | Tipo: ${type}`);
+
+        if (type === "database" || type === "page" || type === "data_source") {
+          return { id: item.id, title: title };
+        }
+        return null;
+      })
+      .filter((item): item is { id: string; title: string } => item !== null);
+
+    return { success: true, databases };
 
     return { success: true, databases };
   } catch (error) {
@@ -221,30 +252,100 @@ export async function syncBrainDumpToNotion(
     const { client, databaseId } = await getNotionConfig(userId);
     const blocks = htmlToNotionBlocks(htmlContent) as unknown[];
 
-    const response = await client.pages.create({
-      parent: { database_id: databaseId },
-      properties: {
-        Nome: {
-          title: [
-            {
-              text: {
-                content: `${title} - ${new Date().toLocaleDateString("pt-BR")}`,
-              },
-            },
+    // Tenta descobrir o tipo do alvo e resolver o ID correto para o 'parent'
+    let resolvedId = databaseId;
+    let targetType: "database_id" | "data_source_id" | "page_id" = "database_id";
+    let titlePropName = "title";
+    let propertiesSchema: any = {};
+
+    try {
+      // 1. Tenta tratar como Database
+      const db = (await client.databases.retrieve({ database_id: databaseId })) as any;
+      propertiesSchema = db.properties;
+      
+      if (db.data_sources && db.data_sources.length > 0) {
+        // Se tem data_sources (novo padrão), pegamos a primeira
+        targetType = "data_source_id";
+        resolvedId = db.data_sources[0].id;
+      } else {
+        targetType = "database_id";
+      }
+    } catch (e) {
+      try {
+        // 2. Se falhar, tenta tratar diretamente como Data Source
+        const ds = (await (client as any).dataSources.retrieve({ data_source_id: databaseId })) as any;
+        targetType = "data_source_id";
+        resolvedId = databaseId;
+        propertiesSchema = ds.properties;
+      } catch (e2) {
+        // 3. Se falhar ambos, assume que é uma Página pai (onde blocos serão filhos)
+        targetType = "page_id";
+      }
+    }
+
+    // Configura as propriedades com base no esquema encontrado
+    const properties: any = {};
+    const dateStr = new Date().toLocaleDateString("pt-BR");
+    const displayTitle = title; // Remove a data do título
+
+    if (targetType !== "page_id") {
+      // Busca o nome da propriedade de título dinamicamente
+      titlePropName = Object.keys(propertiesSchema).find(
+        (key) => propertiesSchema[key].type === "title"
+      ) || "title";
+      
+      properties[titlePropName] = {
+        title: [{ text: { content: displayTitle } }],
+      };
+      
+      // Verifica se existe campo de Tags (multi_select) - agora mais flexível
+      const tagsPropName = Object.keys(propertiesSchema).find(
+        (key) => propertiesSchema[key].type === "multi_select" && 
+                 (key.toLowerCase().includes("tag") || key.toLowerCase().includes("etiqueta"))
+      );
+
+      if (tagsPropName && tags.length > 0) {
+        properties[tagsPropName] = {
+          multi_select: tags.map((tag) => ({ name: tag })),
+        };
+      }
+    } else {
+      // Se for apenas uma página pai
+      properties["title"] = {
+        title: [{ text: { content: displayTitle } }],
+      };
+    }
+
+    // Adiciona a data como um "bloco de metadados" no início do conteúdo
+    const metaBlocks = [
+      {
+        object: "block",
+        type: "paragraph",
+        paragraph: {
+          rich_text: [
+            { 
+              type: "text", 
+              text: { content: `📅 Data: ${dateStr}` },
+              annotations: { italic: true, color: "gray" }
+            }
           ],
         },
-        Tags: {
-          multi_select: tags.map((tag) => ({ name: tag })),
-        },
-      },
-      children: blocks.slice(0, 100) as never[],
+      }
+    ];
+
+    const parent: any = {};
+    parent[targetType] = resolvedId;
+
+    const response = await client.pages.create({
+      parent,
+      properties,
+      children: [...metaBlocks, ...blocks].slice(0, 100) as never[],
     });
 
     return { success: true, url: (response as { url: string }).url };
   } catch (error: unknown) {
     console.error("Erro ao sincronizar com Notion:", error);
     const errorMessage = error instanceof Error ? error.message : "Erro desconhecido";
-    const notionError = error as { body?: { message?: string } };
-    return { success: false, error: notionError.body?.message || errorMessage };
+    return { success: false, error: errorMessage };
   }
 }
