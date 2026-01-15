@@ -42,6 +42,7 @@ export default function SettingsPage() {
   const [geminiApiKey, setGeminiApiKey] = useState("");
   const [availableDatabases, setAvailableDatabases] = useState<{id: string, title: string}[]>([]);
   const [isConnectingNotion, setIsConnectingNotion] = useState(false);
+  const [isSavingNotion, setIsSavingNotion] = useState(false);
 
   const loadSettings = useCallback(async () => {
     if (!userId) return;
@@ -114,6 +115,31 @@ export default function SettingsPage() {
       });
     } finally {
       setIsSaving(false);
+    }
+  };
+
+  const handleSaveNotion = async () => {
+    if (!userId || !prefsId) return;
+    setIsSavingNotion(true);
+    try {
+      await updateUserPreferences(prefsId, {
+        notionApiKey: notionToken,
+        notionDatabaseId: notionDbId,
+      });
+
+      toast({
+        title: "Notion atualizado!",
+        description: "Seu banco de dados destino foi salvo com sucesso.",
+        variant: "success",
+      });
+    } catch (error) {
+      toast({
+        title: "Erro ao salvar Notion",
+        description: "Não foi possível salvar o banco de dados.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSavingNotion(false);
     }
   };
 
@@ -331,27 +357,50 @@ export default function SettingsPage() {
               ) : (
                 <div className="space-y-4">
                   <div className="space-y-2">
-                    <label className="text-xs font-medium text-white/60 uppercase tracking-widest">Banco de Dados Destino</label>
-                    <select
-                      value={notionDbId}
-                      onChange={(e) => setNotionDbId(e.target.value)}
-                      className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-sm text-white focus:outline-none focus:ring-1 focus:ring-primary h-12 transition-all"
-                    >
-                      <option value="" className="bg-main text-white">Selecione uma base...</option>
-                      {availableDatabases.map((db) => (
-                        <option key={db.id} value={db.id} className="bg-main text-white">
-                          {db.title}
-                        </option>
-                      ))}
-                    </select>
+                    <label className="text-xs font-medium text-white/60 uppercase tracking-widest">
+                      Banco de Dados Destino
+                    </label>
+                    <div className="relative group">
+                      <select
+                        value={notionDbId}
+                        onChange={(e) => setNotionDbId(e.target.value)}
+                        className="w-full bg-white/[0.05] border border-white/10 rounded-xl px-4 h-14 text-sm text-white focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all appearance-none cursor-pointer hover:bg-white/[0.08]"
+                      >
+                        <option value="" className="bg-[#0a0a0a]">Selecionar base de dados...</option>
+                        {availableDatabases.map((db) => (
+                          <option key={db.id} value={db.id} className="bg-[#0a0a0a]">
+                            {db.title}
+                          </option>
+                        ))}
+                      </select>
+                      <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground group-hover:text-white transition-colors">
+                        <ChevronRight className="w-4 h-4 rotate-90" />
+                      </div>
+                    </div>
                   </div>
-                  <Button 
-                    variant="ghost" 
-                    className="w-auto h-auto p-0 text-xs text-muted-foreground hover:text-white transition-colors"
-                    onClick={handleConnectNotion}
-                  >
-                    Alterar conexão ou workspace
-                  </Button>
+
+                  <div className="flex items-center gap-3 pt-2">
+                    <Button 
+                      onClick={handleSaveNotion}
+                      disabled={isSavingNotion || !notionDbId}
+                      className="flex-1 h-11 bg-primary/20 hover:bg-primary/30 text-primary border border-primary/20"
+                    >
+                      {isSavingNotion ? (
+                        <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                      ) : (
+                        <Settings className="w-4 h-4 mr-2" />
+                      )}
+                      Confirmar Seleção
+                    </Button>
+                    
+                    <Button 
+                      variant="ghost" 
+                      className="px-4 h-11 text-xs text-muted-foreground hover:text-white hover:bg-white/5 transition-all"
+                      onClick={handleConnectNotion}
+                    >
+                      Trocar Conta
+                    </Button>
+                  </div>
                 </div>
               )}
             </div>

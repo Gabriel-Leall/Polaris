@@ -42,7 +42,17 @@ export async function GET(request: NextRequest) {
     // 5. Redirect back to dashboard with success
     return NextResponse.redirect(new URL("/?notion_connected=true", request.url));
   } catch (err) {
-    console.error("Notion Callback Error:", err);
-    return NextResponse.redirect(new URL("/?error=notion_sync_error", request.url));
+    console.error("=== Notion Callback Error Detail ===");
+    if (err instanceof Error) {
+      console.error("Message:", err.message);
+      console.error("Stack:", err.stack);
+    } else {
+      console.error("Unknown error:", err);
+    }
+    console.error("====================================");
+    
+    // Pass the message to URL to see it in the UI (optional, helpful for debug)
+    const errorMessage = err instanceof Error ? encodeURIComponent(err.message) : "notion_sync_error";
+    return NextResponse.redirect(new URL(`/?error=${errorMessage}`, request.url));
   }
 }
