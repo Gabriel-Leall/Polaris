@@ -14,7 +14,7 @@ import {
   CheckSquare,
   Settings,
   Search,
-  Bell,
+  MessageSquare,
   ChevronUp,
   ChevronDown,
   User,
@@ -38,13 +38,8 @@ interface SidebarNavProps {
 
 const mainNavItems: NavItem[] = [
   { id: "dashboard", label: "Home", icon: Home, href: "/" },
-  {
-    id: "notifications",
-    label: "Notifications",
-    icon: Bell,
-    href: "/notifications",
-  },
   { id: "tasks", label: "Tasks", icon: CheckSquare, href: "/tasks" },
+  { id: "feedback", label: "Feedback", icon: MessageSquare, href: "/feedback" },
   { id: "settings", label: "Settings", icon: Settings, href: "/settings" },
 ];
 
@@ -174,7 +169,7 @@ export function SidebarUser() {
   };
 
   const handleGoToProfile = () => {
-    router.push("/settings");
+    router.push("/profile");
     setIsOpen(false);
   };
 

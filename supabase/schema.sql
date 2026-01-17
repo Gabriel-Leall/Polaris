@@ -9,6 +9,8 @@ CREATE TABLE IF NOT EXISTS public.profiles (
   email TEXT,
   full_name TEXT,
   avatar_url TEXT,
+  usage_count INTEGER DEFAULT 0,
+  total_zen_seconds INTEGER DEFAULT 0,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -19,6 +21,8 @@ CREATE TABLE IF NOT EXISTS public.tasks (
   user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
   label TEXT NOT NULL,
   completed BOOLEAN DEFAULT FALSE,
+  priority TEXT CHECK (priority IN ('low', 'medium', 'high')) DEFAULT 'medium',
+  tags JSONB DEFAULT '[]'::jsonb,
   due_date TIMESTAMP WITH TIME ZONE,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
@@ -269,3 +273,33 @@ CREATE TRIGGER update_media_preferences_updated_at BEFORE UPDATE ON public.media
 
 CREATE TRIGGER update_quick_links_updated_at BEFORE UPDATE ON public.quick_links
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+-- Feedback table for community feedback
+CREATE TABLE IF NOT EXISTS public.feedback (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,
+  message TEXT NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Enable RLS
+ALTER TABLE public.feedback ENABLE ROW LEVEL SECURITY;
+
+-- Policies for feedback
+CREATE POLICY "Anyone can read feedback" ON public.feedback
+  FOR SELECT USING (true);
+
+CREATE POLICY "Authenticated users can insert feedback" ON public.feedback
+  FOR INSERT WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can update their own feedback" ON public.feedback
+  FOR UPDATE USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can delete their own feedback" ON public.feedback
+  FOR DELETE USING (auth.uid() = user_id);
+
+-- Create triggers for automatic timestamp updates
+CREATE TRIGGER update_feedback_updated_at BEFORE UPDATE ON public.feedback
+  FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
