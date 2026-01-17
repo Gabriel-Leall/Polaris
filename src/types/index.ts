@@ -14,6 +14,8 @@ export interface TaskItem {
   id: string;
   label: string;
   completed: boolean;
+  priority: "low" | "medium" | "high";
+  tags: string[];
   dueDate?: string;
   createdAt: Date;
   updatedAt: Date;
@@ -150,6 +152,8 @@ export interface Database {
           user_id: string;
           label: string;
           completed: boolean;
+          priority: "low" | "medium" | "high";
+          tags: string[];
           due_date: string | null;
           created_at: string;
           updated_at: string;
@@ -159,6 +163,8 @@ export interface Database {
           user_id: string;
           label: string;
           completed?: boolean;
+          priority?: "low" | "medium" | "high";
+          tags?: string[];
           due_date?: string | null;
           created_at?: string;
           updated_at?: string;
@@ -168,6 +174,8 @@ export interface Database {
           user_id?: string;
           label?: string;
           completed?: boolean;
+          priority?: "low" | "medium" | "high";
+          tags?: string[];
           due_date?: string | null;
           created_at?: string;
           updated_at?: string;

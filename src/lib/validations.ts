@@ -8,6 +8,8 @@ export const createTaskSchema = z.object({
     .min(1, "Task label is required")
     .max(500, "Task label too long"),
   completed: z.boolean().default(false),
+  priority: z.enum(["low", "medium", "high"]).default("medium"),
+  tags: z.array(z.string()).default([]),
   dueDate: z.string().optional(),
   userId: z.string().uuid("Invalid user ID"),
 });
@@ -20,6 +22,8 @@ export const updateTaskSchema = z.object({
     .max(500, "Task label too long")
     .optional(),
   completed: z.boolean().optional(),
+  priority: z.enum(["low", "medium", "high"]).optional(),
+  tags: z.array(z.string()).optional(),
   dueDate: z.string().optional(),
 });
 

@@ -52,7 +52,7 @@ export const useTasks = () => {
     }
   }, [loadTasks, authLoading]);
 
-  const handleCreateTask = useCallback(async (label: string) => {
+  const handleCreateTask = useCallback(async (label: string, priority: "low" | "medium" | "high" = "medium", tags: string[] = []) => {
     const effectiveUserId = userId || "local-user";
 
     try {
@@ -60,6 +60,8 @@ export const useTasks = () => {
       const payload = {
         label: label.trim(),
         completed: false,
+        priority,
+        tags,
         userId: effectiveUserId,
       };
 
@@ -68,6 +70,8 @@ export const useTasks = () => {
           id: generateTaskId(),
           label: payload.label,
           completed: false,
+          priority: payload.priority,
+          tags: payload.tags,
           userId: payload.userId,
           createdAt: new Date(),
           updatedAt: new Date(),
@@ -93,6 +97,8 @@ export const useTasks = () => {
         id: generateTaskId(),
         label: label.trim(),
         completed: false,
+        priority,
+        tags,
         userId: effectiveUserId,
         createdAt: new Date(),
         updatedAt: new Date(),
