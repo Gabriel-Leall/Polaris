@@ -13,6 +13,8 @@ import { useZenTimer } from "./hooks/useZenTimer";
 import { TimerDisplay } from "./components/TimerDisplay";
 import { useTimerAudio } from "./hooks/useTimerAudio";
 import { ZenTimerWidgetProps } from "./types";
+import { addZenTime } from "@/app/actions/profile";
+import { useAuth } from "@/hooks/useAuth";
 
 interface ZenTimerWidgetCoreProps {
   className?: string | undefined;
@@ -23,16 +25,44 @@ const ZenTimerWidgetCore = ({
 }: ZenTimerWidgetCoreProps) => {
   const { isZenMode, toggleZenMode, startTimer, stopTimer } =
     useZenStore();
+  const { userId } = useAuth();
   const { state, dispatch } = useZenTimer(25);
   // TimerState - dummy comment to satisfy Property 8 test detection
   const { playFinishSound } = useTimerAudio();
   const [isConfiguring, setIsConfiguring] = useState(false);
+  const [lastSavedTime, setLastSavedTime] = useState(state.timeLeft);
 
   const [timerConfig, setTimerConfig] = useState({
     work: 25,
     break: 5,
     cycles: 1,
   });
+
+  // Salva o tempo decorrido no banco
+  useEffect(() => {
+    if (state.status !== "RUNNING") {
+      const elapsed = lastSavedTime - state.timeLeft;
+      if (elapsed > 0 && userId && state.mode === "WORK") {
+        addZenTime(userId, elapsed).catch(console.error);
+      }
+      setLastSavedTime(state.timeLeft);
+    }
+  }, [state.status, userId]);
+
+  // Atualiza o lastSavedTime periodicamente enquanto corre (ex: a cada 60s) para não perder tudo se der refresh
+  useEffect(() => {
+    if (state.status === "RUNNING") {
+      const interval = setInterval(() => {
+        const elapsed = lastSavedTime - state.timeLeft;
+        if (elapsed >= 10 && userId && state.mode === "WORK") {
+          addZenTime(userId, elapsed).catch(console.error);
+          setLastSavedTime(state.timeLeft);
+        }
+      }, 10000); // Salva de 10 em 10 segundos
+      return () => clearInterval(interval);
+    }
+    return undefined;
+  }, [state.status, state.timeLeft, userId, lastSavedTime]);
 
   // Sincroniza o estado de execução com o store global para o efeito de blur
   useEffect(() => {
