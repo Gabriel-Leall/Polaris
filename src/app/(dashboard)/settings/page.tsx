@@ -1,15 +1,13 @@
 "use client";
-
 import { useState, useEffect, useCallback } from "react";
-import Image from "next/image";
 import { 
-  Settings, 
-  Brain, 
-  Timer, 
   Loader2, 
   Database, 
-  Key,
-  ChevronRight
+  ChevronRight,
+  Shield,
+  Lock,
+  Github,
+  Calendar
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -23,10 +21,9 @@ import {
   getNotionAuthUrl, 
   listNotionDatabases 
 } from "@/app/actions/notion";
-import { cn } from "@/lib/utils";
 
 export default function SettingsPage() {
-  const { userId } = useAuth();
+  const { userId, user } = useAuth();
   const { toast } = useToast();
   
   const [isLoading, setIsLoading] = useState(true);
@@ -34,15 +31,11 @@ export default function SettingsPage() {
   const [prefsId, setPrefsId] = useState<string | null>(null);
 
   // Settings State
-  const [focusDuration, setFocusDuration] = useState(25);
-  const [breakDuration, setBreakDuration] = useState(5);
-  const [theme, setTheme] = useState<"light" | "dark">("dark");
   const [notionToken, setNotionToken] = useState("");
   const [notionDbId, setNotionDbId] = useState("");
   const [geminiApiKey, setGeminiApiKey] = useState("");
   const [availableDatabases, setAvailableDatabases] = useState<{id: string, title: string}[]>([]);
   const [isConnectingNotion, setIsConnectingNotion] = useState(false);
-  const [isSavingNotion, setIsSavingNotion] = useState(false);
 
   const loadSettings = useCallback(async () => {
     if (!userId) return;
@@ -51,9 +44,6 @@ export default function SettingsPage() {
       const prefs = await getOrCreateUserPreferences(userId);
       if (prefs) {
         setPrefsId(prefs.id);
-        setFocusDuration(prefs.focusDuration);
-        setBreakDuration(prefs.breakDuration);
-        setTheme(prefs.theme || "dark");
         setNotionToken(prefs.notionApiKey || "");
         setNotionDbId(prefs.notionDatabaseId || "");
         
@@ -90,14 +80,8 @@ export default function SettingsPage() {
     if (!userId || !prefsId) return;
     setIsSaving(true);
     try {
-      // Save Gemini locally
       localStorage.setItem("polaris_gemini_api_key", geminiApiKey);
-
-      // Save everything else to Supabase
       await updateUserPreferences(prefsId, {
-        focusDuration,
-        breakDuration,
-        theme,
         notionApiKey: notionToken,
         notionDatabaseId: notionDbId,
       });
@@ -115,31 +99,6 @@ export default function SettingsPage() {
       });
     } finally {
       setIsSaving(false);
-    }
-  };
-
-  const handleSaveNotion = async () => {
-    if (!userId || !prefsId) return;
-    setIsSavingNotion(true);
-    try {
-      await updateUserPreferences(prefsId, {
-        notionApiKey: notionToken,
-        notionDatabaseId: notionDbId,
-      });
-
-      toast({
-        title: "Notion atualizado!",
-        description: "Seu banco de dados destino foi salvo com sucesso.",
-        variant: "success",
-      });
-    } catch (error) {
-      toast({
-        title: "Erro ao salvar Notion",
-        description: "Não foi possível salvar o banco de dados.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsSavingNotion(false);
     }
   };
 
@@ -166,258 +125,208 @@ export default function SettingsPage() {
     );
   }
 
-  const navigateTo = (id: string) => {
-    const el = document.getElementById(id);
-    if (el) {
-      const top = el.getBoundingClientRect().top + window.pageYOffset - 100;
-      window.scrollTo({ top, behavior: 'smooth' });
-    }
-  };
-
   return (
-    <div className="container max-w-4xl mx-auto py-10 px-6 space-y-12">
-      <header className="space-y-2">
-        <div className="flex items-center gap-3">
-          <div className="p-2 bg-primary/10 rounded-xl text-primary">
-            <Settings className="w-6 h-6" />
+    <div className="w-full text-foreground selection:bg-primary/30">
+      <div className="max-w-4xl mx-auto py-12 px-6 space-y-16">
+        {/* Header Section */}
+        <header className="flex flex-col md:flex-row md:items-end justify-between gap-8">
+          <div className="space-y-2">
+            <h1 className="text-4xl font-extrabold tracking-tight text-white">Configurações</h1>
+            <p className="text-muted-foreground font-medium text-lg">
+              Personalize sua experiência e gerencie suas conexões.
+            </p>
           </div>
-          <h1 className="text-3xl font-bold tracking-tight text-white">Configurações</h1>
-        </div>
-        <p className="text-muted-foreground">
-          Gerencie as preferências e integrações dos seus widgets do Polaris.
-        </p>
-      </header>
+          <div className="flex items-center gap-4">
+            <button 
+              onClick={() => loadSettings()}
+              className="px-6 py-2.5 text-sm font-semibold text-muted-foreground hover:text-white transition-all duration-200"
+            >
+              Descartar
+            </button>
+            <Button 
+              onClick={handleSaveAll}
+              disabled={isSaving}
+              className="bg-primary hover:bg-primary-glow text-primary-foreground px-8 py-2.5 rounded-xl font-bold h-12 transition-all duration-300 shadow-glow hover:shadow-glow-lg active:scale-95 flex items-center gap-2"
+            >
+              {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : "Salvar mudanças"}
+            </Button>
+          </div>
+        </header>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-        {/* Navigation - Sticky Left Sidebar */}
-        <aside className="space-y-1 h-fit sticky top-24 hidden md:block">
-          <button 
-            onClick={() => navigateTo('general-section')}
-            className="w-full flex items-center gap-3 px-4 py-3 text-muted-foreground hover:text-white hover:bg-white/[0.03] border border-transparent rounded-xl text-sm font-medium transition-all group"
-          >
-            <Settings className="w-4 h-4 group-hover:text-primary transition-colors" />
-            Geral
-            <ChevronRight className="ml-auto w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
-          </button>
-          <button 
-            onClick={() => navigateTo('timer-section')}
-            className="w-full flex items-center gap-3 px-4 py-3 text-muted-foreground hover:text-white hover:bg-white/[0.03] border border-transparent rounded-xl text-sm font-medium transition-all group"
-          >
-            <Timer className="w-4 h-4 group-hover:text-primary transition-colors" />
-            Zen Timer
-            <ChevronRight className="ml-auto w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
-          </button>
-          <button 
-            onClick={() => navigateTo('ai-section')}
-            className="w-full flex items-center gap-3 px-4 py-3 text-muted-foreground hover:text-white hover:bg-white/[0.03] border border-transparent rounded-xl text-sm font-medium transition-all group"
-          >
-            <Brain className="w-4 h-4 group-hover:text-primary transition-colors" />
-            IA & Tags
-            <ChevronRight className="ml-auto w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
-          </button>
-          <button 
-            onClick={() => navigateTo('notion-section')}
-            className="w-full flex items-center gap-3 px-4 py-3 text-muted-foreground hover:text-white hover:bg-white/[0.03] border border-transparent rounded-xl text-sm font-medium transition-all group"
-          >
-            <Database className="w-4 h-4 group-hover:text-primary transition-colors" />
-            Notion
-            <ChevronRight className="ml-auto w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
-          </button>
-        </aside>
-
-        {/* Content area */}
-        <div className="md:col-span-2 space-y-16">
+        {/* Content Body */}
+        <div className="space-y-20 pb-20">
           
-          {/* General Section */}
-          <section id="general-section" className="space-y-6">
-            <div className="flex items-center gap-2 pb-2 border-b border-white/5">
-              <Settings className="w-5 h-5 text-primary" />
-              <h2 className="text-lg font-semibold text-white">Geral</h2>
+          {/* Account & Auth Section */}
+          <section className="space-y-8">
+            <div className="flex items-center gap-3 border-b border-border pb-4">
+              <div className="p-1.5 bg-primary/10 rounded-lg">
+                <Shield className="w-4 h-4 text-primary" />
+              </div>
+              <h2 className="text-xs font-black tracking-[0.25em] text-white uppercase">
+                CONTA E SEGURANÇA
+              </h2>
             </div>
             
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <label className="text-xs font-medium text-white/60 uppercase tracking-widest">Tema do Dashboard</label>
-                <div className="grid grid-cols-2 gap-4">
-                  <button 
-                    onClick={() => setTheme("dark")}
-                    className={cn(
-                      "flex items-center justify-center gap-2 h-12 rounded-xl border transition-all",
-                      theme === "dark" 
-                        ? "bg-primary/20 border-primary text-white" 
-                        : "bg-white/5 border-white/10 text-muted-foreground hover:border-white/20"
-                    )}
-                  >
-                    Dark Mode
-                  </button>
-                  <button 
-                    onClick={() => setTheme("light")}
-                    className={cn(
-                      "flex items-center justify-center gap-2 h-12 rounded-xl border transition-all",
-                      theme === "light" 
-                        ? "bg-primary/20 border-primary text-white" 
-                        : "bg-white/5 border-white/10 text-muted-foreground hover:border-white/20"
-                    )}
-                  >
-                    Light Mode
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+              <div className="space-y-3">
+                <label className="text-[10px] font-bold tracking-widest text-muted-foreground uppercase ml-1">E-MAIL PRINCIPAL</label>
+                <Input 
+                  type="email" 
+                  value={user?.email || "usuario@polaris.app"}
+                  disabled
+                  className="bg-card border-border h-14 text-sm opacity-50 cursor-not-allowed rounded-xl" 
+                />
+              </div>
+              <div className="space-y-3">
+                <label className="text-[10px] font-bold tracking-widest text-muted-foreground uppercase ml-1">SENHA DE ACESSO</label>
+                <div className="relative">
+                  <Input 
+                    type="password" 
+                    value="********"
+                    disabled
+                    className="bg-card border-border h-14 text-sm opacity-50 cursor-not-allowed rounded-xl" 
+                  />
+                  <button className="absolute right-5 top-1/2 -translate-y-1/2 text-[10px] font-black text-primary hover:text-primary-glow transition-all uppercase tracking-widest">
+                    Alterar
                   </button>
                 </div>
               </div>
             </div>
           </section>
 
-          {/* Zen Timer Section */}
-          <section id="timer-section" className="space-y-6">
-            <div className="flex items-center gap-2 pb-2 border-b border-white/5">
-              <Timer className="w-5 h-5 text-primary" />
-              <h2 className="text-lg font-semibold text-white">Zen Timer</h2>
+          {/* AI Integration Section */}
+          <section className="space-y-8">
+            <div className="flex items-center gap-3 border-b border-border pb-4">
+              <div className="p-1.5 bg-primary/10 rounded-lg">
+                <Lock className="w-4 h-4 text-primary" />
+              </div>
+              <h2 className="text-xs font-black tracking-[0.25em] text-white uppercase">
+                INTELIGÊNCIA ARTIFICIAL
+              </h2>
             </div>
             
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <label className="text-xs font-medium text-white/60 uppercase tracking-widest">Tempo de Foco (min)</label>
-                <Input 
-                  type="number" 
-                  value={focusDuration}
-                  onChange={(e) => setFocusDuration(Number(e.target.value))}
-                  className="bg-white/5 border-white/10" 
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-xs font-medium text-white/60 uppercase tracking-widest">Pausa Curta (min)</label>
-                <Input 
-                  type="number" 
-                  value={breakDuration}
-                  onChange={(e) => setBreakDuration(Number(e.target.value))}
-                  className="bg-white/5 border-white/10" 
-                />
-              </div>
-            </div>
-          </section>
-
-          {/* Brain Dump & IA Section */}
-          <section className="space-y-6">
-            <div className="flex items-center gap-2 pb-2 border-b border-white/5">
-              <Brain className="w-5 h-5 text-primary" />
-              <h2 className="text-lg font-semibold text-white">Brain Dump & IA</h2>
-            </div>
-
-            <div className="space-y-6">
-              <div className="space-y-2">
-                <label className="text-xs font-medium text-white/60 uppercase tracking-widest flex items-center gap-2">
-                  <Key className="h-3 w-3" />
-                  Google Gemini API Key
-                </label>
-                <Input 
-                  type="password"
-                  value={geminiApiKey}
-                  onChange={(e) => setGeminiApiKey(e.target.value)}
-                  placeholder="Sua chave API..."
-                  className="bg-white/5 border-white/10" 
-                />
-                <p className="text-[10px] text-muted-foreground">
-                  Usada para gerar auto-tags e sugestões inteligentes. Salva localmente por privacidade.
+            <div className="space-y-4 max-w-2xl">
+              <div className="flex flex-col gap-3">
+                <label className="text-sm font-bold text-white ml-1">Google Gemini API Key</label>
+                <div className="relative group">
+                  <Input 
+                    type="password"
+                    value={geminiApiKey}
+                    onChange={(e) => setGeminiApiKey(e.target.value)}
+                    placeholder="••••••••••••••••••••••••••••"
+                    className="bg-card border-border h-14 pr-14 text-sm focus:ring-primary/20 rounded-xl transition-all group-hover:border-primary/30" 
+                  />
+                  <div className="absolute right-5 top-1/2 -translate-y-1/2 text-muted-foreground">
+                    <Lock className="w-4 h-4" />
+                  </div>
+                </div>
+                <p className="text-xs text-muted-foreground leading-relaxed ml-1">
+                  Sua chave é salva localmente e usada para gerar tags automáticas e insights em suas notas.
                 </p>
               </div>
             </div>
           </section>
 
-          {/* Notion Section */}
-          <section id="notion-section" className="space-y-6">
-            <div className="flex items-center gap-2 pb-2 border-b border-white/5">
-              <Database className="w-5 h-5 text-primary" />
-              <h2 className="text-lg font-semibold text-white">Integração Notion</h2>
+          {/* Notion Integration Section */}
+          <section className="space-y-8">
+            <div className="flex items-center gap-3 border-b border-border pb-4">
+              <div className="p-1.5 bg-primary/10 rounded-lg">
+                <Database className="w-4 h-4 text-primary" />
+              </div>
+              <h2 className="text-xs font-black tracking-[0.25em] text-white uppercase">
+                INTEGRAÇÃO NOTION
+              </h2>
             </div>
-
-            <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-6 space-y-6">
-              <div className="flex items-center justify-between">
-                <div className="space-y-1">
-                  <h3 className="font-medium text-white">Status da Conexão</h3>
-                  <p className="text-xs text-muted-foreground">
-                    {notionToken ? "Sua conta está conectada e pronta para sincronizar." : "Conecte sua conta do Notion para exportar suas notas."}
-                  </p>
-                </div>
-                {notionToken && (
-                  <div className="px-3 py-1 bg-green-500/10 text-green-400 text-[10px] font-bold uppercase tracking-wider rounded-full flex items-center gap-1.5">
-                    <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
-                    Conectado
+            
+            <div className="space-y-6">
+              <div className="flex items-center gap-4">
+                {notionToken ? (
+                  <div className="flex items-center gap-3 px-4 py-2 bg-success/10 border border-success/20 rounded-full">
+                    <div className="w-2 h-2 bg-success rounded-full animate-pulse" />
+                    <span className="text-sm font-bold text-success uppercase tracking-wider">Conectado ao Notion</span>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-3 px-4 py-2 bg-muted/5 border border-white/5 rounded-full">
+                    <div className="w-2 h-2 bg-muted-foreground rounded-full" />
+                    <span className="text-sm font-bold text-muted-foreground uppercase tracking-wider">Pendente de Conexão</span>
                   </div>
                 )}
               </div>
 
               {!notionToken ? (
                 <Button 
-                  className="w-full h-12 gap-2"
                   onClick={handleConnectNotion}
                   disabled={isConnectingNotion}
+                  className="w-full md:w-auto min-w-[240px] h-14 bg-white text-black hover:bg-gray-200 font-black rounded-xl shadow-lg transition-all"
                 >
-                  {isConnectingNotion ? <Loader2 className="w-4 h-4 animate-spin" /> : <Image src="https://www.notion.so/images/favicon.ico" width={16} height={16} className="w-4 h-4" alt="Notion" />}
-                  Conectar ao Notion
+                  {isConnectingNotion ? <Loader2 className="w-4 h-4 animate-spin" /> : "CONECTAR AO NOTION"}
                 </Button>
               ) : (
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <label className="text-xs font-medium text-white/60 uppercase tracking-widest">
-                      Banco de Dados Destino
-                    </label>
-                    <div className="relative group">
-                      <select
-                        value={notionDbId}
-                        onChange={(e) => setNotionDbId(e.target.value)}
-                        className="w-full bg-white/[0.05] border border-white/10 rounded-xl px-4 h-14 text-sm text-white focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all appearance-none cursor-pointer hover:bg-white/[0.08]"
-                      >
-                        <option value="" className="bg-[#0a0a0a]">Selecionar base de dados...</option>
-                        {availableDatabases.map((db) => (
-                          <option key={db.id} value={db.id} className="bg-[#0a0a0a]">
-                            {db.title}
-                          </option>
-                        ))}
-                      </select>
-                      <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground group-hover:text-white transition-colors">
-                        <ChevronRight className="w-4 h-4 rotate-90" />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-3 pt-2">
-                    <Button 
-                      onClick={handleSaveNotion}
-                      disabled={isSavingNotion || !notionDbId}
-                      className="flex-1 h-11 bg-primary/20 hover:bg-primary/30 text-primary border border-primary/20"
+                <div className="flex flex-col gap-4 max-w-xl">
+                  <div className="relative w-full">
+                    <select
+                      value={notionDbId}
+                      onChange={(e) => setNotionDbId(e.target.value)}
+                      className="w-full bg-card border border-border rounded-xl px-5 h-14 text-sm appearance-none cursor-pointer focus:ring-2 focus:ring-primary/40 focus:outline-none transition-all hover:border-primary/30"
                     >
-                      {isSavingNotion ? (
-                        <Loader2 className="w-4 h-4 animate-spin mr-2" />
-                      ) : (
-                        <Settings className="w-4 h-4 mr-2" />
-                      )}
-                      Confirmar Seleção
-                    </Button>
-                    
-                    <Button 
-                      variant="ghost" 
-                      className="px-4 h-11 text-xs text-muted-foreground hover:text-white hover:bg-white/5 transition-all"
-                      onClick={handleConnectNotion}
-                    >
-                      Trocar Conta
-                    </Button>
+                      <option value="" className="bg-main">Escolha o Banco de Dados...</option>
+                      {availableDatabases.map((db) => (
+                        <option key={db.id} value={db.id} className="bg-main">
+                          {db.title}
+                        </option>
+                      ))}
+                    </select>
+                    <ChevronRight className="absolute right-5 top-1/2 -translate-y-1/2 w-4 h-4 rotate-90 text-muted-foreground pointer-events-none" />
                   </div>
+                  <p className="text-xs text-muted-foreground italic ml-1">
+                    Suas notas do Brain Dump serão sincronizadas automaticamente com esta database.
+                  </p>
                 </div>
               )}
             </div>
           </section>
 
-          {/* Save Button */}
-          <div className="pt-6 border-t border-white/5">
-            <Button 
-              className="w-full h-12 bg-primary hover:bg-primary/90 text-white font-semibold shadow-glow-sm"
-              onClick={handleSaveAll}
-              disabled={isSaving}
-            >
-              {isSaving && <Loader2 className="w-4 h-4 animate-spin mr-2" />}
-              Salvar Todas as Alterações
-            </Button>
-          </div>
+          {/* Connections Section Mockup */}
+          <section className="space-y-8">
+            <div className="flex items-center gap-3 border-b border-border pb-4">
+              <div className="p-1.5 bg-primary/10 rounded-lg">
+                <Github className="w-4 h-4 text-primary" />
+              </div>
+              <h2 className="text-xs font-black tracking-[0.25em] text-white uppercase">
+                OUTRAS CONEXÕES
+              </h2>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* GitHub Card */}
+              <div className="group flex items-center justify-between p-6 rounded-3xl bg-card border border-border hover:border-primary/40 transition-all duration-300">
+                <div className="flex items-center gap-5">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-main border border-border group-hover:border-primary/20 transition-all">
+                    <Github className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-base font-bold text-white">GitHub</h3>
+                    <p className="text-xs text-muted-foreground">Sincronizado há 2m</p>
+                  </div>
+                </div>
+                <button className="text-xs font-bold text-muted-foreground hover:text-destructive transition-colors px-3 py-1">Desconectar</button>
+              </div>
 
+              {/* Google Calendar Card */}
+              <div className="group flex items-center justify-between p-6 rounded-3xl bg-card border border-border hover:border-primary/40 transition-all duration-300">
+                <div className="flex items-center gap-5">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-main border border-border group-hover:border-primary/20 transition-all">
+                    <Calendar className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-base font-bold text-white">Google Calendar</h3>
+                    <p className="text-xs text-muted-foreground">Não conectado</p>
+                  </div>
+                </div>
+                <button className="text-xs font-bold text-primary hover:text-primary-glow transition-all px-4 py-2 bg-primary/5 rounded-full">Conectar</button>
+              </div>
+            </div>
+          </section>
         </div>
       </div>
     </div>

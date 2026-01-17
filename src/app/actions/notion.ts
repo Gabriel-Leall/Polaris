@@ -98,8 +98,6 @@ export async function listNotionDatabases(userId: string) {
       },
     });
     
-    console.log(`[Notion Debug] Itens brutos encontrados: ${response.results.length}`);
-
     const databases = response.results
       .map((item: any) => {
         let title = "Sem título";
@@ -114,8 +112,6 @@ export async function listNotionDatabases(userId: string) {
           // O tipo data_source geralmente tem o nome em um lugar diferente
           title = item.name || item.data_source?.name || "Fonte de Dados";
         }
-
-        console.log(`[Notion Debug] -> Processado: "${title}" | Tipo: ${type}`);
 
         if (type === "database" || type === "page" || type === "data_source") {
           return { id: item.id, title: title };
