@@ -1,30 +1,38 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
 
 @layer base {
   :root {
-    /* Polaris Design System - Dark Theme Variables */
-    --background: 222.2 84% 4.9%; /* #09090B */
-    --foreground: 210 40% 98%; /* #FAFAFA */
-    --card: 222.2 84% 7.1%; /* #121214 */
-    --card-foreground: 210 40% 98%; /* #FAFAFA */
-    --popover: 222.2 84% 7.1%; /* #121214 */
-    --popover-foreground: 210 40% 98%; /* #FAFAFA */
-    --primary: 239 84% 67%; /* #6366F1 */
-    --primary-foreground: 210 40% 98%; /* #FAFAFA */
-    --secondary: 210 40% 63%; /* #A1A1AA */
-    --secondary-foreground: 210 40% 98%; /* #FAFAFA */
-    --muted: 210 40% 63%; /* #A1A1AA */
-    --muted-foreground: 215.4 16.3% 46.9%; /* #71717A */
-    --accent: 239 84% 67%; /* #6366F1 */
-    --accent-foreground: 210 40% 98%; /* #FAFAFA */
-    --destructive: 0 84.2% 60.2%; /* #EF4444 */
-    --destructive-foreground: 210 40% 98%; /* #FAFAFA */
-    --border: 217.2 32.6% 17.5%; /* rgba(255, 255, 255, 0.1) */
-    --input: 217.2 32.6% 17.5%; /* #18181B */
-    --ring: 239 84% 67%; /* #6366F1 */
-    --radius: 0.5rem;
+    /* Polaris Design System - Obsidian Matte Theme */
+    --background: 240 10% 3.9%; /* #0A0A0B */
+    --foreground: 0 0% 98%; /* #FAFAFA */
+    
+    --card: 240 10% 5.9%; /* #0F0F11 */
+    --card-foreground: 0 0% 98%;
+    
+    --popover: 240 10% 5.9%;
+    --popover-foreground: 0 0% 98%;
+    
+    --primary: 239 84% 67%; 
+    --primary-foreground: 0 0% 98%;
+    
+    --secondary: 240 5% 64.9%;
+    --secondary-foreground: 0 0% 98%;
+    
+    --muted: 240 5% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    
+    --accent: 240 5% 15.9%;
+    --accent-foreground: 0 0% 98%;
+    
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    
+    --border: 240 5% 15.9%; /* #27272A */
+    --input: 240 6% 10%; /* #18181B */
+    --ring: 240 5% 84.9%;
+    --radius: 0.75rem;
 
     /* Chart colors using Polaris palette */
     --chart-1: 239 84% 67%; /* #6366F1 */
@@ -35,11 +43,13 @@
   }
 
   * {
-    @apply border-border;
+    border-color: hsl(var(--border));
   }
 
   body {
-    @apply bg-main text-foreground font-sans;
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-family: var(--font-inter), system-ui, sans-serif;
     font-feature-settings: "rlig" 1, "calt" 1;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -52,19 +62,24 @@
   h4,
   h5,
   h6 {
-    @apply font-semibold text-foreground;
+    font-weight: 600;
+    color: hsl(var(--foreground));
   }
 
   h1 {
-    @apply text-4xl font-bold;
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+    font-weight: 700;
   }
 
   h2 {
-    @apply text-2xl;
+    font-size: 1.5rem;
+    line-height: 2rem;
   }
 
   h3 {
-    @apply text-xl;
+    font-size: 1.25rem;
+    line-height: 1.75rem;
   }
 
   /* Code elements */
@@ -77,55 +92,92 @@
 
   /* Focus styles for better accessibility */
   :focus-visible {
-    @apply outline-none ring-2 ring-primary ring-offset-2 ring-offset-main;
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+    --tw-ring-offset-width: 2px;
+    --tw-ring-offset-color: hsl(var(--background));
+    --tw-ring-color: hsl(var(--primary));
+    --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+    --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+    box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
   }
 }
 
 @layer components {
   /* Glass card component */
   .glass-card {
-    @apply bg-card border border-white/5 backdrop-blur-sm;
+    background-color: hsl(var(--card));
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(4px);
   }
 
   /* Interactive glass elements */
   .glass-interactive {
-    @apply glass-card transition-all duration-200 hover:border-white/10;
+    background-color: hsl(var(--card));
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(4px);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .glass-interactive:hover {
+    border-color: rgba(255, 255, 255, 0.1);
   }
 
   /* Glow effects */
   .glow-primary {
-    @apply shadow-glow;
+    box-shadow: 0 0 20px rgba(99, 102, 241, 0.5);
   }
 
   .glow-primary-sm {
-    @apply shadow-glow-sm;
+    box-shadow: 0 0 10px rgba(99, 102, 241, 0.3);
   }
 
   .glow-primary-lg {
-    @apply shadow-glow-lg;
+    box-shadow: 0 0 30px rgba(99, 102, 241, 0.6);
   }
 
   /* Interactive element base styles */
   .interactive-element {
-    @apply transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-main;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .interactive-element:focus-visible {
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+    --tw-ring-offset-width: 2px;
+    --tw-ring-offset-color: hsl(var(--background));
+    --tw-ring-color: hsl(var(--primary));
+    --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+    --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+    box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
   }
 
   /* Hover states for interactive elements */
   .hover-lift {
-    @apply hover:scale-105 active:scale-95 transition-transform duration-200;
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .hover-lift:hover {
+    transform: scale(1.05);
+  }
+  .hover-lift:active {
+    transform: scale(0.95);
   }
 
   .hover-glow {
-    @apply hover:shadow-glow-sm transition-shadow duration-200;
+    transition: shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .hover-glow:hover {
+    box-shadow: 0 0 10px rgba(99, 102, 241, 0.3);
   }
 
   .hover-brighten {
-    @apply hover:brightness-110 transition-all duration-200;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .hover-brighten:hover {
+    filter: brightness(1.1);
   }
 
   /* Sidebar active item gradient */
   .sidebar-active {
-    @apply bg-gradient-to-r from-primary/20 via-purple-500/5 to-transparent;
+    background-image: linear-gradient(to right, rgba(99, 102, 241, 0.2), rgba(168, 85, 247, 0.05), transparent);
   }
 
   /* Code editor styles */
@@ -139,7 +191,29 @@
 
   /* Skip link for keyboard navigation */
   .skip-link {
-    @apply sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-lg;
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+  .skip-link:focus {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    z-index: 50;
+    width: auto;
+    height: auto;
+    padding: 0.5rem 1rem;
+    background-color: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+    border-radius: var(--radius);
+    clip: auto;
+    white-space: normal;
   }
 
   /* Reduced motion preference */
@@ -148,7 +222,7 @@
     .hover-lift,
     .hover-glow,
     .hover-brighten {
-      @apply transition-none;
+      transition: none;
     }
 
     .animate-pulse,
@@ -164,6 +238,59 @@
     color: #71717a;
     pointer-events: none;
     height: 0;
+  }
+  /* Polaris Authentication Animations */
+  @keyframes pulse-indigo {
+    0%, 100% { transform: scale(1); opacity: 0.5; filter: blur(40px); }
+    50% { transform: scale(1.15); opacity: 0.8; filter: blur(60px); }
+  }
+  @keyframes orbit-slow {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  @keyframes orbit-reverse {
+    from { transform: rotate(360deg); }
+    to { transform: rotate(0deg); }
+  }
+  @keyframes meteor {
+    0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); opacity: 0; }
+    5% { opacity: 0.8; }
+    15% { transform: translateX(200%) translateY(200%) rotate(45deg); opacity: 0; }
+    100% { transform: translateX(200%) translateY(200%) rotate(45deg); opacity: 0; }
+  }
+
+  .nebula-glow {
+    background: radial-gradient(circle at center, rgba(99, 102, 241, 0.08) 0%, transparent 75%);
+  }
+  .north-star-aura {
+    animation: pulse-indigo 8s ease-in-out infinite;
+  }
+  .grain-overlay {
+    background-image: url("https://grainy-gradients.vercel.app/noise.svg");
+    opacity: 0.03;
+    filter: brightness(0.5) contrast(150%);
+    pointer-events: none;
+  }
+  .orbital-path {
+    border: 1px solid rgba(99, 102, 241, 0.08);
+    border-radius: 50%;
+  }
+  .orbit-container {
+    animation: orbit-slow 60s linear infinite;
+  }
+  .orbit-container-fast {
+    animation: orbit-reverse 45s linear infinite;
+  }
+  .meteor-streak {
+    position: absolute;
+    width: 150px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.4), white);
+    filter: blur(1px);
+    animation: meteor 12s linear infinite;
+  }
+  .motion-blur-sphere {
+    filter: blur(1px);
   }
 }
 

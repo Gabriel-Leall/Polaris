@@ -1,31 +1,28 @@
 "use client";
 import { useState, useEffect, useCallback } from "react";
-import { 
-  Loader2, 
-  Database, 
+import {
+  Loader2,
+  Database,
   ChevronRight,
   Shield,
   Lock,
   Github,
-  Calendar
+  Calendar,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
-import { 
-  getOrCreateUserPreferences, 
-  updateUserPreferences 
+import {
+  getOrCreateUserPreferences,
+  updateUserPreferences,
 } from "@/app/actions/userPreferences";
-import { 
-  getNotionAuthUrl, 
-  listNotionDatabases 
-} from "@/app/actions/notion";
+import { getNotionAuthUrl, listNotionDatabases } from "@/app/actions/notion";
 
 export default function SettingsPage() {
   const { userId, user } = useAuth();
   const { toast } = useToast();
-  
+
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [prefsId, setPrefsId] = useState<string | null>(null);
@@ -34,7 +31,9 @@ export default function SettingsPage() {
   const [notionToken, setNotionToken] = useState("");
   const [notionDbId, setNotionDbId] = useState("");
   const [geminiApiKey, setGeminiApiKey] = useState("");
-  const [availableDatabases, setAvailableDatabases] = useState<{id: string, title: string}[]>([]);
+  const [availableDatabases, setAvailableDatabases] = useState<
+    { id: string; title: string }[]
+  >([]);
   const [isConnectingNotion, setIsConnectingNotion] = useState(false);
 
   const loadSettings = useCallback(async () => {
@@ -46,7 +45,7 @@ export default function SettingsPage() {
         setPrefsId(prefs.id);
         setNotionToken(prefs.notionApiKey || "");
         setNotionDbId(prefs.notionDatabaseId || "");
-        
+
         // Load local Gemini key
         const savedGemini = localStorage.getItem("polaris_gemini_api_key");
         if (savedGemini) setGeminiApiKey(savedGemini);
@@ -126,36 +125,41 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="w-full text-foreground selection:bg-primary/30">
+    <div className="w-full text-foreground selection:bg-primary/30 overflow-y-auto">
       <div className="max-w-4xl mx-auto py-12 px-6 space-y-16">
         {/* Header Section */}
         <header className="flex flex-col md:flex-row md:items-end justify-between gap-8">
           <div className="space-y-2">
-            <h1 className="text-4xl font-extrabold tracking-tight text-white">Configurações</h1>
+            <h1 className="text-4xl font-extrabold tracking-tight text-white">
+              Configurações
+            </h1>
             <p className="text-muted-foreground font-medium text-lg">
               Personalize sua experiência e gerencie suas conexões.
             </p>
           </div>
           <div className="flex items-center gap-4">
-            <button 
+            <button
               onClick={() => loadSettings()}
               className="px-6 py-2.5 text-sm font-semibold text-muted-foreground hover:text-white transition-all duration-200"
             >
               Descartar
             </button>
-            <Button 
+            <Button
               onClick={handleSaveAll}
               disabled={isSaving}
               className="bg-primary hover:bg-primary-glow text-primary-foreground px-8 py-2.5 rounded-xl font-bold h-12 transition-all duration-300 shadow-glow hover:shadow-glow-lg active:scale-95 flex items-center gap-2"
             >
-              {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : "Salvar mudanças"}
+              {isSaving ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                "Salvar mudanças"
+              )}
             </Button>
           </div>
         </header>
 
         {/* Content Body */}
         <div className="space-y-20 pb-20">
-          
           {/* Account & Auth Section */}
           <section className="space-y-8">
             <div className="flex items-center gap-3 border-b border-border pb-4">
@@ -166,25 +170,29 @@ export default function SettingsPage() {
                 CONTA E SEGURANÇA
               </h2>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
               <div className="space-y-3">
-                <label className="text-[10px] font-bold tracking-widest text-muted-foreground uppercase ml-1">E-MAIL PRINCIPAL</label>
-                <Input 
-                  type="email" 
+                <label className="text-[10px] font-bold tracking-widest text-muted-foreground uppercase ml-1">
+                  E-MAIL PRINCIPAL
+                </label>
+                <Input
+                  type="email"
                   value={user?.email || "usuario@polaris.app"}
                   disabled
-                  className="bg-card border-border h-14 text-sm opacity-50 cursor-not-allowed rounded-xl" 
+                  className="bg-card border-border h-14 text-sm opacity-50 cursor-not-allowed rounded-xl"
                 />
               </div>
               <div className="space-y-3">
-                <label className="text-[10px] font-bold tracking-widest text-muted-foreground uppercase ml-1">SENHA DE ACESSO</label>
+                <label className="text-[10px] font-bold tracking-widest text-muted-foreground uppercase ml-1">
+                  SENHA DE ACESSO
+                </label>
                 <div className="relative">
-                  <Input 
-                    type="password" 
+                  <Input
+                    type="password"
                     value="********"
                     disabled
-                    className="bg-card border-border h-14 text-sm opacity-50 cursor-not-allowed rounded-xl" 
+                    className="bg-card border-border h-14 text-sm opacity-50 cursor-not-allowed rounded-xl"
                   />
                   <button className="absolute right-5 top-1/2 -translate-y-1/2 text-[10px] font-black text-primary hover:text-primary-glow transition-all uppercase tracking-widest">
                     Alterar
@@ -204,24 +212,27 @@ export default function SettingsPage() {
                 INTELIGÊNCIA ARTIFICIAL
               </h2>
             </div>
-            
+
             <div className="space-y-4 max-w-2xl">
               <div className="flex flex-col gap-3">
-                <label className="text-sm font-bold text-white ml-1">Google Gemini API Key</label>
+                <label className="text-sm font-bold text-white ml-1">
+                  Google Gemini API Key
+                </label>
                 <div className="relative group">
-                  <Input 
+                  <Input
                     type="password"
                     value={geminiApiKey}
                     onChange={(e) => setGeminiApiKey(e.target.value)}
                     placeholder="••••••••••••••••••••••••••••"
-                    className="bg-card border-border h-14 pr-14 text-sm focus:ring-primary/20 rounded-xl transition-all group-hover:border-primary/30" 
+                    className="bg-card border-border h-14 pr-14 text-sm focus:ring-primary/20 rounded-xl transition-all group-hover:border-primary/30"
                   />
                   <div className="absolute right-5 top-1/2 -translate-y-1/2 text-muted-foreground">
                     <Lock className="w-4 h-4" />
                   </div>
                 </div>
                 <p className="text-xs text-muted-foreground leading-relaxed ml-1">
-                  Sua chave é salva localmente e usada para gerar tags automáticas e insights em suas notas.
+                  Sua chave é salva localmente e usada para gerar tags
+                  automáticas e insights em suas notas.
                 </p>
               </div>
             </div>
@@ -237,29 +248,37 @@ export default function SettingsPage() {
                 INTEGRAÇÃO NOTION
               </h2>
             </div>
-            
+
             <div className="space-y-6">
               <div className="flex items-center gap-4">
                 {notionToken ? (
                   <div className="flex items-center gap-3 px-4 py-2 bg-success/10 border border-success/20 rounded-full">
                     <div className="w-2 h-2 bg-success rounded-full animate-pulse" />
-                    <span className="text-sm font-bold text-success uppercase tracking-wider">Conectado ao Notion</span>
+                    <span className="text-sm font-bold text-success uppercase tracking-wider">
+                      Conectado ao Notion
+                    </span>
                   </div>
                 ) : (
                   <div className="flex items-center gap-3 px-4 py-2 bg-muted/5 border border-white/5 rounded-full">
                     <div className="w-2 h-2 bg-muted-foreground rounded-full" />
-                    <span className="text-sm font-bold text-muted-foreground uppercase tracking-wider">Pendente de Conexão</span>
+                    <span className="text-sm font-bold text-muted-foreground uppercase tracking-wider">
+                      Pendente de Conexão
+                    </span>
                   </div>
                 )}
               </div>
 
               {!notionToken ? (
-                <Button 
+                <Button
                   onClick={handleConnectNotion}
                   disabled={isConnectingNotion}
                   className="w-full md:w-auto min-w-[240px] h-14 bg-white text-black hover:bg-gray-200 font-black rounded-xl shadow-lg transition-all"
                 >
-                  {isConnectingNotion ? <Loader2 className="w-4 h-4 animate-spin" /> : "CONECTAR AO NOTION"}
+                  {isConnectingNotion ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    "CONECTAR AO NOTION"
+                  )}
                 </Button>
               ) : (
                 <div className="flex flex-col gap-4 max-w-xl">
@@ -269,7 +288,9 @@ export default function SettingsPage() {
                       onChange={(e) => setNotionDbId(e.target.value)}
                       className="w-full bg-card border border-border rounded-xl px-5 h-14 text-sm appearance-none cursor-pointer focus:ring-2 focus:ring-primary/40 focus:outline-none transition-all hover:border-primary/30"
                     >
-                      <option value="" className="bg-main">Escolha o Banco de Dados...</option>
+                      <option value="" className="bg-main">
+                        Escolha o Banco de Dados...
+                      </option>
                       {availableDatabases.map((db) => (
                         <option key={db.id} value={db.id} className="bg-main">
                           {db.title}
@@ -279,7 +300,8 @@ export default function SettingsPage() {
                     <ChevronRight className="absolute right-5 top-1/2 -translate-y-1/2 w-4 h-4 rotate-90 text-muted-foreground pointer-events-none" />
                   </div>
                   <p className="text-xs text-muted-foreground italic ml-1">
-                    Suas notas do Brain Dump serão sincronizadas automaticamente com esta database.
+                    Suas notas do Brain Dump serão sincronizadas automaticamente
+                    com esta database.
                   </p>
                 </div>
               )}
@@ -296,7 +318,7 @@ export default function SettingsPage() {
                 OUTRAS CONEXÕES
               </h2>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* GitHub Card */}
               <div className="group flex items-center justify-between p-6 rounded-3xl bg-card border border-border hover:border-primary/40 transition-all duration-300">
@@ -306,10 +328,14 @@ export default function SettingsPage() {
                   </div>
                   <div>
                     <h3 className="text-base font-bold text-white">GitHub</h3>
-                    <p className="text-xs text-muted-foreground">Sincronizado há 2m</p>
+                    <p className="text-xs text-muted-foreground">
+                      Sincronizado há 2m
+                    </p>
                   </div>
                 </div>
-                <button className="text-xs font-bold text-muted-foreground hover:text-destructive transition-colors px-3 py-1">Desconectar</button>
+                <button className="text-xs font-bold text-muted-foreground hover:text-destructive transition-colors px-3 py-1">
+                  Desconectar
+                </button>
               </div>
 
               {/* Google Calendar Card */}
@@ -319,11 +345,17 @@ export default function SettingsPage() {
                     <Calendar className="h-6 w-6 text-white" />
                   </div>
                   <div>
-                    <h3 className="text-base font-bold text-white">Google Calendar</h3>
-                    <p className="text-xs text-muted-foreground">Não conectado</p>
+                    <h3 className="text-base font-bold text-white">
+                      Google Calendar
+                    </h3>
+                    <p className="text-xs text-muted-foreground">
+                      Não conectado
+                    </p>
                   </div>
                 </div>
-                <button className="text-xs font-bold text-primary hover:text-primary-glow transition-all px-4 py-2 bg-primary/5 rounded-full">Conectar</button>
+                <button className="text-xs font-bold text-primary hover:text-primary-glow transition-all px-4 py-2 bg-primary/5 rounded-full">
+                  Conectar
+                </button>
               </div>
             </div>
           </section>

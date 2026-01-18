@@ -132,3 +132,24 @@ export async function getUser() {
     avatarUrl: user.user_metadata?.avatar_url || null,
   };
 }
+
+/**
+ * Sign in with social provider (Google/GitHub)
+ */
+export async function signInWithProvider(provider: "google" | "github") {
+  const supabase = await createSupabaseServerClient();
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider,
+    options: {
+      redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/auth/callback`,
+    },
+  });
+
+  if (error) {
+    throw error;
+  }
+
+  if (data.url) {
+    redirect(data.url);
+  }
+}

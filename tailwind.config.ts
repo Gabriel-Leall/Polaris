@@ -10,11 +10,11 @@ const config: Config = {
   theme: {
   	extend: {
   		colors: {
-  			// Polaris Design System - Deep Midnight Theme
-  			main: '#09090B',
-  			card: '#121214',
-  			sidebar: '#0C0C0E',
-  			input: '#18181B',
+  			// Polaris Design System - Obsidian Matte Theme
+  			main: '#0B0B0D',
+  			card: '#151518',
+  			sidebar: '#0E0E11',
+  			input: '#1C1C21',
   			
   			// Primary colors
   			primary: {
