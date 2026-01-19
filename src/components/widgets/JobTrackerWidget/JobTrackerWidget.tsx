@@ -252,10 +252,18 @@ function JobTrackerWidgetCore() {
   }
 
   return (
-    <div className="bg-card rounded-3xl p-6 h-full flex flex-col">
+    <div className="bg-card rounded-3xl h-full flex flex-col">
       {/* Header */}
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-sm font-semibold text-white">Job Tracker</h2>
+      <div className="flex items-center justify-between pl-4 pr-4 pt-2 mb-6">
+        <div className="flex items-center gap-2">
+          <div className="w-1 h-1 rounded-full bg-white/20" />
+          <h2 
+            className="text-glitch text-[10px]" 
+            data-text="Recruit Radar"
+          >
+            Recruit Radar
+          </h2>
+        </div>
         <div className="flex items-center gap-2">
           {/* Filter Dropdown */}
           <select

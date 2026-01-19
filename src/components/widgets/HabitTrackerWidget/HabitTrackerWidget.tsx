@@ -265,11 +265,15 @@ export function HabitTrackerWidget({ className }: HabitTrackerWidgetProps) {
   return (
     <div className={cn("flex flex-col h-full", className)}>
       {/* Header */}
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between pl-4 pr-4 pt-2 mb-6">
         <div className="flex items-center gap-2">
-          <h3 className="text-sm font-medium tracking-tight text-foreground">
-            Habit Tracker
-          </h3>
+          <div className="w-1 h-1 rounded-full bg-white/20" />
+          <h2 
+            className="text-glitch text-[10px]" 
+            data-text="Protocol Habits"
+          >
+            Protocol Habits
+          </h2>
         </div>
         <div className="flex items-center gap-1">
           <Button

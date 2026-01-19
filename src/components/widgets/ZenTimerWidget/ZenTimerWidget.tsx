@@ -88,17 +88,20 @@ const ZenTimerWidgetCore = ({
   return (
     <div className={cn("flex flex-col h-full", className)}>
       {/* Header do Widget */}
-      <div className="flex items-center justify-between mb-4 -mt-2">
+      <div className="flex items-center justify-between pl-4 pt-2 mb-6">
         <div className="flex items-center gap-2">
           <div
             className={cn(
-              "w-1 h-1 rounded-full",
+              "w-1 h-1 rounded-full transition-all duration-500",
               state.status === "RUNNING"
-                ? "bg-primary animate-pulse"
-                : "bg-secondary"
+                ? "bg-primary shadow-[0_0_8px_rgba(99,102,241,0.6)]"
+                : "bg-white/20"
             )}
           />
-          <h2 className="text-[10px] font-bold uppercase tracking-[0.2em] text-secondary">
+          <h2 
+            className="text-glitch text-[10px]" 
+            data-text="Zen System"
+          >
             Zen System
           </h2>
         </div>
@@ -132,7 +135,7 @@ const ZenTimerWidgetCore = ({
       </div>
 
       {/* Área Central Interativa - Layout Horizontal para Dashboard Wide */}
-      <div className="flex-1 relative flex items-center justify-center gap-6 pt-10 pb-4">
+      <div className="flex-1 relative flex items-center justify-center gap-6 pb-8">
         {isConfiguring ? (
           <div className="absolute inset-0 z-20 bg-black/80 backdrop-blur-md rounded-2xl flex flex-col items-center justify-center gap-3 animate-in fade-in zoom-in duration-300 p-4">
             <p className="text-[10px] font-bold text-secondary uppercase tracking-widest mb-1">
@@ -257,7 +260,7 @@ const ZenTimerWidgetCore = ({
       </div>
 
       {/* Footer Visual - Status do Protocolo */}
-      <div className="mt-auto pt-2 border-t border-white/5 flex items-center justify-between -mx-2">
+      <div className="mt-auto pt-4 border-t border-white/5 flex items-center justify-between -mx-2">
         <span
           className={cn(
             "text-[7px] uppercase tracking-[0.2em] font-bold transition-opacity duration-700 pl-2",

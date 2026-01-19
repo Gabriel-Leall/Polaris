@@ -69,10 +69,14 @@ export const BrainDumpHeader = ({
 
   return (
     <div className="flex flex-col">
-      <div className="flex items-center justify-between px-6 pt-4 pb-4">
+      <div className="flex items-center justify-between pl-4 pr-4 pt-2 pb-6">
         <div className="flex items-center gap-2">
-          <h2 className="text-sm font-medium tracking-tight text-foreground">
-            Brain Dump
+          <div className="w-1 h-1 rounded-full bg-white/20" />
+          <h2 
+            className="text-glitch text-[10px]" 
+            data-text="Cognitive Dump"
+          >
+            Cognitive Dump
           </h2>
         </div>
         <div className="flex items-center gap-2">

@@ -49,10 +49,17 @@ function QuickLinksWidgetCore({
   return (
     <div className={cn("flex flex-col h-full", className)}>
       {/* Header */}
-      <div className="flex items-center justify-between mb-3">
-        <h2 className="text-sm font-medium tracking-tight text-foreground">
-          Quick Links
-        </h2>
+      {/* Header */}
+      <div className="flex items-center justify-between pl-4 pr-4 pt-2 mb-6">
+        <div className="flex items-center gap-2">
+          <div className="w-1 h-1 rounded-full bg-white/20" />
+          <h2 
+            className="text-glitch text-[10px]" 
+            data-text="Access Links"
+          >
+            Access Links
+          </h2>
+        </div>
         {readOnly && (
           <a
             href="/quick-links"

@@ -48,10 +48,11 @@ export function TasksWidget({ className }: TasksWidgetProps) {
   return (
     <div className={cn("flex flex-col h-full", className)}>
       {/* Header */}
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between pl-4 pt-2 mb-6">
         <div className="flex items-center gap-2">
-          <h2 className="text-sm font-medium tracking-tight text-foreground">
-            Tasks
+          <div className="w-1 h-1 rounded-full bg-white/20" />
+          <h2 className="text-glitch text-[10px]" data-text="Task Control">
+            Task Control
           </h2>
         </div>
         <span className="text-xs text-muted-foreground">

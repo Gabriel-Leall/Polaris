@@ -14,12 +14,8 @@ async function getNotionConfig(userId: string) {
   const token = preferences?.notionApiKey;
   const databaseId = preferences?.notionDatabaseId;
 
-  if (!token) {
-    throw new Error("Notion não conectado. Por favor, vá em configurações e conecte sua conta.");
-  }
-
-  if (!databaseId) {
-    throw new Error("Banco de dados do Notion não selecionado. Por favor, escolha um nas configurações.");
+  if (!token || !databaseId) {
+    return null;
   }
 
   const client = new Client({ 
@@ -155,7 +151,11 @@ export async function generateBrainDumpTags(
  */
 export async function getRecentNotionTags(userId: string) {
   try {
-    const { client, databaseId } = await getNotionConfig(userId);
+    const config = await getNotionConfig(userId);
+    if (!config) {
+      return { success: false, tags: [] };
+    }
+    const { client, databaseId } = config;
 
     const response = await client.databases.retrieve({
       database_id: databaseId,
@@ -179,7 +179,11 @@ export async function getRecentNotionTags(userId: string) {
     }
 
     return { success: true, tags: [] };
-  } catch (error) {
+  } catch (error: any) {
+    // Silencia erros esperados de banco de dados não encontrado ou falta de acesso para não poluir o console
+    if (error?.code === 'object_not_found') {
+      return { success: false, tags: [] };
+    }
     console.error("Erro ao buscar tags do Notion:", error);
     return { success: false, tags: [] };
   }
@@ -245,7 +249,11 @@ export async function syncBrainDumpToNotion(
   tags: string[] = []
 ) {
   try {
-    const { client, databaseId } = await getNotionConfig(userId);
+    const config = await getNotionConfig(userId);
+    if (!config) {
+      return { success: false, error: "Notion não conectado ou banco de dados não selecionado." };
+    }
+    const { client, databaseId } = config;
     const blocks = htmlToNotionBlocks(htmlContent) as unknown[];
 
     // Tenta descobrir o tipo do alvo e resolver o ID correto para o 'parent'

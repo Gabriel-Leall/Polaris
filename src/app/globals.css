@@ -292,6 +292,19 @@
   .motion-blur-sphere {
     filter: blur(1px);
   }
+  
+  .text-glitch {
+    position: relative;
+    display: inline-block;
+    color: #52525b; /* Dark Zinc/Gray to not attract too much attention */
+    text-shadow: -0.5px 0 0.1px rgba(0, 255, 255, 0.2), 
+                 0.5px 0 0.1px rgba(255, 0, 0, 0.2);
+    font-family: var(--font-jetbrains-mono), monospace;
+    font-weight: 700;
+    letter-spacing: 0.25em; /* Wider spacing to feel more industrial/label-like */
+    text-transform: uppercase;
+    opacity: 0.8; /* Dim the label a bit more */
+  }
 }
 
 ::view-transition-old(root),

@@ -30,7 +30,7 @@ export default function Dashboard() {
             </WidgetCard>
           </ZenModeBlurWrapper>
 
-          <ZenModeBlurWrapper className="shrink-0 h-[180px]">
+          <ZenModeBlurWrapper className="shrink-0 h-[220px]">
             <WidgetCard scrollable={false} className="h-full">
               <Suspense fallback={<WidgetSkeleton />}>
                 <QuickLinksWidget compact readOnly />

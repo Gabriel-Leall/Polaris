@@ -20,10 +20,16 @@ export const CalendarGrid = ({
   return (
     <>
       {/* Header */}
-      <div className="flex items-center justify-between mb-3">
-        <h2 className="text-sm font-medium tracking-tight text-white">
-          {monthName}
-        </h2>
+      <div className="flex items-center justify-between pl-4 pr-4 pt-2 mb-6">
+        <div className="flex items-center gap-2">
+          <div className="w-1 h-1 rounded-full bg-white/20" />
+          <h2 
+            className="text-glitch text-[10px]" 
+            data-text={monthName}
+          >
+            {monthName}
+          </h2>
+        </div>
         <div className="flex items-center gap-0.5">
           <Button
             variant="ghost"
