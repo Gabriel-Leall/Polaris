@@ -305,6 +305,17 @@
     text-transform: uppercase;
     opacity: 0.8; /* Dim the label a bit more */
   }
+
+  /* Hide number input arrows */
+  .no-spinner::-webkit-inner-spin-button,
+  .no-spinner::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  .no-spinner {
+    -moz-appearance: textfield;
+    appearance: textfield;
+  }
 }
 
 ::view-transition-old(root),

@@ -37,9 +37,7 @@ export const LandingHeader = () => {
             <a className="text-gray-300 hover:text-white text-sm font-medium transition-colors" href="#features">
               Features
             </a>
-            <a className="text-gray-300 hover:text-white text-sm font-medium transition-colors" href="#workflow">
-              Workflow
-            </a>
+
             <a className="text-gray-300 hover:text-white text-sm font-medium transition-colors" href="#about">
               About
             </a>

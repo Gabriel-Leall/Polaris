@@ -83,7 +83,7 @@ export const HeroSection = () => {
             className="text-white text-5xl md:text-7xl font-black leading-none tracking-tight bg-clip-text text-transparent bg-gradient-to-b from-white to-white/70"
             style={{
               textShadow:
-                "0 0 20px rgba(255, 255, 255, 0.5), 0 0 30px rgba(99, 102, 241, 0.4)",
+                "0 0 6px rgba(255, 255, 255, 0.3), 0 0 8px rgba(99, 102, 241, 0.2)",
             }}
           >
             Enter Your Flow State
