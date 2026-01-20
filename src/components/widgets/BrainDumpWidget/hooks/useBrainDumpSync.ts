@@ -59,8 +59,13 @@ export const useBrainDumpSync = (editor: Editor | null, editorHtml: string) => {
             }
             editor.commands.setContent(contentToSet);
             setContent(editor.getText());
+          } else {
+            // Show mockup content for first-time users
+            const mockupContent = `<h2>Welcome to Polaris</h2><p>This is your Brain Dump space - a place to quickly capture ideas, thoughts, and notes.</p><h3>Getting Started</h3><ul><li><strong>Capture:</strong> Start typing to record your thoughts</li><li><strong>Format:</strong> Use the toolbar above for rich text formatting</li><li><strong>Sync:</strong> Connect to Notion to save your notes permanently</li></ul><p>Start writing and enter your flow state!</p>`;
+            editor.commands.setContent(mockupContent);
+            setContent(editor.getText());
+            lastSavedContent.current = mockupContent;
           }
-          // No mockup content fallback here
         }
       } catch (error) {
         console.error("Failed to load brain dump:", error);
@@ -78,6 +83,12 @@ export const useBrainDumpSync = (editor: Editor | null, editorHtml: string) => {
           }
           editor.commands.setContent(contentToSet);
           setContent(editor.getText());
+        } else {
+          // Show mockup content for first-time users
+          const mockupContent = `<h2>Welcome to Polaris</h2><p>This is your Brain Dump space - a place to quickly capture ideas, thoughts, and notes.</p><h3>Getting Started</h3><ul><li><strong>Capture:</strong> Start typing to record your thoughts</li><li><strong>Format:</strong> Use the toolbar above for rich text formatting</li><li><strong>Sync:</strong> Connect to Notion to save your notes permanently</li></ul><p>Start writing and enter your flow state!</p>`;
+          editor.commands.setContent(mockupContent);
+          setContent(editor.getText());
+          lastSavedContent.current = mockupContent;
         }
       } finally {
         setLoading(false);

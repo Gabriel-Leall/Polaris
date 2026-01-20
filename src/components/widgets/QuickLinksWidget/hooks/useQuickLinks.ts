@@ -85,7 +85,9 @@ export const useQuickLinks = () => {
 
       if (userId) {
         const fetchedLinks = await getQuickLinks(userId);
-        setLinks(fetchedLinks || []);
+        // Show mockup links for first-time users (empty database)
+        const linksToShow = (!fetchedLinks || fetchedLinks.length === 0) ? getMockupLinks(userId) : fetchedLinks;
+        setLinks(linksToShow);
         return;
       }
 

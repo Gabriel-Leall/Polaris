@@ -53,6 +53,8 @@ export const MOCK_TASKS: TaskItem[] = [
     id: 't1', 
     label: 'Complete Linear take-home', 
     completed: false, 
+    priority: 'high',
+    tags: ['interview'],
     dueDate: 'Tomorrow',
     createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24), // 1 day ago
     updatedAt: new Date(Date.now() - 1000 * 60 * 60 * 12), // 12 hours ago
@@ -62,6 +64,8 @@ export const MOCK_TASKS: TaskItem[] = [
     id: 't2', 
     label: 'Reply to Stripe recruiter', 
     completed: true,
+    priority: 'medium',
+    tags: ['work'],
     createdAt: new Date(Date.now() - 1000 * 60 * 60 * 48), // 2 days ago
     updatedAt: new Date(Date.now() - 1000 * 60 * 60 * 6), // 6 hours ago
     userId: 'mock-user-id'
@@ -70,6 +74,8 @@ export const MOCK_TASKS: TaskItem[] = [
     id: 't3', 
     label: 'Update portfolio with new case study', 
     completed: false,
+    priority: 'low',
+    tags: ['personal'],
     createdAt: new Date(Date.now() - 1000 * 60 * 60 * 72), // 3 days ago
     updatedAt: new Date(Date.now() - 1000 * 60 * 60 * 72), // 3 days ago
     userId: 'mock-user-id'
@@ -78,6 +84,8 @@ export const MOCK_TASKS: TaskItem[] = [
     id: 't4', 
     label: 'Research Vercel interview questions', 
     completed: false,
+    priority: 'medium',
+    tags: ['interview'],
     createdAt: new Date(Date.now() - 1000 * 60 * 60 * 96), // 4 days ago
     updatedAt: new Date(Date.now() - 1000 * 60 * 60 * 96), // 4 days ago
     userId: 'mock-user-id'

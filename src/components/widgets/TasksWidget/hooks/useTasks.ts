@@ -7,7 +7,7 @@ import {
   deleteTask,
   getTasks,
 } from "@/app/actions/tasks";
-import { persistLocalTasks, loadLocalTasks, generateTaskId } from "../utils/taskUtils";
+import { persistLocalTasks, loadLocalTasks, generateTaskId, getMockupTasks } from "../utils/taskUtils";
 
 export const useTasks = () => {
   const { userId, isLoading: authLoading } = useAuth();
@@ -30,8 +30,12 @@ export const useTasks = () => {
       setIsLoading(true);
       setError(null);
       const fetchedTasks = await getTasks(userId);
-      setTasks(fetchedTasks);
-      persistLocalTasks(fetchedTasks);
+      
+      // Show mockup tasks for first-time users (empty database)
+      const tasksToShow = fetchedTasks.length === 0 ? getMockupTasks() : fetchedTasks;
+      
+      setTasks(tasksToShow);
+      persistLocalTasks(tasksToShow);
       setIsLocalMode(false);
     } catch (err) {
       const message =

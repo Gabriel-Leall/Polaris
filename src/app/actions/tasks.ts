@@ -16,6 +16,8 @@ const mapTaskRow = (task: TaskRow): TaskItem => ({
   id: task.id,
   label: task.label,
   completed: task.completed,
+  priority: task.priority ?? "medium",
+  tags: task.tags ?? [],
   dueDate: task.due_date ?? undefined,
   createdAt: new Date(task.created_at),
   updatedAt: new Date(task.updated_at),
