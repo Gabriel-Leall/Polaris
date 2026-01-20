@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
+import Image from "next/image";
 import { 
   CheckCircle2, 
   Flame, 
@@ -153,9 +154,11 @@ export default function UserProfilePage() {
             <div className={`w-28 h-28 rounded-full border-[6px] border-card overflow-hidden bg-main shadow-2xl transition-all ${isUploading ? 'opacity-50' : 'group-hover:opacity-80'}`}>
               <div className="w-full h-full bg-gradient-to-br from-indigo-500/10 to-purple-500/10 flex items-center justify-center">
                 {user?.user_metadata?.avatar_url || user?.user_metadata?.picture ? (
-                  <img 
+                  <Image 
                     src={user.user_metadata?.avatar_url || user?.user_metadata?.picture} 
                     alt={fullName} 
+                    width={112}
+                    height={112}
                     className="w-full h-full object-cover" 
                   />
                 ) : (

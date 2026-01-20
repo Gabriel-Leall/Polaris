@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { submitFeedback, getFeedback, deleteFeedback } from "@/app/actions/feedback";
@@ -22,7 +23,7 @@ interface FeedbackItem {
 }
 
 export default function FeedbackPage() {
-  const { userId, user } = useAuth();
+  const { userId } = useAuth();
   const { toast } = useToast();
   const [message, setMessage] = useState("");
   const [feedbacks, setFeedbacks] = useState<FeedbackItem[]>([]);
@@ -165,7 +166,13 @@ export default function FeedbackPage() {
                     <div className="flex items-start gap-4">
                       <div className="w-10 h-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0 overflow-hidden">
                         {f.profiles?.avatar_url ? (
-                          <img src={f.profiles.avatar_url} alt="" className="w-full h-full object-cover" />
+                          <Image
+                            src={f.profiles.avatar_url}
+                            alt={f.profiles.full_name || "Avatar"}
+                            width={40}
+                            height={40}
+                            className="w-full h-full object-cover"
+                          />
                         ) : (
                           <User className="w-5 h-5 text-primary" />
                         )}
