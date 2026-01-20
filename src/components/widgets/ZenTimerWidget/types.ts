@@ -1,5 +1,5 @@
 export type TimerStatus = "IDLE" | "RUNNING" | "PAUSED";
-export type TimerMode = "WORK" | "BREAK";
+export type TimerMode = "WORK" | "BREAK" | "LONG_BREAK";
 
 export interface TimerState {
   status: TimerStatus;
@@ -8,6 +8,7 @@ export interface TimerState {
   endTime: number | null; // Timestamp real de término
   workDuration: number; // em segundos
   breakDuration: number; // em segundos
+  longBreakDuration: number; // em segundos
   totalCycles: number;
   currentCycle: number;
 }
@@ -18,7 +19,7 @@ export type TimerAction =
   | { type: "RESET" }
   | {
       type: "SET_CONFIG";
-      payload: { work: number; break: number; cycles: number };
+      payload: { work: number; break: number; longBreak: number; cycles: number };
     }
   | { type: "TICK" }
   | { type: "SWITCH_MODE" };

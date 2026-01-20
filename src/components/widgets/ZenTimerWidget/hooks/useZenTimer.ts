@@ -26,6 +26,7 @@ const timerReducer = (state: TimerState, action: TimerAction): TimerState => {
         ...state,
         workDuration: workSecs,
         breakDuration: action.payload.break * 60,
+        longBreakDuration: action.payload.longBreak * 60,
         totalCycles: action.payload.cycles,
         timeLeft: workSecs,
         status: "IDLE",
@@ -35,11 +36,25 @@ const timerReducer = (state: TimerState, action: TimerAction): TimerState => {
       };
     case "SWITCH_MODE":
       const isWork = state.mode === "WORK";
-      const nextMode = isWork ? "BREAK" : "WORK";
-      const nextCycle = !isWork ? state.currentCycle + 1 : state.currentCycle;
+      
+      let nextMode: "WORK" | "BREAK" | "LONG_BREAK";
+      let nextCycle = state.currentCycle;
+
+      if (isWork) {
+        // Após work, verifica se é hora do long break (a cada 4 ciclos)
+        if (state.currentCycle % 4 === 0 && state.currentCycle >= 4) {
+          nextMode = "LONG_BREAK";
+        } else {
+          nextMode = "BREAK";
+        }
+      } else {
+        // Após qualquer break, volta para work e incrementa ciclo
+        nextMode = "WORK";
+        nextCycle = state.currentCycle + 1;
+      }
 
       // Se terminou todos os ciclos
-      if (!isWork && state.currentCycle >= state.totalCycles) {
+      if (nextCycle > state.totalCycles) {
         return {
           ...state,
           status: "IDLE",
@@ -50,8 +65,14 @@ const timerReducer = (state: TimerState, action: TimerAction): TimerState => {
         };
       }
 
-      const nextDuration =
-        nextMode === "WORK" ? state.workDuration : state.breakDuration;
+      let nextDuration: number;
+      if (nextMode === "WORK") {
+        nextDuration = state.workDuration;
+      } else if (nextMode === "LONG_BREAK") {
+        nextDuration = state.longBreakDuration;
+      } else {
+        nextDuration = state.breakDuration;
+      }
 
       return {
         ...state,
@@ -84,6 +105,7 @@ export const useZenTimer = (initialWork: number = 25) => {
     endTime: null,
     workDuration: initialWork * 60,
     breakDuration: 5 * 60,
+    longBreakDuration: 15 * 60,
     totalCycles: 1,
     currentCycle: 1,
   });
