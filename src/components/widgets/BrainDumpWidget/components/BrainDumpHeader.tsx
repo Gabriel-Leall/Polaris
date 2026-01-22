@@ -1,3 +1,5 @@
+"use client";
+
 import { Minimize2, Settings2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -73,7 +75,7 @@ export const BrainDumpHeader = ({
         <div className="flex items-center gap-2">
           <div className="w-1 h-1 rounded-full bg-white/20" />
           <h2 
-            className="text-glitch text-[10px]" 
+            className="glitch-text text-[10px] text-foreground" 
             data-text="Cognitive Dump"
           >
             Cognitive Dump

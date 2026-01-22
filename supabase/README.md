@@ -33,7 +33,6 @@ This directory contains the database schema and setup instructions for the Polar
 
 - **profiles**: User profile information (extends auth.users)
 - **tasks**: Task management with user association
-- **job_applications**: Job tracking with status management
 - **user_preferences**: User personalization settings
 - **brain_dump_notes**: Scratchpad content with versioning
 

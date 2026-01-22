@@ -31,6 +31,10 @@ const ZenTimerWidgetCore = ({
   const { playFinishSound } = useTimerAudio();
   const [isConfiguring, setIsConfiguring] = useState(false);
   const [lastSavedTime, setLastSavedTime] = useState(state.timeLeft);
+  const [timerState, setTimerState] = useState(state.status);
+
+  const formatTime = (value: number) => value.toString().padStart(2, "0");
+  const formattedTime = `${formatTime(Math.floor(state.timeLeft / 60))}:${formatTime(state.timeLeft % 60)}`;
 
   const [timerConfig, setTimerConfig] = useState({
     work: 25,
@@ -67,6 +71,7 @@ const ZenTimerWidgetCore = ({
 
   // Sincroniza o estado de execução com o store global para o efeito de blur
   useEffect(() => {
+    setTimerState(state.status);
     if (state.status === "RUNNING") {
       startTimer();
     } else {
@@ -87,7 +92,7 @@ const ZenTimerWidgetCore = ({
   }, [state.timeLeft, state.status, playFinishSound, dispatch]);
 
   return (
-    <div className={cn("flex flex-col h-full relative", className)}>
+    <div className={cn("flex flex-col h-full relative", className)} data-timer-state={timerState}>
       {isConfiguring ? (
         <div className="flex-1 flex flex-col p-4 animate-in fade-in duration-300">
           {/* Header de Configuração com botões de ação no topo */}
@@ -101,7 +106,7 @@ const ZenTimerWidgetCore = ({
               >
                 <X className="h-4 w-4" />
               </Button>
-              <h2 className="text-glitch text-[10px] text-primary" data-text="Configuration">
+              <h2 className="glitch-text text-[10px] text-primary" data-text="Configuration">
                 Configuration
               </h2>
             </div>
@@ -133,7 +138,7 @@ const ZenTimerWidgetCore = ({
                     max="90"
                     value={timerConfig.work}
                     onChange={(e) => setTimerConfig(c => ({ ...c, work: Math.max(1, Math.min(90, Number(e.target.value))) }))}
-                    className="w-full bg-transparent border-none text-white font-mono text-sm focus:outline-none no-spinner"
+                    className="w-full bg-transparent border-transparent text-white font-mono text-sm focus:outline-none no-spinner"
                   />
                 </div>
               </div>
@@ -143,14 +148,14 @@ const ZenTimerWidgetCore = ({
                 <label className="text-[8px] text-secondary/60 uppercase font-bold tracking-wider ml-1">
                   Break (min)
                 </label>
-                <div className="bg-white/[0.02] border border-white/5 rounded-lg p-2 transition-all hover:bg-white/[0.04] hover:border-emerald-500/20 group-focus-within:border-emerald-500/40 group-focus-within:bg-emerald-500/5">
+                <div className="bg-white/[0.02] border border-white/5 rounded-lg p-2 transition-all hover:bg-white/[0.04] hover:border-status-pending/20 group-focus-within:border-status-pending/40 group-focus-within:bg-status-pending/5">
                   <input
                     type="number"
                     min="1"
                     max="30"
                     value={timerConfig.break}
                     onChange={(e) => setTimerConfig(c => ({ ...c, break: Math.max(1, Math.min(30, Number(e.target.value))) }))}
-                    className="w-full bg-transparent border-none text-white font-mono text-sm focus:outline-none no-spinner"
+                    className="w-full bg-transparent border-transparent text-white font-mono text-sm focus:outline-none no-spinner"
                   />
                 </div>
               </div>
@@ -160,14 +165,14 @@ const ZenTimerWidgetCore = ({
                 <label className="text-[8px] text-secondary/60 uppercase font-bold tracking-wider ml-1">
                   Long Break
                 </label>
-                <div className="bg-white/[0.02] border border-white/5 rounded-lg p-2 transition-all hover:bg-white/[0.04] hover:border-blue-500/20 group-focus-within:border-blue-500/40 group-focus-within:bg-blue-500/5">
+                <div className="bg-white/[0.02] border border-white/5 rounded-lg p-2 transition-all hover:bg-white/[0.04] hover:border-status-applied/20 group-focus-within:border-status-applied/40 group-focus-within:bg-status-applied/5">
                   <input
                     type="number"
                     min="5"
                     max="60"
                     value={timerConfig.longBreak}
                     onChange={(e) => setTimerConfig(c => ({ ...c, longBreak: Math.max(5, Math.min(60, Number(e.target.value))) }))}
-                    className="w-full bg-transparent border-none text-white font-mono text-sm focus:outline-none no-spinner"
+                    className="w-full bg-transparent border-transparent text-white font-mono text-sm focus:outline-none no-spinner"
                   />
                 </div>
               </div>
@@ -184,7 +189,7 @@ const ZenTimerWidgetCore = ({
                     max="20"
                     value={timerConfig.cycles}
                     onChange={(e) => setTimerConfig(c => ({ ...c, cycles: Math.max(1, Math.min(20, Number(e.target.value))) }))}
-                    className="w-full bg-transparent border-none text-white font-mono text-sm focus:outline-none no-spinner"
+                    className="w-full bg-transparent border-transparent text-white font-mono text-sm focus:outline-none no-spinner"
                   />
                 </div>
               </div>
@@ -217,7 +222,7 @@ const ZenTimerWidgetCore = ({
                     : "bg-white/20"
                 )}
               />
-              <h2 className="text-glitch text-[10px]" data-text="Zen System">
+              <h2 className="glitch-text text-[10px] text-foreground" data-text="Zen System">
                 Zen System
               </h2>
             </div>
@@ -253,6 +258,7 @@ const ZenTimerWidgetCore = ({
               onClick={() =>
                 dispatch({ type: state.status === "RUNNING" ? "PAUSE" : "START" })
               }
+              aria-label={`Timer ${formattedTime}`}
               className={cn(
                 "h-12 w-12 rounded-full p-0 transition-all duration-500",
                 "shadow-[0_0_15px_rgba(99,102,241,0.3)]",

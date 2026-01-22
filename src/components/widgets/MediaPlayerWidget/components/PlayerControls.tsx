@@ -1,3 +1,5 @@
+"use client";
+
 import { Play, Pause, SkipBack, SkipForward, Repeat } from "lucide-react";
 import { Button } from "@/components/ui";
 import { cn } from "@/lib/utils";
@@ -73,7 +75,7 @@ export function PlayerControls({
             "h-8 w-8 p-0 transition-all duration-300",
             isLooping
               ? "text-primary bg-primary/10"
-              : "text-muted hover:text-white"
+              : "text-muted hover:text-white",
           )}
         >
           <Repeat className={cn("h-4 w-4", isLooping && "animate-spin-slow")} />
@@ -101,3 +103,5 @@ export function PlayerControls({
     </div>
   );
 }
+
+export default PlayerControls;

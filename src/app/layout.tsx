@@ -5,8 +5,8 @@ import { Toaster } from "@/components/ui/toaster";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Polaris - Job Application Tracker",
-  description: "AI-powered job application tracking dashboard with focus mode",
+  title: "Polaris - Focus Dashboard",
+  description: "AI-powered productivity dashboard with focus mode",
   icons: {
     icon: [
       { url: "/favicon/favicon.ico" },

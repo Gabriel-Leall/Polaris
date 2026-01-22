@@ -27,47 +27,6 @@ export const updateTaskSchema = z.object({
   dueDate: z.string().optional(),
 });
 
-export const createJobApplicationSchema = z.object({
-  companyName: z
-    .string()
-    .min(1, "Company name is required")
-    .max(200, "Company name too long"),
-  companyDomain: z.string().optional(),
-  position: z
-    .string()
-    .min(1, "Position is required")
-    .max(200, "Position too long"),
-  status: z
-    .enum(["Interview", "Applied", "Rejected", "Offer"] as const)
-    .default("Applied"),
-  notes: z.string().max(2000, "Notes too long").optional(),
-  userId: z.string().uuid("Invalid user ID"),
-});
-
-export const updateJobApplicationSchema = z.object({
-  id: z.string().uuid("Invalid job application ID"),
-  companyName: z
-    .string()
-    .min(1, "Company name is required")
-    .max(200, "Company name too long")
-    .optional(),
-  companyDomain: z.string().optional(),
-  position: z
-    .string()
-    .min(1, "Position is required")
-    .max(200, "Position too long")
-    .optional(),
-  status: z
-    .enum(["Interview", "Applied", "Rejected", "Offer"] as const)
-    .optional(),
-  notes: z.string().max(2000, "Notes too long").optional(),
-});
-
-export const updateJobApplicationStatusSchema = z.object({
-  id: z.string().uuid("Invalid job application ID"),
-  status: z.enum(["Interview", "Applied", "Rejected", "Offer"] as const),
-});
-
 export const createUserPreferencesSchema = z.object({
   userId: z.string().uuid("Invalid user ID"),
   theme: z.enum(["light", "dark"] as const).default("dark"),
@@ -215,15 +174,6 @@ export const envSchema = z.object({
 // Helper type exports
 export type CreateTaskInput = z.infer<typeof createTaskSchema>;
 export type UpdateTaskInput = z.infer<typeof updateTaskSchema>;
-export type CreateJobApplicationInput = z.infer<
-  typeof createJobApplicationSchema
->;
-export type UpdateJobApplicationInput = z.infer<
-  typeof updateJobApplicationSchema
->;
-export type UpdateJobApplicationStatusInput = z.infer<
-  typeof updateJobApplicationStatusSchema
->;
 export type CreateUserPreferencesInput = z.infer<
   typeof createUserPreferencesSchema
 >;

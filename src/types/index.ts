@@ -22,20 +22,6 @@ export interface TaskItem {
   userId: string;
 }
 
-export interface JobApplication {
-  id: string;
-  companyName: string;
-  companyDomain?: string;
-  position: string;
-  status: AppStatus;
-  appliedAt: Date;
-  lastUpdated: Date;
-  notes?: string;
-  userId: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
 export interface UserPreferences {
   id: string;
   userId: string;
@@ -177,47 +163,6 @@ export interface Database {
           priority?: "low" | "medium" | "high";
           tags?: string[];
           due_date?: string | null;
-          created_at?: string;
-          updated_at?: string;
-        };
-      };
-      job_applications: {
-        Row: {
-          id: string;
-          user_id: string;
-          company_name: string;
-          company_domain: string | null;
-          position: string;
-          status: AppStatus;
-          applied_at: string;
-          last_updated: string;
-          notes: string | null;
-          created_at: string;
-          updated_at: string;
-        };
-        Insert: {
-          id?: string;
-          user_id: string;
-          company_name: string;
-          company_domain?: string | null;
-          position: string;
-          status?: AppStatus;
-          applied_at?: string;
-          last_updated?: string;
-          notes?: string | null;
-          created_at?: string;
-          updated_at?: string;
-        };
-        Update: {
-          id?: string;
-          user_id?: string;
-          company_name?: string;
-          company_domain?: string | null;
-          position?: string;
-          status?: AppStatus;
-          applied_at?: string;
-          last_updated?: string;
-          notes?: string | null;
           created_at?: string;
           updated_at?: string;
         };

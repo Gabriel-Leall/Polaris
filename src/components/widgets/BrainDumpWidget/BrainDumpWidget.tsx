@@ -2,12 +2,12 @@
 
 import { useState, useEffect } from "react";
 import { EditorContent } from "@tiptap/react";
-import { 
-  Loader2, 
-  AlertCircle, 
-  Maximize2, 
-  Settings, 
-  ChevronRight 
+import {
+  Loader2,
+  AlertCircle,
+  Maximize2,
+  Settings,
+  ChevronRight,
 } from "lucide-react";
 import { ErrorBoundary, Button } from "@/components/ui";
 import { cn } from "@/lib/utils";
@@ -117,7 +117,7 @@ const BrainDumpWidgetContent = ({ className }: BrainDumpWidgetProps) => {
         userId,
         editorHtml,
         noteTitle || "Brain Dump Polaris",
-        suggestedTags
+        suggestedTags,
       );
       if (result.success) {
         toast({
@@ -185,7 +185,7 @@ const BrainDumpWidgetContent = ({ className }: BrainDumpWidgetProps) => {
       <div
         className={cn(
           "bg-card/50 rounded-3xl flex flex-col overflow-hidden transition-all duration-300",
-          className
+          className,
         )}
       >
         <BrainDumpHeader
@@ -293,7 +293,8 @@ const BrainDumpWidgetContent = ({ className }: BrainDumpWidgetProps) => {
               Configurações
             </DialogTitle>
             <DialogDescription className="text-white/40">
-              Para gerenciar sua chave do Gemini, conexão com Notion e banco de dados, acesse a página central de configurações.
+              Para gerenciar sua chave do Gemini, conexão com Notion e banco de
+              dados, acesse a página central de configurações.
             </DialogDescription>
           </DialogHeader>
 
@@ -322,7 +323,7 @@ const BrainDumpErrorFallback = () => (
     </div>
     <div className="flex-1 flex items-center justify-center p-4">
       <div className="text-center">
-        <AlertCircle className="w-8 h-8 text-red-400 mx-auto mb-2" />
+        <AlertCircle className="w-8 h-8 text-destructive mx-auto mb-2" />
         <p className="text-sm text-muted-foreground">Failed to load editor</p>
       </div>
     </div>

@@ -13,7 +13,7 @@ interface LoginFormProps {
   redirectTo?: string;
 }
 
-export const LoginForm: React.FC<LoginFormProps> = ({ redirectTo = "/" }) => {
+export function LoginForm({ redirectTo = "/" }: LoginFormProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -34,7 +34,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ redirectTo = "/" }) => {
     <AuthFormShell
       title="Sign in"
       footer={
-        <p className="text-sm text-slate-500">
+        <p className="text-sm text-muted-foreground">
           Don&apos;t have an account? 
           <Link className="text-white font-medium hover:underline ml-1" href="/signup">
             Sign up
@@ -45,11 +45,11 @@ export const LoginForm: React.FC<LoginFormProps> = ({ redirectTo = "/" }) => {
       <div className="space-y-6">
         <form action={handleSubmit} className="space-y-5">
           <div className="space-y-1.5">
-            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest" htmlFor="email">
+            <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest" htmlFor="email">
               Your email
             </label>
             <Input 
-              className="w-full px-4 py-3 bg-[#151518] border-white/[0.03] focus:border-white/10 focus:ring-0 text-white rounded-xl transition-all outline-none h-12 placeholder:text-slate-600" 
+              className="w-full px-4 py-3 bg-card border-white/[0.03] focus:border-white/10 focus:ring-0 text-white rounded-xl transition-all outline-none h-12 placeholder:text-muted-foreground/70" 
               id="email" 
               name="email"
               placeholder="charles@polaris.app" 
@@ -61,15 +61,15 @@ export const LoginForm: React.FC<LoginFormProps> = ({ redirectTo = "/" }) => {
           
           <div className="space-y-1.5">
             <div className="flex justify-between items-center">
-              <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest" htmlFor="password">
+              <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest" htmlFor="password">
                 Password
               </label>
-              <Link className="text-[10px] font-bold text-slate-500 hover:text-white transition-colors" href="#">
+              <Link className="text-[10px] font-bold text-muted-foreground hover:text-white transition-colors" href="#">
                 Forget password?
               </Link>
             </div>
             <Input 
-              className="w-full px-4 py-3 bg-[#151518] border-white/[0.03] focus:border-white/10 focus:ring-0 text-white rounded-xl transition-all outline-none h-12 placeholder:text-slate-600" 
+              className="w-full px-4 py-3 bg-card border-white/[0.03] focus:border-white/10 focus:ring-0 text-white rounded-xl transition-all outline-none h-12 placeholder:text-muted-foreground/70" 
               id="password" 
               name="password"
               placeholder="••••••••••••" 
@@ -86,7 +86,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ redirectTo = "/" }) => {
           )}
           
           <Button 
-            className="w-full h-12 bg-[#6366F1] hover:bg-[#585af2] text-white font-bold rounded-xl transition-all active:scale-[0.98] mt-2 border-none shadow-none" 
+            className="w-full h-12 bg-primary hover:bg-primary/90 text-white font-bold rounded-xl transition-all active:scale-[0.98] mt-2 border-transparent shadow-none" 
             type="submit"
             disabled={isLoading}
           >
@@ -106,7 +106,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ redirectTo = "/" }) => {
             <span className="w-full border-t border-white/[0.05]" />
           </div>
           <div className="relative flex justify-center text-[10px] uppercase">
-            <span className="bg-[#0B0B0D] px-4 text-slate-500 font-bold tracking-[0.2em]">Or continue with</span>
+            <span className="bg-main px-4 text-muted-foreground font-bold tracking-[0.2em]">Or continue with</span>
           </div>
         </div>
 
@@ -114,4 +114,4 @@ export const LoginForm: React.FC<LoginFormProps> = ({ redirectTo = "/" }) => {
       </div>
     </AuthFormShell>
   );
-};
+}

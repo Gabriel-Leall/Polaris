@@ -137,6 +137,10 @@ export const createUserPreferences = async (
       .select()
       .single();
 
+    if (!prefs && !error) {
+      throw new Error("Failed to create user preferences: No data returned");
+    }
+
     if (error) {
       throw new Error(`Failed to create user preferences: ${error.message}`);
     }

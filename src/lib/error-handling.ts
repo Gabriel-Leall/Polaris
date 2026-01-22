@@ -1,3 +1,4 @@
+import React from 'react'
 import { ZodError } from 'zod'
 
 // Error types for better error handling

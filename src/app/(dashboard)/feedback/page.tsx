@@ -3,9 +3,20 @@
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
-import { submitFeedback, getFeedback, deleteFeedback } from "@/app/actions/feedback";
+import {
+  submitFeedback,
+  getFeedback,
+  deleteFeedback,
+} from "@/app/actions/feedback";
 import { Button } from "@/components/ui/button";
-import { MessageSquare, Send, Trash2, User, Clock, Loader2 } from "lucide-react";
+import {
+  MessageSquare,
+  Send,
+  Trash2,
+  User,
+  Clock,
+  Loader2,
+} from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { useToast } from "@/hooks/use-toast";
 import { formatDistanceToNow } from "date-fns";
@@ -38,7 +49,7 @@ export default function FeedbackPage() {
     try {
       setIsLoading(true);
       const data = await getFeedback();
-      setFeedbacks(data as any);
+      setFeedbacks(data as unknown as FeedbackItem[]);
     } catch (error) {
       console.error("Error loading feedback:", error);
     } finally {
@@ -115,7 +126,7 @@ export default function FeedbackPage() {
               />
             </div>
             <div className="flex justify-end">
-              <Button 
+              <Button
                 disabled={!message.trim() || isSubmitting || !userId}
                 className="bg-primary hover:bg-primary-glow text-white font-bold px-8 h-12 rounded-xl shadow-glow-sm transition-all"
               >
@@ -149,7 +160,9 @@ export default function FeedbackPage() {
               </div>
             ) : feedbacks.length === 0 ? (
               <div className="text-center py-20 bg-card/20 border border-dashed border-white/10 rounded-3xl">
-                <p className="text-muted-foreground italic">Nenhum feedback ainda. Seja o primeiro!</p>
+                <p className="text-muted-foreground italic">
+                  Nenhum feedback ainda. Seja o primeiro!
+                </p>
               </div>
             ) : (
               <AnimatePresence mode="popLayout">
@@ -184,7 +197,10 @@ export default function FeedbackPage() {
                           </h4>
                           <span className="text-[10px] text-muted-foreground flex items-center gap-1">
                             <Clock className="w-3 h-3" />
-                            {formatDistanceToNow(new Date(f.created_at), { addSuffix: true, locale: ptBR })}
+                            {formatDistanceToNow(new Date(f.created_at), {
+                              addSuffix: true,
+                              locale: ptBR,
+                            })}
                           </span>
                         </div>
                         <p className="text-white/80 leading-relaxed">

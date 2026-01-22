@@ -10,15 +10,15 @@ interface AuthContainerProps {
   children: React.ReactNode;
 }
 
-export const AuthContainer: React.FC<AuthContainerProps> = ({ children }) => {
+export function AuthContainer({ children }: AuthContainerProps) {
   const pathname = usePathname();
   const isSignup = pathname === "/signup";
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6 bg-[#050506] relative overflow-hidden transition-colors duration-300">
+    <div className="min-h-screen flex items-center justify-center p-6 bg-main relative overflow-hidden transition-colors duration-300">
       <div className="absolute inset-0 grain-overlay z-0" />
       
-      <div className="relative w-full max-w-6xl bg-[#0B0B0D] rounded-[32px] overflow-hidden shadow-[0_0_100px_rgba(0,0,0,0.8)] flex flex-col md:flex-row min-h-[640px] border border-white/[0.03] z-10">
+      <div className="relative w-full max-w-6xl bg-main rounded-[32px] overflow-hidden shadow-[0_0_100px_rgba(0,0,0,0.8)] flex flex-col md:flex-row min-h-[640px] border border-white/[0.03] z-10">
         
         {/* Forms Layer */}
         <div className="flex w-full min-h-inherit relative">
@@ -73,4 +73,4 @@ export const AuthContainer: React.FC<AuthContainerProps> = ({ children }) => {
       </div>
     </div>
   );
-};
+}

@@ -26,7 +26,15 @@ import { getProfileStats, updateAvatar } from "@/app/actions/profile";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "@/hooks/use-toast";
 
-const StatCard = ({ label, value, icon: Icon, color, bg }: any) => (
+type StatCardProps = {
+  label: string;
+  value: React.ReactNode;
+  icon: React.ElementType;
+  color: string;
+  bg: string;
+};
+
+const StatCard = ({ label, value, icon: Icon, color, bg }: StatCardProps) => (
   <div className="bg-card/40 border border-white/5 p-4 rounded-2xl flex flex-col gap-2 flex-1 hover:border-white/10 transition-all duration-300">
     <div className={`p-2 w-fit rounded-lg ${bg}`}>
       <Icon className={`w-4 h-4 ${color}`} />
@@ -110,9 +118,10 @@ export default function UserProfilePage() {
       
       // Force refresh or local state update could be done here
       window.location.reload(); 
-    } catch (error: any) {
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
       console.error("Upload error:", error);
-      toast({ title: "Erro ao subir imagem", description: error.message, variant: "destructive" });
+      toast({ title: "Erro ao subir imagem", description: message, variant: "destructive" });
     } finally {
       setIsUploading(false);
     }

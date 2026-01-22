@@ -1,3 +1,5 @@
+"use client";
+
 import { X, Plus, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { TagReviewProps } from "../types";
@@ -21,7 +23,7 @@ export const TagReview = ({
       .filter(
         (tag) =>
           tag.toLowerCase().includes(newTag.toLowerCase()) &&
-          !suggestedTags.includes(tag)
+          !suggestedTags.includes(tag),
       )
       .slice(0, 5);
   }, [newTag, allAvailableTags, suggestedTags]);

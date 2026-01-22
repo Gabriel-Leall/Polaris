@@ -5,7 +5,7 @@ const LOCAL_TASKS_KEY = "polaris-local-tasks";
 export const getMockupTasks = (): TaskItem[] => [
   {
     id: "mock-1",
-    label: "Review job applications",
+    label: "Review upcoming tasks",
     completed: false,
     priority: "medium",
     tags: [],

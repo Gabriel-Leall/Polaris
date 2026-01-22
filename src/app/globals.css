@@ -293,7 +293,7 @@
     filter: blur(1px);
   }
   
-  .text-glitch {
+  .glitch-text {
     position: relative;
     display: inline-block;
     color: #52525b; /* Dark Zinc/Gray to not attract too much attention */

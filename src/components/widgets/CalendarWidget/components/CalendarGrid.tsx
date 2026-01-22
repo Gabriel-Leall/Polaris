@@ -1,3 +1,5 @@
+"use client";
+
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { getDaysInMonth, formatDateKey, isToday } from '../utils/calendarUtils';
@@ -24,7 +26,7 @@ export const CalendarGrid = ({
         <div className="flex items-center gap-2">
           <div className="w-1 h-1 rounded-full bg-white/20" />
           <h2 
-            className="text-glitch text-[10px]" 
+            className="glitch-text text-[10px] text-foreground" 
             data-text={monthName}
           >
             {monthName}

@@ -1,3 +1,5 @@
+"use client";
+
 import { TaskStatsProps } from "../types";
 
 export const TaskStats = ({ tasks }: TaskStatsProps) => {

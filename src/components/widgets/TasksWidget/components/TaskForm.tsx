@@ -1,3 +1,5 @@
+"use client";
+
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -33,19 +35,21 @@ export const TaskForm = ({
         size="sm"
         className={cn(
           "h-9 w-9 p-0 transition-all duration-200",
-          newTaskLabel.trim() 
-            ? "bg-primary hover:bg-primary/90 hover:shadow-glow-sm scale-100" 
-            : "bg-white/10 hover:bg-white/20 text-muted-foreground"
+          newTaskLabel.trim()
+            ? "bg-primary hover:bg-primary/90 hover:shadow-glow-sm scale-100"
+            : "bg-white/10 hover:bg-white/20 text-muted-foreground",
         )}
         title={newTaskLabel.trim() ? "Add task" : "Type a task first"}
       >
         {isCreating ? (
           <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
         ) : (
-          <Plus className={cn(
-            "w-4 h-4 transition-transform duration-200",
-            newTaskLabel.trim() && "group-hover:rotate-90"
-          )} />
+          <Plus
+            className={cn(
+              "w-4 h-4 transition-transform duration-200",
+              newTaskLabel.trim() && "group-hover:rotate-90",
+            )}
+          />
         )}
       </Button>
     </div>

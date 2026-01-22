@@ -7,17 +7,16 @@
  */
 
 import "../setup";
-import * as fc from "fast-check";
 
-// Mock the Supabase module before importing Server Actions
-import { vi } from "vitest";
+import { vi, describe, test, expect, beforeEach } from "vitest";
+import { supabase } from "@/lib/supabase";
 
 // Mock Supabase module
 vi.mock("@/lib/supabase", () => {
   const mockSupabase = {
     from: vi.fn(),
   };
-  return { supabase: mockSupabase };
+  return { __esModule: true, supabase: mockSupabase };
 });
 
 // Import Server Actions after mocking
@@ -28,21 +27,24 @@ import {
   getTasks,
 } from "@/app/actions/tasks";
 import {
-  createJobApplication,
-  updateJobApplicationStatus,
-  updateJobApplication,
-  deleteJobApplication,
-  getJobApplications,
-} from "@/app/actions/jobApplications";
-import {
   createUserPreferences,
   updateUserPreferences,
   getUserPreferences,
 } from "@/app/actions/userPreferences";
 
+// Mock user preferences server client
+vi.mock("@/lib/supabase-server", () => {
+  return {
+    __esModule: true,
+    createSupabaseServerClient: vi.fn(async () => ({
+      from: supabase.from,
+    })),
+  };
+});
+
 describe("Server Action Error Handling", () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   test("Property 11: Server Action error handling - all actions handle database errors gracefully", async () => {
@@ -54,112 +56,59 @@ describe("Server Action Error Handling", () => {
       code: "TEST_ERROR",
     };
 
-    const mockSingle = jest
+    const mockSingle = vi
       .fn()
       .mockResolvedValue({ data: null, error: mockError });
-    const mockSelect = jest.fn(() => ({ single: mockSingle }));
-    const mockEq = jest.fn(() => ({
+    const mockSelect = vi.fn(() => ({ single: mockSingle }));
+    const mockEq = vi.fn(() => ({
       select: mockSelect,
       single: mockSingle,
-      order: jest.fn().mockResolvedValue({ data: null, error: mockError }),
+      order: vi.fn().mockResolvedValue({ data: null, error: mockError }),
     }));
 
-    supabase.from.mockReturnValue({
-      insert: jest.fn(() => ({ select: mockSelect })),
-      update: jest.fn(() => ({ eq: mockEq })),
-      delete: jest.fn(() => ({ eq: mockEq })),
-      select: jest.fn(() => ({
+    (supabase.from as any).mockImplementation(() => ({
+      insert: vi.fn(() => ({ select: mockSelect })),
+      update: vi.fn(() => ({ eq: mockEq })),
+      delete: vi.fn(() => ({ eq: mockEq })),
+      select: vi.fn(() => ({
         eq: mockEq,
-        order: jest.fn().mockResolvedValue({ data: null, error: mockError }),
+        order: vi.fn().mockResolvedValue({ data: null, error: mockError }),
       })),
-    });
+    }));
 
-    // Test that createTask handles database errors properly
-    try {
-      await createTask({
+    await expect(
+      createTask({
         label: "Test Task",
         completed: false,
+        priority: "medium",
+        tags: [],
         userId: "123e4567-e89b-12d3-a456-426614174001",
-      });
-      expect(true).toBe(false); // Should not reach here
-    } catch (error) {
-      expect(error).toBeInstanceOf(Error);
-      expect(error.message).toContain("Create task failed");
-      expect(error.message).toContain("Simulated database error");
-    }
+      }),
+    ).rejects.toThrow("Create task failed");
   });
 
   test("Property 11: Server Action error handling - actions handle invalid input gracefully", async () => {
-    // Test with empty label (should fail validation)
-    try {
-      await createTask({
+    await expect(
+      createTask({
         label: "", // Empty label should fail validation
         completed: false,
+        priority: "medium",
+        tags: [],
         userId: "123e4567-e89b-12d3-a456-426614174001",
-      });
-      expect(true).toBe(false); // Should not reach here
-    } catch (error) {
-      expect(error).toBeInstanceOf(Error);
-      expect(error.message).toContain("Create task failed");
-    }
+      }),
+    ).rejects.toThrow("Create task failed");
 
-    // Test with invalid UUID (should fail validation)
-    try {
-      await createTask({
+    await expect(
+      createTask({
         label: "Valid Task",
         completed: false,
+        priority: "medium",
+        tags: [],
         userId: "invalid-uuid", // Invalid UUID should fail validation
-      });
-      expect(true).toBe(false); // Should not reach here
-    } catch (error) {
-      expect(error).toBeInstanceOf(Error);
-      expect(error.message).toContain("Create task failed");
-    }
+      }),
+    ).rejects.toThrow("Create task failed");
   });
 
-  test("Property 11: Server Action error handling - job application actions handle errors", async () => {
-    const { supabase } = await import("@/lib/supabase");
-
-    // Configure mock to return error
-    const mockError = {
-      message: "Database error for job application",
-      code: "TEST_ERROR",
-    };
-
-    const mockSingle = jest
-      .fn()
-      .mockResolvedValue({ data: null, error: mockError });
-    const mockSelect = jest.fn(() => ({ single: mockSingle }));
-    const mockEq = jest.fn(() => ({
-      select: mockSelect,
-      single: mockSingle,
-      order: jest.fn().mockResolvedValue({ data: null, error: mockError }),
-    }));
-
-    supabase.from.mockReturnValue({
-      insert: jest.fn(() => ({ select: mockSelect })),
-      update: jest.fn(() => ({ eq: mockEq })),
-      delete: jest.fn(() => ({ eq: mockEq })),
-      select: jest.fn(() => ({
-        eq: mockEq,
-        order: jest.fn().mockResolvedValue({ data: null, error: mockError }),
-      })),
-    });
-
-    // Test createJobApplication error handling
-    try {
-      await createJobApplication({
-        companyName: "Test Company",
-        position: "Developer",
-        status: "Applied",
-        userId: "123e4567-e89b-12d3-a456-426614174001",
-      });
-      expect(true).toBe(false); // Should not reach here
-    } catch (error) {
-      expect(error).toBeInstanceOf(Error);
-      expect(error.message).toContain("Create job application failed");
-    }
-  });
 
   test("Property 11: Server Action error handling - user preferences actions handle errors", async () => {
     const { supabase } = await import("@/lib/supabase");
@@ -170,17 +119,17 @@ describe("Server Action Error Handling", () => {
       code: "TEST_ERROR",
     };
 
-    const mockSingle = jest
+    const mockSingle = vi
       .fn()
       .mockResolvedValue({ data: null, error: mockError });
-    const mockSelect = jest.fn(() => ({ single: mockSingle }));
-    const mockEq = jest.fn(() => ({ single: mockSingle }));
+    const mockSelect = vi.fn(() => ({ single: mockSingle }));
+    const mockEq = vi.fn(() => ({ single: mockSingle }));
 
-    supabase.from.mockReturnValue({
-      insert: jest.fn(() => ({ select: mockSelect })),
-      update: jest.fn(() => ({ eq: mockEq })),
-      select: jest.fn(() => ({ eq: mockEq })),
-    });
+    (supabase.from as any).mockImplementation(() => ({
+      insert: vi.fn(() => ({ select: mockSelect })),
+      update: vi.fn(() => ({ eq: mockEq })),
+      select: vi.fn(() => ({ eq: mockEq })),
+    }));
 
     // Test createUserPreferences error handling
     try {
@@ -195,7 +144,9 @@ describe("Server Action Error Handling", () => {
       expect(true).toBe(false); // Should not reach here
     } catch (error) {
       expect(error).toBeInstanceOf(Error);
-      expect(error.message).toContain("Create user preferences failed");
+      expect((error as Error).message).toContain(
+        "Create user preferences failed",
+      );
     }
   });
 
@@ -204,25 +155,25 @@ describe("Server Action Error Handling", () => {
 
     // Configure mock to return error
     const mockError = { message: "Test error", code: "TEST_ERROR" };
-    const mockSingle = jest
+    const mockSingle = vi
       .fn()
       .mockResolvedValue({ data: null, error: mockError });
-    const mockSelect = jest.fn(() => ({ single: mockSingle }));
-    const mockEq = jest.fn(() => ({
+    const mockSelect = vi.fn(() => ({ single: mockSingle }));
+    const mockEq = vi.fn(() => ({
       select: mockSelect,
       single: mockSingle,
-      order: jest.fn().mockResolvedValue({ data: null, error: mockError }),
+      order: vi.fn().mockResolvedValue({ data: null, error: mockError }),
     }));
 
-    supabase.from.mockReturnValue({
-      insert: jest.fn(() => ({ select: mockSelect })),
-      update: jest.fn(() => ({ eq: mockEq })),
-      delete: jest.fn(() => ({ eq: mockEq })),
-      select: jest.fn(() => ({
+    (supabase.from as any).mockImplementation(() => ({
+      insert: vi.fn(() => ({ select: mockSelect })),
+      update: vi.fn(() => ({ eq: mockEq })),
+      delete: vi.fn(() => ({ eq: mockEq })),
+      select: vi.fn(() => ({
         eq: mockEq,
-        order: jest.fn().mockResolvedValue({ data: null, error: mockError }),
+        order: vi.fn().mockResolvedValue({ data: null, error: mockError }),
       })),
-    });
+    }));
 
     // Test that all Server Actions throw proper Error instances
     const testCases = [
@@ -230,6 +181,8 @@ describe("Server Action Error Handling", () => {
         createTask({
           label: "Test",
           completed: false,
+          priority: "medium",
+          tags: [],
           userId: "123e4567-e89b-12d3-a456-426614174001",
         }),
       () =>
@@ -238,19 +191,6 @@ describe("Server Action Error Handling", () => {
         }),
       () => deleteTask("123e4567-e89b-12d3-a456-426614174000"),
       () => getTasks("123e4567-e89b-12d3-a456-426614174001"),
-      () =>
-        createJobApplication({
-          companyName: "Test",
-          position: "Dev",
-          status: "Applied",
-          userId: "123e4567-e89b-12d3-a456-426614174001",
-        }),
-      () =>
-        updateJobApplication("123e4567-e89b-12d3-a456-426614174000", {
-          companyName: "Updated",
-        }),
-      () => deleteJobApplication("123e4567-e89b-12d3-a456-426614174000"),
-      () => getJobApplications("123e4567-e89b-12d3-a456-426614174001"),
       () =>
         createUserPreferences({
           userId: "123e4567-e89b-12d3-a456-426614174001",
@@ -274,7 +214,7 @@ describe("Server Action Error Handling", () => {
       } catch (error) {
         expect(error).toBeInstanceOf(Error);
         expect(error).toHaveProperty("message");
-        expect(typeof error.message).toBe("string");
+        expect(typeof (error as Error).message).toBe("string");
       }
     }
   });

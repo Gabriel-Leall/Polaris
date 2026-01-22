@@ -26,7 +26,7 @@ export function EmptyState({
     <div
       className={cn(
         "flex flex-col items-center justify-center h-full text-center p-4",
-        className
+        className,
       )}
     >
       {Icon && (
@@ -63,7 +63,7 @@ export function LoadingState({
     <div
       className={cn(
         "flex flex-col items-center justify-center h-full text-center p-4",
-        className
+        className,
       )}
     >
       <div className="relative">
@@ -94,7 +94,7 @@ export function ErrorState({
     <div
       className={cn(
         "flex flex-col items-center justify-center h-full text-center p-4",
-        className
+        className,
       )}
     >
       <div className="w-12 h-12 rounded-xl bg-destructive/10 border border-destructive/20 flex items-center justify-center mb-3">
@@ -132,11 +132,11 @@ export function OfflineBadge({ className }: OfflineBadgeProps) {
     <span
       className={cn(
         "inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium",
-        "bg-yellow-500/20 text-yellow-400 border border-yellow-500/30",
-        className
+        "bg-warning/20 text-warning border border-warning/30",
+        className,
       )}
     >
-      <span className="w-1 h-1 rounded-full bg-yellow-400" />
+      <span className="w-1 h-1 rounded-full bg-warning" />
       Offline
     </span>
   );
