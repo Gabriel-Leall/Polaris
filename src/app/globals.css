@@ -7,28 +7,28 @@
     /* Polaris Design System - Obsidian Matte Theme */
     --background: 240 10% 3.9%; /* #0A0A0B */
     --foreground: 0 0% 98%; /* #FAFAFA */
-    
+
     --card: 240 10% 5.9%; /* #0F0F11 */
     --card-foreground: 0 0% 98%;
-    
+
     --popover: 240 10% 5.9%;
     --popover-foreground: 0 0% 98%;
-    
-    --primary: 239 84% 67%; 
+
+    --primary: 239 84% 67%;
     --primary-foreground: 0 0% 98%;
-    
+
     --secondary: 240 5% 64.9%;
     --secondary-foreground: 0 0% 98%;
-    
+
     --muted: 240 5% 15.9%;
     --muted-foreground: 240 5% 64.9%;
-    
+
     --accent: 240 5% 15.9%;
     --accent-foreground: 0 0% 98%;
-    
+
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
-    
+
     --border: 240 5% 15.9%; /* #27272A */
     --input: 240 6% 10%; /* #18181B */
     --ring: 240 5% 84.9%;
@@ -50,7 +50,9 @@
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
     font-family: var(--font-inter), system-ui, sans-serif;
-    font-feature-settings: "rlig" 1, "calt" 1;
+    font-feature-settings:
+      "rlig" 1,
+      "calt" 1;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
@@ -85,8 +87,8 @@
   /* Code elements */
   code,
   pre {
-    font-family: var(--font-jetbrains-mono), "JetBrains Mono", "Geist Mono",
-      monospace;
+    font-family:
+      var(--font-jetbrains-mono), "JetBrains Mono", "Geist Mono", monospace;
     font-feature-settings: "liga" 0;
   }
 
@@ -97,9 +99,13 @@
     --tw-ring-offset-width: 2px;
     --tw-ring-offset-color: hsl(var(--background));
     --tw-ring-color: hsl(var(--primary));
-    --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
-    --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);
-    box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
+    --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0
+      var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+    --tw-ring-shadow: var(--tw-ring-inset) 0 0 0
+      calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+    box-shadow:
+      var(--tw-ring-offset-shadow), var(--tw-ring-shadow),
+      var(--tw-shadow, 0 0 #0000);
   }
 }
 
@@ -145,9 +151,13 @@
     --tw-ring-offset-width: 2px;
     --tw-ring-offset-color: hsl(var(--background));
     --tw-ring-color: hsl(var(--primary));
-    --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
-    --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);
-    box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
+    --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0
+      var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+    --tw-ring-shadow: var(--tw-ring-inset) 0 0 0
+      calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+    box-shadow:
+      var(--tw-ring-offset-shadow), var(--tw-ring-shadow),
+      var(--tw-shadow, 0 0 #0000);
   }
 
   /* Hover states for interactive elements */
@@ -177,14 +187,21 @@
 
   /* Sidebar active item gradient */
   .sidebar-active {
-    background-image: linear-gradient(to right, rgba(99, 102, 241, 0.2), rgba(168, 85, 247, 0.05), transparent);
+    background-image: linear-gradient(
+      to right,
+      rgba(99, 102, 241, 0.2),
+      rgba(168, 85, 247, 0.05),
+      transparent
+    );
   }
 
   /* Code editor styles */
   .code-editor {
-    font-family: var(--font-jetbrains-mono), "JetBrains Mono", "Geist Mono",
-      monospace;
-    font-feature-settings: "liga" 0, "calt" 1;
+    font-family:
+      var(--font-jetbrains-mono), "JetBrains Mono", "Geist Mono", monospace;
+    font-feature-settings:
+      "liga" 0,
+      "calt" 1;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
@@ -241,26 +258,58 @@
   }
   /* Polaris Authentication Animations */
   @keyframes pulse-indigo {
-    0%, 100% { transform: scale(1); opacity: 0.5; filter: blur(40px); }
-    50% { transform: scale(1.15); opacity: 0.8; filter: blur(60px); }
+    0%,
+    100% {
+      transform: scale(1);
+      opacity: 0.5;
+      filter: blur(40px);
+    }
+    50% {
+      transform: scale(1.15);
+      opacity: 0.8;
+      filter: blur(60px);
+    }
   }
   @keyframes orbit-slow {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
   }
   @keyframes orbit-reverse {
-    from { transform: rotate(360deg); }
-    to { transform: rotate(0deg); }
+    from {
+      transform: rotate(360deg);
+    }
+    to {
+      transform: rotate(0deg);
+    }
   }
   @keyframes meteor {
-    0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); opacity: 0; }
-    5% { opacity: 0.8; }
-    15% { transform: translateX(200%) translateY(200%) rotate(45deg); opacity: 0; }
-    100% { transform: translateX(200%) translateY(200%) rotate(45deg); opacity: 0; }
+    0% {
+      transform: translateX(-100%) translateY(-100%) rotate(45deg);
+      opacity: 0;
+    }
+    5% {
+      opacity: 0.8;
+    }
+    15% {
+      transform: translateX(200%) translateY(200%) rotate(45deg);
+      opacity: 0;
+    }
+    100% {
+      transform: translateX(200%) translateY(200%) rotate(45deg);
+      opacity: 0;
+    }
   }
 
   .nebula-glow {
-    background: radial-gradient(circle at center, rgba(99, 102, 241, 0.08) 0%, transparent 75%);
+    background: radial-gradient(
+      circle at center,
+      rgba(99, 102, 241, 0.08) 0%,
+      transparent 75%
+    );
   }
   .north-star-aura {
     animation: pulse-indigo 8s ease-in-out infinite;
@@ -285,20 +334,26 @@
     position: absolute;
     width: 150px;
     height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.4), white);
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(99, 102, 241, 0.4),
+      white
+    );
     filter: blur(1px);
     animation: meteor 12s linear infinite;
   }
   .motion-blur-sphere {
     filter: blur(1px);
   }
-  
+
   .glitch-text {
     position: relative;
     display: inline-block;
     color: #52525b; /* Dark Zinc/Gray to not attract too much attention */
-    text-shadow: -0.5px 0 0.1px rgba(0, 255, 255, 0.2), 
-                 0.5px 0 0.1px rgba(255, 0, 0, 0.2);
+    text-shadow:
+      -0.5px 0 0.1px rgba(0, 255, 255, 0.2),
+      0.5px 0 0.1px rgba(255, 0, 0, 0.2);
     font-family: var(--font-jetbrains-mono), monospace;
     font-weight: 700;
     letter-spacing: 0.25em; /* Wider spacing to feel more industrial/label-like */

@@ -55,7 +55,7 @@ export interface Habit {
   updatedAt: Date;
 }
 
-export type MediaSourceType = 'spotify' | 'youtube';
+export type MediaSourceType = "spotify" | "youtube";
 
 export interface MediaPreference {
   id: string;
@@ -267,7 +267,7 @@ export interface Database {
         Row: {
           id: string;
           user_id: string;
-          source_type: 'spotify' | 'youtube';
+          source_type: "spotify" | "youtube";
           source_url: string;
           created_at: string;
           updated_at: string;
@@ -275,7 +275,7 @@ export interface Database {
         Insert: {
           id?: string;
           user_id: string;
-          source_type: 'spotify' | 'youtube';
+          source_type: "spotify" | "youtube";
           source_url: string;
           created_at?: string;
           updated_at?: string;
@@ -283,7 +283,7 @@ export interface Database {
         Update: {
           id?: string;
           user_id?: string;
-          source_type?: 'spotify' | 'youtube';
+          source_type?: "spotify" | "youtube";
           source_url?: string;
           created_at?: string;
           updated_at?: string;

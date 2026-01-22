@@ -30,8 +30,11 @@ export const SignupForm: React.FC = () => {
       title="Create account"
       footer={
         <p className="text-sm text-muted-foreground">
-          Already have an account? 
-          <Link className="text-white font-medium hover:underline ml-1" href="/login">
+          Already have an account?
+          <Link
+            className="text-white font-medium hover:underline ml-1"
+            href="/login"
+          >
             Sign in
           </Link>
         </p>
@@ -40,14 +43,17 @@ export const SignupForm: React.FC = () => {
       <div className="space-y-6">
         <form action={handleSubmit} className="space-y-4">
           <div className="space-y-1.5">
-            <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em]" htmlFor="fullName">
+            <label
+              className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em]"
+              htmlFor="fullName"
+            >
               Name
             </label>
-            <Input 
-              className="w-full px-4 py-3 bg-card border-white/[0.03] focus:border-white/10 focus:ring-0 text-white rounded-xl transition-all outline-none h-12 placeholder:text-muted-foreground/70" 
-              id="fullName" 
+            <Input
+              className="w-full px-4 py-3 bg-card border-white/[0.03] focus:border-white/10 focus:ring-0 text-white rounded-xl transition-all outline-none h-12 placeholder:text-muted-foreground/70"
+              id="fullName"
               name="fullName"
-              placeholder="Charles Miller" 
+              placeholder="Charles Miller"
               type="text"
               required
               disabled={isLoading}
@@ -55,29 +61,35 @@ export const SignupForm: React.FC = () => {
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em]" htmlFor="email">
+            <label
+              className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em]"
+              htmlFor="email"
+            >
               Email
             </label>
-            <Input 
-              className="w-full px-4 py-3 bg-card border-white/[0.03] focus:border-white/10 focus:ring-0 text-white rounded-xl transition-all outline-none h-12 placeholder:text-muted-foreground/70" 
-              id="email" 
+            <Input
+              className="w-full px-4 py-3 bg-card border-white/[0.03] focus:border-white/10 focus:ring-0 text-white rounded-xl transition-all outline-none h-12 placeholder:text-muted-foreground/70"
+              id="email"
               name="email"
-              placeholder="charles@polaris.app" 
+              placeholder="charles@polaris.app"
               type="email"
               required
               disabled={isLoading}
             />
           </div>
-          
+
           <div className="space-y-1.5">
-            <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em]" htmlFor="password">
+            <label
+              className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em]"
+              htmlFor="password"
+            >
               Password
             </label>
-            <Input 
-              className="w-full px-4 py-3 bg-card border-white/[0.03] focus:border-white/10 focus:ring-0 text-white rounded-xl transition-all outline-none h-12 placeholder:text-muted-foreground/70" 
-              id="password" 
+            <Input
+              className="w-full px-4 py-3 bg-card border-white/[0.03] focus:border-white/10 focus:ring-0 text-white rounded-xl transition-all outline-none h-12 placeholder:text-muted-foreground/70"
+              id="password"
               name="password"
-              placeholder="••••••••••••" 
+              placeholder="••••••••••••"
               type="password"
               required
               disabled={isLoading}
@@ -90,9 +102,9 @@ export const SignupForm: React.FC = () => {
               <p className="text-xs text-red-500 font-medium">{error}</p>
             </div>
           )}
-          
-          <Button 
-            className="w-full h-12 bg-primary hover:bg-primary/90 text-white font-bold rounded-xl transition-all active:scale-[0.98] mt-4 border-transparent shadow-none" 
+
+          <Button
+            className="w-full h-12 bg-primary hover:bg-primary/90 text-white font-bold rounded-xl transition-all active:scale-[0.98] mt-4 border-transparent shadow-none"
             type="submit"
             disabled={isLoading}
           >
@@ -112,7 +124,9 @@ export const SignupForm: React.FC = () => {
             <span className="w-full border-t border-white/[0.05]" />
           </div>
           <div className="relative flex justify-center text-[10px] uppercase">
-            <span className="bg-main px-4 text-muted-foreground font-bold tracking-[0.2em]">Or continue with social</span>
+            <span className="bg-main px-4 text-muted-foreground font-bold tracking-[0.2em]">
+              Or continue with social
+            </span>
           </div>
         </div>
 

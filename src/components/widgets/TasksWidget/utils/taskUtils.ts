@@ -15,7 +15,7 @@ export const getMockupTasks = (): TaskItem[] => [
     updatedAt: new Date(),
   },
   {
-    id: "mock-2", 
+    id: "mock-2",
     label: "Update LinkedIn profile",
     completed: true,
     priority: "medium",
@@ -57,7 +57,7 @@ export const getMockupTasks = (): TaskItem[] => [
     dueDate: "",
     createdAt: new Date(),
     updatedAt: new Date(),
-  }
+  },
 ];
 
 export const persistLocalTasks = (tasks: TaskItem[]) => {

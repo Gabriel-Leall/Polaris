@@ -109,7 +109,6 @@ describe("Server Action Error Handling", () => {
     ).rejects.toThrow("Create task failed");
   });
 
-
   test("Property 11: Server Action error handling - user preferences actions handle errors", async () => {
     const { supabase } = await import("@/lib/supabase");
 

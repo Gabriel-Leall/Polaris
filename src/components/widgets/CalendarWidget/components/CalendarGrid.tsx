@@ -1,10 +1,10 @@
 "use client";
 
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { getDaysInMonth, formatDateKey, isToday } from '../utils/calendarUtils';
-import { DayCell } from './DayCell';
-import { CalendarGridProps } from '../types';
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { getDaysInMonth, formatDateKey, isToday } from "../utils/calendarUtils";
+import { DayCell } from "./DayCell";
+import { CalendarGridProps } from "../types";
 
 export const CalendarGrid = ({
   currentDate,
@@ -14,8 +14,12 @@ export const CalendarGrid = ({
   onNextMonth,
   onToday,
 }: CalendarGridProps) => {
-  const { daysInMonth, startingDayOfWeek, prevMonthLastDay } = getDaysInMonth(currentDate);
-  const monthName = currentDate.toLocaleString('default', { month: 'long', year: 'numeric' });
+  const { daysInMonth, startingDayOfWeek, prevMonthLastDay } =
+    getDaysInMonth(currentDate);
+  const monthName = currentDate.toLocaleString("default", {
+    month: "long",
+    year: "numeric",
+  });
 
   const getTasksForDay = (dateKey: string) => dayData[dateKey] || [];
 
@@ -25,8 +29,8 @@ export const CalendarGrid = ({
       <div className="flex items-center justify-between pl-4 pr-4 pt-2 mb-6">
         <div className="flex items-center gap-2">
           <div className="w-1 h-1 rounded-full bg-white/20" />
-          <h2 
-            className="glitch-text text-[10px] text-foreground" 
+          <h2
+            className="glitch-text text-[10px] text-foreground"
             data-text={monthName}
           >
             {monthName}
@@ -62,7 +66,7 @@ export const CalendarGrid = ({
 
       {/* Days of week header */}
       <div className="grid grid-cols-7 gap-1 mb-2">
-        {['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map((day, i) => (
+        {["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"].map((day, i) => (
           <div
             key={i}
             className="text-xs text-secondary py-2 font-medium flex justify-center"
@@ -104,7 +108,9 @@ export const CalendarGrid = ({
           );
         })}
 
-        {Array.from({ length: (7 - ((startingDayOfWeek + daysInMonth) % 7)) % 7 }).map((_, index) => (
+        {Array.from({
+          length: (7 - ((startingDayOfWeek + daysInMonth) % 7)) % 7,
+        }).map((_, index) => (
           <div
             key={`next-${index}`}
             className="h-10 flex items-center justify-center text-xs text-secondary/40"

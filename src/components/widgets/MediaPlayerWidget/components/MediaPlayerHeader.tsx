@@ -16,8 +16,8 @@ export function MediaPlayerHeader({
     <div className="flex items-center justify-between pl-4 pr-4 pt-2 mb-6">
       <div className="flex items-center gap-2">
         <div className="w-1 h-1 rounded-full bg-white/20" />
-        <h2 
-          className="glitch-text text-[10px] text-foreground" 
+        <h2
+          className="glitch-text text-[10px] text-foreground"
           data-text="Music"
         >
           Music

@@ -36,14 +36,12 @@ const mockUpdateTask = vi.fn();
 const mockDeleteTask = vi.fn();
 const mockGetTasks = vi.fn();
 
-
 vi.mock("@/app/actions/tasks", () => ({
   createTask: mockCreateTask,
   updateTask: mockUpdateTask,
   deleteTask: mockDeleteTask,
   getTasks: mockGetTasks,
 }));
-
 
 // Test data generators
 const taskArbitrary = fc.record({
@@ -55,7 +53,6 @@ const taskArbitrary = fc.record({
   createdAt: fc.date(),
   updatedAt: fc.date(),
 });
-
 
 describe("Integration Tests - Critical User Workflows", () => {
   beforeEach(() => {
@@ -266,7 +263,6 @@ describe("Integration Tests - Critical User Workflows", () => {
       );
     });
   });
-
 
   describe("Theme Switching and Persistence Workflow", () => {
     it("should handle theme switching correctly", async () => {

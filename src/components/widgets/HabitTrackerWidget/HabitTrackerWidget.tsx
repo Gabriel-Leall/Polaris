@@ -133,8 +133,8 @@ export function HabitTrackerWidget({ className }: HabitTrackerWidgetProps) {
                 days: h.days.map((d, i) => (i === dayIndex ? !d : d)),
                 updatedAt: new Date(),
               }
-            : h
-        )
+            : h,
+        ),
       );
 
       if (!isLocalMode) {
@@ -152,7 +152,7 @@ export function HabitTrackerWidget({ className }: HabitTrackerWidgetProps) {
         });
       }
     },
-    [isLocalMode, loadHabits]
+    [isLocalMode, loadHabits],
   );
 
   const handleCreateHabit = useCallback(async () => {
@@ -216,7 +216,7 @@ export function HabitTrackerWidget({ className }: HabitTrackerWidgetProps) {
         });
       }
     },
-    [isLocalMode, loadHabits]
+    [isLocalMode, loadHabits],
   );
 
   const handleResetWeek = useCallback(async () => {
@@ -226,7 +226,7 @@ export function HabitTrackerWidget({ className }: HabitTrackerWidgetProps) {
         ...h,
         days: [false, false, false, false, false, false, false],
         updatedAt: new Date(),
-      }))
+      })),
     );
 
     if (!isLocalMode && userId) {
@@ -254,7 +254,7 @@ export function HabitTrackerWidget({ className }: HabitTrackerWidgetProps) {
       <div
         className={cn(
           "flex items-center justify-center h-full text-muted-foreground",
-          className
+          className,
         )}
       >
         <div className="animate-pulse">Loading habits...</div>
@@ -268,8 +268,8 @@ export function HabitTrackerWidget({ className }: HabitTrackerWidgetProps) {
       <div className="flex items-center justify-between pl-4 pr-4 pt-2 mb-6">
         <div className="flex items-center gap-2">
           <div className="w-1 h-1 rounded-full bg-white/20" />
-          <h2 
-            className="glitch-text text-[10px] text-foreground" 
+          <h2
+            className="glitch-text text-[10px] text-foreground"
             data-text="Protocol Habits"
           >
             Protocol Habits
@@ -334,7 +334,7 @@ export function HabitTrackerWidget({ className }: HabitTrackerWidgetProps) {
             key={i}
             className={cn(
               "text-[10px] text-center font-medium",
-              i === todayIndex ? "text-primary" : "text-muted-foreground"
+              i === todayIndex ? "text-primary" : "text-muted-foreground",
             )}
             title={DAY_FULL_LABELS[i]}
           >
@@ -388,7 +388,9 @@ export function HabitTrackerWidget({ className }: HabitTrackerWidgetProps) {
                     completed
                       ? "bg-primary border-primary shadow-[0_0_8px_rgba(99,102,241,0.5)]"
                       : "border-white/20 hover:border-white/40 hover:bg-white/5",
-                    dayIndex === todayIndex && !completed && "border-primary/50"
+                    dayIndex === todayIndex &&
+                      !completed &&
+                      "border-primary/50",
                   )}
                   title={`${DAY_FULL_LABELS[dayIndex]} - ${
                     completed ? "Completed" : "Not completed"
@@ -407,8 +409,8 @@ export function HabitTrackerWidget({ className }: HabitTrackerWidgetProps) {
                   getCompletionRate(habit) === 100
                     ? "text-green-400"
                     : getCompletionRate(habit) >= 50
-                    ? "text-primary"
-                    : "text-muted-foreground"
+                      ? "text-primary"
+                      : "text-muted-foreground",
                 )}
               >
                 {getCompletionRate(habit)}%
@@ -425,7 +427,7 @@ export function HabitTrackerWidget({ className }: HabitTrackerWidgetProps) {
             <span>
               {habits.reduce(
                 (acc, h) => acc + h.days.filter(Boolean).length,
-                0
+                0,
               )}
               /{habits.length * 7} completed this week
             </span>
@@ -433,10 +435,10 @@ export function HabitTrackerWidget({ className }: HabitTrackerWidgetProps) {
               {Math.round(
                 (habits.reduce(
                   (acc, h) => acc + h.days.filter(Boolean).length,
-                  0
+                  0,
                 ) /
                   (habits.length * 7)) *
-                  100
+                  100,
               )}
               % overall
             </span>

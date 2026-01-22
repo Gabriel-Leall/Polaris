@@ -122,7 +122,6 @@ describe("Supabase Data Persistence", () => {
     expect(retrievedTasks[0].userId).toBe(taskData.userId);
   });
 
-
   test("Property 7: Supabase data persistence - user preferences creation and retrieval round trip", async () => {
     const { supabase } = await import("@/lib/supabase");
 

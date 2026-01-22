@@ -1,14 +1,14 @@
 "use client";
 
-import React from 'react';
-import { createPortal } from 'react-dom';
-import { motion, AnimatePresence } from 'motion/react';
-import { X, Plus, Trash2, Check } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Checkbox } from '@/components/ui/checkbox';
+import React from "react";
+import { createPortal } from "react-dom";
+import { motion, AnimatePresence } from "motion/react";
+import { X, Plus, Trash2, Check } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
-import { TaskModalProps } from '../types';
+import { TaskModalProps } from "../types";
 
 export const TaskModal: React.FC<TaskModalProps> = ({
   isOpen,
@@ -46,7 +46,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.9, opacity: 0 }}
-        transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+        transition={{ type: "spring", damping: 25, stiffness: 300 }}
         className="fixed inset-0 z-50 flex items-center justify-center p-4"
         onClick={(e) => e.stopPropagation()}
       >
@@ -79,8 +79,12 @@ export const TaskModal: React.FC<TaskModalProps> = ({
             <div className="space-y-3">
               {tasks.length === 0 ? (
                 <div className="text-center py-8">
-                  <p className="text-secondary text-sm">Nenhuma tarefa para este dia</p>
-                  <p className="text-secondary/60 text-xs mt-1">Adicione uma nova tarefa abaixo</p>
+                  <p className="text-secondary text-sm">
+                    Nenhuma tarefa para este dia
+                  </p>
+                  <p className="text-secondary/60 text-xs mt-1">
+                    Adicione uma nova tarefa abaixo
+                  </p>
                 </div>
               ) : (
                 tasks.map((task) => (
@@ -111,7 +115,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({
                         onClick={() => onStartEdit(task)}
                         className={cn(
                           "flex-1 cursor-pointer text-white",
-                          task.completed && "line-through text-secondary"
+                          task.completed && "line-through text-secondary",
                         )}
                       >
                         {task.text}
@@ -155,6 +159,6 @@ export const TaskModal: React.FC<TaskModalProps> = ({
         </div>
       </motion.div>
     </AnimatePresence>,
-    document.body
+    document.body,
   );
 };
