@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { Plus, X, RotateCcw } from "lucide-react";
+import { motion } from "motion/react";
 import { Habit } from "@/types";
 import {
   createHabit,
@@ -14,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
+import { FireIcon } from "@/components/ui/FireIcon";
 
 const LOCAL_HABITS_KEY = "polaris-local-habits";
 
@@ -244,9 +246,36 @@ export function HabitTrackerWidget({ className }: HabitTrackerWidgetProps) {
     }
   }, [isLocalMode, loadHabits, userId]);
 
-  const getCompletionRate = (habit: Habit) => {
-    const completed = habit.days.filter(Boolean).length;
-    return Math.round((completed / 7) * 100);
+  // Calculate current streak for a habit (consecutive days from the end)
+  const calculateStreak = (days: boolean[]) => {
+    let streak = 0;
+    for (let i = days.length - 1; i >= 0; i--) {
+      if (days[i]) {
+        streak++;
+      } else {
+        break;
+      }
+    }
+    return streak;
+  };
+
+  // Get the longest streak across all habits
+  const longestStreak =
+    habits.length > 0
+      ? Math.max(...habits.map((h) => calculateStreak(h.days)))
+      : 0;
+
+  // Check if day is part of a consecutive chain
+  const isPartOfChain = (days: boolean[], index: number) => {
+    if (!days[index]) return false;
+    return index < days.length - 1 && days[index + 1];
+  };
+
+  // Get color intensity based on position in streak
+  const getStreakIntensity = (index: number, isCompleted: boolean) => {
+    if (!isCompleted) return 1;
+    const position = 6 - index;
+    return Math.min(0.4 + (position / 6) * 0.6, 1); // 40% → 100%
   };
 
   if (isLoading) {
@@ -325,7 +354,7 @@ export function HabitTrackerWidget({ className }: HabitTrackerWidgetProps) {
       )}
 
       {/* Day Headers */}
-      <div className="grid grid-cols-[1fr_repeat(7,24px)_32px] gap-1 mb-2 px-1">
+      <div className="grid grid-cols-[1fr_repeat(7,28px)] gap-1 mb-2 px-1">
         <div className="text-[10px] text-muted-foreground uppercase tracking-wider">
           Habit
         </div>
@@ -341,7 +370,6 @@ export function HabitTrackerWidget({ className }: HabitTrackerWidgetProps) {
             {day}
           </div>
         ))}
-        <div className="text-[10px] text-muted-foreground text-center">%</div>
       </div>
 
       {/* Habits List */}
@@ -360,63 +388,120 @@ export function HabitTrackerWidget({ className }: HabitTrackerWidgetProps) {
             </p>
           </div>
         ) : (
-          habits.map((habit) => (
-            <div
-              key={habit.id}
-              className="group grid grid-cols-[1fr_repeat(7,24px)_32px] gap-1 items-center px-1 py-1.5 rounded-lg hover:bg-white/5 transition-colors"
-            >
-              {/* Habit Name */}
-              <div className="flex items-center gap-1 min-w-0">
-                <span className="text-sm text-foreground truncate">
-                  {habit.name}
-                </span>
-                <button
-                  onClick={() => handleDeleteHabit(habit.id)}
-                  className="opacity-0 group-hover:opacity-100 transition-opacity p-0.5 hover:text-destructive"
-                >
-                  <X className="h-3 w-3" />
-                </button>
-              </div>
+          habits.map((habit) => {
+            const habitStreak = calculateStreak(habit.days);
 
-              {/* Day Circles */}
-              {habit.days.map((completed, dayIndex) => (
-                <button
-                  key={dayIndex}
-                  onClick={() => handleToggleDay(habit.id, dayIndex)}
-                  className={cn(
-                    "w-5 h-5 rounded-full border transition-all duration-200 flex items-center justify-center mx-auto",
-                    completed
-                      ? "bg-primary border-primary shadow-[0_0_8px_rgba(99,102,241,0.5)]"
-                      : "border-white/20 hover:border-white/40 hover:bg-white/5",
-                    dayIndex === todayIndex &&
-                      !completed &&
-                      "border-primary/50",
-                  )}
-                  title={`${DAY_FULL_LABELS[dayIndex]} - ${
-                    completed ? "Completed" : "Not completed"
-                  }`}
-                >
-                  {completed && (
-                    <div className="w-2 h-2 rounded-full bg-white" />
-                  )}
-                </button>
-              ))}
-
-              {/* Completion Rate */}
+            return (
               <div
-                className={cn(
-                  "text-xs text-center font-medium",
-                  getCompletionRate(habit) === 100
-                    ? "text-green-400"
-                    : getCompletionRate(habit) >= 50
-                      ? "text-primary"
-                      : "text-muted-foreground",
-                )}
+                key={habit.id}
+                className="group grid grid-cols-[1fr_repeat(7,28px)] gap-1 items-center px-1 py-1.5 rounded-lg hover:bg-white/5 transition-colors"
               >
-                {getCompletionRate(habit)}%
+                {/* Habit Name with Streak */}
+                <div className="flex items-center gap-2 min-w-0">
+                  <span className="text-sm text-foreground truncate">
+                    {habit.name}
+                  </span>
+                  {habitStreak > 0 && (
+                    <span className="flex items-center gap-1">
+                      <FireIcon size={12} animated={true} />
+                      <span className="text-[9px] text-orange-400 font-bold">
+                        {habitStreak}
+                      </span>
+                    </span>
+                  )}
+                  <button
+                    onClick={() => handleDeleteHabit(habit.id)}
+                    className="opacity-0 group-hover:opacity-100 transition-opacity p-0.5 hover:text-destructive ml-auto"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </div>
+
+                {/* Day Circles with Connection Lines */}
+                {habit.days.map((completed, dayIndex) => {
+                  const hasConnection = isPartOfChain(habit.days, dayIndex);
+                  const intensity = getStreakIntensity(dayIndex, completed);
+
+                  return (
+                    <div
+                      key={dayIndex}
+                      className="relative flex items-center justify-center"
+                    >
+                      {/* Connection line to next day */}
+                      {hasConnection && (
+                        <div
+                          className="absolute top-1/2 -right-[4px] w-[4px] h-[2px] -translate-y-1/2 z-0 rounded-full bg-primary/60"
+                          style={{
+                            boxShadow: "0 0 4px rgba(99, 102, 241, 0.5)",
+                          }}
+                        />
+                      )}
+
+                      {/* Day Button with Smooth Fill Animation */}
+                      <motion.button
+                        onClick={() => handleToggleDay(habit.id, dayIndex)}
+                        className={cn(
+                          "w-6 h-6 rounded-full border transition-all duration-300 flex items-center justify-center relative z-10 overflow-hidden",
+                          completed
+                            ? "border-primary shadow-[0_0_12px_rgba(99,102,241,0.6)]"
+                            : "border-white/20 hover:border-white/40 hover:bg-white/5",
+                          dayIndex === todayIndex &&
+                            !completed &&
+                            "border-primary/50 ring-1 ring-primary/30",
+                        )}
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.95 }}
+                        title={`${DAY_FULL_LABELS[dayIndex]} - ${
+                          completed ? "Completed" : "Not completed"
+                        }`}
+                      >
+                        {/* Animated fill background */}
+                        <motion.div
+                          className="absolute inset-0 bg-primary rounded-full"
+                          initial={{ scale: 0, opacity: 0 }}
+                          animate={
+                            completed
+                              ? {
+                                  scale: 1,
+                                  opacity: intensity,
+                                }
+                              : {
+                                  scale: 0,
+                                  opacity: 0,
+                                }
+                          }
+                          transition={{
+                            type: "spring",
+                            stiffness: 300,
+                            damping: 20,
+                            duration: 0.6,
+                          }}
+                          style={{
+                            filter: `brightness(${0.7 + intensity * 0.3})`,
+                          }}
+                        />
+
+                        {/* Checkmark */}
+                        {completed && (
+                          <motion.div
+                            className="w-2.5 h-2.5 rounded-full bg-white relative z-10"
+                            initial={{ scale: 0, rotate: -180 }}
+                            animate={{ scale: 1, rotate: 0 }}
+                            transition={{
+                              type: "spring",
+                              stiffness: 400,
+                              damping: 15,
+                              delay: 0.1,
+                            }}
+                          />
+                        )}
+                      </motion.button>
+                    </div>
+                  );
+                })}
               </div>
-            </div>
-          ))
+            );
+          })
         )}
       </div>
 
@@ -431,17 +516,16 @@ export function HabitTrackerWidget({ className }: HabitTrackerWidgetProps) {
               )}
               /{habits.length * 7} completed this week
             </span>
-            <span className="text-primary font-medium">
-              {Math.round(
-                (habits.reduce(
-                  (acc, h) => acc + h.days.filter(Boolean).length,
-                  0,
-                ) /
-                  (habits.length * 7)) *
-                  100,
-              )}
-              % overall
-            </span>
+            {longestStreak > 0 ? (
+              <span className="text-orange-400 font-medium flex items-center gap-1.5">
+                <FireIcon size={14} animated={true} />
+                <span className="font-bold">{longestStreak}d streak</span>
+              </span>
+            ) : (
+              <span className="text-muted-foreground/50">
+                Start your streak!
+              </span>
+            )}
           </div>
         </div>
       )}

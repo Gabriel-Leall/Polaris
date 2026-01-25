@@ -55,7 +55,7 @@ export async function middleware(request: NextRequest) {
           });
         },
       },
-    }
+    },
   );
 
   // Allow static files and API routes
@@ -69,15 +69,15 @@ export async function middleware(request: NextRequest) {
   }
 
   // Public routes that don't require authentication
-  const publicRoutes = ["/login", "/signup", "/auth/callback", "/landing"];
+  const publicRoutes = ["/login", "/signup", "/auth/callback", "/"];
   const isPublicRoute = publicRoutes.some((route) =>
-    request.nextUrl.pathname.startsWith(route)
+    request.nextUrl.pathname.startsWith(route),
   );
 
   // Optimization: Only check session if not a public route OR if it's an auth route (to redirect)
   const authRoutes = ["/login", "/signup"];
   const isAuthRoute = authRoutes.some((route) =>
-    request.nextUrl.pathname.startsWith(route)
+    request.nextUrl.pathname.startsWith(route),
   );
 
   // If it's a public route and NOT an auth route (like /landing), we can skip the session check
@@ -98,7 +98,7 @@ export async function middleware(request: NextRequest) {
   }
 
   if (user && isAuthRoute) {
-    return NextResponse.redirect(new URL("/", request.url));
+    return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
   return response;

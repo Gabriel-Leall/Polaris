@@ -24,7 +24,7 @@ export type AuthResult = {
 export async function signIn(formData: FormData): Promise<AuthResult> {
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
-  const redirectTo = (formData.get("redirectTo") as string) || "/";
+  const redirectTo = (formData.get("redirectTo") as string) || "/dashboard";
 
   const validation = authSchema.safeParse({ email, password });
   if (!validation.success) {
@@ -99,7 +99,7 @@ export async function signUp(formData: FormData): Promise<AuthResult> {
     };
   }
 
-  redirect("/");
+  redirect("/dashboard");
 }
 
 /**
@@ -108,7 +108,7 @@ export async function signUp(formData: FormData): Promise<AuthResult> {
 export async function signOut(): Promise<void> {
   const supabase = await createSupabaseServerClient();
   await supabase.auth.signOut();
-  redirect("/landing");
+  redirect("/");
 }
 
 /**
@@ -141,7 +141,7 @@ export async function signInWithProvider(provider: "google" | "github") {
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider,
     options: {
-      redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/auth/callback`,
+      redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"}/auth/callback`,
     },
   });
 

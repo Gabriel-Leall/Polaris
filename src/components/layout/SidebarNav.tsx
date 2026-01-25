@@ -37,7 +37,7 @@ interface SidebarNavProps {
 }
 
 const mainNavItems: NavItem[] = [
-  { id: "dashboard", label: "Home", icon: Home, href: "/" },
+  { id: "dashboard", label: "Home", icon: Home, href: "/dashboard" },
   { id: "tasks", label: "Tasks", icon: CheckSquare, href: "/tasks" },
   { id: "feedback", label: "Feedback", icon: MessageSquare, href: "/feedback" },
   { id: "settings", label: "Settings", icon: Settings, href: "/settings" },
@@ -58,7 +58,7 @@ function SidebarNavCore({ className }: SidebarNavProps) {
         <div
           className={cn(
             "absolute inset-y-0 left-3 flex items-center pointer-events-none text-muted-foreground group-focus-within:text-white transition-colors",
-            isSidebarCollapsed && "left-0 w-full justify-center"
+            isSidebarCollapsed && "left-0 w-full justify-center",
           )}
         >
           <Search className="w-4 h-4" />
@@ -98,13 +98,13 @@ function SidebarNavCore({ className }: SidebarNavProps) {
                 isActive
                   ? "bg-white/[0.08] text-white border border-white/10"
                   : "text-muted-foreground hover:text-white border border-transparent hover:bg-white/[0.03]",
-                isSidebarCollapsed && "justify-center px-0 h-11"
+                isSidebarCollapsed && "justify-center px-0 h-11",
               )}
             >
               <Icon
                 className={cn(
                   "w-4 h-4 transition-colors duration-300 relative z-10 shrink-0",
-                  isActive ? "text-primary" : "group-hover:text-white"
+                  isActive ? "text-primary" : "group-hover:text-white",
                 )}
               />
               {!isSidebarCollapsed && (
@@ -116,7 +116,9 @@ function SidebarNavCore({ className }: SidebarNavProps) {
                 className={cn(
                   "absolute right-0 top-0 h-full w-[60px] transition-opacity duration-500 pointer-events-none",
                   "bg-gradient-to-l from-primary/20 via-primary/5 to-transparent",
-                  isActive ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+                  isActive
+                    ? "opacity-100"
+                    : "opacity-0 group-hover:opacity-100",
                 )}
               />
 
@@ -125,7 +127,9 @@ function SidebarNavCore({ className }: SidebarNavProps) {
                 className={cn(
                   "absolute right-0 top-1/2 -translate-y-1/2 h-2/3 w-[2px] transition-all duration-500",
                   "bg-primary-glow shadow-[0_0_12px_rgba(99,102,241,0.8)]",
-                  isActive ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+                  isActive
+                    ? "opacity-100"
+                    : "opacity-0 group-hover:opacity-100",
                 )}
               />
             </Link>
@@ -184,7 +188,7 @@ export function SidebarUser() {
             transition={{ duration: 0.2, ease: "easeOut" }}
             className={cn(
               "absolute bottom-full left-0 w-full mb-2 p-2 bg-sidebar border border-white/10 rounded-2xl shadow-2xl z-50 overflow-hidden",
-              isSidebarCollapsed && "w-[200px]"
+              isSidebarCollapsed && "w-[200px]",
             )}
           >
             <button
@@ -210,7 +214,7 @@ export function SidebarUser() {
         className={cn(
           "w-full flex items-center gap-3 p-2 bg-white/[0.03] border border-white/10 rounded-2xl hover:bg-white/[0.06] transition-all group",
           isOpen && "bg-white/[0.08] border-white/20",
-          isSidebarCollapsed && "justify-center p-1.5"
+          isSidebarCollapsed && "justify-center p-1.5",
         )}
       >
         <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary/30 to-primary/10 flex items-center justify-center border border-white/5 shrink-0 overflow-hidden">
@@ -229,7 +233,7 @@ export function SidebarUser() {
             <div
               className={cn(
                 "flex flex-col gap-0.5 text-muted-foreground group-hover:text-white transition-all",
-                isOpen ? "rotate-180" : ""
+                isOpen ? "rotate-180" : "",
               )}
             >
               <ChevronUp className="w-3 h-3" />
