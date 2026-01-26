@@ -45,8 +45,8 @@ export const LinkItem = ({
         className={cn(
           "flex items-center justify-center w-full h-full rounded-2xl transition-all duration-200 overflow-hidden",
           compact
-            ? "bg-black/10 dark:bg-white/10 hover:bg-black/20 dark:hover:bg-white/20"
-            : "bg-white/10 hover:bg-white/15"
+            ? "bg-black/10 dark:bg-muted hover:bg-black/20 dark:hover:bg-muted/80"
+            : "bg-muted hover:bg-white/15"
         )}
         title={link.title}
       >
@@ -77,7 +77,7 @@ export const LinkItem = ({
 
       {/* Tooltip on hover */}
       {isHovered && (
-        <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-card border border-white/10 rounded-lg text-xs text-foreground whitespace-nowrap z-50 shadow-lg">
+        <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-card border border-border rounded-lg text-xs text-foreground whitespace-nowrap z-50 shadow-lg">
           {link.title}
         </div>
       )}
@@ -93,7 +93,7 @@ export const LinkItem = ({
             className="w-5 h-5 bg-primary rounded-full flex items-center justify-center transition-opacity"
             title="Edit link"
           >
-            <Edit2 className="w-2.5 h-2.5 text-white" />
+            <Edit2 className="w-2.5 h-2.5 text-foreground" />
           </button>
           <button
             onClick={(e) => {
@@ -104,9 +104,9 @@ export const LinkItem = ({
             title="Remove link"
           >
             {isDeleting ? (
-              <Loader2 className="w-2.5 h-2.5 animate-spin text-white" />
+              <Loader2 className="w-2.5 h-2.5 animate-spin text-foreground" />
             ) : (
-              <Trash2 className="w-2.5 h-2.5 text-white" />
+              <Trash2 className="w-2.5 h-2.5 text-foreground" />
             )}
           </button>
         </div>

@@ -15,7 +15,7 @@ export function MediaPlayerHeader({
   return (
     <div className="flex items-center justify-between pl-4 pr-4 pt-2 mb-6">
       <div className="flex items-center gap-2">
-        <div className="w-1 h-1 rounded-full bg-white/20" />
+        <div className="w-1 h-1 rounded-full bg-muted/80" />
         <h2
           className="glitch-text text-[10px] text-foreground"
           data-text="Music"
@@ -28,7 +28,7 @@ export function MediaPlayerHeader({
           variant="ghost"
           size="sm"
           onClick={onClear}
-          className="h-6 w-6 p-0 text-muted-foreground hover:text-red-400/80 transition-colors"
+          className="h-6 w-6 p-0 text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
         >
           <Trash2 className="h-3 w-3" />
         </Button>

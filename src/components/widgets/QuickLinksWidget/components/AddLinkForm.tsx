@@ -38,7 +38,7 @@ export const AddLinkForm = ({
           onChange={(e) => onUrlChange(e.target.value)}
           onKeyDown={onKeyPress}
           placeholder={placeholder}
-          className="flex-1 h-8 text-sm bg-white/5 border-white/10"
+          className="flex-1 h-8 text-sm bg-muted/50 border-border"
           autoFocus
           disabled={isAdding}
         />

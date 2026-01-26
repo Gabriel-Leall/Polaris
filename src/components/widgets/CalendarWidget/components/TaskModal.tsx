@@ -50,14 +50,14 @@ export const TaskModal: React.FC<TaskModalProps> = ({
         className="fixed inset-0 z-50 flex items-center justify-center p-4"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="w-full max-w-2xl max-h-[85vh] overflow-hidden bg-card border border-white/5 rounded-3xl shadow-2xl">
-          <div className="p-6 border-b border-white/5 flex items-center justify-between bg-gradient-to-r from-primary to-primary/80">
-            <h3 className="text-2xl font-bold text-white">{selectedDayDate}</h3>
+        <div className="w-full max-w-2xl max-h-[85vh] overflow-hidden bg-card border border-border/50 rounded-3xl shadow-2xl">
+          <div className="p-6 border-b border-border/50 flex items-center justify-between bg-gradient-to-r from-primary to-primary/80">
+            <h3 className="text-2xl font-bold text-foreground">{selectedDayDate}</h3>
             <Button
               variant="ghost"
               size="icon"
               onClick={onClose}
-              className="h-11 w-11 hover:bg-white/20 text-white relative"
+              className="h-11 w-11 hover:bg-muted/80 text-foreground relative"
             >
               <AnimatePresence>
                 {showSavedToast ? (
@@ -93,7 +93,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, x: -100 }}
-                    className="group flex items-center gap-3 p-4 rounded-xl bg-input border border-white/5 hover:bg-white/5 transition-all"
+                    className="group flex items-center gap-3 p-4 rounded-xl bg-input border border-border/50 hover:bg-muted/50 transition-all"
                   >
                     <Checkbox
                       checked={task.completed}
@@ -108,13 +108,13 @@ export const TaskModal: React.FC<TaskModalProps> = ({
                         onChange={(e) => setEditText(e.target.value)}
                         onKeyDown={(e) => onKeyDown(e, onSaveEdit)}
                         onBlur={onSaveEdit}
-                        className="flex-1 bg-main border-white/10 focus:border-primary text-white"
+                        className="flex-1 bg-main border-border focus:border-primary text-foreground"
                       />
                     ) : (
                       <span
                         onClick={() => onStartEdit(task)}
                         className={cn(
-                          "flex-1 cursor-pointer text-white",
+                          "flex-1 cursor-pointer text-foreground",
                           task.completed && "line-through text-secondary",
                         )}
                       >
@@ -136,7 +136,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({
             </div>
           </div>
 
-          <div className="p-6 border-t border-white/5 bg-input/30">
+          <div className="p-6 border-t border-border/50 bg-input/30">
             <div className="flex gap-3">
               <Input
                 ref={inputRef}
@@ -144,12 +144,12 @@ export const TaskModal: React.FC<TaskModalProps> = ({
                 onChange={(e) => setNewTaskText(e.target.value)}
                 onKeyDown={(e) => onKeyDown(e, onAddTask)}
                 placeholder="Adicionar nova tarefa..."
-                className="flex-1 bg-main border-white/10 focus:border-primary text-white placeholder:text-secondary"
+                className="flex-1 bg-main border-border focus:border-primary text-foreground placeholder:text-secondary"
               />
               <Button
                 onClick={onAddTask}
                 disabled={!newTaskText.trim()}
-                className="bg-primary hover:bg-primary/90 text-white shadow-[0_0_20px_rgba(99,102,241,0.5)] hover:shadow-[0_0_30px_rgba(99,102,241,0.7)] transition-all duration-200 px-6"
+                className="bg-primary hover:bg-primary/90 text-foreground shadow-[0_0_20px_rgba(99,102,241,0.5)] hover:shadow-[0_0_30px_rgba(99,102,241,0.7)] transition-all duration-200 px-6"
               >
                 <Plus className="h-4 w-4 mr-2" />
                 Adicionar

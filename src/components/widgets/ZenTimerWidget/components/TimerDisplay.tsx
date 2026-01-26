@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { cn } from "@/lib/utils";
 import { formatTime } from "../utils/time";
 
 interface TimerDisplayProps {
@@ -9,7 +10,7 @@ interface TimerDisplayProps {
   mode: "WORK" | "BREAK" | "LONG_BREAK";
 }
 
-export const TimerDisplay =({
+export const TimerDisplay = ({
   seconds,
   isRunning,
   mode,
@@ -31,15 +32,20 @@ export const TimerDisplay =({
       case "WORK":
         return "text-primary";
       case "BREAK":
-        return "text-emerald-400";
+        return "text-success"; // Using semantic token instead of text-emerald-400
       case "LONG_BREAK":
-        return "text-blue-400";
+        return "text-info"; // Using semantic token instead of text-blue-400
     }
   };
 
   return (
     <div className="flex flex-col items-center justify-center text-center min-w-[140px]">
-      <div className={`text-5xl font-bold font-mono tracking-tighter tabular-nums ${getModeColor()}`}>
+      <div
+        className={cn(
+          "text-5xl font-bold font-mono tracking-tighter tabular-nums",
+          getModeColor(),
+        )}
+      >
         {formatTime(seconds)}
       </div>
       <p className="text-[10px] uppercase tracking-[0.2em] text-secondary mt-1 font-bold">

@@ -225,13 +225,13 @@ const BrainDumpWidgetContent = ({ className }: BrainDumpWidgetProps) => {
             variant="ghost"
             size="sm"
             onClick={() => setIsExpanded(true)}
-            className="absolute bottom-2 right-2 h-8 w-8 p-0 hover:bg-white/5 text-white/40"
+            className="absolute bottom-2 right-2 h-8 w-8 p-0 hover:bg-muted/50 text-white/40"
           >
             <Maximize2 className="h-4 w-4" />
           </Button>
         </div>
 
-        <div className="px-6 py-4 border-t border-white/5">
+        <div className="px-6 py-4 border-t border-border/50">
           <SyncButton
             onClick={startSyncProcess}
             isSyncing={isSyncing}
@@ -243,7 +243,7 @@ const BrainDumpWidgetContent = ({ className }: BrainDumpWidgetProps) => {
       </div>
 
       <Dialog open={isExpanded} onOpenChange={setIsExpanded}>
-        <DialogContent className="max-w-4xl w-[90vw] h-[80vh] flex flex-col p-0 gap-0 overflow-hidden bg-background/95 backdrop-blur-xl border-white/10">
+        <DialogContent className="max-w-4xl w-[90vw] h-[80vh] flex flex-col p-0 gap-0 overflow-hidden bg-background/95 backdrop-blur-xl border-border">
           <BrainDumpHeader
             noteTitle={noteTitle}
             setNoteTitle={setNoteTitle}
@@ -258,7 +258,7 @@ const BrainDumpWidgetContent = ({ className }: BrainDumpWidgetProps) => {
           />
 
           <div className="flex-1 flex flex-col overflow-hidden">
-            <div className="px-8 py-2 border-b border-white/5 bg-white/[0.02]">
+            <div className="px-8 py-2 border-b border-border/50 bg-white/[0.02]">
               <EditorToolbar editor={editor} />
             </div>
             <div className="flex-1 overflow-auto">
@@ -286,7 +286,7 @@ const BrainDumpWidgetContent = ({ className }: BrainDumpWidgetProps) => {
       </Dialog>
 
       <Dialog open={showApiSettings} onOpenChange={setShowApiSettings}>
-        <DialogContent className="max-w-md bg-main border-white/10 text-white shadow-2xl">
+        <DialogContent className="max-w-md bg-main border-border text-foreground shadow-2xl">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2 text-xl">
               <Settings className="h-5 w-5 text-primary" />
@@ -300,7 +300,7 @@ const BrainDumpWidgetContent = ({ className }: BrainDumpWidgetProps) => {
 
           <div className="py-4">
             <Button
-              className="w-full h-12 bg-primary hover:bg-primary/90 text-white gap-2"
+              className="w-full h-12 bg-primary hover:bg-primary/90 text-foreground gap-2"
               onClick={() => {
                 setShowApiSettings(false);
                 window.location.href = "/settings";
@@ -317,9 +317,9 @@ const BrainDumpWidgetContent = ({ className }: BrainDumpWidgetProps) => {
 };
 
 const BrainDumpErrorFallback = () => (
-  <div className="bg-card rounded-3xl border border-white/5 flex flex-col">
-    <div className="flex items-center justify-between p-4 border-b border-white/10">
-      <h2 className="text-sm font-semibold text-white">Brain Dump</h2>
+  <div className="bg-card rounded-3xl border border-border/50 flex flex-col">
+    <div className="flex items-center justify-between p-4 border-b border-border">
+      <h2 className="text-sm font-semibold text-foreground">Brain Dump</h2>
     </div>
     <div className="flex-1 flex items-center justify-center p-4">
       <div className="text-center">

@@ -50,7 +50,7 @@ export function TasksWidget({ className }: TasksWidgetProps) {
       {/* Header */}
       <div className="flex items-center justify-between pl-4 pt-2 mb-6">
         <div className="flex items-center gap-2">
-          <div className="w-1 h-1 rounded-full bg-white/20" />
+          <div className="w-1 h-1 rounded-full bg-muted/80" />
           <h2
             className="glitch-text text-[10px] text-foreground"
             data-text="Task Control"

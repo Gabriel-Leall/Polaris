@@ -5,7 +5,6 @@ import {
   Calendar as CalendarIcon,
   ListTodo as ListTodoIcon,
   FileText as FileTextIcon,
-  Sparkles as SparklesIcon,
   Layout as LayoutIcon,
   Clock as ClockIcon,
   Search as SearchIcon,
@@ -60,10 +59,10 @@ export const ProblemSection = () => {
         transition={{ duration: 0.6 }}
         className="text-center z-20 mb-6 max-w-4xl"
       >
-        <h2 className="text-white text-4xl md:text-7xl font-black tracking-tighter mb-4 leading-[1.1]">
-          O caos das <span className="text-indigo-400">infinitas abas.</span>
+        <h2 className="text-foreground text-4xl md:text-7xl font-black tracking-tighter mb-4 leading-[1.1]">
+          O caos das <span className="text-primary">infinitas abas.</span>
         </h2>
-        <p className="text-gray-500 text-lg md:text-xl font-light">
+        <p className="text-muted-foreground text-lg md:text-xl font-light">
           Veja como o Polaris unifica seu fluxo.
         </p>
       </motion.div>
@@ -167,8 +166,8 @@ const ConvergenceAnimation = ({
         }}
         className="relative z-30"
       >
-        <div className="absolute inset-0 bg-indigo-500/50 blur-[120px] rounded-full" />
-        <div className="relative p-8 rounded-[3rem] bg-[#0A0A0F] border-2 border-indigo-500/60 shadow-[0_0_80px_rgba(99,102,241,0.8)]">
+        <div className="absolute inset-0 bg-primary/30 blur-[120px] rounded-full" />
+        <div className="relative p-8 rounded-[3rem] bg-card border-2 border-primary/40 shadow-glow-lg">
           {/* PolarisIcon in the center */}
           <motion.div
             animate={{
@@ -187,7 +186,7 @@ const ConvergenceAnimation = ({
           <motion.div
             animate={{ rotate: 360 }}
             transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-            className="absolute inset-0 border-2 border-dashed border-indigo-400/40 rounded-[3rem] scale-110"
+            className="absolute inset-0 border-2 border-dashed border-primary/30 rounded-[3rem] scale-110"
           />
 
           {/* Pulsing glow */}
@@ -197,7 +196,7 @@ const ConvergenceAnimation = ({
               opacity: [0.5, 0.8, 0.5],
             }}
             transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute inset-0 bg-indigo-500/20 rounded-[3rem] blur-xl"
+            className="absolute inset-0 bg-primary/15 rounded-[3rem] blur-xl"
           />
         </div>
       </motion.div>
@@ -222,7 +221,7 @@ const ConvergenceAnimation = ({
         transition={{ duration: 0.8, delay: 0.5 }}
         className="absolute bottom-4 text-center w-full px-4"
       >
-        <h3 className="text-2xl md:text-4xl font-bold bg-gradient-to-r from-white via-indigo-300 to-indigo-500 bg-clip-text text-transparent">
+        <h3 className="text-2xl md:text-4xl font-bold bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
           Um fluxo unificado para foco absoluto.
         </h3>
       </motion.div>
@@ -268,10 +267,13 @@ const WindowItem = ({
       }}
       className="absolute z-20"
     >
-      <div className="w-32 h-32 p-4 rounded-3xl bg-[#0F0F16]/90 backdrop-blur-2xl border border-white/10 shadow-2xl flex flex-col items-center justify-center gap-2 group hover:border-indigo-500/30 transition-all">
+      <div className="w-32 h-32 p-4 rounded-3xl bg-card/90 backdrop-blur-2xl border border-border shadow-lg flex flex-col items-center justify-center gap-2 group hover:border-primary/30 transition-all">
         <motion.div
           animate={{
-            color: animationPhase >= 2 ? "#818cf8" : "#64748b",
+            color:
+              animationPhase >= 2
+                ? "hsl(var(--primary))"
+                : "hsl(var(--muted-foreground))",
           }}
           transition={{ duration: 1 }}
         >
@@ -282,7 +284,7 @@ const WindowItem = ({
           initial={{ opacity: 0 }}
           animate={{ opacity: animationPhase >= 2 ? 1 : 0 }}
           transition={{ duration: 0.5, delay: 1.5 + idx * 0.05 }}
-          className="text-[11px] uppercase tracking-[0.3em] font-black text-indigo-400"
+          className="text-[11px] uppercase tracking-[0.3em] font-black text-primary"
         >
           {win.label}
         </motion.span>
@@ -299,7 +301,7 @@ const WindowItem = ({
             y1="50%"
             x2={`${50 - (finalX / orbitRadius) * 50}%`}
             y2={`${50 - (finalY / orbitRadius) * 50}%`}
-            stroke="#6366f1"
+            stroke="hsl(var(--primary))"
             strokeWidth="1.5"
             strokeDasharray="5 5"
             animate={{
@@ -341,7 +343,7 @@ const DiagnosticCard = ({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, delay }}
       onMouseMove={handleMouseMove}
-      className="group relative border border-white/10 bg-[#0A0A0F]/60 backdrop-blur-3xl rounded-3xl p-8 overflow-hidden shadow-2xl transition-all hover:bg-[#12121A]/80 hover:border-indigo-500/30"
+      className="group relative border border-border bg-card/60 backdrop-blur-3xl rounded-3xl p-8 overflow-hidden shadow-lg transition-all hover:bg-card/80 hover:border-primary/30"
     >
       <motion.div
         className="pointer-events-none absolute -inset-px rounded-3xl opacity-0 transition duration-500 group-hover:opacity-100"
@@ -350,10 +352,10 @@ const DiagnosticCard = ({
         }}
       />
       <div className="relative">
-        <h3 className="text-xl font-black text-white mb-3 tracking-tighter group-hover:text-indigo-400 transition-colors">
+        <h3 className="text-xl font-black text-foreground mb-3 tracking-tighter group-hover:text-primary transition-colors">
           {title}
         </h3>
-        <p className="text-gray-400 text-sm leading-relaxed font-light">
+        <p className="text-muted-foreground text-sm leading-relaxed font-light">
           {description}
         </p>
       </div>

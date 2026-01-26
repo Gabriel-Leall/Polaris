@@ -93,25 +93,25 @@ export const InteractiveTabs = () => {
     <section className="w-full py-24 px-6 md:px-12">
       <div className="max-w-6xl mx-auto flex flex-col items-center gap-12">
         <div className="text-center space-y-4">
-          <h2 className="text-white text-3xl md:text-5xl font-bold tracking-tight">
+          <h2 className="text-foreground text-3xl md:text-5xl font-bold tracking-tight">
             Múltiplas visões, um só lugar.
           </h2>
-          <p className="text-white/60 text-lg max-w-2xl mx-auto">
+          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
             Escolha a forma que você prefere trabalhar. Polaris se adapta ao seu
             estilo, não o contrário.
           </p>
         </div>
 
         {/* Tab Selection */}
-        <div className="flex flex-wrap justify-center gap-2 p-1 bg-white/5 rounded-full border border-white/10">
+        <div className="flex flex-wrap justify-center gap-2 p-1 bg-muted/50 rounded-full border border-border">
           {TABS.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab)}
               className={`px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 ${
                 activeTab.id === tab.id
-                  ? "bg-primary text-white shadow-lg"
-                  : "text-white/60 hover:text-white hover:bg-white/5"
+                  ? "bg-primary text-primary-foreground shadow-lg"
+                  : "text-muted-foreground hover:text-foreground hover:bg-muted"
               }`}
             >
               {tab.label}
@@ -131,17 +131,17 @@ export const InteractiveTabs = () => {
                 transition={{ duration: 0.4 }}
                 className="space-y-4 text-center lg:text-left"
               >
-                <h3 className="text-white text-2xl md:text-3xl font-bold">
+                <h3 className="text-foreground text-2xl md:text-3xl font-bold">
                   {activeTab.title}
                 </h3>
-                <p className="text-white/60 text-lg leading-relaxed">
+                <p className="text-muted-foreground text-lg leading-relaxed">
                   {activeTab.description}
                 </p>
                 <ul className="space-y-3 pt-4">
                   {activeTab.features.map((feature, i) => (
                     <li
                       key={i}
-                      className="flex items-center gap-3 text-white/80 justify-center lg:justify-start"
+                      className="flex items-center gap-3 text-foreground/80 justify-center lg:justify-start"
                     >
                       <div className="size-5 rounded-full bg-primary/20 flex items-center justify-center">
                         <div className="size-2 rounded-full bg-primary" />
@@ -162,7 +162,7 @@ export const InteractiveTabs = () => {
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 1.05 }}
                 transition={{ duration: 0.5, ease: "easeOut" }}
-                className="relative w-full h-full min-h-[400px] rounded-2xl overflow-hidden border border-white/10 shadow-2xl bg-[#0A0A16] flex items-center justify-center"
+                className="relative w-full h-full min-h-[400px] rounded-2xl overflow-hidden border border-border shadow-lg bg-card flex items-center justify-center"
               >
                 <WidgetRenderer id={activeTab.id} />
               </motion.div>

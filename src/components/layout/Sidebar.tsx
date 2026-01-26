@@ -6,6 +6,7 @@ import { PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import { SidebarUser } from "./SidebarNav";
 import { useUIStore } from "@/store/uiStore";
 import { Logo } from "@/components/ui/logo";
+import { HorizontalThemeWipeToggle } from "@/components/ui/theme-wipe-toggle";
 
 interface SidebarProps {
   children?: React.ReactNode;
@@ -24,34 +25,37 @@ function Sidebar({ children, className }: SidebarProps) {
       className={cn(
         "bg-sidebar rounded-3xl border border-glass flex flex-col h-full glass-border-animated overflow-hidden transition-all duration-500 ease-in-out shrink-0",
         isSidebarCollapsed ? "w-[84px]" : "w-72",
-        className
+        className,
       )}
     >
       {/* Header */}
       <div
         className={cn(
           "p-6 flex items-center justify-between shrink-0 transition-all duration-300",
-          isSidebarCollapsed ? "flex-col gap-6 px-4" : "flex-row"
+          isSidebarCollapsed ? "flex-col gap-6 px-4" : "flex-row",
         )}
       >
         <div className="flex items-center gap-3">
           <Logo size={40} />
           {!isSidebarCollapsed && (
-            <h1 className="text-xl font-bold text-white tracking-tight">
+            <h1 className="text-xl font-bold text-foreground tracking-tight">
               Polaris
             </h1>
           )}
         </div>
-        <button
-          onClick={toggleSidebar}
-          className="p-2 hover:bg-white/5 rounded-lg transition-colors text-muted-foreground hover:text-white"
-        >
-          {isSidebarCollapsed ? (
-            <PanelLeftOpen className="w-5 h-5" />
-          ) : (
-            <PanelLeftClose className="w-5 h-5" />
-          )}
-        </button>
+        <div className="flex items-center gap-2">
+          <HorizontalThemeWipeToggle />
+          <button
+            onClick={toggleSidebar}
+            className="p-2 hover:bg-muted rounded-lg transition-colors text-muted-foreground hover:text-foreground"
+          >
+            {isSidebarCollapsed ? (
+              <PanelLeftOpen className="w-5 h-5" />
+            ) : (
+              <PanelLeftClose className="w-5 h-5" />
+            )}
+          </button>
+        </div>
       </div>
 
       {/* Scrollable Content */}
@@ -62,8 +66,8 @@ function Sidebar({ children, className }: SidebarProps) {
       {/* Footer - Fixed at bottom */}
       <div
         className={cn(
-          "p-4 mt-auto border-t border-white/5 bg-sidebar/50 backdrop-blur-sm shrink-0 transition-opacity duration-300",
-          isSidebarCollapsed ? "px-2" : "p-4"
+          "p-4 mt-auto border-t border-border bg-sidebar/50 backdrop-blur-sm shrink-0 transition-opacity duration-300",
+          isSidebarCollapsed ? "px-2" : "p-4",
         )}
       >
         <SidebarUser />

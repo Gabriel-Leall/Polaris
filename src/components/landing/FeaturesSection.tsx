@@ -24,12 +24,12 @@ const FeatureVideo = ({
   return (
     <div
       className={cn(
-        "relative group rounded-3xl overflow-hidden shadow-2xl border border-white/10 bg-[#0A0A16]",
+        "relative group rounded-3xl overflow-hidden shadow-lg border border-border bg-card",
         className,
       )}
     >
       {/* Glow behind - animated */}
-      <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500/20 via-purple-500/20 to-blue-500/20 blur-2xl opacity-50 group-hover:opacity-100 transition-opacity duration-700" />
+      <div className="absolute -inset-1 bg-gradient-to-r from-primary/10 via-accent/10 to-primary/10 blur-xl opacity-30 group-hover:opacity-60 transition-opacity duration-700" />
 
       {/* Glass reflection effect */}
       <div className="absolute inset-0 bg-gradient-to-tr from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none z-20" />
@@ -102,17 +102,17 @@ const FeatureSectionRow = ({
         className="flex-1 space-y-6 text-center md:text-left"
       >
         <motion.div variants={itemVariants} className="space-y-2">
-          <span className="text-[10px] font-mono text-indigo-400 tracking-[0.4em] uppercase font-black">
+          <span className="text-[10px] font-mono text-primary tracking-[0.4em] uppercase font-black">
             Protocol 0{index + 1}
           </span>
-          <h3 className="text-3xl md:text-5xl lg:text-6xl font-black text-white leading-tight tracking-tight">
+          <h3 className="text-3xl md:text-5xl lg:text-6xl font-black text-foreground leading-tight tracking-tight">
             {title}
           </h3>
         </motion.div>
 
         <motion.p
           variants={itemVariants}
-          className="text-indigo-200/60 text-lg md:text-xl font-light leading-relaxed max-w-xl mx-auto md:mx-0"
+          className="text-muted-foreground text-lg md:text-xl font-light leading-relaxed max-w-xl mx-auto md:mx-0"
         >
           {description}
         </motion.p>
@@ -121,9 +121,9 @@ const FeatureSectionRow = ({
           variants={itemVariants}
           className="pt-4 flex justify-center md:justify-start"
         >
-          <div className="flex items-center gap-3 text-white/40 text-sm font-mono group cursor-default">
-            <div className="h-[1px] w-8 bg-white/20 group-hover:w-12 transition-all duration-300" />
-            <span className="group-hover:text-indigo-400 transition-colors">
+          <div className="flex items-center gap-3 text-muted-foreground text-sm font-mono group cursor-default">
+            <div className="h-[1px] w-8 bg-border group-hover:w-12 transition-all duration-300" />
+            <span className="group-hover:text-primary transition-colors">
               ACTIVE SYSTEM
             </span>
           </div>
@@ -148,8 +148,8 @@ export const FeaturesSection = () => {
   return (
     <div className="w-full py-20 pb-40 relative overflow-hidden">
       {/* Background ambient light */}
-      <div className="absolute top-1/4 left-0 w-[500px] h-[500px] bg-purple-900/10 blur-[120px] rounded-full pointer-events-none" />
-      <div className="absolute bottom-1/4 right-0 w-[500px] h-[500px] bg-blue-900/10 blur-[120px] rounded-full pointer-events-none" />
+      <div className="absolute top-1/4 left-0 w-[500px] h-[500px] bg-primary/5 blur-[120px] rounded-full pointer-events-none" />
+      <div className="absolute bottom-1/4 right-0 w-[500px] h-[500px] bg-accent/5 blur-[120px] rounded-full pointer-events-none" />
 
       {/* Header */}
       <div className="flex flex-col items-center justify-center gap-6 text-center mb-10 md:mb-20 relative z-10">
@@ -160,17 +160,17 @@ export const FeaturesSection = () => {
           transition={{ duration: 1 }}
         >
           <h2
-            className="text-white text-4xl md:text-7xl font-black leading-tight tracking-tighter"
+            className="text-foreground text-4xl md:text-7xl font-black leading-tight tracking-tighter"
             style={{
               textShadow: "0 0 30px rgba(99, 102, 241, 0.3)",
             }}
           >
             Engineered for <br />
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-cyan-400">
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">
               Maximum Efficiency
             </span>
           </h2>
-          <p className="text-indigo-200/50 text-base md:text-xl font-light tracking-wide max-w-2xl mt-8 mx-auto font-mono">
+          <p className="text-muted-foreground text-base md:text-xl font-light tracking-wide max-w-2xl mt-8 mx-auto font-mono">
             One platform. Zero distractions. Absolute focus.
           </p>
         </motion.div>

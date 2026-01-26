@@ -23,7 +23,7 @@ export const TaskItem = ({
   return (
     <div
       className={cn(
-        "flex items-center gap-2.5 p-2.5 rounded-lg border border-white/5 hover:border-white/10 hover:bg-white/[0.02] transition-all group",
+        "flex items-center gap-2.5 p-2.5 rounded-lg border border-border/50 hover:border-border hover:bg-white/[0.02] transition-all group",
         task.completed && "opacity-50"
       )}
     >
@@ -69,7 +69,7 @@ export const TaskItem = ({
           <>
             <p
               className={cn(
-                "text-sm text-white truncate",
+                "text-sm text-foreground truncate",
                 task.completed && "line-through text-muted"
               )}
             >

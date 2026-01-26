@@ -3,43 +3,95 @@
 @import "tailwindcss/utilities";
 
 @layer base {
+  /* Light Theme (Neumorphism / Soft UI) */
   :root {
-    /* Polaris Design System - Obsidian Matte Theme */
-    --background: 240 10% 3.9%; /* #0A0A0B */
-    --foreground: 0 0% 98%; /* #FAFAFA */
+    --background: 222 30% 95%; /* #EFF2F9 */
+    --foreground: 215 15% 30%; /* #414D59 - Darker slate for readability */
 
-    --card: 240 10% 5.9%; /* #0F0F11 */
-    --card-foreground: 0 0% 98%;
+    --card: 210 25% 92%; /* #E4EBF1 */
+    --card-foreground: 215 15% 30%;
 
-    --popover: 240 10% 5.9%;
-    --popover-foreground: 0 0% 98%;
+    --popover: 210 25% 92%;
+    --popover-foreground: 215 15% 30%;
 
-    --primary: 239 84% 67%;
-    --primary-foreground: 0 0% 98%;
+    --primary: 217 91% 60%; /* #3B82F6 Blue-500 (Kept vibrant for accents) */
+    --primary-hover: 213 94% 68%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 240 5% 64.9%;
-    --secondary-foreground: 0 0% 98%;
+    --secondary: 210 15% 50%; /* #6E7F8D - The gray from image */
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 240 5% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
+    --muted: 210 20% 88%; /* Slightly darker than card for contrast */
+    --muted-foreground: 210 15% 50%; /* #6E7F8D */
 
-    --accent: 240 5% 15.9%;
-    --accent-foreground: 0 0% 98%;
+    --accent: 187 92% 41%;
+    --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 240 5% 15.9%; /* #27272A */
-    --input: 240 6% 10%; /* #18181B */
-    --ring: 240 5% 84.9%;
+    --success: 142 76% 36%;
+    --warning: 45 93% 47%;
+
+    --border: 210 12% 70%; /* #B5BFC6 -> Darker for visibility */
+    --input: 210 12% 70%;
+    --ring: 217 91% 60%;
     --radius: 0.75rem;
 
-    /* Chart colors using Polaris palette */
-    --chart-1: 239 84% 67%; /* #6366F1 */
-    --chart-2: 221.2 83.2% 53.3%; /* #3B82F6 */
-    --chart-3: 142.1 76.2% 36.3%; /* #22C55E */
-    --chart-4: 45.4 93.4% 47.5%; /* #EAB308 */
-    --chart-5: 0 84.2% 60.2%; /* #EF4444 */
+    --sidebar: 222 30% 95%; /* Matching background */
+    --glass: 0 0% 100% / 0.4; /* Stronger glass effect for light mode */
+
+    /* Chart colors */
+    --chart-1: 217 91% 60%;
+    --chart-2: 187 92% 41%;
+    --chart-3: 142 76% 36%;
+    --chart-4: 45 93% 47%;
+    --chart-5: 0 84% 60%;
+  }
+
+  /* Dark Theme */
+  .dark {
+    --background: 240 10% 4%; /* #0A0A0B */
+    --foreground: 0 0% 98%; /* #FAFAFA */
+
+    --card: 240 6% 8%; /* #121214 */
+    --card-foreground: 0 0% 98%;
+
+    --popover: 240 6% 8%;
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 217 91% 60%; /* #3B82F6 Blue-500 */
+    --primary-hover: 213 94% 68%; /* #60A5FA Blue-400 */
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 215 14% 34%; /* #475569 Slate-600 */
+    --secondary-foreground: 0 0% 98%;
+
+    --muted: 217 19% 14%; /* #1E293B Slate-800 */
+    --muted-foreground: 215 20% 65%; /* #94A3B8 Slate-400 */
+
+    --accent: 187 92% 41%; /* #06B6D4 Cyan-500 */
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 0 0% 98%;
+
+    --success: 142 76% 36%;
+    --warning: 45 93% 47%;
+
+    --border: 217 19% 18%; /* #27272A */
+    --input: 240 6% 10%; /* #18181B */
+    --ring: 217 91% 60%;
+
+    --sidebar: 240 6% 6%; /* #0E0E11 */
+    --glass: 0 0% 100% / 0.03;
+
+    /* Chart colors */
+    --chart-1: 217 91% 60%;
+    --chart-2: 187 92% 41%;
+    --chart-3: 142 76% 36%;
+    --chart-4: 45 93% 47%;
+    --chart-5: 0 84% 60%;
   }
 
   * {
@@ -113,32 +165,33 @@
   /* Glass card component */
   .glass-card {
     background-color: hsl(var(--card));
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    border: 1px solid hsl(var(--border));
     backdrop-filter: blur(4px);
   }
 
   /* Interactive glass elements */
   .glass-interactive {
     background-color: hsl(var(--card));
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    border: 1px solid hsl(var(--border));
     backdrop-filter: blur(4px);
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   }
   .glass-interactive:hover {
-    border-color: rgba(255, 255, 255, 0.1);
+    border-color: hsl(var(--border));
+    background-color: hsl(var(--muted));
   }
 
-  /* Glow effects */
+  /* Reduced glow effects - more subtle for flat design */
   .glow-primary {
-    box-shadow: 0 0 20px rgba(99, 102, 241, 0.5);
+    box-shadow: 0 0 12px hsl(var(--primary) / 0.15);
   }
 
   .glow-primary-sm {
-    box-shadow: 0 0 10px rgba(99, 102, 241, 0.3);
+    box-shadow: 0 0 6px hsl(var(--primary) / 0.1);
   }
 
   .glow-primary-lg {
-    box-shadow: 0 0 30px rgba(99, 102, 241, 0.6);
+    box-shadow: 0 0 20px hsl(var(--primary) / 0.2);
   }
 
   /* Interactive element base styles */
@@ -165,32 +218,32 @@
     transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   }
   .hover-lift:hover {
-    transform: scale(1.05);
+    transform: scale(1.02);
   }
   .hover-lift:active {
-    transform: scale(0.95);
+    transform: scale(0.98);
   }
 
   .hover-glow {
-    transition: shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   }
   .hover-glow:hover {
-    box-shadow: 0 0 10px rgba(99, 102, 241, 0.3);
+    box-shadow: 0 0 8px hsl(var(--primary) / 0.15);
   }
 
   .hover-brighten {
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   }
   .hover-brighten:hover {
-    filter: brightness(1.1);
+    filter: brightness(1.05);
   }
 
   /* Sidebar active item gradient */
   .sidebar-active {
     background-image: linear-gradient(
       to right,
-      rgba(99, 102, 241, 0.2),
-      rgba(168, 85, 247, 0.05),
+      hsl(var(--primary) / 0.12),
+      hsl(var(--accent) / 0.05),
       transparent
     );
   }
@@ -252,12 +305,13 @@
   .tiptap .is-editor-empty:first-child::before {
     content: attr(data-placeholder);
     float: left;
-    color: #71717a;
+    color: hsl(var(--muted-foreground));
     pointer-events: none;
     height: 0;
   }
+
   /* Polaris Authentication Animations */
-  @keyframes pulse-indigo {
+  @keyframes pulse-primary {
     0%,
     100% {
       transform: scale(1);
@@ -265,9 +319,9 @@
       filter: blur(40px);
     }
     50% {
-      transform: scale(1.15);
-      opacity: 0.8;
-      filter: blur(60px);
+      transform: scale(1.1);
+      opacity: 0.7;
+      filter: blur(50px);
     }
   }
   @keyframes orbit-slow {
@@ -292,7 +346,7 @@
       opacity: 0;
     }
     5% {
-      opacity: 0.8;
+      opacity: 0.6;
     }
     15% {
       transform: translateX(200%) translateY(200%) rotate(45deg);
@@ -307,12 +361,12 @@
   .nebula-glow {
     background: radial-gradient(
       circle at center,
-      rgba(99, 102, 241, 0.08) 0%,
+      hsl(var(--primary) / 0.06) 0%,
       transparent 75%
     );
   }
   .north-star-aura {
-    animation: pulse-indigo 8s ease-in-out infinite;
+    animation: pulse-primary 8s ease-in-out infinite;
   }
   .grain-overlay {
     background-image: url("https://grainy-gradients.vercel.app/noise.svg");
@@ -321,7 +375,7 @@
     pointer-events: none;
   }
   .orbital-path {
-    border: 1px solid rgba(99, 102, 241, 0.08);
+    border: 1px solid hsl(var(--primary) / 0.06);
     border-radius: 50%;
   }
   .orbit-container {
@@ -337,8 +391,8 @@
     background: linear-gradient(
       90deg,
       transparent,
-      rgba(99, 102, 241, 0.4),
-      white
+      hsl(var(--primary) / 0.3),
+      hsl(var(--foreground))
     );
     filter: blur(1px);
     animation: meteor 12s linear infinite;
@@ -350,15 +404,15 @@
   .glitch-text {
     position: relative;
     display: inline-block;
-    color: #52525b; /* Dark Zinc/Gray to not attract too much attention */
+    color: hsl(var(--muted-foreground));
     text-shadow:
-      -0.5px 0 0.1px rgba(0, 255, 255, 0.2),
-      0.5px 0 0.1px rgba(255, 0, 0, 0.2);
+      -0.5px 0 0.1px hsl(var(--accent) / 0.2),
+      0.5px 0 0.1px hsl(var(--destructive) / 0.2);
     font-family: var(--font-jetbrains-mono), monospace;
     font-weight: 700;
-    letter-spacing: 0.25em; /* Wider spacing to feel more industrial/label-like */
+    letter-spacing: 0.25em;
     text-transform: uppercase;
-    opacity: 0.8; /* Dim the label a bit more */
+    opacity: 0.8;
   }
 
   /* Hide number input arrows */

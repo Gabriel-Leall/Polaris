@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { inter, jetbrainsMono, geistSans, geistMono } from "./fonts";
 import { GlobalErrorBoundary } from "@/components/ui/global-error-boundary";
+import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { Toaster } from "@/components/ui/toaster";
 import "./globals.css";
 
@@ -32,14 +33,16 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`dark ${inter.variable} ${jetbrainsMono.variable} ${geistSans.variable} ${geistMono.variable}`}
+      className={`${inter.variable} ${jetbrainsMono.variable} ${geistSans.variable} ${geistMono.variable}`}
       suppressHydrationWarning
     >
       <body className="font-sans antialiased">
-        <GlobalErrorBoundary>
-          {children}
-          <Toaster />
-        </GlobalErrorBoundary>
+        <ThemeProvider>
+          <GlobalErrorBoundary>
+            {children}
+            <Toaster />
+          </GlobalErrorBoundary>
+        </ThemeProvider>
       </body>
     </html>
   );

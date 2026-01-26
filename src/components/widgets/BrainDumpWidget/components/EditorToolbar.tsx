@@ -34,7 +34,7 @@ export const EditorToolbar = ({ editor }: EditorToolbarProps) => {
   if (!editor) return null;
 
   return (
-    <div className="flex items-center gap-0.5 p-1.5 border-b border-white/10 bg-white/[0.02]">
+    <div className="flex items-center gap-0.5 p-1.5 border-b border-border bg-white/[0.02]">
       <ToolbarButton
         onClick={() => editor.chain().focus().toggleBold().run()}
         isActive={editor.isActive("bold")}
@@ -59,7 +59,7 @@ export const EditorToolbar = ({ editor }: EditorToolbarProps) => {
         <Underline className="w-4 h-4" />
       </ToolbarButton>
 
-      <div className="w-px h-4 bg-white/10 mx-1" />
+      <div className="w-px h-4 bg-muted mx-1" />
 
       <ToolbarButton
         onClick={() => editor.chain().focus().toggleCode().run()}
@@ -77,7 +77,7 @@ export const EditorToolbar = ({ editor }: EditorToolbarProps) => {
         <Link className="w-4 h-4" />
       </ToolbarButton>
 
-      <div className="w-px h-4 bg-white/10 mx-1" />
+      <div className="w-px h-4 bg-muted mx-1" />
 
       <ToolbarButton
         onClick={() => editor.chain().focus().toggleBulletList().run()}
@@ -95,7 +95,7 @@ export const EditorToolbar = ({ editor }: EditorToolbarProps) => {
         <ListOrdered className="w-4 h-4" />
       </ToolbarButton>
 
-      <div className="w-px h-4 bg-white/10 mx-1" />
+      <div className="w-px h-4 bg-muted mx-1" />
 
       <ToolbarButton
         onClick={() => editor.chain().focus().undo().run()}

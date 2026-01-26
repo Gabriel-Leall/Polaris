@@ -39,7 +39,7 @@ export function PlayerControls({
             size="sm"
             onClick={onPrev}
             disabled={playlistEmpty}
-            className="h-8 w-8 p-0 text-muted hover:text-white transition-colors"
+            className="h-8 w-8 p-0 text-muted hover:text-foreground transition-colors"
           >
             <SkipBack className="h-4 w-4 fill-current" />
           </Button>
@@ -61,7 +61,7 @@ export function PlayerControls({
             size="sm"
             onClick={onNext}
             disabled={playlistEmpty}
-            className="h-8 w-8 p-0 text-muted hover:text-white transition-colors"
+            className="h-8 w-8 p-0 text-muted hover:text-foreground transition-colors"
           >
             <SkipForward className="h-4 w-4 fill-current" />
           </Button>
@@ -75,7 +75,7 @@ export function PlayerControls({
             "h-8 w-8 p-0 transition-all duration-300",
             isLooping
               ? "text-primary bg-primary/10"
-              : "text-muted hover:text-white",
+              : "text-muted hover:text-foreground",
           )}
         >
           <Repeat className={cn("h-4 w-4", isLooping && "animate-spin-slow")} />

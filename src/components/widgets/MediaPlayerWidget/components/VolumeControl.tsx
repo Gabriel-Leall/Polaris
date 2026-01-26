@@ -25,7 +25,7 @@ function VolumeControl({
           variant="ghost"
           size="sm"
           onClick={onToggleMute}
-          className="h-7 w-7 p-0 text-muted hover:text-white shrink-0 transition-colors"
+          className="h-7 w-7 p-0 text-muted hover:text-foreground shrink-0 transition-colors"
         >
           {isMuted || volume === 0 ? (
             <VolumeX className="h-4 w-4" />
@@ -38,9 +38,9 @@ function VolumeControl({
           <div
             ref={volumeRef}
             onClick={onVolumeClick}
-            className="relative h-1.5 w-full bg-white/5 rounded-full cursor-pointer overflow-hidden backdrop-blur-sm"
+            className="relative h-1.5 w-full bg-muted/50 rounded-full cursor-pointer overflow-hidden backdrop-blur-sm"
           >
-            <div className="absolute inset-0 bg-white/5 group-hover/vol:bg-white/10 transition-colors" />
+            <div className="absolute inset-0 bg-muted/50 group-hover/vol:bg-muted transition-colors" />
 
             <div
               className="absolute inset-y-0 left-0 bg-gradient-to-r from-primary to-primary-glow transition-all duration-300 group-hover/vol:brightness-110 shadow-[0_0_10px_rgba(99,102,241,0.5)]"

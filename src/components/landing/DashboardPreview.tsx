@@ -22,11 +22,11 @@ export const DashboardPreview = () => {
           style={{ opacity }}
           className="flex flex-col gap-4 items-center"
         >
-          <h2 className="text-white text-3xl md:text-5xl font-bold leading-tight tracking-tight">
+          <h2 className="text-foreground text-3xl md:text-5xl font-bold leading-tight tracking-tight">
             Tudo o que você precisa, <br />
             <span className="text-primary">em um só lugar.</span>
           </h2>
-          <p className="text-white/60 text-lg md:text-xl font-normal max-w-2xl leading-relaxed">
+          <p className="text-muted-foreground text-lg md:text-xl font-normal max-w-2xl leading-relaxed">
             Elimine a alternância entre abas. O Polaris reúne suas notas,
             tarefas e foco em uma interface única e imersiva.
           </p>

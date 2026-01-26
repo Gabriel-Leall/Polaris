@@ -296,7 +296,7 @@ export function HabitTrackerWidget({ className }: HabitTrackerWidgetProps) {
       {/* Header */}
       <div className="flex items-center justify-between pl-4 pr-4 pt-2 mb-6">
         <div className="flex items-center gap-2">
-          <div className="w-1 h-1 rounded-full bg-white/20" />
+          <div className="w-1 h-1 rounded-full bg-muted/80" />
           <h2
             className="glitch-text text-[10px] text-foreground"
             data-text="Protocol Habits"
@@ -338,7 +338,7 @@ export function HabitTrackerWidget({ className }: HabitTrackerWidgetProps) {
             value={newHabitName}
             onChange={(e) => setNewHabitName(e.target.value)}
             placeholder="New habit name..."
-            className="h-8 text-sm bg-white/5 border-white/10 focus:border-primary/50"
+            className="h-8 text-sm bg-muted/50 border-border focus:border-primary/50"
             onKeyDown={(e) => e.key === "Enter" && handleCreateHabit()}
             autoFocus
           />
@@ -394,7 +394,7 @@ export function HabitTrackerWidget({ className }: HabitTrackerWidgetProps) {
             return (
               <div
                 key={habit.id}
-                className="group grid grid-cols-[1fr_repeat(7,28px)] gap-1 items-center px-1 py-1.5 rounded-lg hover:bg-white/5 transition-colors"
+                className="group grid grid-cols-[1fr_repeat(7,28px)] gap-1 items-center px-1 py-1.5 rounded-lg hover:bg-muted/50 transition-colors"
               >
                 {/* Habit Name with Streak */}
                 <div className="flex items-center gap-2 min-w-0">
@@ -444,7 +444,7 @@ export function HabitTrackerWidget({ className }: HabitTrackerWidgetProps) {
                           "w-6 h-6 rounded-full border transition-all duration-300 flex items-center justify-center relative z-10 overflow-hidden",
                           completed
                             ? "border-primary shadow-[0_0_12px_rgba(99,102,241,0.6)]"
-                            : "border-white/20 hover:border-white/40 hover:bg-white/5",
+                            : "border-white/20 hover:border-white/40 hover:bg-muted/50",
                           dayIndex === todayIndex &&
                             !completed &&
                             "border-primary/50 ring-1 ring-primary/30",
@@ -507,7 +507,7 @@ export function HabitTrackerWidget({ className }: HabitTrackerWidgetProps) {
 
       {/* Footer Stats */}
       {habits.length > 0 && (
-        <div className="mt-auto pt-3 border-t border-white/5">
+        <div className="mt-auto pt-3 border-t border-border/50">
           <div className="flex items-center justify-between text-xs text-muted-foreground">
             <span>
               {habits.reduce(

@@ -50,14 +50,14 @@ function TrackInput({
         value={inputUrl}
         onChange={(e) => setInputUrl(e.target.value)}
         placeholder="Paste YouTube Link..."
-        className="h-8 bg-black/20 border-white/5 text-[11px] focus:ring-1 focus:ring-indigo-500/30 placeholder:opacity-30"
+        className="h-8 bg-black/20 border-border/50 text-[11px] focus:ring-1 focus:ring-indigo-500/30 placeholder:opacity-30"
         disabled={isAdding}
       />
       <Button
         size="sm"
         type="submit"
         disabled={isAdding || !inputUrl}
-        className="h-8 w-8 p-0 bg-white/5 hover:bg-white/10 border border-white/5 shrink-0 transition-all"
+        className="h-8 w-8 p-0 bg-muted/50 hover:bg-muted border border-border/50 shrink-0 transition-all"
       >
         {isAdding ? (
           <Loader2 className="h-3.5 w-3.5 text-secondary animate-spin" />

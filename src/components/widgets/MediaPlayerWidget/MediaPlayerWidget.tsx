@@ -58,7 +58,7 @@ function MediaPlayerWidgetCore({ className }: MediaPlayerWidgetProps) {
 
       <div className="flex flex-col gap-5">
         <div className="flex items-center gap-5">
-          <div className="relative h-20 w-20 shrink-0 rounded-xl overflow-hidden bg-black/40 border border-white/10 shadow-2xl group flex items-center justify-center">
+          <div className="relative h-20 w-20 shrink-0 rounded-xl overflow-hidden bg-black/40 border border-border shadow-2xl group flex items-center justify-center">
             {currentTrack ? (
               <>
                 <Image
@@ -80,7 +80,7 @@ function MediaPlayerWidgetCore({ className }: MediaPlayerWidgetProps) {
                 />
               </>
             ) : (
-              <div className="absolute inset-0 flex items-center justify-center bg-white/5">
+              <div className="absolute inset-0 flex items-center justify-center bg-muted/50">
                 <Music2 className="h-7 w-7 text-zinc-800" />
               </div>
             )}

@@ -28,7 +28,7 @@ export const CalendarGrid = ({
       {/* Header */}
       <div className="flex items-center justify-between pl-4 pr-4 pt-2 mb-6">
         <div className="flex items-center gap-2">
-          <div className="w-1 h-1 rounded-full bg-white/20" />
+          <div className="w-1 h-1 rounded-full bg-muted/80" />
           <h2
             className="glitch-text text-[10px] text-foreground"
             data-text={monthName}
@@ -41,7 +41,7 @@ export const CalendarGrid = ({
             variant="ghost"
             size="sm"
             onClick={onPreviousMonth}
-            className="h-6 w-6 p-0 text-secondary hover:text-white hover:bg-white/5"
+            className="h-6 w-6 p-0 text-secondary hover:text-foreground hover:bg-muted/50"
           >
             <ChevronLeft className="h-3.5 w-3.5" />
           </Button>
@@ -49,7 +49,7 @@ export const CalendarGrid = ({
             variant="ghost"
             size="sm"
             onClick={onToday}
-            className="h-6 px-2 text-[10px] text-secondary hover:text-white hover:bg-white/5"
+            className="h-6 px-2 text-[10px] text-secondary hover:text-foreground hover:bg-muted/50"
           >
             Today
           </Button>
@@ -57,7 +57,7 @@ export const CalendarGrid = ({
             variant="ghost"
             size="sm"
             onClick={onNextMonth}
-            className="h-6 w-6 p-0 text-secondary hover:text-white hover:bg-white/5"
+            className="h-6 w-6 p-0 text-secondary hover:text-foreground hover:bg-muted/50"
           >
             <ChevronRight className="h-3.5 w-3.5" />
           </Button>

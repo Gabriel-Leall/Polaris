@@ -64,7 +64,7 @@ export const TagReview = ({
         {newTag && (
           <button
             onClick={() => addTag()}
-            className="p-1 hover:bg-white/10 rounded-md transition-colors text-muted hover:text-foreground"
+            className="p-1 hover:bg-muted rounded-md transition-colors text-muted hover:text-foreground"
           >
             <Plus className="h-3.5 w-3.5" />
           </button>
@@ -101,7 +101,7 @@ export const TagReview = ({
             <Button
               variant="ghost"
               onClick={onCancel}
-              className="text-white/50 hover:text-white hover:bg-white/5 px-6"
+              className="text-white/50 hover:text-foreground hover:bg-muted/50 px-6"
             >
               Cancelar
             </Button>
@@ -122,14 +122,14 @@ export const TagReview = ({
   }
 
   return (
-    <div className="px-6 py-4 bg-white/[0.02] border-y border-white/5 animate-in slide-in-from-top-2 duration-200">
+    <div className="px-6 py-4 bg-white/[0.02] border-y border-border/50 animate-in slide-in-from-top-2 duration-200">
       {renderTagSelector()}
       <div className="flex justify-end gap-2">
         <Button
           variant="ghost"
           size="sm"
           onClick={onCancel}
-          className="h-8 text-xs text-white/40 hover:text-white"
+          className="h-8 text-xs text-white/40 hover:text-foreground"
         >
           Cancelar
         </Button>

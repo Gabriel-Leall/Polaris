@@ -32,7 +32,7 @@ export const AboutSection = () => {
           transition={{ duration: 0.8 }}
         >
           <h2
-            className="text-white text-4xl md:text-5xl font-black leading-tight tracking-tight bg-clip-text text-transparent bg-gradient-to-b from-white to-white/70"
+            className="text-4xl md:text-5xl font-black leading-tight tracking-tight bg-clip-text text-transparent bg-gradient-to-b from-foreground to-foreground/70"
             style={{
               textShadow:
                 "0 0 20px rgba(255, 255, 255, 0.5), 0 0 30px rgba(99, 102, 241, 0.4)",
@@ -40,7 +40,7 @@ export const AboutSection = () => {
           >
             About Polaris
           </h2>
-          <p className="text-indigo-200/70 text-lg font-light tracking-wide font-mono max-w-2xl mt-4">
+          <p className="text-muted-foreground text-lg font-light tracking-wide font-mono max-w-2xl mt-4">
             Built for developers, by developers. Engineered for deep focus and
             maximum productivity.
           </p>
@@ -55,15 +55,17 @@ export const AboutSection = () => {
             transition={{ duration: 0.8 }}
             className="text-left space-y-6"
           >
-            <h3 className="text-white text-2xl font-bold">Our Mission</h3>
-            <p className="text-gray-300 leading-relaxed">
+            <h3 className="text-foreground text-2xl font-bold">Our Mission</h3>
+            <p className="text-muted-foreground leading-relaxed">
               In a world full of distractions, Polaris serves as your North
               Star—guiding you toward sustained focus and meaningful
               productivity. We believe that the best work happens when you can
               enter a state of deep flow.
             </p>
 
-            <h3 className="text-white text-2xl font-bold pt-4">Why Polaris?</h3>
+            <h3 className="text-foreground text-2xl font-bold pt-4">
+              Why Polaris?
+            </h3>
             <ul className="space-y-3">
               {[
                 "Designed specifically for knowledge workers and developers",
@@ -77,7 +79,7 @@ export const AboutSection = () => {
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: 0.5 + i * 0.1 }}
-                  className="text-gray-300 flex items-start gap-3"
+                  className="text-muted-foreground flex items-start gap-3"
                 >
                   <span className="text-primary mt-1">→</span>
                   <span>{item}</span>
@@ -92,9 +94,11 @@ export const AboutSection = () => {
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
-            className="bg-[rgba(26,25,48,0.3)] backdrop-blur-[8px] border border-[rgba(255,255,255,0.1)] p-8 rounded-3xl"
+            className="bg-card/30 backdrop-blur-[8px] border border-border p-8 rounded-3xl"
           >
-            <h3 className="text-white text-xl font-bold mb-6">By the Numbers</h3>
+            <h3 className="text-foreground text-xl font-bold mb-6">
+              By the Numbers
+            </h3>
             <motion.div
               variants={containerVariants}
               initial="hidden"
@@ -105,7 +109,7 @@ export const AboutSection = () => {
               {[
                 { label: "Active Users", value: "2,000+" },
                 { label: "Focus Minutes", value: "50M+" },
-                { label: "Uptime", value: "99.9%", color: "text-white" },
+                { label: "Uptime", value: "99.9%", color: "text-foreground" },
               ].map((stat, i) => (
                 <motion.div
                   key={i}
@@ -119,7 +123,7 @@ export const AboutSection = () => {
                   >
                     {stat.value}
                   </div>
-                  <div className="text-gray-400 text-sm font-mono">
+                  <div className="text-muted-foreground text-sm font-mono">
                     {stat.label}
                   </div>
                 </motion.div>
@@ -133,4 +137,3 @@ export const AboutSection = () => {
 };
 
 export default AboutSection;
-

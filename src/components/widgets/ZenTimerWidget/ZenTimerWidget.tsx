@@ -102,7 +102,7 @@ const ZenTimerWidgetCore = ({ className }: ZenTimerWidgetCoreProps) => {
                 variant="ghost"
                 size="sm"
                 onClick={() => setIsConfiguring(false)}
-                className="h-7 w-7 p-0 hover:bg-white/5 rounded-full text-secondary hover:text-white transition-colors"
+                className="h-7 w-7 p-0 hover:bg-muted/50 rounded-full text-secondary hover:text-foreground transition-colors"
               >
                 <X className="h-4 w-4" />
               </Button>
@@ -134,7 +134,7 @@ const ZenTimerWidgetCore = ({ className }: ZenTimerWidgetCoreProps) => {
                 <label className="text-[8px] text-secondary/60 uppercase font-bold tracking-wider ml-1">
                   Timer (min)
                 </label>
-                <div className="bg-white/[0.02] border border-white/5 rounded-lg p-2 transition-all hover:bg-white/[0.04] hover:border-primary/20 group-focus-within:border-primary/40 group-focus-within:bg-primary/5">
+                <div className="bg-white/[0.02] border border-border/50 rounded-lg p-2 transition-all hover:bg-white/[0.04] hover:border-primary/20 group-focus-within:border-primary/40 group-focus-within:bg-primary/5">
                   <input
                     type="number"
                     min="1"
@@ -146,7 +146,7 @@ const ZenTimerWidgetCore = ({ className }: ZenTimerWidgetCoreProps) => {
                         work: Math.max(1, Math.min(90, Number(e.target.value))),
                       }))
                     }
-                    className="w-full bg-transparent border-transparent text-white font-mono text-sm focus:outline-none no-spinner"
+                    className="w-full bg-transparent border-transparent text-foreground font-mono text-sm focus:outline-none no-spinner"
                   />
                 </div>
               </div>
@@ -156,7 +156,7 @@ const ZenTimerWidgetCore = ({ className }: ZenTimerWidgetCoreProps) => {
                 <label className="text-[8px] text-secondary/60 uppercase font-bold tracking-wider ml-1">
                   Break (min)
                 </label>
-                <div className="bg-white/[0.02] border border-white/5 rounded-lg p-2 transition-all hover:bg-white/[0.04] hover:border-status-pending/20 group-focus-within:border-status-pending/40 group-focus-within:bg-status-pending/5">
+                <div className="bg-white/[0.02] border border-border/50 rounded-lg p-2 transition-all hover:bg-white/[0.04] hover:border-status-pending/20 group-focus-within:border-status-pending/40 group-focus-within:bg-status-pending/5">
                   <input
                     type="number"
                     min="1"
@@ -171,7 +171,7 @@ const ZenTimerWidgetCore = ({ className }: ZenTimerWidgetCoreProps) => {
                         ),
                       }))
                     }
-                    className="w-full bg-transparent border-transparent text-white font-mono text-sm focus:outline-none no-spinner"
+                    className="w-full bg-transparent border-transparent text-foreground font-mono text-sm focus:outline-none no-spinner"
                   />
                 </div>
               </div>
@@ -181,7 +181,7 @@ const ZenTimerWidgetCore = ({ className }: ZenTimerWidgetCoreProps) => {
                 <label className="text-[8px] text-secondary/60 uppercase font-bold tracking-wider ml-1">
                   Long Break
                 </label>
-                <div className="bg-white/[0.02] border border-white/5 rounded-lg p-2 transition-all hover:bg-white/[0.04] hover:border-status-applied/20 group-focus-within:border-status-applied/40 group-focus-within:bg-status-applied/5">
+                <div className="bg-white/[0.02] border border-border/50 rounded-lg p-2 transition-all hover:bg-white/[0.04] hover:border-status-applied/20 group-focus-within:border-status-applied/40 group-focus-within:bg-status-applied/5">
                   <input
                     type="number"
                     min="5"
@@ -196,7 +196,7 @@ const ZenTimerWidgetCore = ({ className }: ZenTimerWidgetCoreProps) => {
                         ),
                       }))
                     }
-                    className="w-full bg-transparent border-transparent text-white font-mono text-sm focus:outline-none no-spinner"
+                    className="w-full bg-transparent border-transparent text-foreground font-mono text-sm focus:outline-none no-spinner"
                   />
                 </div>
               </div>
@@ -206,7 +206,7 @@ const ZenTimerWidgetCore = ({ className }: ZenTimerWidgetCoreProps) => {
                 <label className="text-[8px] text-secondary/60 uppercase font-bold tracking-wider ml-1">
                   Seções
                 </label>
-                <div className="bg-white/[0.02] border border-white/5 rounded-lg p-2 transition-all hover:bg-white/[0.04] hover:border-primary/20 group-focus-within:border-primary/40 group-focus-within:bg-primary/5">
+                <div className="bg-white/[0.02] border border-border/50 rounded-lg p-2 transition-all hover:bg-white/[0.04] hover:border-primary/20 group-focus-within:border-primary/40 group-focus-within:bg-primary/5">
                   <input
                     type="number"
                     min="1"
@@ -221,7 +221,7 @@ const ZenTimerWidgetCore = ({ className }: ZenTimerWidgetCoreProps) => {
                         ),
                       }))
                     }
-                    className="w-full bg-transparent border-transparent text-white font-mono text-sm focus:outline-none no-spinner"
+                    className="w-full bg-transparent border-transparent text-foreground font-mono text-sm focus:outline-none no-spinner"
                   />
                 </div>
               </div>
@@ -262,7 +262,7 @@ const ZenTimerWidgetCore = ({ className }: ZenTimerWidgetCoreProps) => {
                   "w-1 h-1 rounded-full transition-all duration-500",
                   state.status === "RUNNING"
                     ? "bg-primary shadow-[0_0_8px_rgba(99,102,241,0.6)]"
-                    : "bg-white/20",
+                    : "bg-muted/80",
                 )}
               />
               <h2
@@ -278,7 +278,7 @@ const ZenTimerWidgetCore = ({ className }: ZenTimerWidgetCoreProps) => {
                 variant="ghost"
                 size="sm"
                 onClick={() => setIsConfiguring(true)}
-                className="h-6 w-6 p-0 hover:bg-glass rounded-full text-secondary hover:text-white transition-colors"
+                className="h-6 w-6 p-0 hover:bg-glass rounded-full text-secondary hover:text-foreground transition-colors"
               >
                 <Settings className="h-3.5 w-3.5" />
               </Button>
@@ -290,7 +290,7 @@ const ZenTimerWidgetCore = ({ className }: ZenTimerWidgetCoreProps) => {
                   state.status === "IDLE" &&
                   state.timeLeft === state.workDuration
                 }
-                className="h-6 w-6 p-0 hover:bg-glass rounded-full text-secondary hover:text-white transition-colors"
+                className="h-6 w-6 p-0 hover:bg-glass rounded-full text-secondary hover:text-foreground transition-colors"
               >
                 <RotateCcw className="h-3.5 w-3.5" />
               </Button>
@@ -349,7 +349,7 @@ const ZenTimerWidgetCore = ({ className }: ZenTimerWidgetCoreProps) => {
                   onClick={() => toggleZenMode()}
                   className={cn(
                     "w-8 h-4 rounded-full transition-colors duration-300 relative",
-                    isZenMode ? "bg-primary/20" : "bg-white/10",
+                    isZenMode ? "bg-primary/20" : "bg-muted",
                   )}
                 >
                   <div
@@ -366,7 +366,7 @@ const ZenTimerWidgetCore = ({ className }: ZenTimerWidgetCoreProps) => {
           </div>
 
           {/* Footer Visual */}
-          <div className="mt-auto pt-4 border-t border-white/5 flex items-center justify-between -mx-2">
+          <div className="mt-auto pt-4 border-t border-border/50 flex items-center justify-between -mx-2">
             <span
               className={cn(
                 "text-[7px] uppercase tracking-[0.2em] font-bold transition-opacity duration-700 pl-2",

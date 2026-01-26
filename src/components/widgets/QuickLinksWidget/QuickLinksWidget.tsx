@@ -52,7 +52,7 @@ function QuickLinksWidgetCore({
       {/* Header */}
       <div className="flex items-center justify-between pl-4 pr-4 pt-2 mb-6">
         <div className="flex items-center gap-2">
-          <div className="w-1 h-1 rounded-full bg-white/20" />
+          <div className="w-1 h-1 rounded-full bg-muted/80" />
           <h2
             className="glitch-text text-[10px] text-foreground"
             data-text="Access Links"
@@ -126,7 +126,7 @@ function QuickLinksWidgetCore({
       {/* Empty State */}
       {!isLoading && links.length === 0 && (
         <div className="flex flex-col items-center justify-center flex-1 py-4">
-          <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center mb-2">
+          <div className="w-10 h-10 rounded-xl bg-muted/50 border border-border flex items-center justify-center mb-2">
             <ExternalLink className="w-4 h-4 text-muted-foreground" />
           </div>
           <p className="text-sm text-muted-foreground">No quick links</p>

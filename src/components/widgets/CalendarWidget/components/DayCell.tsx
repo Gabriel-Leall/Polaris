@@ -18,11 +18,11 @@ export const DayCell = ({
       layoutId={`day-${dateKey}`}
       onClick={onClick}
       className={cn(
-        "h-10 flex items-center justify-center text-xs rounded-lg cursor-pointer relative transition-all duration-200 hover:bg-white/5",
+        "h-10 flex items-center justify-center text-xs rounded-lg cursor-pointer relative transition-all duration-200 hover:bg-muted/50",
         {
-          "text-white font-medium": isToday,
-          "bg-primary text-white hover:bg-primary/90": isToday,
-          "text-white": !isToday,
+          "text-foreground font-medium": isToday,
+          "bg-primary text-foreground hover:bg-primary/90": isToday,
+          "text-foreground": !isToday,
         },
       )}
     >

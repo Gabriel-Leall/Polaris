@@ -42,7 +42,7 @@ export const LinkDock = ({
     <div
       className={cn(
         "flex-1 flex items-center justify-center",
-        compact ? "py-4" : "py-8"
+        compact ? "py-4" : "py-8",
       )}
     >
       <Dock
@@ -52,7 +52,7 @@ export const LinkDock = ({
         direction="middle"
         className={cn(
           "bg-transparent border-none h-[70px] gap-4",
-          compact ? "p-0" : "p-2"
+          compact ? "p-0" : "p-2",
         )}
       >
         {links.map((link) => (
@@ -78,8 +78,8 @@ export const LinkDock = ({
                 showInput
                   ? "bg-primary/30 text-primary"
                   : compact
-                  ? "bg-black/10 dark:bg-white/10 hover:bg-black/20 dark:hover:bg-white/20 text-muted-foreground hover:text-foreground"
-                  : "bg-white/5 hover:bg-white/10 text-muted-foreground hover:text-foreground"
+                    ? "bg-black/5 dark:bg-muted hover:bg-black/10 dark:hover:bg-muted/80 text-muted-foreground hover:text-foreground"
+                    : "bg-muted hover:bg-muted/80 text-muted-foreground hover:text-foreground",
               )}
               title="Add quick link"
             >

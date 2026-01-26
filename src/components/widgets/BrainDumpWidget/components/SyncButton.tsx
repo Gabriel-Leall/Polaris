@@ -22,7 +22,7 @@ export const SyncButton = ({
         "transition-all duration-200 gap-2",
         isReady
           ? "bg-primary text-foreground hover:bg-primary-glow shadow-glow"
-          : "bg-glass text-muted/20 hover:bg-white/10 hover:text-muted/40",
+          : "bg-glass text-muted/20 hover:bg-muted hover:text-muted/40",
         className
       )}
     >

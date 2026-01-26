@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { Inter } from "next/font/google";
+
 import { LandingHeader } from "@/components/landing/LandingHeader";
 import { HeroSection } from "@/components/landing/HeroSection";
 import { DashboardPreview } from "@/components/landing/DashboardPreview";
@@ -9,12 +9,6 @@ import { InteractiveTabs } from "@/components/landing/InteractiveTabs";
 
 import { LandingFooter } from "@/components/landing/LandingFooter";
 import { BackgroundEffects } from "@/components/landing/BackgroundEffects";
-
-const inter = Inter({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700", "900"],
-  display: "swap",
-});
 
 export const metadata: Metadata = {
   title: "Polaris - Focus Orbit",
@@ -30,7 +24,7 @@ export const viewport = {
 export default function LandingPage() {
   return (
     <div
-      className={`bg-[#050510] text-white ${inter.className} antialiased overflow-x-hidden selection:bg-[#6366F1] selection:text-white`}
+      className={`bg-background text-foreground antialiased overflow-x-hidden selection:bg-primary selection:text-primary-foreground`}
     >
       <div className="relative flex h-auto min-h-screen w-full flex-col">
         <BackgroundEffects />

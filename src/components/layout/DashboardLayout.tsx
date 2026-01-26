@@ -12,7 +12,7 @@ function DashboardLayout({ children, className }: DashboardLayoutProps) {
   return (
     <main
       className={`
-      w-full bg-main text-white
+      w-full bg-background text-foreground
       flex flex-col
       h-auto min-h-screen lg:h-screen
       overflow-y-auto lg:overflow-hidden

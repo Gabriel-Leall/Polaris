@@ -26,7 +26,7 @@ export const TaskForm = ({
         onChange={(e) => setNewTaskLabel(e.target.value)}
         onKeyPress={handleKeyPress}
         disabled={isCreating}
-        className="flex-1 h-9 text-sm bg-white/5 border-white/10 focus:border-primary/50 focus:ring-1 focus:ring-primary/30"
+        className="flex-1 h-9 text-sm bg-background border-border text-foreground placeholder:text-muted-foreground/70 focus:border-primary/50 focus:ring-1 focus:ring-primary/30"
       />
       <Button
         onClick={onCreateTask}
@@ -37,7 +37,7 @@ export const TaskForm = ({
           "h-9 w-9 p-0 transition-all duration-200",
           newTaskLabel.trim()
             ? "bg-primary hover:bg-primary/90 hover:shadow-glow-sm scale-100"
-            : "bg-white/10 hover:bg-white/20 text-muted-foreground",
+            : "bg-muted hover:bg-muted/80 text-muted-foreground",
         )}
         title={newTaskLabel.trim() ? "Add task" : "Type a task first"}
       >

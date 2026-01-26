@@ -57,7 +57,7 @@ function SidebarNavCore({ className }: SidebarNavProps) {
       <div className="relative group px-1">
         <div
           className={cn(
-            "absolute inset-y-0 left-3 flex items-center pointer-events-none text-muted-foreground group-focus-within:text-white transition-colors",
+            "absolute inset-y-0 left-3 flex items-center pointer-events-none text-muted-foreground group-focus-within:text-foreground transition-colors",
             isSidebarCollapsed && "left-0 w-full justify-center",
           )}
         >
@@ -96,15 +96,15 @@ function SidebarNavCore({ className }: SidebarNavProps) {
               className={cn(
                 "group relative w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 text-left overflow-hidden",
                 isActive
-                  ? "bg-white/[0.08] text-white border border-white/10"
-                  : "text-muted-foreground hover:text-white border border-transparent hover:bg-white/[0.03]",
+                  ? "bg-muted/80 text-foreground border border-border"
+                  : "text-muted-foreground hover:text-foreground border border-transparent hover:bg-muted/50",
                 isSidebarCollapsed && "justify-center px-0 h-11",
               )}
             >
               <Icon
                 className={cn(
                   "w-4 h-4 transition-colors duration-300 relative z-10 shrink-0",
-                  isActive ? "text-primary" : "group-hover:text-white",
+                  isActive ? "text-primary" : "group-hover:text-foreground",
                 )}
               />
               {!isSidebarCollapsed && (
@@ -126,7 +126,7 @@ function SidebarNavCore({ className }: SidebarNavProps) {
               <div
                 className={cn(
                   "absolute right-0 top-1/2 -translate-y-1/2 h-2/3 w-[2px] transition-all duration-500",
-                  "bg-primary-glow shadow-[0_0_12px_rgba(99,102,241,0.8)]",
+                  "bg-primary-hover shadow-subtle",
                   isActive
                     ? "opacity-100"
                     : "opacity-0 group-hover:opacity-100",
@@ -193,7 +193,7 @@ export function SidebarUser() {
           >
             <button
               onClick={handleGoToProfile}
-              className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium text-muted-foreground hover:text-white hover:bg-white/[0.05] transition-all"
+              className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all"
             >
               <User className="w-4 h-4" />
               Ver Perfil
@@ -223,7 +223,7 @@ export function SidebarUser() {
         {!isSidebarCollapsed && (
           <>
             <div className="flex-1 min-w-0 text-left">
-              <p className="text-sm font-semibold text-white truncate capitalize">
+              <p className="text-sm font-semibold text-foreground truncate capitalize">
                 {userName}
               </p>
               <p className="text-[10px] text-muted-foreground truncate">
@@ -232,7 +232,7 @@ export function SidebarUser() {
             </div>
             <div
               className={cn(
-                "flex flex-col gap-0.5 text-muted-foreground group-hover:text-white transition-all",
+                "flex flex-col gap-0.5 text-muted-foreground group-hover:text-foreground transition-all",
                 isOpen ? "rotate-180" : "",
               )}
             >

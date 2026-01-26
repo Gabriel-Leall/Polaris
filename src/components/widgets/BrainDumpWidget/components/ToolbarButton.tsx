@@ -17,7 +17,7 @@ export const ToolbarButton = ({
     className={`p-1.5 rounded-md transition-colors ${
       isActive
         ? "bg-primary/20 text-primary"
-        : "text-muted-foreground hover:text-foreground hover:bg-white/5"
+        : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
     } ${disabled ? "opacity-50 cursor-not-allowed" : ""}`}
   >
     {children}

@@ -18,21 +18,21 @@ export const CalendarDemo = () => {
   const days = ["Seg", "Ter", "Qua", "Qui", "Sex", "Sab", "Dom"];
 
   return (
-    <div className="bg-[#0A0A16] w-full h-full p-6 font-sans">
+    <div className="bg-card w-full h-full p-6 font-sans">
       <div className="flex items-center justify-between mb-6">
-        <h4 className="text-white font-bold">Janeiro 2024</h4>
+        <h4 className="text-foreground font-bold">Janeiro 2024</h4>
         <div className="flex gap-2">
-          <div className="px-3 py-1 bg-white/5 rounded text-[10px] text-white/50">
+          <div className="px-3 py-1 bg-muted rounded text-[10px] text-muted-foreground">
             Hoje
           </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-7 gap-px bg-white/5 border border-white/5 rounded-lg overflow-hidden">
+      <div className="grid grid-cols-7 gap-px bg-muted/30 border border-border rounded-lg overflow-hidden">
         {days.map((day) => (
           <div
             key={day}
-            className="bg-[#0D0D1F] p-2 text-center text-[10px] text-white/30 uppercase tracking-tighter"
+            className="bg-muted p-2 text-center text-[10px] text-muted-foreground uppercase tracking-tighter"
           >
             {day}
           </div>
@@ -40,9 +40,9 @@ export const CalendarDemo = () => {
         {Array.from({ length: 14 }).map((_, i) => (
           <div
             key={i}
-            className="bg-[#0A0A16] aspect-square p-2 border-t border-white/5 relative group cursor-pointer hover:bg-white/[0.02]"
+            className="bg-card aspect-square p-2 border-t border-border relative group cursor-pointer hover:bg-muted"
           >
-            <span className="text-[10px] text-white/20">{i + 1}</span>
+            <span className="text-[10px] text-muted-foreground">{i + 1}</span>
             {i === 3 && (
               <div className="absolute inset-x-1 top-6 bg-primary/20 border-l-2 border-primary p-1 rounded-sm">
                 <div className="text-[8px] text-primary font-bold truncate">
@@ -51,8 +51,8 @@ export const CalendarDemo = () => {
               </div>
             )}
             {i === 10 && (
-              <div className="absolute inset-x-1 top-6 bg-purple-500/20 border-l-2 border-purple-500 p-1 rounded-sm">
-                <div className="text-[8px] text-purple-400 font-bold truncate">
+              <div className="absolute inset-x-1 top-6 bg-accent/20 border-l-2 border-accent p-1 rounded-sm">
+                <div className="text-[8px] text-accent font-bold truncate">
                   Focar Código
                 </div>
               </div>
@@ -86,14 +86,14 @@ export const KanbanDemo = () => {
   };
 
   return (
-    <div className="bg-[#0A0A16] w-full h-full p-6 flex gap-4 overflow-x-auto no-scrollbar">
+    <div className="bg-card w-full h-full p-6 flex gap-4 overflow-x-auto no-scrollbar">
       {["todo", "doing", "done"].map((col) => (
         <div key={col} className="flex-1 min-w-[140px] space-y-4">
           <div className="flex items-center justify-between">
-            <h5 className="text-[10px] uppercase tracking-widest text-white/40 font-bold">
+            <h5 className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold">
               {col}
             </h5>
-            <Plus className="size-3 text-white/20" />
+            <Plus className="size-3 text-muted-foreground" />
           </div>
 
           <div className="space-y-3">
@@ -104,12 +104,12 @@ export const KanbanDemo = () => {
                   layoutId={String(task.id)}
                   key={task.id}
                   onClick={() => moveTask(task.id)}
-                  className="bg-[#121225] border border-white/5 p-3 rounded-xl cursor-pointer hover:border-primary/50 transition-colors group"
+                  className="bg-muted border border-border p-3 rounded-xl cursor-pointer hover:border-primary/50 transition-colors group"
                 >
-                  <p className="text-xs text-white/80">{task.title}</p>
+                  <p className="text-xs text-foreground">{task.title}</p>
                   <div className="mt-2 flex items-center justify-between">
-                    <div className="size-4 rounded-full bg-white/5" />
-                    <p className="text-[8px] text-white/20 group-hover:text-primary transition-colors">
+                    <div className="size-4 rounded-full bg-muted/50" />
+                    <p className="text-[8px] text-muted-foreground group-hover:text-primary transition-colors">
                       Mover &rarr;
                     </p>
                   </div>
@@ -125,7 +125,11 @@ export const KanbanDemo = () => {
 // --- QUICK LINKS DEMO ---
 export const QuickLinksDemo = () => {
   const links = [
-    { name: "Github", icon: <Github size={16} />, color: "hover:text-white" },
+    {
+      name: "Github",
+      icon: <Github size={16} />,
+      color: "hover:text-foreground",
+    },
     { name: "Slack", icon: <Slack size={16} />, color: "hover:text-pink-400" },
     { name: "Notion", icon: <Globe size={16} />, color: "hover:text-blue-400" },
     {
@@ -136,17 +140,22 @@ export const QuickLinksDemo = () => {
   ];
 
   return (
-    <div className="bg-[#0A0A16] w-full h-full p-8 flex flex-col items-center justify-center">
+    <div className="bg-card w-full h-full p-8 flex flex-col items-center justify-center">
       <div className="grid grid-cols-2 gap-4 w-full max-w-[280px]">
         {links.map((link) => (
           <div
             key={link.name}
-            className="flex flex-col items-center gap-3 p-4 bg-white/[0.03] border border-white/5 rounded-2xl cursor-pointer hover:bg-white/[0.08] hover:border-white/10 transition-all group"
+            className="flex flex-col items-center gap-3 p-4 bg-card/50 border border-border rounded-2xl cursor-pointer hover:bg-card hover:border-border/50 transition-all group"
           >
-            <div className={cn("text-white/40 transition-colors", link.color)}>
+            <div
+              className={cn(
+                "text-muted-foreground transition-colors",
+                link.color,
+              )}
+            >
               {link.icon}
             </div>
-            <span className="text-[10px] text-white/60 font-medium">
+            <span className="text-[10px] text-muted-foreground font-medium">
               {link.name}
             </span>
           </div>
@@ -161,44 +170,47 @@ export const MusicDemo = () => {
   const [isPlaying, setIsPlaying] = useState(false);
 
   return (
-    <div className="bg-[#0A0A16] w-full h-full p-8 flex flex-col items-center justify-center gap-6">
-      <div className="size-40 rounded-2xl bg-gradient-to-br from-primary/40 to-purple-600/40 border border-white/10 flex items-center justify-center relative overflow-hidden group shadow-2xl">
-        <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors" />
+    <div className="bg-card w-full h-full p-8 flex flex-col items-center justify-center gap-6">
+      <div className="size-40 rounded-2xl bg-gradient-to-br from-primary/40 to-accent/40 border border-border flex items-center justify-center relative overflow-hidden group shadow-lg">
+        <div className="absolute inset-0 bg-background/20 group-hover:bg-transparent transition-colors" />
         <Play
           size={40}
-          className={cn("text-white translate-x-1", isPlaying && "hidden")}
+          className={cn("text-foreground translate-x-1", isPlaying && "hidden")}
         />
-        <Pause size={40} className={cn("text-white", !isPlaying && "hidden")} />
+        <Pause
+          size={40}
+          className={cn("text-foreground", !isPlaying && "hidden")}
+        />
       </div>
 
       <div className="w-full max-w-[300px] space-y-4">
         <div className="text-center">
-          <h5 className="text-white font-bold">Lofi Study Beats</h5>
-          <p className="text-[10px] text-white/40">
+          <h5 className="text-foreground font-bold">Lofi Study Beats</h5>
+          <p className="text-[10px] text-muted-foreground">
             ChilledCow \u2022 Deep Focus
           </p>
         </div>
 
         <div className="space-y-2">
-          <div className="h-1 bg-white/10 rounded-full overflow-hidden">
+          <div className="h-1 bg-muted rounded-full overflow-hidden">
             <motion.div
               animate={{ width: isPlaying ? "60%" : "30%" }}
               className="h-full bg-primary"
             />
           </div>
-          <div className="flex justify-between text-[8px] text-white/20 font-mono">
+          <div className="flex justify-between text-[8px] text-muted-foreground font-mono">
             <span>01:24</span>
             <span>03:45</span>
           </div>
         </div>
 
-        <div className="flex items-center justify-center gap-6 text-white/60">
-          <div className="size-8 rounded-full flex items-center justify-center hover:bg-white/5 cursor-pointer">
+        <div className="flex items-center justify-center gap-6 text-muted-foreground">
+          <div className="size-8 rounded-full flex items-center justify-center hover:bg-muted cursor-pointer">
             &larr;
           </div>
           <div
             onClick={() => setIsPlaying(!isPlaying)}
-            className="size-12 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors cursor-pointer"
+            className="size-12 rounded-full bg-muted flex items-center justify-center hover:bg-muted/80 transition-colors cursor-pointer"
           >
             {isPlaying ? (
               <Pause size={20} />
@@ -206,7 +218,7 @@ export const MusicDemo = () => {
               <Play size={20} className="translate-x-0.5" />
             )}
           </div>
-          <div className="size-8 rounded-full flex items-center justify-center hover:bg-white/5 cursor-pointer">
+          <div className="size-8 rounded-full flex items-center justify-center hover:bg-muted cursor-pointer">
             &rarr;
           </div>
         </div>
@@ -218,7 +230,7 @@ export const MusicDemo = () => {
 // --- MATRIX DEMO ---
 export const MatrixDemo = () => {
   return (
-    <div className="bg-[#0A0A16] w-full h-full p-4 grid grid-cols-2 grid-rows-2 gap-4">
+    <div className="bg-card w-full h-full p-4 grid grid-cols-2 grid-rows-2 gap-4">
       {[
         {
           title: "Urgente & Importante",
@@ -244,15 +256,15 @@ export const MatrixDemo = () => {
         <div
           key={i}
           className={cn(
-            "bg-white/[0.02] border rounded-xl p-3 flex flex-col justify-between group hover:bg-white/[0.05] transition-colors",
+            "bg-card/20 border rounded-xl p-3 flex flex-col justify-between group hover:bg-card/40 transition-colors",
             q.color,
           )}
         >
           <div className="space-y-1">
-            <h5 className="text-[9px] font-bold text-white/80">{q.title}</h5>
-            <div className="h-[2px] w-4 bg-white/10 group-hover:w-8 transition-all" />
+            <h5 className="text-[9px] font-bold text-foreground">{q.title}</h5>
+            <div className="h-[2px] w-4 bg-border group-hover:w-8 transition-all" />
           </div>
-          <div className="px-2 py-1 bg-white/5 rounded text-[8px] text-white/40 self-end">
+          <div className="px-2 py-1 bg-muted rounded text-[8px] text-muted-foreground self-end">
             {q.label}
           </div>
         </div>

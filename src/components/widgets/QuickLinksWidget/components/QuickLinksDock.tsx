@@ -119,7 +119,7 @@ export const QuickLinksDock = ({
         className
       )}
     >
-      <Dock className="bg-card/90 border-white/5">
+      <Dock className="bg-card/90 border-border/50">
         {/* Quick Links */}
         {links.map((link) => (
           <DockIcon
@@ -131,7 +131,7 @@ export const QuickLinksDock = ({
             <div className="relative">
               <button
                 onClick={() => handleLinkClick(link.url)}
-                className="flex items-center justify-center w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
+                className="flex items-center justify-center w-8 h-8 rounded-full bg-muted hover:bg-muted/80 transition-colors"
                 title={link.title}
               >
                 {link.faviconUrl ? (
@@ -160,7 +160,7 @@ export const QuickLinksDock = ({
                 className="absolute -top-1 -right-1 w-4 h-4 bg-destructive rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
                 title="Remove link"
               >
-                <Trash2 className="w-2.5 h-2.5 text-white" />
+                <Trash2 className="w-2.5 h-2.5 text-foreground" />
               </button>
             </div>
           </DockIcon>
@@ -180,13 +180,13 @@ export const QuickLinksDock = ({
 
       {/* Add Link Form */}
       {showAddForm && (
-        <div className="absolute bottom-full mb-4 left-1/2 transform -translate-x-1/2 bg-card border border-white/10 rounded-2xl p-4 min-w-[300px]">
+        <div className="absolute bottom-full mb-4 left-1/2 transform -translate-x-1/2 bg-card border border-border rounded-2xl p-4 min-w-[300px]">
           <div className="flex gap-2">
             <Input
               value={newUrl}
               onChange={(e) => setNewUrl(e.target.value)}
               placeholder="Enter URL..."
-              className="flex-1 bg-input border-white/10"
+              className="flex-1 bg-input border-border"
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   handleAddLink();
