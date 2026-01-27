@@ -12,8 +12,8 @@ export const getDaysInMonth = (date: Date) => {
 
 export const formatDateKey = (date: Date, day: number) => {
   const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const dayStr = String(day).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const dayStr = String(day).padStart(2, "0");
   return `${year}-${month}-${dayStr}`;
 };
 
@@ -27,11 +27,11 @@ export const isToday = (day: number, currentDate: Date) => {
 };
 
 export const formatSelectedDayDate = (selectedDay: string | null) => {
-  if (!selectedDay) return '';
-  
-  return new Date(selectedDay + 'T12:00:00').toLocaleDateString('pt-BR', {
-    weekday: 'long',
-    month: 'long',
-    day: 'numeric',
+  if (!selectedDay) return "";
+
+  return new Date(selectedDay + "T12:00:00").toLocaleDateString("pt-BR", {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
   });
 };

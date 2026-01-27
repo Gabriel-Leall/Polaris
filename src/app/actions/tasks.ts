@@ -1,6 +1,9 @@
 "use server";
 
-import { createSupabaseServerClient, getServerUser } from "@/lib/supabase-server";
+import {
+  createSupabaseServerClient,
+  getServerUser,
+} from "@/lib/supabase-server";
 import { TaskItem } from "@/types";
 import {
   createTaskSchema,
@@ -51,7 +54,7 @@ export const createTask = async (data: CreateTaskInput): Promise<TaskItem> => {
 
     if (error || !task) {
       throw new Error(
-        `Failed to create task: ${error?.message ?? "Unknown error"}`
+        `Failed to create task: ${error?.message ?? "Unknown error"}`,
       );
     }
 
@@ -66,7 +69,7 @@ export const createTask = async (data: CreateTaskInput): Promise<TaskItem> => {
 
 export const updateTask = async (
   id: string,
-  data: Partial<UpdateTaskInput>
+  data: Partial<UpdateTaskInput>,
 ): Promise<TaskItem> => {
   try {
     const user = await getServerUser();
@@ -99,7 +102,7 @@ export const updateTask = async (
 
     if (error || !task) {
       throw new Error(
-        `Failed to update task: ${error?.message ?? "Unknown error"}`
+        `Failed to update task: ${error?.message ?? "Unknown error"}`,
       );
     }
 
