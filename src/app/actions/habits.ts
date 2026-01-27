@@ -1,6 +1,6 @@
 "use server";
 
-import { supabase } from "@/lib/supabase";
+import { createSupabaseServerClient } from "@/lib/supabase-server";
 import { Habit } from "@/types";
 import {
   createHabitSchema,
@@ -36,6 +36,8 @@ export const createHabit = async (data: CreateHabitInput): Promise<Habit> => {
   try {
     const validatedData = createHabitSchema.parse(data);
 
+    const supabase = await createSupabaseServerClient();
+
     const { data: habit, error } = await supabase
       .from("habits")
       .insert({
@@ -48,7 +50,7 @@ export const createHabit = async (data: CreateHabitInput): Promise<Habit> => {
 
     if (error || !habit) {
       throw new Error(
-        `Failed to create habit: ${error?.message ?? "Unknown error"}`
+        `Failed to create habit: ${error?.message ?? "Unknown error"}`,
       );
     }
 
@@ -66,7 +68,7 @@ export const createHabit = async (data: CreateHabitInput): Promise<Habit> => {
  */
 export const updateHabit = async (
   id: string,
-  data: Partial<UpdateHabitInput>
+  data: Partial<UpdateHabitInput>,
 ): Promise<Habit> => {
   try {
     const validatedData = updateHabitSchema.parse({ id, ...data });
@@ -78,6 +80,8 @@ export const updateHabit = async (
     if (validatedData.name !== undefined) updateData.name = validatedData.name;
     if (validatedData.days !== undefined) updateData.days = validatedData.days;
 
+    const supabase = await createSupabaseServerClient();
+
     const { data: habit, error } = await supabase
       .from("habits")
       .update(updateData)
@@ -87,7 +91,7 @@ export const updateHabit = async (
 
     if (error || !habit) {
       throw new Error(
-        `Failed to update habit: ${error?.message ?? "Unknown error"}`
+        `Failed to update habit: ${error?.message ?? "Unknown error"}`,
       );
     }
 
@@ -105,10 +109,12 @@ export const updateHabit = async (
  */
 export const toggleHabitDay = async (
   id: string,
-  dayIndex: number
+  dayIndex: number,
 ): Promise<Habit> => {
   try {
     const validated = toggleHabitDaySchema.parse({ id, dayIndex });
+
+    const supabase = await createSupabaseServerClient();
 
     // First, get the current habit
     const { data: currentHabit, error: fetchError } = await supabase
@@ -119,7 +125,7 @@ export const toggleHabitDay = async (
 
     if (fetchError || !currentHabit) {
       throw new Error(
-        `Failed to fetch habit: ${fetchError?.message ?? "Not found"}`
+        `Failed to fetch habit: ${fetchError?.message ?? "Not found"}`,
       );
     }
 
@@ -140,7 +146,7 @@ export const toggleHabitDay = async (
 
     if (error || !habit) {
       throw new Error(
-        `Failed to toggle habit day: ${error?.message ?? "Unknown error"}`
+        `Failed to toggle habit day: ${error?.message ?? "Unknown error"}`,
       );
     }
 
@@ -159,6 +165,8 @@ export const toggleHabitDay = async (
 export const deleteHabit = async (id: string): Promise<void> => {
   try {
     const validatedId = userIdSchema.parse(id);
+
+    const supabase = await createSupabaseServerClient();
 
     const { error } = await supabase
       .from("habits")
@@ -182,6 +190,8 @@ export const deleteHabit = async (id: string): Promise<void> => {
 export const getHabits = async (userId: string): Promise<Habit[]> => {
   try {
     const validatedUserId = userIdSchema.parse(userId);
+
+    const supabase = await createSupabaseServerClient();
 
     const { data: habits, error } = await supabase
       .from("habits")
@@ -208,6 +218,8 @@ export const getHabits = async (userId: string): Promise<Habit[]> => {
 export const resetHabitWeek = async (userId: string): Promise<Habit[]> => {
   try {
     const validatedUserId = userIdSchema.parse(userId);
+
+    const supabase = await createSupabaseServerClient();
 
     const { data: habits, error } = await supabase
       .from("habits")

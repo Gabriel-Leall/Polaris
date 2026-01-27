@@ -1,6 +1,6 @@
 "use server";
 
-import { supabase } from "@/lib/supabase";
+import { createSupabaseServerClient } from "@/lib/supabase-server";
 import { TaskItem, BrainDumpNote, Habit } from "@/types";
 import { z } from "zod";
 
@@ -63,7 +63,7 @@ interface SyncResult {
  * - Updates server items only if local is newer
  */
 export const syncLocalData = async (
-  data: SyncDataInput
+  data: SyncDataInput,
 ): Promise<SyncResult> => {
   try {
     const validatedData = syncDataSchema.parse(data);
@@ -83,6 +83,8 @@ export const syncLocalData = async (
       habitsUpdated: 0,
     };
 
+    const supabase = await createSupabaseServerClient();
+
     // Fetch existing server data
     const [serverTasksResult, serverNotesResult, serverHabitsResult] =
       await Promise.all([
@@ -93,17 +95,17 @@ export const syncLocalData = async (
 
     if (serverTasksResult.error) {
       throw new Error(
-        `Failed to fetch tasks: ${serverTasksResult.error.message}`
+        `Failed to fetch tasks: ${serverTasksResult.error.message}`,
       );
     }
     if (serverNotesResult.error) {
       throw new Error(
-        `Failed to fetch notes: ${serverNotesResult.error.message}`
+        `Failed to fetch notes: ${serverNotesResult.error.message}`,
       );
     }
     if (serverHabitsResult.error) {
       throw new Error(
-        `Failed to fetch habits: ${serverHabitsResult.error.message}`
+        `Failed to fetch habits: ${serverHabitsResult.error.message}`,
       );
     }
 
@@ -289,7 +291,7 @@ export const syncLocalData = async (
  * Get all user data from server (for initial load after login)
  */
 export const getUserData = async (
-  userId: string
+  userId: string,
 ): Promise<{
   tasks: TaskItem[];
   notes: BrainDumpNote[];

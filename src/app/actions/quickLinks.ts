@@ -1,6 +1,6 @@
 "use server";
 
-import { supabase } from "@/lib/supabase";
+import { createSupabaseServerClient } from "@/lib/supabase-server";
 import { QuickLink } from "@/types";
 import {
   createQuickLinkSchema,
@@ -13,7 +13,7 @@ import {
 // Quick Links Server Actions
 
 export const createQuickLink = async (
-  data: CreateQuickLinkInput
+  data: CreateQuickLinkInput,
 ): Promise<QuickLink> => {
   try {
     const validatedData = createQuickLinkSchema.parse(data);
@@ -25,6 +25,8 @@ export const createQuickLink = async (
       favicon_url: validatedData.faviconUrl ?? null,
       position: validatedData.position ?? 0,
     };
+
+    const supabase = await createSupabaseServerClient();
 
     const { data: link, error } = await supabase
       .from("quick_links")
@@ -56,18 +58,23 @@ export const createQuickLink = async (
 
 export const updateQuickLink = async (
   id: string,
-  data: Partial<UpdateQuickLinkInput>
+  data: Partial<UpdateQuickLinkInput>,
 ): Promise<QuickLink> => {
   try {
     const validatedData = updateQuickLinkSchema.parse({ id, ...data });
 
     const updateData: Record<string, unknown> = {};
     if (validatedData.url !== undefined) updateData.url = validatedData.url;
-    if (validatedData.title !== undefined) updateData.title = validatedData.title;
-    if (validatedData.faviconUrl !== undefined) updateData.favicon_url = validatedData.faviconUrl;
-    if (validatedData.position !== undefined) updateData.position = validatedData.position;
+    if (validatedData.title !== undefined)
+      updateData.title = validatedData.title;
+    if (validatedData.faviconUrl !== undefined)
+      updateData.favicon_url = validatedData.faviconUrl;
+    if (validatedData.position !== undefined)
+      updateData.position = validatedData.position;
 
     updateData.updated_at = new Date().toISOString();
+
+    const supabase = await createSupabaseServerClient();
 
     const { data: link, error } = await supabase
       .from("quick_links")
@@ -102,6 +109,8 @@ export const deleteQuickLink = async (id: string): Promise<void> => {
   try {
     const validatedId = userIdSchema.parse(id);
 
+    const supabase = await createSupabaseServerClient();
+
     const { error } = await supabase
       .from("quick_links")
       .delete()
@@ -121,6 +130,8 @@ export const deleteQuickLink = async (id: string): Promise<void> => {
 export const getQuickLinks = async (userId: string): Promise<QuickLink[]> => {
   try {
     const validatedUserId = userIdSchema.parse(userId);
+
+    const supabase = await createSupabaseServerClient();
 
     const { data: links, error } = await supabase
       .from("quick_links")
@@ -153,6 +164,8 @@ export const getQuickLinks = async (userId: string): Promise<QuickLink[]> => {
 export const getQuickLink = async (id: string): Promise<QuickLink | null> => {
   try {
     const validatedId = userIdSchema.parse(id);
+
+    const supabase = await createSupabaseServerClient();
 
     const { data: link, error } = await supabase
       .from("quick_links")

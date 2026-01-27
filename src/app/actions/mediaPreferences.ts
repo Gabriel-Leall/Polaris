@@ -1,6 +1,6 @@
 "use server";
 
-import { supabase } from "@/lib/supabase";
+import { createSupabaseServerClient } from "@/lib/supabase-server";
 import { MediaPreference } from "@/types";
 import {
   createMediaPreferenceSchema,
@@ -13,7 +13,7 @@ import {
 // Media Preferences Server Actions
 
 export const createMediaPreference = async (
-  data: CreateMediaPreferenceInput
+  data: CreateMediaPreferenceInput,
 ): Promise<MediaPreference> => {
   try {
     const validatedData = createMediaPreferenceSchema.parse(data);
@@ -23,6 +23,8 @@ export const createMediaPreference = async (
       source_type: validatedData.sourceType,
       source_url: validatedData.sourceUrl,
     };
+
+    const supabase = await createSupabaseServerClient();
 
     const { data: preference, error } = await supabase
       .from("media_preferences")
@@ -52,7 +54,7 @@ export const createMediaPreference = async (
 
 export const updateMediaPreference = async (
   id: string,
-  data: Partial<UpdateMediaPreferenceInput>
+  data: Partial<UpdateMediaPreferenceInput>,
 ): Promise<MediaPreference> => {
   try {
     const validatedData = updateMediaPreferenceSchema.parse({ id, ...data });
@@ -64,6 +66,8 @@ export const updateMediaPreference = async (
       updateData.source_url = validatedData.sourceUrl;
 
     updateData.updated_at = new Date().toISOString();
+
+    const supabase = await createSupabaseServerClient();
 
     const { data: preference, error } = await supabase
       .from("media_preferences")
@@ -96,6 +100,8 @@ export const deleteMediaPreference = async (id: string): Promise<void> => {
   try {
     const validatedId = userIdSchema.parse(id);
 
+    const supabase = await createSupabaseServerClient();
+
     const { error } = await supabase
       .from("media_preferences")
       .delete()
@@ -113,10 +119,12 @@ export const deleteMediaPreference = async (id: string): Promise<void> => {
 };
 
 export const getMediaPreference = async (
-  userId: string
+  userId: string,
 ): Promise<MediaPreference | null> => {
   try {
     const validatedUserId = userIdSchema.parse(userId);
+
+    const supabase = await createSupabaseServerClient();
 
     const { data: preference, error } = await supabase
       .from("media_preferences")
@@ -152,7 +160,7 @@ export const getMediaPreference = async (
 export const saveMediaPreference = async (
   userId: string,
   sourceType: "spotify" | "youtube",
-  sourceUrl: string
+  sourceUrl: string,
 ): Promise<MediaPreference> => {
   try {
     const existingPreference = await getMediaPreference(userId);

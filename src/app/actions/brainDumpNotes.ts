@@ -1,6 +1,6 @@
 "use server";
 
-import { supabase } from "@/lib/supabase";
+import { createSupabaseServerClient } from "@/lib/supabase-server";
 import { BrainDumpNote } from "@/types";
 import {
   createBrainDumpNoteSchema,
@@ -12,7 +12,7 @@ import {
 
 // Brain Dump Notes Server Actions
 export const createBrainDumpNote = async (
-  data: CreateBrainDumpNoteInput
+  data: CreateBrainDumpNoteInput,
 ): Promise<BrainDumpNote> => {
   try {
     // Validate input data
@@ -24,6 +24,8 @@ export const createBrainDumpNote = async (
       content_html: validatedData.contentHtml ?? null,
       version: validatedData.version,
     };
+
+    const supabase = await createSupabaseServerClient();
 
     const { data: note, error } = await supabase
       .from("brain_dump_notes")
@@ -55,7 +57,7 @@ export const createBrainDumpNote = async (
 
 export const updateBrainDumpNote = async (
   id: string,
-  data: Partial<UpdateBrainDumpNoteInput>
+  data: Partial<UpdateBrainDumpNoteInput>,
 ): Promise<BrainDumpNote> => {
   try {
     // Validate input data
@@ -71,6 +73,8 @@ export const updateBrainDumpNote = async (
 
     // Always update the updated_at timestamp
     updateData.updated_at = new Date().toISOString();
+
+    const supabase = await createSupabaseServerClient();
 
     const { data: note, error } = await supabase
       .from("brain_dump_notes")
@@ -106,6 +110,8 @@ export const deleteBrainDumpNote = async (id: string): Promise<void> => {
     // Validate note ID
     const validatedId = userIdSchema.parse(id);
 
+    const supabase = await createSupabaseServerClient();
+
     const { error } = await supabase
       .from("brain_dump_notes")
       .delete()
@@ -123,11 +129,13 @@ export const deleteBrainDumpNote = async (id: string): Promise<void> => {
 };
 
 export const getBrainDumpNote = async (
-  userId: string
+  userId: string,
 ): Promise<BrainDumpNote | null> => {
   try {
     // Validate user ID
     const validatedUserId = userIdSchema.parse(userId);
+
+    const supabase = await createSupabaseServerClient();
 
     const { data: note, error } = await supabase
       .from("brain_dump_notes")
@@ -166,7 +174,7 @@ export const getBrainDumpNote = async (
 export const saveBrainDumpNote = async (
   userId: string,
   content: string,
-  contentHtml?: string | null
+  contentHtml?: string | null,
 ): Promise<BrainDumpNote> => {
   try {
     // First, try to get existing note
