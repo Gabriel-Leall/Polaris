@@ -29,7 +29,7 @@ export const isToday = (day: number, currentDate: Date) => {
 export const formatSelectedDayDate = (selectedDay: string | null) => {
   if (!selectedDay) return '';
   
-  return new Date(selectedDay + 'T12:00:00').toLocaleDateString('default', {
+  return new Date(selectedDay + 'T12:00:00').toLocaleDateString('pt-BR', {
     weekday: 'long',
     month: 'long',
     day: 'numeric',

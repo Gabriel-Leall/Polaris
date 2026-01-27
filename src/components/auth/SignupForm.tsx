@@ -32,7 +32,7 @@ export const SignupForm: React.FC = () => {
         <p className="text-sm text-muted-foreground">
           Already have an account?
           <Link
-            className="text-white font-medium hover:underline ml-1"
+            className="text-primary font-medium hover:underline ml-1"
             href="/login"
           >
             Sign in
@@ -50,7 +50,7 @@ export const SignupForm: React.FC = () => {
               Name
             </label>
             <Input
-              className="w-full px-4 py-3 bg-card border-white/[0.03] focus:border-white/10 focus:ring-0 text-white rounded-xl transition-all outline-none h-12 placeholder:text-muted-foreground/70"
+              className="w-full px-4 py-3 bg-card border-border focus:border-primary/50 focus:ring-0 text-foreground rounded-xl transition-all outline-none h-12 placeholder:text-muted-foreground/70"
               id="fullName"
               name="fullName"
               placeholder="Charles Miller"
@@ -68,7 +68,7 @@ export const SignupForm: React.FC = () => {
               Email
             </label>
             <Input
-              className="w-full px-4 py-3 bg-card border-white/[0.03] focus:border-white/10 focus:ring-0 text-white rounded-xl transition-all outline-none h-12 placeholder:text-muted-foreground/70"
+              className="w-full px-4 py-3 bg-card border-border focus:border-primary/50 focus:ring-0 text-foreground rounded-xl transition-all outline-none h-12 placeholder:text-muted-foreground/70"
               id="email"
               name="email"
               placeholder="charles@polaris.app"
@@ -86,7 +86,7 @@ export const SignupForm: React.FC = () => {
               Password
             </label>
             <Input
-              className="w-full px-4 py-3 bg-card border-white/[0.03] focus:border-white/10 focus:ring-0 text-white rounded-xl transition-all outline-none h-12 placeholder:text-muted-foreground/70"
+              className="w-full px-4 py-3 bg-card border-border focus:border-primary/50 focus:ring-0 text-foreground rounded-xl transition-all outline-none h-12 placeholder:text-muted-foreground/70"
               id="password"
               name="password"
               placeholder="••••••••••••"
@@ -121,7 +121,7 @@ export const SignupForm: React.FC = () => {
 
         <div className="relative pt-2">
           <div className="absolute inset-0 flex items-center">
-            <span className="w-full border-t border-white/[0.05]" />
+            <span className="w-full border-t border-border" />
           </div>
           <div className="relative flex justify-center text-[10px] uppercase">
             <span className="bg-main px-4 text-muted-foreground font-bold tracking-[0.2em]">

@@ -14,7 +14,7 @@
     --popover: 210 25% 92%;
     --popover-foreground: 215 15% 30%;
 
-    --primary: 217 91% 60%; /* #3B82F6 Blue-500 (Kept vibrant for accents) */
+    --primary: 217 91% 48%; /* #2563EB Blue-600 tailored for AA compliance with white text */
     --primary-hover: 213 94% 68%;
     --primary-foreground: 0 0% 100%;
 
@@ -60,7 +60,7 @@
     --popover: 240 6% 8%;
     --popover-foreground: 0 0% 98%;
 
-    --primary: 217 91% 60%; /* #3B82F6 Blue-500 */
+    --primary: 217 91% 50%; /* #3B82F6 adjusted */
     --primary-hover: 213 94% 68%; /* #60A5FA Blue-400 */
     --primary-foreground: 0 0% 100%;
 

@@ -130,7 +130,7 @@ export default function SettingsPage() {
         {/* Header Section */}
         <header className="flex flex-col md:flex-row md:items-end justify-between gap-8">
           <div className="space-y-2">
-            <h1 className="text-4xl font-extrabold tracking-tight text-white">
+            <h1 className="text-4xl font-extrabold tracking-tight text-foreground">
               Configurações
             </h1>
             <p className="text-muted-foreground font-medium text-lg">
@@ -166,7 +166,7 @@ export default function SettingsPage() {
               <div className="p-1.5 bg-primary/10 rounded-lg">
                 <Shield className="w-4 h-4 text-primary" />
               </div>
-              <h2 className="text-xs font-black tracking-[0.25em] text-white uppercase">
+              <h2 className="text-xs font-black tracking-[0.25em] text-foreground uppercase">
                 CONTA E SEGURANÇA
               </h2>
             </div>
@@ -208,14 +208,14 @@ export default function SettingsPage() {
               <div className="p-1.5 bg-primary/10 rounded-lg">
                 <Lock className="w-4 h-4 text-primary" />
               </div>
-              <h2 className="text-xs font-black tracking-[0.25em] text-white uppercase">
+              <h2 className="text-xs font-black tracking-[0.25em] text-foreground uppercase">
                 INTELIGÊNCIA ARTIFICIAL
               </h2>
             </div>
 
             <div className="space-y-4 max-w-2xl">
               <div className="flex flex-col gap-3">
-                <label className="text-sm font-bold text-white ml-1">
+                <label className="text-sm font-bold text-foreground ml-1">
                   Google Gemini API Key
                 </label>
                 <div className="relative group">
@@ -224,7 +224,7 @@ export default function SettingsPage() {
                     value={geminiApiKey}
                     onChange={(e) => setGeminiApiKey(e.target.value)}
                     placeholder="••••••••••••••••••••••••••••"
-                    className="bg-card border-border h-14 pr-14 text-sm focus:ring-primary/20 rounded-xl transition-all group-hover:border-primary/30"
+                    className="bg-card border-border h-14 pr-14 text-sm focus:ring-primary/20 rounded-xl transition-all group-hover:border-primary/30 text-foreground"
                   />
                   <div className="absolute right-5 top-1/2 -translate-y-1/2 text-muted-foreground">
                     <Lock className="w-4 h-4" />
@@ -244,7 +244,7 @@ export default function SettingsPage() {
               <div className="p-1.5 bg-primary/10 rounded-lg">
                 <Database className="w-4 h-4 text-primary" />
               </div>
-              <h2 className="text-xs font-black tracking-[0.25em] text-white uppercase">
+              <h2 className="text-xs font-black tracking-[0.25em] text-foreground uppercase">
                 INTEGRAÇÃO NOTION
               </h2>
             </div>
@@ -314,7 +314,7 @@ export default function SettingsPage() {
               <div className="p-1.5 bg-primary/10 rounded-lg">
                 <Github className="w-4 h-4 text-primary" />
               </div>
-              <h2 className="text-xs font-black tracking-[0.25em] text-white uppercase">
+              <h2 className="text-xs font-black tracking-[0.25em] text-foreground uppercase">
                 OUTRAS CONEXÕES
               </h2>
             </div>
@@ -323,11 +323,13 @@ export default function SettingsPage() {
               {/* GitHub Card */}
               <div className="group flex items-center justify-between p-6 rounded-3xl bg-card border border-border hover:border-primary/40 transition-all duration-300">
                 <div className="flex items-center gap-5">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-main border border-border group-hover:border-primary/20 transition-all">
-                    <Github className="h-6 w-6 text-white" />
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-muted/20 border border-border group-hover:border-primary/20 transition-all">
+                    <Github className="h-6 w-6 text-foreground" />
                   </div>
                   <div>
-                    <h3 className="text-base font-bold text-white">GitHub</h3>
+                    <h3 className="text-base font-bold text-foreground">
+                      GitHub
+                    </h3>
                     <p className="text-xs text-muted-foreground">
                       Sincronizado há 2m
                     </p>
@@ -341,11 +343,11 @@ export default function SettingsPage() {
               {/* Google Calendar Card */}
               <div className="group flex items-center justify-between p-6 rounded-3xl bg-card border border-border hover:border-primary/40 transition-all duration-300">
                 <div className="flex items-center gap-5">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-main border border-border group-hover:border-primary/20 transition-all">
-                    <Calendar className="h-6 w-6 text-white" />
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-muted/20 border border-border group-hover:border-primary/20 transition-all">
+                    <Calendar className="h-6 w-6 text-foreground" />
                   </div>
                   <div>
-                    <h3 className="text-base font-bold text-white">
+                    <h3 className="text-base font-bold text-foreground">
                       Google Calendar
                     </h3>
                     <p className="text-xs text-muted-foreground">

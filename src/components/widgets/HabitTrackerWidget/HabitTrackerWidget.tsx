@@ -246,16 +246,32 @@ export function HabitTrackerWidget({ className }: HabitTrackerWidgetProps) {
     }
   }, [isLocalMode, loadHabits, userId]);
 
-  // Calculate current streak for a habit (consecutive days from the end)
+  // Calculate current streak for a habit (consecutive days up to today)
   const calculateStreak = (days: boolean[]) => {
+    const today = new Date().getDay(); // 0 = Sunday, 1 = Monday, etc.
     let streak = 0;
-    for (let i = days.length - 1; i >= 0; i--) {
+
+    // Count consecutive completed days from today backwards
+    for (let i = today; i >= 0; i--) {
       if (days[i]) {
         streak++;
       } else {
         break;
       }
     }
+
+    // If streak includes all days from today back to Sunday,
+    // also check Saturday (previous week wrap)
+    if (streak === today + 1 && days[6]) {
+      for (let i = 6; i > today; i--) {
+        if (days[i]) {
+          streak++;
+        } else {
+          break;
+        }
+      }
+    }
+
     return streak;
   };
 

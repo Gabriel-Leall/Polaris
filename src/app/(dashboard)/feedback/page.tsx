@@ -105,7 +105,7 @@ export default function FeedbackPage() {
             <div className="p-3 bg-primary/20 rounded-2xl border border-primary/30">
               <MessageSquare className="w-6 h-6 text-primary" />
             </div>
-            <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-white">
+            <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-foreground">
               Comunidade & Feedback
             </h1>
           </div>
@@ -115,14 +115,14 @@ export default function FeedbackPage() {
         </div>
 
         {/* Form Section */}
-        <div className="bg-card/50 border border-white/5 backdrop-blur-xl p-6 rounded-3xl shadow-2xl animate-in fade-in slide-in-from-bottom-6 duration-700">
+        <div className="bg-card border border-border backdrop-blur-xl p-6 rounded-3xl shadow-2xl animate-in fade-in slide-in-from-bottom-6 duration-700">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="relative group">
               <textarea
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 placeholder="No que podemos melhorar?"
-                className="w-full min-h-[120px] bg-white/5 border border-white/5 text-white placeholder:text-white/20 rounded-2xl p-4 focus:ring-2 focus:ring-primary/50 focus:border-transparent transition-all resize-none"
+                className="w-full min-h-[120px] bg-muted/20 border border-border text-foreground placeholder:text-muted-foreground/50 rounded-2xl p-4 focus:ring-2 focus:ring-primary/50 focus:border-transparent transition-all resize-none"
               />
             </div>
             <div className="flex justify-end">
@@ -146,11 +146,11 @@ export default function FeedbackPage() {
         {/* Feedback List */}
         <div className="space-y-6">
           <div className="flex items-center gap-4 py-6">
-            <div className="h-[1px] flex-1 bg-white/5"></div>
+            <div className="h-[1px] flex-1 bg-border"></div>
             <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em]">
               Feedbacks Recentes
             </span>
-            <div className="h-[1px] flex-1 bg-white/5"></div>
+            <div className="h-[1px] flex-1 bg-border"></div>
           </div>
 
           <div className="grid gap-4">
@@ -174,7 +174,7 @@ export default function FeedbackPage() {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.95 }}
                     transition={{ delay: index * 0.05 }}
-                    className="group bg-card/40 border border-white/5 p-5 rounded-3xl hover:border-white/10 transition-all hover:bg-card/60 backdrop-blur-sm relative"
+                    className="group bg-card border border-border p-5 rounded-3xl hover:border-border/80 transition-all hover:bg-muted/10 backdrop-blur-sm relative"
                   >
                     <div className="flex items-start gap-4">
                       <div className="w-10 h-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0 overflow-hidden">
@@ -192,7 +192,7 @@ export default function FeedbackPage() {
                       </div>
                       <div className="flex-1 space-y-2">
                         <div className="flex items-center justify-between">
-                          <h4 className="font-semibold text-white">
+                          <h4 className="font-semibold text-foreground">
                             {f.profiles?.full_name || "Usuário Anônimo"}
                           </h4>
                           <span className="text-[10px] text-muted-foreground flex items-center gap-1">
@@ -203,7 +203,7 @@ export default function FeedbackPage() {
                             })}
                           </span>
                         </div>
-                        <p className="text-white/80 leading-relaxed">
+                        <p className="text-foreground/80 leading-relaxed">
                           {f.message}
                         </p>
                       </div>

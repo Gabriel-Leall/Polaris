@@ -1,6 +1,6 @@
 "use server";
 
-import { supabase } from "@/lib/supabase";
+import { createSupabaseServerClient, getServerUser } from "@/lib/supabase-server";
 import { TaskItem } from "@/types";
 import {
   createTaskSchema,
@@ -26,7 +26,15 @@ const mapTaskRow = (task: TaskRow): TaskItem => ({
 
 export const createTask = async (data: CreateTaskInput): Promise<TaskItem> => {
   try {
+    const user = await getServerUser();
+    if (!user) {
+      throw new Error("Unauthorized: no active session");
+    }
     const validatedData = createTaskSchema.parse(data);
+    if (validatedData.userId !== user.id) {
+      throw new Error("Unauthorized: user mismatch");
+    }
+    const supabase = await createSupabaseServerClient();
 
     const { data: task, error } = await supabase
       .from("tasks")
@@ -34,6 +42,8 @@ export const createTask = async (data: CreateTaskInput): Promise<TaskItem> => {
         user_id: validatedData.userId,
         label: validatedData.label,
         completed: validatedData.completed,
+        priority: validatedData.priority,
+        tags: validatedData.tags,
         due_date: validatedData.dueDate ?? null,
       })
       .select()
@@ -59,7 +69,12 @@ export const updateTask = async (
   data: Partial<UpdateTaskInput>
 ): Promise<TaskItem> => {
   try {
+    const user = await getServerUser();
+    if (!user) {
+      throw new Error("Unauthorized: no active session");
+    }
     const validatedData = updateTaskSchema.parse({ id, ...data });
+    const supabase = await createSupabaseServerClient();
 
     const updateData: Partial<TaskRow> = {
       updated_at: new Date().toISOString(),
@@ -69,6 +84,9 @@ export const updateTask = async (
       updateData.label = validatedData.label;
     if (validatedData.completed !== undefined)
       updateData.completed = validatedData.completed;
+    if (validatedData.priority !== undefined)
+      updateData.priority = validatedData.priority;
+    if (validatedData.tags !== undefined) updateData.tags = validatedData.tags;
     if (validatedData.dueDate !== undefined)
       updateData.due_date = validatedData.dueDate;
 
@@ -96,7 +114,12 @@ export const updateTask = async (
 
 export const deleteTask = async (id: string): Promise<void> => {
   try {
+    const user = await getServerUser();
+    if (!user) {
+      throw new Error("Unauthorized: no active session");
+    }
     const validatedId = userIdSchema.parse(id);
+    const supabase = await createSupabaseServerClient();
 
     const { error } = await supabase
       .from("tasks")
@@ -116,7 +139,15 @@ export const deleteTask = async (id: string): Promise<void> => {
 
 export const getTasks = async (userId: string): Promise<TaskItem[]> => {
   try {
+    const user = await getServerUser();
+    if (!user) {
+      throw new Error("Unauthorized: no active session");
+    }
     const validatedUserId = userIdSchema.parse(userId);
+    if (validatedUserId !== user.id) {
+      throw new Error("Unauthorized: user mismatch");
+    }
+    const supabase = await createSupabaseServerClient();
 
     const { data: tasks, error } = await supabase
       .from("tasks")

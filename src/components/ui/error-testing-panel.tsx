@@ -57,7 +57,7 @@ function ErrorTestingPanel({ className }: { className?: string }) {
   return (
     <>
       {/* Floating trigger button */}
-      <div className={cn('fixed bottom-4 right-4 z-50', className)}>
+      <div className={cn("fixed bottom-4 right-4 z-50", className)}>
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <DialogTrigger asChild>
             <Button
@@ -84,7 +84,7 @@ function ErrorTestingPanel({ className }: { className?: string }) {
             <div className="space-y-4 overflow-y-auto max-h-[60vh]">
               {/* Quick Actions */}
               <div className="space-y-2">
-                <h3 className="text-sm font-semibold text-white">
+                <h3 className="text-sm font-semibold text-foreground">
                   Quick Actions
                 </h3>
                 <div className="flex gap-2 flex-wrap">
@@ -129,7 +129,7 @@ function ErrorTestingPanel({ className }: { className?: string }) {
 
               {/* Error Scenarios */}
               <div className="space-y-2">
-                <h3 className="text-sm font-semibold text-white">
+                <h3 className="text-sm font-semibold text-foreground">
                   Error Scenarios
                 </h3>
                 <div className="space-y-1">
@@ -144,7 +144,7 @@ function ErrorTestingPanel({ className }: { className?: string }) {
                             setExpandedScenario(
                               expandedScenario === scenario.name
                                 ? null
-                                : scenario.name
+                                : scenario.name,
                             )
                           }
                           className="flex items-center gap-2 text-left flex-1"
@@ -154,7 +154,7 @@ function ErrorTestingPanel({ className }: { className?: string }) {
                           ) : (
                             <ChevronRight className="w-4 h-4 text-secondary" />
                           )}
-                          <span className="text-sm font-medium text-white">
+                          <span className="text-sm font-medium text-foreground">
                             {scenario.name}
                           </span>
                           {!scenario.shouldRetry && (
@@ -191,7 +191,7 @@ function ErrorTestingPanel({ className }: { className?: string }) {
                                   "ml-1 font-medium",
                                   scenario.shouldRetry
                                     ? "text-primary"
-                                    : "text-status-rejected"
+                                    : "text-status-rejected",
                                 )}
                               >
                                 {scenario.shouldRetry ? "Yes" : "No"}
@@ -199,7 +199,7 @@ function ErrorTestingPanel({ className }: { className?: string }) {
                             </div>
                             <div className="text-xs">
                               <span className="text-muted">Expected:</span>
-                              <span className="text-white ml-1">
+                              <span className="text-foreground ml-1">
                                 {scenario.expectedBehavior}
                               </span>
                             </div>

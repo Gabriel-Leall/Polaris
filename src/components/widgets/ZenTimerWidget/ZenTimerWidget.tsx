@@ -134,7 +134,7 @@ const ZenTimerWidgetCore = ({ className }: ZenTimerWidgetCoreProps) => {
                 <label className="text-[8px] text-secondary/60 uppercase font-bold tracking-wider ml-1">
                   Timer (min)
                 </label>
-                <div className="bg-white/[0.02] border border-border/50 rounded-lg p-2 transition-all hover:bg-white/[0.04] hover:border-primary/20 group-focus-within:border-primary/40 group-focus-within:bg-primary/5">
+                <div className="bg-muted/10 border border-border/50 rounded-lg p-2 transition-all hover:bg-muted/20 hover:border-primary/20 group-focus-within:border-primary/40 group-focus-within:bg-primary/5">
                   <input
                     type="number"
                     min="1"
@@ -156,7 +156,7 @@ const ZenTimerWidgetCore = ({ className }: ZenTimerWidgetCoreProps) => {
                 <label className="text-[8px] text-secondary/60 uppercase font-bold tracking-wider ml-1">
                   Break (min)
                 </label>
-                <div className="bg-white/[0.02] border border-border/50 rounded-lg p-2 transition-all hover:bg-white/[0.04] hover:border-status-pending/20 group-focus-within:border-status-pending/40 group-focus-within:bg-status-pending/5">
+                <div className="bg-muted/10 border border-border/50 rounded-lg p-2 transition-all hover:bg-muted/20 hover:border-status-pending/20 group-focus-within:border-status-pending/40 group-focus-within:bg-status-pending/5">
                   <input
                     type="number"
                     min="1"
@@ -181,7 +181,7 @@ const ZenTimerWidgetCore = ({ className }: ZenTimerWidgetCoreProps) => {
                 <label className="text-[8px] text-secondary/60 uppercase font-bold tracking-wider ml-1">
                   Long Break
                 </label>
-                <div className="bg-white/[0.02] border border-border/50 rounded-lg p-2 transition-all hover:bg-white/[0.04] hover:border-status-applied/20 group-focus-within:border-status-applied/40 group-focus-within:bg-status-applied/5">
+                <div className="bg-muted/10 border border-border/50 rounded-lg p-2 transition-all hover:bg-muted/20 hover:border-status-applied/20 group-focus-within:border-status-applied/40 group-focus-within:bg-status-applied/5">
                   <input
                     type="number"
                     min="5"
@@ -206,7 +206,7 @@ const ZenTimerWidgetCore = ({ className }: ZenTimerWidgetCoreProps) => {
                 <label className="text-[8px] text-secondary/60 uppercase font-bold tracking-wider ml-1">
                   Seções
                 </label>
-                <div className="bg-white/[0.02] border border-border/50 rounded-lg p-2 transition-all hover:bg-white/[0.04] hover:border-primary/20 group-focus-within:border-primary/40 group-focus-within:bg-primary/5">
+                <div className="bg-muted/10 border border-border/50 rounded-lg p-2 transition-all hover:bg-muted/20 hover:border-primary/20 group-focus-within:border-primary/40 group-focus-within:bg-primary/5">
                   <input
                     type="number"
                     min="1"

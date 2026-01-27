@@ -16,7 +16,7 @@ export const CalendarGrid = ({
 }: CalendarGridProps) => {
   const { daysInMonth, startingDayOfWeek, prevMonthLastDay } =
     getDaysInMonth(currentDate);
-  const monthName = currentDate.toLocaleString("default", {
+  const monthName = currentDate.toLocaleString("pt-BR", {
     month: "long",
     year: "numeric",
   });

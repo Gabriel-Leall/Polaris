@@ -37,7 +37,7 @@ export function LoginForm({ redirectTo = "/" }: LoginFormProps) {
         <p className="text-sm text-muted-foreground">
           Don&apos;t have an account?
           <Link
-            className="text-white font-medium hover:underline ml-1"
+            className="text-foreground font-medium hover:underline ml-1"
             href="/signup"
           >
             Sign up
@@ -55,7 +55,7 @@ export function LoginForm({ redirectTo = "/" }: LoginFormProps) {
               Your email
             </label>
             <Input
-              className="w-full px-4 py-3 bg-card border-white/[0.03] focus:border-white/10 focus:ring-0 text-white rounded-xl transition-all outline-none h-12 placeholder:text-muted-foreground/70"
+              className="w-full px-4 py-3 bg-card border-border focus:border-primary/50 focus:ring-0 text-foreground rounded-xl transition-all outline-none h-12 placeholder:text-muted-foreground/70"
               id="email"
               name="email"
               placeholder="charles@polaris.app"
@@ -74,14 +74,14 @@ export function LoginForm({ redirectTo = "/" }: LoginFormProps) {
                 Password
               </label>
               <Link
-                className="text-[10px] font-bold text-muted-foreground hover:text-white transition-colors"
+                className="text-[10px] font-bold text-muted-foreground hover:text-primary transition-colors"
                 href="#"
               >
                 Forget password?
               </Link>
             </div>
             <Input
-              className="w-full px-4 py-3 bg-card border-white/[0.03] focus:border-white/10 focus:ring-0 text-white rounded-xl transition-all outline-none h-12 placeholder:text-muted-foreground/70"
+              className="w-full px-4 py-3 bg-card border-border focus:border-primary/50 focus:ring-0 text-foreground rounded-xl transition-all outline-none h-12 placeholder:text-muted-foreground/70"
               id="password"
               name="password"
               placeholder="••••••••••••"
@@ -115,7 +115,7 @@ export function LoginForm({ redirectTo = "/" }: LoginFormProps) {
 
         <div className="relative pt-2">
           <div className="absolute inset-0 flex items-center">
-            <span className="w-full border-t border-white/[0.05]" />
+            <span className="w-full border-t border-border" />
           </div>
           <div className="relative flex justify-center text-[10px] uppercase">
             <span className="bg-main px-4 text-muted-foreground font-bold tracking-[0.2em]">

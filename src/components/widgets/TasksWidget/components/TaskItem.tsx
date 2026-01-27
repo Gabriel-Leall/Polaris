@@ -23,15 +23,13 @@ export const TaskItem = ({
   return (
     <div
       className={cn(
-        "flex items-center gap-2.5 p-2.5 rounded-lg border border-border/50 hover:border-border hover:bg-white/[0.02] transition-all group",
-        task.completed && "opacity-50"
+        "flex items-center gap-2.5 p-2.5 rounded-lg border border-border/50 hover:border-border hover:bg-accent/5 transition-all group",
+        task.completed && "opacity-50",
       )}
     >
       <Checkbox
         checked={task.completed}
-        onCheckedChange={(checked) =>
-          onToggle(task.id, checked as boolean)
-        }
+        onCheckedChange={(checked) => onToggle(task.id, checked as boolean)}
         className="shrink-0"
       />
 
@@ -70,15 +68,13 @@ export const TaskItem = ({
             <p
               className={cn(
                 "text-sm text-foreground truncate",
-                task.completed && "line-through text-muted"
+                task.completed && "line-through text-muted",
               )}
             >
               {task.label}
             </p>
             {task.dueDate && (
-              <p className="text-xs text-code mt-1">
-                Due: {task.dueDate}
-              </p>
+              <p className="text-xs text-code mt-1">Due: {task.dueDate}</p>
             )}
           </>
         )}

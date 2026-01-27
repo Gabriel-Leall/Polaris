@@ -37,7 +37,7 @@ export const DayCell = ({
                   "h-1.5 w-1.5 rounded-full",
                   hasIncompleteTasks
                     ? isToday
-                      ? "bg-white"
+                      ? "bg-primary-foreground"
                       : "bg-primary"
                     : "bg-green-500",
                 )}

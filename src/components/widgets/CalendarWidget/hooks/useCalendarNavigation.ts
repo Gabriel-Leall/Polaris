@@ -15,7 +15,7 @@ export const useCalendarNavigation = () => {
     setCurrentDate(new Date());
   }, []);
 
-  const monthName = currentDate.toLocaleString('default', { month: 'long', year: 'numeric' });
+  const monthName = currentDate.toLocaleString('pt-BR', { month: 'long', year: 'numeric' });
 
   return {
     currentDate,

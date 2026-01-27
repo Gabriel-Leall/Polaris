@@ -94,14 +94,14 @@ export const TagReview = ({
 
   if (isExpanded) {
     return (
-      <div className="absolute bottom-0 left-0 right-0 p-8 bg-main/95 backdrop-blur-xl border-t border-glass animate-in slide-in-from-bottom-4 shadow-[0_-20px_50px_rgba(0,0,0,0.5)]">
+      <div className="absolute bottom-0 left-0 right-0 p-8 bg-background/95 backdrop-blur-xl border-t border-border animate-in slide-in-from-bottom-4 shadow-[0_-20px_50px_rgba(0,0,0,0.5)]">
         <div className="max-w-2xl mx-auto">
           {renderTagSelector()}
           <div className="flex justify-end gap-3 mt-6">
             <Button
               variant="ghost"
               onClick={onCancel}
-              className="text-white/50 hover:text-foreground hover:bg-muted/50 px-6"
+              className="text-muted-foreground hover:text-foreground hover:bg-muted/50 px-6"
             >
               Cancelar
             </Button>
@@ -122,14 +122,14 @@ export const TagReview = ({
   }
 
   return (
-    <div className="px-6 py-4 bg-white/[0.02] border-y border-border/50 animate-in slide-in-from-top-2 duration-200">
+    <div className="px-6 py-4 bg-muted/5 border-y border-border/50 animate-in slide-in-from-top-2 duration-200">
       {renderTagSelector()}
       <div className="flex justify-end gap-2">
         <Button
           variant="ghost"
           size="sm"
           onClick={onCancel}
-          className="h-8 text-xs text-white/40 hover:text-foreground"
+          className="h-8 text-xs text-muted-foreground hover:text-foreground"
         >
           Cancelar
         </Button>

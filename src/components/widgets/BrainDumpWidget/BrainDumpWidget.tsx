@@ -169,7 +169,7 @@ const BrainDumpWidgetContent = ({ className }: BrainDumpWidgetProps) => {
     return (
       <div className={cn("bg-card/50 rounded-3xl flex flex-col", className)}>
         <div className="flex items-center justify-between px-6 py-4">
-          <h2 className="text-lg font-medium tracking-tight text-white/90">
+          <h2 className="text-lg font-medium tracking-tight text-foreground/90">
             Brain Dump
           </h2>
         </div>
@@ -225,7 +225,7 @@ const BrainDumpWidgetContent = ({ className }: BrainDumpWidgetProps) => {
             variant="ghost"
             size="sm"
             onClick={() => setIsExpanded(true)}
-            className="absolute bottom-2 right-2 h-8 w-8 p-0 hover:bg-muted/50 text-white/40"
+            className="absolute bottom-2 right-2 h-8 w-8 p-0 hover:bg-muted/50 text-muted-foreground"
           >
             <Maximize2 className="h-4 w-4" />
           </Button>
@@ -258,7 +258,7 @@ const BrainDumpWidgetContent = ({ className }: BrainDumpWidgetProps) => {
           />
 
           <div className="flex-1 flex flex-col overflow-hidden">
-            <div className="px-8 py-2 border-b border-border/50 bg-white/[0.02]">
+            <div className="px-8 py-2 border-b border-border/50 bg-muted/5">
               <EditorToolbar editor={editor} />
             </div>
             <div className="flex-1 overflow-auto">
@@ -286,13 +286,13 @@ const BrainDumpWidgetContent = ({ className }: BrainDumpWidgetProps) => {
       </Dialog>
 
       <Dialog open={showApiSettings} onOpenChange={setShowApiSettings}>
-        <DialogContent className="max-w-md bg-main border-border text-foreground shadow-2xl">
+        <DialogContent className="max-w-md bg-card border-border text-foreground shadow-2xl">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2 text-xl">
               <Settings className="h-5 w-5 text-primary" />
               Configurações
             </DialogTitle>
-            <DialogDescription className="text-white/40">
+            <DialogDescription className="text-muted-foreground">
               Para gerenciar sua chave do Gemini, conexão com Notion e banco de
               dados, acesse a página central de configurações.
             </DialogDescription>

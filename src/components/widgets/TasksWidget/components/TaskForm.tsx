@@ -42,7 +42,7 @@ export const TaskForm = ({
         title={newTaskLabel.trim() ? "Add task" : "Type a task first"}
       >
         {isCreating ? (
-          <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+          <div className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
         ) : (
           <Plus
             className={cn(

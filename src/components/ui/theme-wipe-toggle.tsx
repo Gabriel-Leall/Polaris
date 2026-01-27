@@ -16,21 +16,19 @@ export const HorizontalThemeWipeToggle = ({
   direction = "left",
 }: HorizontalThemeWipeToggleProps) => {
   const buttonRef = useRef<HTMLButtonElement>(null);
-  const [darkMode, setDarkMode] = useState(() =>
-    typeof window !== "undefined"
-      ? document.documentElement.classList.contains("dark")
-      : false,
-  );
+  const [darkMode, setDarkMode] = useState(false);
 
   useEffect(() => {
-    const syncTheme = () =>
+    const syncTheme = () => {
       setDarkMode(document.documentElement.classList.contains("dark"));
+    };
 
     const observer = new MutationObserver(syncTheme);
     observer.observe(document.documentElement, {
       attributes: true,
       attributeFilter: ["class"],
     });
+    syncTheme();
     return () => observer.disconnect();
   }, []);
 
