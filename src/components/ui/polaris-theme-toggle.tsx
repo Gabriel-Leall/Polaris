@@ -10,10 +10,10 @@ interface PolarisThemeToggleProps {
   showLabel?: boolean;
 }
 
-const PolarisThemeToggle = ({ 
-  className, 
+const PolarisThemeToggle = ({
+  className,
   variant = "inline",
-  showLabel = false 
+  showLabel = false,
 }: PolarisThemeToggleProps) => {
   const [mounted, setMounted] = useState(false);
   const [isDark, setIsDark] = useState(false);
@@ -47,10 +47,12 @@ const PolarisThemeToggle = ({
 
   if (!mounted) {
     return (
-      <div className={cn(
-        "w-10 h-10 rounded-full bg-white/5 animate-pulse",
-        className
-      )} />
+      <div
+        className={cn(
+          "w-10 h-10 rounded-full bg-white/5 animate-pulse",
+          className,
+        )}
+      />
     );
   }
 
@@ -71,7 +73,7 @@ const PolarisThemeToggle = ({
       className={cn(
         "flex items-center transition-all duration-200",
         getVariantStyles(),
-        className
+        className,
       )}
     >
       {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}

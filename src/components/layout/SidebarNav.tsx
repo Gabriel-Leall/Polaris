@@ -154,7 +154,8 @@ export function SidebarUser() {
   const fullName = user?.user_metadata?.full_name;
   const userName = fullName || userEmail.split("@")[0];
   const userInitial = (userName[0] || "G").toUpperCase();
-  const avatarUrl = user?.user_metadata?.avatar_url || user?.user_metadata?.picture;
+  const avatarUrl =
+    user?.user_metadata?.avatar_url || user?.user_metadata?.picture;
 
   // Close menu when clicking outside
   useEffect(() => {
