@@ -14,12 +14,12 @@ export const HeroSection = () => {
               textShadow: "0 4px 20px rgba(0, 0, 0, 0.5)",
             }}
           >
-            Fique organizado, <br />
-            Fique criativo.
+            Tudo o que você precisa, <br />
+            <span className="text-primary">em um só lugar.</span>
           </h1>
           <h2 className="text-muted-foreground text-lg md:text-2xl font-normal max-w-2xl mx-auto leading-relaxed">
-            Junte-se a milhões de pessoas para captar ideias, organizar a vida e
-            fazer algo criativo.
+            Elimine a alternância entre abas. O Polaris reúne suas notas,
+            tarefas e foco em uma interface única e imersiva.
           </h2>
         </div>
 
@@ -31,15 +31,6 @@ export const HeroSection = () => {
           >
             <span className="font-bold tracking-wide text-base">
               Começar Grátis
-            </span>
-          </Link>
-
-          <Link
-            href="/download"
-            className="flex min-w-[180px] items-center justify-center rounded-full h-14 px-8 bg-card hover:bg-muted text-foreground border border-border transition-all duration-300 hover:scale-105"
-          >
-            <span className="font-semibold tracking-wide text-base">
-              Baixar App
             </span>
           </Link>
         </div>

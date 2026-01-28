@@ -2,11 +2,12 @@
 
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
-import { PanelLeftClose, PanelLeftOpen } from "lucide-react";
+import { PanelLeftClose, PanelLeftOpen, Settings } from "lucide-react";
 import { SidebarUser } from "./SidebarNav";
 import { useUIStore } from "@/store/uiStore";
 import { Logo } from "@/components/ui/logo";
-import { HorizontalThemeWipeToggle } from "@/components/ui/theme-wipe-toggle";
+import PolarisThemeToggle from "@/components/ui/polaris-theme-toggle";
+import Link from "next/link";
 
 interface SidebarProps {
   children?: React.ReactNode;
@@ -44,7 +45,6 @@ function Sidebar({ children, className }: SidebarProps) {
           )}
         </div>
         <div className="flex items-center gap-2">
-          <HorizontalThemeWipeToggle />
           <button
             onClick={toggleSidebar}
             className="p-2 hover:bg-muted rounded-lg transition-colors text-muted-foreground hover:text-foreground"
@@ -70,7 +70,24 @@ function Sidebar({ children, className }: SidebarProps) {
           isSidebarCollapsed ? "px-2" : "p-4",
         )}
       >
-        <SidebarUser />
+        <div className="flex flex-col gap-2">
+          <PolarisThemeToggle
+            variant="sidebar"
+            showLabel
+            className={cn(isSidebarCollapsed && "justify-center")}
+          />
+          <Link
+            href="/settings"
+            className={cn(
+              "w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all",
+              isSidebarCollapsed && "justify-center px-0 h-11",
+            )}
+          >
+            <Settings className="w-4 h-4" />
+            {!isSidebarCollapsed && <span>Settings</span>}
+          </Link>
+          <SidebarUser />
+        </div>
       </div>
     </aside>
   );

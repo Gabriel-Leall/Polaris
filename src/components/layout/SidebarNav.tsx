@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { useState, useRef, useEffect } from "react";
@@ -12,7 +13,6 @@ import {
 import {
   Home,
   CheckSquare,
-  Settings,
   Search,
   MessageSquare,
   ChevronUp,
@@ -40,7 +40,6 @@ const mainNavItems: NavItem[] = [
   { id: "dashboard", label: "Home", icon: Home, href: "/dashboard" },
   { id: "tasks", label: "Tasks", icon: CheckSquare, href: "/tasks" },
   { id: "feedback", label: "Feedback", icon: MessageSquare, href: "/feedback" },
-  { id: "settings", label: "Settings", icon: Settings, href: "/settings" },
 ];
 
 /**
@@ -155,6 +154,7 @@ export function SidebarUser() {
   const fullName = user?.user_metadata?.full_name;
   const userName = fullName || userEmail.split("@")[0];
   const userInitial = (userName[0] || "G").toUpperCase();
+  const avatarUrl = user?.user_metadata?.avatar_url || user?.user_metadata?.picture;
 
   // Close menu when clicking outside
   useEffect(() => {
@@ -218,7 +218,19 @@ export function SidebarUser() {
         )}
       >
         <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary/30 to-primary/10 flex items-center justify-center border border-white/5 shrink-0 overflow-hidden">
-          <span className="text-sm font-bold text-primary">{userInitial}</span>
+          {avatarUrl ? (
+            <Image
+              src={avatarUrl}
+              alt={userName}
+              width={40}
+              height={40}
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <span className="text-sm font-bold text-primary">
+              {userInitial}
+            </span>
+          )}
         </div>
         {!isSidebarCollapsed && (
           <>

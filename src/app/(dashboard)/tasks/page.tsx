@@ -3,7 +3,7 @@
 import {
   Plus,
   Flag,
-  Calendar,
+  Calendar as CalendarIcon,
   Edit2,
   Trash2,
   Check,
@@ -23,6 +23,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Calendar } from "@/components/ui/calendar";
 import { TaskItem } from "@/types";
 import {
   getTasks,
@@ -44,6 +45,7 @@ export default function TasksPage() {
     "high" | "medium" | "low"
   >("medium");
   const [newTaskDate, setNewTaskDate] = useState("");
+  const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
   const [newTaskTags, setNewTaskTags] = useState<string[]>([]);
   const [tagInput, setTagInput] = useState("");
 
@@ -61,6 +63,10 @@ export default function TasksPage() {
       month: "2-digit",
     });
   };
+
+  const selectedDate = newTaskDate
+    ? new Date(`${newTaskDate}T12:00:00`)
+    : undefined;
 
   const filters = ["All Tasks", "Today", "Upcoming", "High Priority"];
 
@@ -286,15 +292,46 @@ export default function TasksPage() {
                 </DropdownMenu>
 
                 {/* Date Picker */}
-                <div className="relative h-14 bg-muted/20 border border-border rounded-2xl px-4 flex items-center gap-2 text-foreground/70 focus-within:ring-2 focus-within:ring-primary/50 transition-all">
-                  <Calendar className="w-4 h-4 text-muted-foreground" />
-                  <input
-                    type="date"
-                    className="bg-transparent border-none p-0 text-sm focus:ring-0 outline-none w-32 [color-scheme:dark]"
-                    value={newTaskDate}
-                    onChange={(e) => setNewTaskDate(e.target.value)}
-                  />
-                </div>
+                <DropdownMenu
+                  open={isDatePickerOpen}
+                  onOpenChange={setIsDatePickerOpen}
+                >
+                  <DropdownMenuTrigger asChild>
+                    <button className="h-14 px-4 bg-muted/20 border border-border text-foreground/80 rounded-2xl focus:ring-2 focus:ring-primary/50 text-sm font-medium flex items-center gap-2 transition-all hover:bg-muted/40 outline-none">
+                      <CalendarIcon className="w-4 h-4 text-muted-foreground" />
+                      <span>
+                        {newTaskDate
+                          ? formatShortDate(newTaskDate)
+                          : "Selecionar data"}
+                      </span>
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="bg-card border-border p-3 rounded-2xl shadow-2xl">
+                    <Calendar
+                      mode="single"
+                      selected={selectedDate}
+                      onSelect={(date) => {
+                        setNewTaskDate(
+                          date ? date.toISOString().split("T")[0] : "",
+                        );
+                        setIsDatePickerOpen(false);
+                      }}
+                      initialFocus
+                    />
+                    <div className="pt-2">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setNewTaskDate("");
+                          setIsDatePickerOpen(false);
+                        }}
+                        className="w-full text-xs text-muted-foreground hover:text-foreground hover:bg-muted/40 rounded-lg py-2 transition-colors"
+                      >
+                        Limpar
+                      </button>
+                    </div>
+                  </DropdownMenuContent>
+                </DropdownMenu>
 
                 <button
                   onClick={handleAddTask}
@@ -421,7 +458,7 @@ export default function TasksPage() {
                                 : "text-muted-foreground bg-muted/10 border-border",
                             )}
                           >
-                            <Calendar className="w-3.5 h-3.5" />
+                            <CalendarIcon className="w-3.5 h-3.5" />
                             {toDateKey(task.dueDate) ===
                             new Date().toISOString().split("T")[0]
                               ? "Due Today"

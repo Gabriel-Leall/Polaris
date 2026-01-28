@@ -2,7 +2,8 @@
 
 import { motion, type Variants } from "motion/react";
 import { cn } from "@/lib/utils";
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
+import { Check } from "lucide-react";
 
 // --- Components ---
 
@@ -14,15 +15,53 @@ const FeatureVideo = ({
   className?: string;
 }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [isInView, setIsInView] = useState(false);
+  const [shouldLoad, setShouldLoad] = useState(false);
 
+  // Intersection Observer para lazy loading
   useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.playbackRate = 1.0;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setIsInView(true);
+            // Delay pequeno para suavizar o carregamento
+            setTimeout(() => setShouldLoad(true), 100);
+          } else {
+            setIsInView(false);
+          }
+        });
+      },
+      {
+        threshold: 0.1, // Começa a carregar quando 10% está visível
+        rootMargin: "50px", // Pre-load 50px antes
+      },
+    );
+
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
     }
+
+    return () => observer.disconnect();
   }, []);
+
+  // Controla playback baseado na visibilidade
+  useEffect(() => {
+    if (videoRef.current && shouldLoad) {
+      if (isInView) {
+        videoRef.current.play().catch(() => {
+          // Silenciar erros de autoplay
+        });
+      } else {
+        videoRef.current.pause();
+      }
+    }
+  }, [isInView, shouldLoad]);
 
   return (
     <div
+      ref={containerRef}
       className={cn(
         "relative group rounded-3xl overflow-hidden shadow-lg border border-border bg-card",
         className,
@@ -34,17 +73,25 @@ const FeatureVideo = ({
       {/* Glass reflection effect */}
       <div className="absolute inset-0 bg-gradient-to-tr from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none z-20" />
 
-      <video
-        ref={videoRef}
-        src={src}
-        className="w-full h-auto relative z-10 block"
-        muted
-        loop
-        playsInline
-        autoPlay
-        width="100%"
-        height="100%"
-      />
+      {/* Skeleton loader */}
+      {!shouldLoad && (
+        <div className="w-full aspect-video bg-muted/20 animate-pulse relative z-10" />
+      )}
+
+      {/* Video carrega apenas quando necessário */}
+      {shouldLoad && (
+        <video
+          ref={videoRef}
+          src={src}
+          className="w-full h-auto relative z-10 block"
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          width="100%"
+          height="100%"
+        />
+      )}
 
       {/* Inner border/shine */}
       <div className="absolute inset-0 ring-1 ring-white/10 rounded-3xl z-20 pointer-events-none" />
@@ -60,7 +107,7 @@ const FeatureSectionRow = ({
   index,
 }: {
   title: string;
-  description: string;
+  description: string | React.ReactNode;
   videoSrc: string;
   reverse?: boolean;
   index: number;
@@ -101,28 +148,29 @@ const FeatureSectionRow = ({
         viewport={{ once: true, margin: "-100px" }}
         className="flex-1 space-y-6 text-center md:text-left"
       >
-        <motion.div variants={itemVariants} className="space-y-2">
-          <span className="text-[10px] font-mono text-primary tracking-[0.4em] uppercase font-black">
-            Protocol 0{index + 1}
-          </span>
-          <h3 className="text-3xl md:text-5xl lg:text-6xl font-black text-foreground leading-tight tracking-tight">
-            {title}
-          </h3>
-        </motion.div>
-
-        <motion.p
+        {/* Widget Title - Sutil */}
+        <motion.h4 
           variants={itemVariants}
-          className="text-muted-foreground text-lg md:text-xl font-light leading-relaxed max-w-xl mx-auto md:mx-0"
+          className="text-sm md:text-base font-medium text-muted-foreground/60 tracking-wide uppercase"
         >
-          {description}
-        </motion.p>
+          {title}
+        </motion.h4>
 
+        {/* Description - Em Destaque mas legível */}
         <motion.div
           variants={itemVariants}
-          className="pt-4 flex justify-center md:justify-start"
+          className="text-lg md:text-xl font-normal text-foreground/80 leading-relaxed max-w-xl mx-auto md:mx-0"
         >
-          <div className="flex items-center gap-3 text-muted-foreground text-sm font-mono group cursor-default">
-            <div className="h-[1px] w-8 bg-border group-hover:w-12 transition-all duration-300" />
+          {description}
+        </motion.div>
+
+        {/* Active System Tag */}
+        <motion.div
+          variants={itemVariants}
+          className="flex justify-center md:justify-start"
+        >
+          <div className="flex items-center gap-3 text-muted-foreground/60 text-xs font-mono tracking-[0.2em] uppercase group cursor-default">
+            <div className="h-[1px] w-8 bg-border/50 group-hover:w-12 transition-all duration-300" />
             <span className="group-hover:text-primary transition-colors">
               ACTIVE SYSTEM
             </span>
@@ -136,9 +184,9 @@ const FeatureSectionRow = ({
         whileInView={{ opacity: 1, scale: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 1, ease: "easeOut" }}
-        className="flex-1 flex items-center justify-center w-full px-4 md:px-0"
+        className="flex-1 flex items-center justify-center w-full"
       >
-        <FeatureVideo src={videoSrc} className="max-w-[500px] w-full" />
+        <FeatureVideo src={videoSrc} className="w-full max-w-4xl" />
       </motion.div>
     </div>
   );
@@ -180,24 +228,69 @@ export const FeaturesSection = () => {
       <div className="flex flex-col w-full max-w-7xl mx-auto px-6 relative z-10">
         <FeatureSectionRow
           index={0}
-          title="Zen Mode"
-          description="Silence the noise. Integrated focus sessions with custom soundscapes. Built to protect your flow state and cognitive energy."
-          videoSrc="/videos/zen-timer.mp4"
+          title="Pomodoro Timer"
+          description={
+            <ul className="space-y-3">
+              <li className="flex items-start gap-3">
+                <Check className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                <span>Sessões personalizáveis de 25 minutos</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <Check className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                <span>Pausas estratégicas automáticas</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <Check className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                <span>Técnica comprovada para máximo foco</span>
+              </li>
+            </ul>
+          }
+          videoSrc="/videos/Pomodoro Timer.mp4"
         />
 
         <FeatureSectionRow
           index={1}
           title="Brain Dump"
-          description="From brain dump to organized archive. Support for markdown and fast cognitive offloading. Your second brain, formatted for speed."
-          videoSrc="/videos/brain-dump.mp4"
+          description={
+            <ul className="space-y-3">
+              <li className="flex items-start gap-3">
+                <Check className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                <span>Capture ideias em segundos</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <Check className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                <span>Formatação Markdown avançada</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <Check className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                <span>Busca instantânea e organização automática</span>
+              </li>
+            </ul>
+          }
+          videoSrc="/videos/Brain Dump.mp4"
           reverse
         />
 
         <FeatureSectionRow
           index={2}
-          title="Habit Loop"
-          description="Consistency is visual. Track your streaks and build a second-nature productivity loop. Experience growth as a visual journey."
-          videoSrc="/videos/habit-loop.mp4"
+          title="Habit Tracker"
+          description={
+            <ul className="space-y-3">
+              <li className="flex items-start gap-3">
+                <Check className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                <span>Visualização diária de progresso</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <Check className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                <span>Sistema de streaks motivacional</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <Check className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                <span>Construa consistência a longo prazo</span>
+              </li>
+            </ul>
+          }
+          videoSrc="/videos/Habit Tracker.mp4"
         />
       </div>
     </div>

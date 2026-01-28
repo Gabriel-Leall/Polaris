@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
+import { Moon, Sun } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface PolarisThemeToggleProps {
@@ -16,10 +16,34 @@ const PolarisThemeToggle = ({
   showLabel = false 
 }: PolarisThemeToggleProps) => {
   const [mounted, setMounted] = useState(false);
+  const [isDark, setIsDark] = useState(false);
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  useEffect(() => {
+    const updateTheme = () => {
+      setIsDark(document.documentElement.classList.contains("dark"));
+    };
+
+    updateTheme();
+
+    const observer = new MutationObserver(updateTheme);
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
+  const toggleTheme = () => {
+    const newTheme = !isDark;
+    setIsDark(newTheme);
+    document.documentElement.classList.toggle("dark");
+    localStorage.setItem("theme", newTheme ? "dark" : "light");
+  };
 
   if (!mounted) {
     return (
@@ -33,7 +57,7 @@ const PolarisThemeToggle = ({
   const getVariantStyles = () => {
     switch (variant) {
       case "sidebar":
-        return "w-full justify-start gap-3 px-3 py-2 rounded-xl hover:bg-white/5 text-muted-foreground hover:text-foreground";
+        return "w-full h-9 justify-start gap-2 px-3 py-2 rounded-lg hover:bg-muted/50 text-muted-foreground hover:text-foreground text-sm";
       case "floating":
         return "w-12 h-12 rounded-full bg-card/80 border border-white/5 backdrop-blur-md hover:bg-card shadow-lg";
       default:
@@ -42,19 +66,21 @@ const PolarisThemeToggle = ({
   };
 
   return (
-    <AnimatedThemeToggler
+    <button
+      onClick={toggleTheme}
       className={cn(
-        "flex items-center justify-center transition-all duration-200",
-        "text-muted-foreground hover:text-foreground",
+        "flex items-center transition-all duration-200",
         getVariantStyles(),
         className
       )}
-      duration={600}
     >
-      {showLabel && variant === "sidebar" && (
-        <span className="text-sm font-medium">Toggle Theme</span>
+      {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+      {variant === "sidebar" && showLabel && (
+        <span className="text-sm font-medium">
+          {isDark ? "Light theme" : "Dark theme"}
+        </span>
       )}
-    </AnimatedThemeToggler>
+    </button>
   );
 };
 
