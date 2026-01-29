@@ -147,7 +147,7 @@ const FeatureSectionRow = ({
         className="flex-1 space-y-6 text-center md:text-left"
       >
         {/* Widget Title - Sutil */}
-        <motion.h4 
+        <motion.h4
           variants={itemVariants}
           className="text-sm md:text-base font-medium text-muted-foreground/60 tracking-wide uppercase"
         >

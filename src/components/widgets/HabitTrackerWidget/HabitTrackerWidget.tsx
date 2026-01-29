@@ -434,8 +434,6 @@ export function HabitTrackerWidget({ className }: HabitTrackerWidgetProps) {
     return streak;
   };
 
-
-
   if (isLoading) {
     return (
       <div
@@ -678,8 +676,8 @@ export function HabitTrackerWidget({ className }: HabitTrackerWidgetProps) {
               </span>
             ) : (
               <span>
-                {habits.filter((h) => h.days[todayIndex]).length}/{habits.length}{" "}
-                completed
+                {habits.filter((h) => h.days[todayIndex]).length}/
+                {habits.length} completed
               </span>
             )}
           </div>
