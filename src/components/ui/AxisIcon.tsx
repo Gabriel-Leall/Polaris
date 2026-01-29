@@ -3,24 +3,24 @@
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 
-interface PolarisIconProps {
+interface AxisIconProps {
   className?: string;
   size?: number;
   interactive?: boolean;
 }
 
 /**
- * PolarisIcon - 3D/2D Interactive Logo Component
+ * AxisIcon - 3D/2D Interactive Logo Component
  *
  * Recreates the geometric polygon from Frame 1.svg with CSS 3D transforms
  * Features: hover effects, gradient animation, depth/perspective
  * Gradients: #5480D0 → #1A6370
  */
-export const PolarisIcon = ({
+export const AxisIcon = ({
   className,
   size = 48,
   interactive = true,
-}: PolarisIconProps) => {
+}: AxisIconProps) => {
   const [isHovered, setIsHovered] = useState(false);
 
   return (

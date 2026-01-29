@@ -1,7 +1,7 @@
 import { Inter, JetBrains_Mono } from "next/font/google";
 import { GeistMono } from "geist/font/mono";
 import { GeistSans } from "geist/font/sans";
- 
+
 // Primary font for UI elements - Inter with Geist Sans fallback
 export const inter = Inter({
   subsets: ["latin"],

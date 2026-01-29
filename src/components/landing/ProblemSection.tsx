@@ -10,7 +10,7 @@ import {
   Search as SearchIcon,
 } from "lucide-react";
 import { useRef, MouseEvent, useState, useEffect } from "react";
-import { PolarisIcon } from "@/components/ui/PolarisIcon";
+import { AxisIcon } from "@/components/ui/AxisIcon";
 
 export const ProblemSection = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -42,7 +42,7 @@ export const ProblemSection = () => {
   return (
     <section
       ref={sectionRef}
-      className="relative w-full min-h-screen bg-transparent flex flex-col items-center justify-start py-12 px-6 md:px-12 overflow-hidden"
+      className="relative w-full bg-transparent flex flex-col items-center justify-start px-6 md:px-12 overflow-hidden py-24 md:py-32"
     >
       {/* Background Atmosphere */}
       <motion.div
@@ -179,7 +179,7 @@ const ConvergenceAnimation = ({
               ease: "easeInOut",
             }}
           >
-            <PolarisIcon size={80} interactive={false} />
+            <AxisIcon size={80} interactive={false} />
           </motion.div>
 
           {/* Rotating ring */}

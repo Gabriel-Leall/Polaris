@@ -40,7 +40,7 @@ function Sidebar({ children, className }: SidebarProps) {
           <Logo size={40} />
           {!isSidebarCollapsed && (
             <h1 className="text-xl font-bold text-foreground tracking-tight">
-              Polaris
+              Axis
             </h1>
           )}
         </div>

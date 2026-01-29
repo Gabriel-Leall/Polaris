@@ -1,4 +1,4 @@
-import { PolarisIcon } from "@/components/ui/PolarisIcon";
+import { AxisIcon } from "@/components/ui/AxisIcon";
 
 export const LandingFooter = () => {
   return (
@@ -6,7 +6,7 @@ export const LandingFooter = () => {
       <div className="flex flex-col gap-4 text-center">
         {/* Polaris Icon */}
         <div className="flex justify-center mb-2">
-          <PolarisIcon size={40} interactive={false} />
+          <AxisIcon size={40} interactive={false} />
         </div>
         <p className="text-muted-foreground text-xs font-normal leading-normal font-mono">
           Polaris v1.0. System ready.

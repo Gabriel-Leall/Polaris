@@ -4,8 +4,8 @@ import Link from "next/link";
 
 export const HeroSection = () => {
   return (
-    <div className="@container w-full pt-12 text-center">
-      <div className="flex flex-col items-center justify-center gap-8 md:gap-10">
+    <div className="@container w-full text-center">
+      <div className="flex flex-col items-center justify-center gap-6 md:gap-8">
         {/* Main Headline */}
         <div className="flex flex-col gap-6 max-w-4xl relative z-10 mx-auto">
           <h1

@@ -11,9 +11,9 @@ import { LandingFooter } from "@/components/landing/LandingFooter";
 import { BackgroundEffects } from "@/components/landing/BackgroundEffects";
 
 export const metadata: Metadata = {
-  title: "Polaris - Focus Orbit",
+  title: "Axis - Focus Dashboard",
   description:
-    "Enter your flow state with Polaris - Your AI-powered productivity command center",
+    "Enter your flow state with Axis - Your Dashboard productivity command center",
 };
 
 export const viewport = {
@@ -37,19 +37,12 @@ export default function LandingPage() {
             id="main-content"
             className="flex flex-1 justify-center py-20 lg:py-32 px-6 md:px-12"
           >
-            <div className="layout-content-container flex flex-col max-w-[1000px] flex-1 items-center gap-20">
+            <div className="layout-content-container flex flex-col max-w-[1000px] flex-1 items-center gap-24 md:gap-32">
               <HeroSection />
               <DashboardPreview />
-
-              <div id="features">
-                <FeaturesSection />
-              </div>
-
+              <FeaturesSection />
               <InteractiveTabs />
-
-              <div id="about">
-                <ProblemSection />
-              </div>
+              <ProblemSection />
             </div>
           </div>
 

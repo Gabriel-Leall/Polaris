@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { PolarisIcon } from "@/components/ui/PolarisIcon";
-import { PolarisName } from "@/components/ui/PolarisName";
+import { AxisIcon } from "@/components/ui/AxisIcon";
+import { AxisName } from "@/components/ui/AxisName";
 import { HorizontalThemeWipeToggle } from "@/components/ui/theme-wipe-toggle";
 
 export const LandingHeader = () => {
@@ -53,8 +53,8 @@ export const LandingHeader = () => {
               className="flex items-center gap-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-main rounded-lg transition-all -ml-2 px-2 py-1"
               style={{ touchAction: "manipulation" }}
             >
-              <PolarisIcon size={32} interactive={true} />
-              <PolarisName size="sm" animated={true} />
+              <AxisIcon size={32} interactive={true} />
+              <AxisName size="sm" animated={true} />
             </Link>
 
             {/* Navigation - Centro */}

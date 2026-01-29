@@ -3,7 +3,7 @@
   "configVersion": 1,
   "workspaces": {
     "": {
-      "name": "polaris",
+      "name": "Axis",
       "dependencies": {
         "@google/generative-ai": "^0.21.0",
         "@next/bundle-analyzer": "^16.1.1",

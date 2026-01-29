@@ -298,6 +298,7 @@ export const getUserData = async (
   habits: Habit[];
 }> => {
   try {
+    const supabase = await createSupabaseServerClient();
     const validatedUserId = z.string().uuid().parse(userId);
 
     const [tasksResult, notesResult, habitsResult] = await Promise.all([

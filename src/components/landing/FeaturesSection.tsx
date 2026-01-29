@@ -104,13 +104,11 @@ const FeatureSectionRow = ({
   description,
   videoSrc,
   reverse = false,
-  index,
 }: {
   title: string;
   description: string | React.ReactNode;
   videoSrc: string;
   reverse?: boolean;
-  index: number;
 }) => {
   // Staggered variants for text
   const containerVariants = {
@@ -149,7 +147,7 @@ const FeatureSectionRow = ({
         className="flex-1 space-y-6 text-center md:text-left"
       >
         {/* Widget Title - Sutil */}
-        <motion.h4
+        <motion.h4 
           variants={itemVariants}
           className="text-sm md:text-base font-medium text-muted-foreground/60 tracking-wide uppercase"
         >
@@ -227,7 +225,6 @@ export const FeaturesSection = () => {
       {/* Horizontal Sections */}
       <div className="flex flex-col w-full max-w-7xl mx-auto px-6 relative z-10">
         <FeatureSectionRow
-          index={0}
           title="Pomodoro Timer"
           description={
             <ul className="space-y-3">
@@ -249,7 +246,6 @@ export const FeaturesSection = () => {
         />
 
         <FeatureSectionRow
-          index={1}
           title="Brain Dump"
           description={
             <ul className="space-y-3">
@@ -272,7 +268,6 @@ export const FeaturesSection = () => {
         />
 
         <FeatureSectionRow
-          index={2}
           title="Habit Tracker"
           description={
             <ul className="space-y-3">
