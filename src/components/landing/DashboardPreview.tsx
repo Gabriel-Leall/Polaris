@@ -33,13 +33,14 @@ export const DashboardPreview = () => {
             transformStyle: "preserve-3d",
             transformOrigin: "center center",
           }}
-          className="relative w-full max-w-7xl px-4 md:px-0 rounded-2xl overflow-hidden aspect-[16/9] border border-white/10 bg-[#0A0A16]/50 shadow-[0_30px_80px_rgba(0,0,0,0.7)]"
+          className="relative w-full max-w-7xl px-4 md:px-0 rounded-2xl overflow-hidden border border-white/10 bg-[#0A0A16]/50 shadow-[0_30px_80px_rgba(0,0,0,0.7)]"
         >
           <Image
-            alt="Polaris Dashboard"
-            src="/dashboard-hero.png"
-            fill
-            className="object-cover"
+            alt="Axis Dashboard"
+            src="/images/Axis Mokcup Dashboard.png"
+            width={1920}
+            height={1080}
+            className="w-full h-auto"
             priority
           />
           {/* Subtle Overlay Glow */}

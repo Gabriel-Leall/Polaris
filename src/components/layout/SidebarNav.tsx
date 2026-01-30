@@ -15,8 +15,6 @@ import {
   CheckSquare,
   Search,
   MessageSquare,
-  ChevronUp,
-  ChevronDown,
   User,
   LogOut,
 } from "lucide-react";
@@ -150,9 +148,8 @@ export function SidebarUser() {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
-  const userEmail = user?.email || "guest@polaris.com";
   const fullName = user?.user_metadata?.full_name;
-  const userName = fullName || userEmail.split("@")[0];
+  const userName = fullName || "Usuário";
   const userInitial = (userName[0] || "G").toUpperCase();
   const avatarUrl =
     user?.user_metadata?.avatar_url || user?.user_metadata?.picture;
@@ -233,26 +230,13 @@ export function SidebarUser() {
             </span>
           )}
         </div>
+
         {!isSidebarCollapsed && (
-          <>
-            <div className="flex-1 min-w-0 text-left">
-              <p className="text-sm font-semibold text-foreground truncate capitalize">
-                {userName}
-              </p>
-              <p className="text-[10px] text-muted-foreground truncate">
-                {userEmail}
-              </p>
-            </div>
-            <div
-              className={cn(
-                "flex flex-col gap-0.5 text-muted-foreground group-hover:text-foreground transition-all",
-                isOpen ? "rotate-180" : "",
-              )}
-            >
-              <ChevronUp className="w-3 h-3" />
-              <ChevronDown className="w-3 h-3" />
-            </div>
-          </>
+          <div className="flex-1 min-w-0 text-left">
+            <p className="text-sm font-semibold text-foreground truncate capitalize">
+              {userName}
+            </p>
+          </div>
         )}
       </button>
     </div>
