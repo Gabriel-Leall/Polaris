@@ -17,13 +17,29 @@ import {
   Loader2,
   ArrowRight,
   Camera,
+  Trash2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
-import { getProfileStats, updateAvatar } from "@/app/actions/profile";
-import { supabase } from "@/lib/supabase";
+import {
+  getProfileStats,
+  uploadAvatar,
+  updateUserName,
+} from "@/app/actions/profile";
+import { deleteAccount } from "@/app/actions/auth";
 import { useToast } from "@/hooks/use-toast";
 
 type StatCardProps = {
@@ -63,6 +79,10 @@ export default function UserProfilePage() {
   });
   const [isStatsLoading, setIsStatsLoading] = useState(true);
   const [isUploading, setIsUploading] = useState(false);
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [deletePassword, setDeletePassword] = useState("");
+  const [isDeleting, setIsDeleting] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -82,6 +102,15 @@ export default function UserProfilePage() {
     fetchStats();
   }, [userId]);
 
+  useEffect(() => {
+    if (user?.user_metadata?.full_name) {
+      const fullName = user.user_metadata.full_name;
+      const [first = "", ...lastParts] = fullName.split(" ");
+      setFirstName(first);
+      setLastName(lastParts.join(" "));
+    }
+  }, [user]);
+
   const handleAvatarClick = () => {
     fileInputRef.current?.click();
   };
@@ -90,42 +119,13 @@ export default function UserProfilePage() {
     const file = e.target.files?.[0];
     if (!file || !userId) return;
 
-    // Validate file type and size
-    if (!file.type.startsWith("image/")) {
-      toast({
-        title: "Erro",
-        description: "Por favor, selecione uma imagem.",
-        variant: "destructive",
-      });
-      return;
-    }
-    if (file.size > 2 * 1024 * 1024) {
-      // 2MB
-      toast({
-        title: "Erro",
-        description: "Imagem muito grande. Limite de 2MB.",
-        variant: "destructive",
-      });
-      return;
-    }
-
     setIsUploading(true);
     try {
-      const fileExt = file.name.split(".").pop();
-      const fileName = `${userId}-${Math.random()}.${fileExt}`;
-      const filePath = `avatars/${fileName}`;
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("userId", userId);
 
-      const { error: uploadError } = await supabase.storage
-        .from("profiles") // Assume bucket 'profiles' exists
-        .upload(filePath, file);
-
-      if (uploadError) throw uploadError;
-
-      const {
-        data: { publicUrl },
-      } = supabase.storage.from("profiles").getPublicUrl(filePath);
-
-      await updateAvatar(userId, publicUrl);
+      await uploadAvatar(formData);
 
       toast({
         title: "Sucesso!",
@@ -133,7 +133,6 @@ export default function UserProfilePage() {
         variant: "success",
       });
 
-      // Force refresh or local state update could be done here
       window.location.reload();
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
@@ -148,6 +147,70 @@ export default function UserProfilePage() {
     }
   };
 
+  const handleSaveProfile = async () => {
+    if (!userId) return;
+
+    const fullName = `${firstName} ${lastName}`.trim();
+
+    try {
+      await updateUserName(userId, fullName);
+      toast({
+        title: "Sucesso!",
+        description: "Nome atualizado com sucesso.",
+        variant: "success",
+      });
+      // Refresh the page to update the user data
+      window.location.reload();
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      toast({
+        title: "Erro ao salvar",
+        description: message,
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    if (!deletePassword) {
+      toast({
+        title: "Senha obrigatória",
+        description: "Digite sua senha para confirmar a exclusão da conta.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsDeleting(true);
+    try {
+      const result = await deleteAccount(deletePassword);
+
+      if (!result.success) {
+        toast({
+          title: "Erro ao deletar conta",
+          description: result.error || "Ocorreu um erro inesperado.",
+          variant: "destructive",
+        });
+        setIsDeleting(false);
+        return;
+      }
+
+      toast({
+        title: "Conta deletada",
+        description: "Sua conta foi excluída com sucesso.",
+        variant: "success",
+      });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      toast({
+        title: "Erro ao deletar conta",
+        description: message,
+        variant: "destructive",
+      });
+      setIsDeleting(false);
+    }
+  };
+
   if (authLoading) {
     return (
       <div className="flex h-full items-center justify-center">
@@ -156,10 +219,12 @@ export default function UserProfilePage() {
     );
   }
 
-  const fullName = user?.user_metadata?.full_name || "Usuário Polaris";
-  const [firstName = "", ...lastNameParts] = fullName.split(" ");
-  const lastName = lastNameParts.join(" ");
   const userEmail = user?.email || "";
+
+  const fullName =
+    `${firstName} ${lastName}`.trim() ||
+    user?.user_metadata?.full_name ||
+    "Usuário Polaris";
 
   const joinedDate = user?.created_at
     ? new Date(user.created_at).toLocaleDateString("pt-BR", {
@@ -329,7 +394,8 @@ export default function UserProfilePage() {
                         Nome
                       </label>
                       <Input
-                        defaultValue={firstName}
+                        value={firstName}
+                        onChange={(e) => setFirstName(e.target.value)}
                         className="h-11 bg-muted/10 border-border rounded-xl px-4 text-sm focus:border-primary/50 transition-colors"
                       />
                     </div>
@@ -338,7 +404,8 @@ export default function UserProfilePage() {
                         Sobrenome
                       </label>
                       <Input
-                        defaultValue={lastName}
+                        value={lastName}
+                        onChange={(e) => setLastName(e.target.value)}
                         className="h-11 bg-muted/10 border-border rounded-xl px-4 text-sm focus:border-primary/50 transition-colors"
                       />
                     </div>
@@ -414,6 +481,81 @@ export default function UserProfilePage() {
                     </div>
                     <ChevronRight className="w-4 h-4 text-muted-foreground/30 group-hover:translate-x-1 transition-transform" />
                   </button>
+
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <button className="w-full flex items-center justify-between p-3.5 bg-destructive/5 border border-destructive/20 rounded-2xl hover:border-destructive/40 hover:bg-destructive/10 transition-all text-left group">
+                        <div className="flex items-center gap-4">
+                          <div className="p-2 bg-destructive/10 rounded-xl group-hover:bg-destructive/20 transition-colors">
+                            <Trash2 className="w-4 h-4 text-destructive" />
+                          </div>
+                          <div className="space-y-0.5">
+                            <p className="text-sm font-bold text-destructive">
+                              Deletar Conta
+                            </p>
+                            <p className="text-[9px] font-black text-destructive/60 uppercase tracking-widest">
+                              Ação irreversível
+                            </p>
+                          </div>
+                        </div>
+                        <ChevronRight className="w-4 h-4 text-destructive/30 group-hover:translate-x-1 transition-transform" />
+                      </button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle className="flex items-center gap-3">
+                          <div className="p-2 bg-destructive/10 rounded-xl">
+                            <Trash2 className="w-5 h-5 text-destructive" />
+                          </div>
+                          Deletar Conta Permanentemente
+                        </AlertDialogTitle>
+                        <AlertDialogDescription className="pt-2">
+                          Esta ação é{" "}
+                          <span className="font-bold text-destructive">
+                            irreversível
+                          </span>
+                          . Todos os seus dados, incluindo tarefas, notas,
+                          preferências e histórico serão excluídos
+                          permanentemente.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <div className="py-4 space-y-2">
+                        <label className="text-xs font-bold text-muted-foreground uppercase">
+                          Digite sua senha para confirmar
+                        </label>
+                        <Input
+                          type="password"
+                          placeholder="Sua senha"
+                          value={deletePassword}
+                          onChange={(e) => setDeletePassword(e.target.value)}
+                          className="h-11 bg-muted/10 border-border rounded-xl px-4"
+                          disabled={isDeleting}
+                        />
+                      </div>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel disabled={isDeleting}>
+                          Cancelar
+                        </AlertDialogCancel>
+                        <AlertDialogAction
+                          onClick={(e) => {
+                            e.preventDefault();
+                            handleDeleteAccount();
+                          }}
+                          disabled={isDeleting}
+                          className="bg-destructive hover:bg-destructive/90"
+                        >
+                          {isDeleting ? (
+                            <>
+                              <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                              Deletando...
+                            </>
+                          ) : (
+                            "Deletar minha conta"
+                          )}
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
                 </div>
               </div>
             </div>
@@ -434,7 +576,10 @@ export default function UserProfilePage() {
                 Cancelar
               </button>
             </div>
-            <Button className="h-11 px-10 bg-primary hover:bg-primary-glow text-primary-foreground text-[10px] font-black rounded-xl flex items-center gap-2 transition-all active:scale-95 shadow-glow">
+            <Button
+              onClick={handleSaveProfile}
+              className="h-11 px-10 bg-primary hover:bg-primary-glow text-primary-foreground text-[10px] font-black rounded-xl flex items-center gap-2 transition-all active:scale-95 shadow-glow"
+            >
               SALVAR PERFIL
               <ArrowRight className="w-3.5 h-3.5 ml-1" />
             </Button>

@@ -29,11 +29,11 @@ const mapUserPreferencesRow = (prefs: UserPreferencesRow): UserPreferences => ({
 // User Preferences Server Actions
 export const updateUserPreferences = async (
   id: string,
-  preferences: Partial<UpdateUserPreferencesInput>
+  preferences: Partial<UpdateUserPreferencesInput>,
 ): Promise<UserPreferences> => {
   try {
     const supabase = await createSupabaseServerClient();
-    
+
     // Validate input data
     const validatedData = updateUserPreferencesSchema.parse({
       id,
@@ -81,11 +81,11 @@ export const updateUserPreferences = async (
 };
 
 export const getUserPreferences = async (
-  userId: string
+  userId: string,
 ): Promise<UserPreferences | null> => {
   try {
     const supabase = await createSupabaseServerClient();
-    
+
     // Validate user ID
     const validatedUserId = userIdSchema.parse(userId);
 
@@ -114,11 +114,11 @@ export const getUserPreferences = async (
 };
 
 export const createUserPreferences = async (
-  data: CreateUserPreferencesInput
+  data: CreateUserPreferencesInput,
 ): Promise<UserPreferences> => {
   try {
     const supabase = await createSupabaseServerClient();
-    
+
     // Validate input data
     const validatedData = createUserPreferencesSchema.parse(data);
 
@@ -156,7 +156,7 @@ export const createUserPreferences = async (
 };
 
 export const getOrCreateUserPreferences = async (
-  userId: string
+  userId: string,
 ): Promise<UserPreferences> => {
   try {
     // First try to get existing preferences
@@ -178,7 +178,7 @@ export const getOrCreateUserPreferences = async (
   } catch (error) {
     if (error instanceof Error) {
       throw new Error(
-        `Get or create user preferences failed: ${error.message}`
+        `Get or create user preferences failed: ${error.message}`,
       );
     }
     throw new Error("Get or create user preferences failed: Unknown error");

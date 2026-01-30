@@ -153,3 +153,89 @@ export async function signInWithProvider(provider: "google" | "github") {
     redirect(data.url);
   }
 }
+
+/**
+ * Delete the current user account
+ * This will delete all user data from the database (CASCADE)
+ * and remove the user from Supabase Auth
+ */
+export async function deleteAccount(password: string): Promise<AuthResult> {
+  const supabase = await createSupabaseServerClient();
+
+  // Verificar se o usuário está autenticado
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+
+  if (userError || !user) {
+    return {
+      success: false,
+      error: "Não autorizado: usuário não encontrado",
+    };
+  }
+
+  // Validar senha antes de deletar
+  if (!password || password.length < 6) {
+    return {
+      success: false,
+      error: "Senha inválida",
+    };
+  }
+
+  // Re-autenticar para confirmar a senha
+  const { error: signInError } = await supabase.auth.signInWithPassword({
+    email: user.email!,
+    password,
+  });
+
+  if (signInError) {
+    return {
+      success: false,
+      error: "Senha incorreta",
+    };
+  }
+
+  // Deletar todos os arquivos do usuário no Storage
+  try {
+    // Lista todos os buckets comuns que podem ter arquivos do usuário
+    const buckets = ["avatars", "uploads", "media", "documents"];
+
+    for (const bucketName of buckets) {
+      // Lista todos os arquivos do usuário neste bucket
+      const { data: files, error: listError } = await supabase.storage
+        .from(bucketName)
+        .list(user.id);
+
+      // Se o bucket não existir, pular
+      if (listError) continue;
+
+      // Se houver arquivos, deletá-los
+      if (files && files.length > 0) {
+        const filePaths = files.map((file) => `${user.id}/${file.name}`);
+        await supabase.storage.from(bucketName).remove(filePaths);
+      }
+    }
+  } catch (storageError) {
+    // Log do erro mas não falha a operação
+    console.error("Erro ao deletar arquivos do storage:", storageError);
+  }
+
+  // Deletar usuário do Supabase Auth
+  // Isso também irá deletar todos os dados relacionados via ON DELETE CASCADE
+  // A função SQL também deleta arquivos do storage como backup
+  const { error: deleteError } = await supabase.rpc("delete_user");
+
+  if (deleteError) {
+    // Se a RPC function não existir, tentar deletar via admin
+    // Nota: Esta é uma operação privilegiada que precisa de configuração adicional
+    return {
+      success: false,
+      error: "Erro ao deletar conta. Entre em contato com o suporte.",
+    };
+  }
+
+  // Fazer logout após deletar
+  await supabase.auth.signOut();
+  redirect("/");
+}
