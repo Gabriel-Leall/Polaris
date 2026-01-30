@@ -192,7 +192,7 @@ const FeatureSectionRow = ({
 
 export const FeaturesSection = () => {
   return (
-    <div className="w-full py-20 pb-40 relative overflow-hidden">
+    <div id="features" className="w-full py-20 pb-40 relative overflow-hidden">
       {/* Background ambient light */}
       <div className="absolute top-1/4 left-0 w-[500px] h-[500px] bg-primary/5 blur-[120px] rounded-full pointer-events-none" />
       <div className="absolute bottom-1/4 right-0 w-[500px] h-[500px] bg-accent/5 blur-[120px] rounded-full pointer-events-none" />

@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import { PanelLeftClose, PanelLeftOpen, Settings } from "lucide-react";
 import { SidebarUser } from "./SidebarNav";
 import { useUIStore } from "@/store/uiStore";
-import { Logo } from "@/components/ui/logo";
+import { AxisIcon } from "@/components/ui/AxisIcon";
 import PolarisThemeToggle from "@/components/ui/polaris-theme-toggle";
 import Link from "next/link";
 
@@ -37,7 +37,7 @@ function Sidebar({ children, className }: SidebarProps) {
         )}
       >
         <div className="flex items-center gap-3">
-          <Logo size={40} />
+          <AxisIcon size={32} interactive={false} />
           {!isSidebarCollapsed && (
             <h1 className="text-xl font-bold text-foreground tracking-tight">
               Axis
@@ -73,7 +73,7 @@ function Sidebar({ children, className }: SidebarProps) {
         <div className="flex flex-col gap-2">
           <PolarisThemeToggle
             variant="sidebar"
-            showLabel
+            showLabel={!isSidebarCollapsed}
             className={cn(isSidebarCollapsed && "justify-center")}
           />
           <Link

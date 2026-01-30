@@ -1,26 +1,21 @@
-"use client";
-
-import { Suspense } from "react";
-import { useSearchParams } from "next/navigation";
+import type { Metadata } from "next";
 import { LoginForm } from "@/components/auth/LoginForm";
-import { Loader2 } from "lucide-react";
 
-function LoginContent() {
-  const searchParams = useSearchParams();
-  const redirectTo = searchParams.get("redirectTo") || "/";
+export const metadata: Metadata = {
+  title: "Axis - Focus Dashboard",
+  icons: {
+    icon: [{ url: "/Axis%20Logo.svg", type: "image/svg+xml" }],
+  },
+};
 
-  return <LoginForm redirectTo={redirectTo} />;
+interface LoginPageProps {
+  searchParams?: {
+    redirectTo?: string;
+  };
 }
 
-export default function LoginPage() {
-  return (
-    <Suspense fallback={
-      <div className="flex flex-col items-center gap-4">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
-        <p className="text-secondary text-sm">Loading LoginForm...</p>
-      </div>
-    }>
-      <LoginContent />
-    </Suspense>
-  );
+export default function LoginPage({ searchParams }: LoginPageProps) {
+  const redirectTo = searchParams?.redirectTo ?? "/";
+
+  return <LoginForm redirectTo={redirectTo} />;
 }

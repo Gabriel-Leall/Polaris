@@ -42,6 +42,7 @@ export const ProblemSection = () => {
   return (
     <section
       ref={sectionRef}
+      id="method"
       className="relative w-full bg-transparent flex flex-col items-center justify-start px-6 md:px-12 overflow-hidden py-24 md:py-32"
     >
       {/* Background Atmosphere */}
@@ -63,7 +64,8 @@ export const ProblemSection = () => {
           O caos das <span className="text-primary">infinitas abas.</span>
         </h2>
         <p className="text-muted-foreground text-lg md:text-xl font-light">
-          Veja como o Polaris unifica seu fluxo.
+          O método Polaris corta a alternância: centralize contexto, conecte
+          tarefas e execute sem sair do fluxo.
         </p>
       </motion.div>
 

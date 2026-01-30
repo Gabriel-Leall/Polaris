@@ -6,6 +6,7 @@ import { DashboardPreview } from "@/components/landing/DashboardPreview";
 import { FeaturesSection } from "@/components/landing/FeaturesSection";
 import { ProblemSection } from "@/components/landing/ProblemSection";
 import { InteractiveTabs } from "@/components/landing/InteractiveTabs";
+import { ActionSection } from "@/components/landing/ActionSection";
 
 import { LandingFooter } from "@/components/landing/LandingFooter";
 import { BackgroundEffects } from "@/components/landing/BackgroundEffects";
@@ -40,9 +41,10 @@ export default function LandingPage() {
             <div className="layout-content-container flex flex-col max-w-[1000px] flex-1 items-center gap-24 md:gap-32">
               <HeroSection />
               <DashboardPreview />
+              <ProblemSection />
               <FeaturesSection />
               <InteractiveTabs />
-              <ProblemSection />
+              <ActionSection />
             </div>
           </div>
 

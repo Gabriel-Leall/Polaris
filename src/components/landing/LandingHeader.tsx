@@ -69,10 +69,10 @@ export const LandingHeader = () => {
 
               <a
                 className="text-muted-foreground hover:text-foreground hover:bg-muted active:bg-muted text-sm font-medium transition-all px-4 py-2 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-                href="#about"
+                href="#method"
                 style={{ touchAction: "manipulation" }}
               >
-                About
+                Method
               </a>
             </div>
 
@@ -81,17 +81,10 @@ export const LandingHeader = () => {
               <HorizontalThemeWipeToggle />
               <Link
                 href="/login"
-                className="text-muted-foreground hover:text-foreground hover:bg-muted text-sm font-medium transition-all px-4 py-2 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-                style={{ touchAction: "manipulation" }}
-              >
-                Login
-              </Link>
-              <Link
-                href="/signup"
                 className="bg-primary hover:bg-primary-hover active:scale-[0.98] text-primary-foreground px-5 py-2 rounded-lg font-medium text-sm transition-all duration-200 shadow-subtle hover:shadow-subtle-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                 style={{ touchAction: "manipulation" }}
               >
-                Get Started
+                Login
               </Link>
             </div>
           </div>
