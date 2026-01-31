@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 interface AxisIconProps {
@@ -42,14 +43,18 @@ export const AxisIcon = ({
             : "rotateY(0deg) rotateX(0deg) scale(1)",
         }}
       >
-        <img
+        <Image
           src="/Axis%20Logo.svg"
           alt="Axis"
+          width={size}
+          height={size}
           className={cn(
             "block h-full w-full drop-shadow-2xl transition-transform duration-500",
             isHovered && "scale-[1.02]",
           )}
           draggable={false}
+          priority
+          unoptimized
         />
 
         {/* Pulsing glow effect on hover */}

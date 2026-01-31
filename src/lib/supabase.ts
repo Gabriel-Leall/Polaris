@@ -31,7 +31,7 @@ export const supabase = new Proxy({} as SupabaseClient, {
       throw new Error("Supabase client is only available in the browser");
     }
 
-    const value = (client as Record<PropertyKey, unknown>)[prop];
+    const value = (client as unknown as Record<PropertyKey, unknown>)[prop];
     return typeof value === "function" ? value.bind(client) : value;
   },
 });
