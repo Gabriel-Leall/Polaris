@@ -211,13 +211,13 @@ export const FeaturesSection = () => {
               textShadow: "0 0 30px rgba(99, 102, 241, 0.3)",
             }}
           >
-            Engineered for <br />
+            Projetado para <br />
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">
-              Maximum Efficiency
+              foco consistente
             </span>
           </h2>
           <p className="text-muted-foreground text-base md:text-xl font-light tracking-wide max-w-2xl mt-8 mx-auto font-mono">
-            One platform. Zero distractions. Absolute focus.
+            Uma plataforma. Menos ruído. Mais execução.
           </p>
         </motion.div>
       </div>
@@ -230,15 +230,15 @@ export const FeaturesSection = () => {
             <ul className="space-y-3">
               <li className="flex items-start gap-3">
                 <Check className="w-5 h-5 text-primary shrink-0 mt-0.5" />
-                <span>Sessões personalizáveis de 25 minutos</span>
+                <span>Blocos de foco configuráveis</span>
               </li>
               <li className="flex items-start gap-3">
                 <Check className="w-5 h-5 text-primary shrink-0 mt-0.5" />
-                <span>Pausas estratégicas automáticas</span>
+                <span>Pausas guiadas para recuperar energia</span>
               </li>
               <li className="flex items-start gap-3">
                 <Check className="w-5 h-5 text-primary shrink-0 mt-0.5" />
-                <span>Técnica comprovada para máximo foco</span>
+                <span>Ritmo simples para manter constância</span>
               </li>
             </ul>
           }
@@ -255,11 +255,11 @@ export const FeaturesSection = () => {
               </li>
               <li className="flex items-start gap-3">
                 <Check className="w-5 h-5 text-primary shrink-0 mt-0.5" />
-                <span>Formatação Markdown avançada</span>
+                <span>Organize com Markdown e estrutura clara</span>
               </li>
               <li className="flex items-start gap-3">
                 <Check className="w-5 h-5 text-primary shrink-0 mt-0.5" />
-                <span>Busca instantânea e organização automática</span>
+                <span>Encontre tudo com busca rápida</span>
               </li>
             </ul>
           }
@@ -273,15 +273,15 @@ export const FeaturesSection = () => {
             <ul className="space-y-3">
               <li className="flex items-start gap-3">
                 <Check className="w-5 h-5 text-primary shrink-0 mt-0.5" />
-                <span>Visualização diária de progresso</span>
+                <span>Acompanhe o progresso diário</span>
               </li>
               <li className="flex items-start gap-3">
                 <Check className="w-5 h-5 text-primary shrink-0 mt-0.5" />
-                <span>Sistema de streaks motivacional</span>
+                <span>Streaks que reforçam o hábito</span>
               </li>
               <li className="flex items-start gap-3">
                 <Check className="w-5 h-5 text-primary shrink-0 mt-0.5" />
-                <span>Construa consistência a longo prazo</span>
+                <span>Histórico claro para ajustar a rota</span>
               </li>
             </ul>
           }

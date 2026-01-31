@@ -25,7 +25,7 @@ export const LandingHeader = () => {
         href="#main-content"
         className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-lg focus:shadow-lg"
       >
-        Skip to main content
+        Pular para o conteúdo principal
       </a>
 
       {/* Navbar estilo TickTick - Fixed com glassmorphism */}
@@ -64,7 +64,7 @@ export const LandingHeader = () => {
                 href="#features"
                 style={{ touchAction: "manipulation" }}
               >
-                Features
+                Recursos
               </a>
 
               <a
@@ -72,7 +72,7 @@ export const LandingHeader = () => {
                 href="#method"
                 style={{ touchAction: "manipulation" }}
               >
-                Method
+                Método
               </a>
             </div>
 
@@ -84,7 +84,7 @@ export const LandingHeader = () => {
                 className="bg-primary hover:bg-primary-hover active:scale-[0.98] text-primary-foreground px-5 py-2 rounded-lg font-medium text-sm transition-all duration-200 shadow-subtle hover:shadow-subtle-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                 style={{ touchAction: "manipulation" }}
               >
-                Login
+                Entrar
               </Link>
             </div>
           </div>

@@ -133,7 +133,7 @@ export async function addZenTime(userId: string, seconds: number) {
   });
 }
 
-export async function updateUserName(userId: string, fullName: string) {
+export async function updateUserName(fullName: string) {
   const supabase = await createSupabaseServerClient();
 
   const { error } = await supabase.auth.updateUser({

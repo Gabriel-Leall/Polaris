@@ -153,7 +153,7 @@ export default function UserProfilePage() {
     const fullName = `${firstName} ${lastName}`.trim();
 
     try {
-      await updateUserName(userId, fullName);
+      await updateUserName(fullName);
       toast({
         title: "Sucesso!",
         description: "Nome atualizado com sucesso.",

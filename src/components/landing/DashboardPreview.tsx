@@ -36,7 +36,7 @@ export const DashboardPreview = () => {
           className="relative w-full max-w-7xl px-4 md:px-0 rounded-2xl overflow-hidden border border-white/10 bg-[#0A0A16]/50 shadow-[0_30px_80px_rgba(0,0,0,0.7)]"
         >
           <Image
-            alt="Axis Dashboard"
+            alt="Painel do Axis"
             src="/images/Axis Mokcup Dashboard.png"
             width={1920}
             height={1080}

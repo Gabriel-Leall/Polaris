@@ -64,7 +64,7 @@ export const ProblemSection = () => {
           O caos das <span className="text-primary">infinitas abas.</span>
         </h2>
         <p className="text-muted-foreground text-lg md:text-xl font-light">
-          O método Polaris corta a alternância: centralize contexto, conecte
+          O método Axis corta a alternância: centralize contexto, conecte
           tarefas e execute sem sair do fluxo.
         </p>
       </motion.div>
@@ -87,17 +87,17 @@ export const ProblemSection = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
           <DiagnosticCard
             title="Carga Mental"
-            description="A fragmentação dispersa sua energia cognitiva e impede o foco profundo."
+            description="A fragmentação dispersa sua energia cognitiva e quebra o raciocínio."
             delay={0}
           />
           <DiagnosticCard
             title="Fragmentação"
-            description="Suas ferramentas não se falam. O Polaris unifica contexto em tempo real."
+            description="Suas ferramentas não se falam. O Axis unifica o contexto."
             delay={0.1}
           />
           <DiagnosticCard
             title="Paralisia"
-            description="Elimine a fricção entre pensar e agir com uma interface centralizada."
+            description="Reduza a fricção entre pensar e agir com uma interface centralizada."
             delay={0.2}
           />
         </div>
@@ -123,31 +123,31 @@ const ConvergenceAnimation = ({
     {
       id: 2,
       icon: ListTodoIcon,
-      label: "Tasks",
+      label: "Tarefas",
       startPos: { x: 380, y: -180, rotate: 30 },
     },
     {
       id: 3,
       icon: FileTextIcon,
-      label: "Doc",
+      label: "Docs",
       startPos: { x: -320, y: 190, rotate: 15 },
     },
     {
       id: 4,
       icon: ClockIcon,
-      label: "Focus",
+      label: "Foco",
       startPos: { x: 350, y: 240, rotate: -35 },
     },
     {
       id: 5,
       icon: SearchIcon,
-      label: "Find",
+      label: "Busca",
       startPos: { x: 50, y: -280, rotate: 8 },
     },
     {
       id: 6,
       icon: LayoutIcon,
-      label: "Board",
+      label: "Quadro",
       startPos: { x: -450, y: 20, rotate: -12 },
     },
   ];
@@ -224,7 +224,7 @@ const ConvergenceAnimation = ({
         className="absolute bottom-4 text-center w-full px-4"
       >
         <h3 className="text-2xl md:text-4xl font-bold bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
-          Um fluxo unificado para foco absoluto.
+          Um fluxo unificado para trabalho profundo.
         </h3>
       </motion.div>
     </div>

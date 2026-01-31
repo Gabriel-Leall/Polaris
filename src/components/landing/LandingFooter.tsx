@@ -9,20 +9,20 @@ export const LandingFooter = () => {
           <AxisIcon size={40} interactive={false} />
         </div>
         <p className="text-muted-foreground text-xs font-normal leading-normal font-mono">
-          Polaris v1.0. System ready.
+          Axis v1.0. Sistema pronto.
         </p>
         <div className="flex gap-6 justify-center">
           <a
             className="text-muted-foreground hover:text-foreground text-[10px] font-mono transition-colors"
             href="/privacy"
           >
-            Privacy Policy
+            Política de Privacidade
           </a>
           <a
             className="text-muted-foreground hover:text-foreground text-[10px] font-mono transition-colors"
             href="/terms"
           >
-            Terms of Use
+            Termos de Uso
           </a>
           <a
             className="text-muted-foreground hover:text-foreground text-[10px] font-mono transition-colors"

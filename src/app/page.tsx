@@ -12,9 +12,9 @@ import { LandingFooter } from "@/components/landing/LandingFooter";
 import { BackgroundEffects } from "@/components/landing/BackgroundEffects";
 
 export const metadata: Metadata = {
-  title: "Axis - Focus Dashboard",
+  title: "Axis — Painel de foco",
   description:
-    "Enter your flow state with Axis - Your Dashboard productivity command center",
+    "Entre no seu estado de fluxo com o Axis, o painel que centraliza foco, tarefas e contexto.",
 };
 
 export const viewport = {

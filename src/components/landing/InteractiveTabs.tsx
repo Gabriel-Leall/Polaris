@@ -16,11 +16,11 @@ const TABS = [
     label: "Calendário",
     title: "Planeje visualmente",
     description:
-      "Sincronize seus prazos e visualize sua semana em um clique. O time-boxing nunca foi tão simples.",
+      "Visualize prazos e sua semana de forma clara. Planeje blocos de foco em minutos.",
     features: [
-      "Visão Semanal/Mensal",
-      "Time-blocking direto",
-      "Sincronização Cloud",
+      "Visão semanal e mensal",
+      "Blocos de tempo",
+      "Planejamento rápido",
     ],
   },
   {
@@ -28,19 +28,23 @@ const TABS = [
     label: "Tarefas",
     title: "Gestão Ágil (Kanban)",
     description:
-      "Organize seus projetos e tarefas diárias em um fluxo visual. Arraste, solte e conclua.",
-    features: ["Listas Inteligentes", "Visual Kanban", "Filtros de Prioridade"],
+      "Organize projetos e tarefas diárias em um fluxo visual simples e direto.",
+    features: [
+      "Colunas flexíveis",
+      "Arrastar e soltar",
+      "Prioridades visíveis",
+    ],
   },
   {
     id: "links",
     label: "Links Rápidos",
     title: "Tudo a um clique",
     description:
-      "Centralize seus recursos, documentações e sites mais usados sem precisar abrir novas abas.",
+      "Centralize recursos, documentações e sites mais usados sem abrir novas abas.",
     features: [
-      "Categorias Customizadas",
-      "Favicons Automáticos",
-      "Acesso Instantâneo",
+      "Categorias personalizáveis",
+      "Acesso rápido",
+      "Tudo em um painel",
     ],
   },
   {
@@ -48,11 +52,11 @@ const TABS = [
     label: "Música",
     title: "Imersão Sonora",
     description:
-      "Player integrado para tocar suas playlists de foco ou sons ambientes sem sair do Polaris.",
+      "Player integrado para tocar playlists de foco ou sons ambientes sem sair do Axis.",
     features: [
-      "Integração YouTube",
-      "Controles na Sidebar",
-      "Modo Fokus Audio",
+      "Controles rápidos",
+      "Ambientes sonoros",
+      "Foco sem interrupções",
     ],
   },
   {
@@ -60,11 +64,11 @@ const TABS = [
     label: "Matriz Eisenhower",
     title: "Priorização Real",
     description:
-      "Divida suas tarefas entre Urgente e Importante para focar no que realmente move o ponteiro.",
+      "Separe tarefas entre Urgente e Importante para focar no que realmente importa.",
     features: [
       "Quadrantes de Foco",
-      "Filtro Automático",
-      "Análise de Produtividade",
+      "Decisão mais rápida",
+      "Prioridades claras",
     ],
   },
 ];
@@ -97,8 +101,8 @@ export const InteractiveTabs = () => {
             Múltiplas visões, um só lugar.
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Escolha a forma que você prefere trabalhar. Polaris se adapta ao seu
-            estilo, não o contrário.
+            Escolha a visão certa para cada tarefa. Axis se adapta ao seu ritmo,
+            não o contrário.
           </p>
         </div>
 

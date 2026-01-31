@@ -38,11 +38,10 @@ export const AboutSection = () => {
                 "0 0 20px rgba(255, 255, 255, 0.5), 0 0 30px rgba(99, 102, 241, 0.4)",
             }}
           >
-            About Polaris
+            Sobre o Axis
           </h2>
           <p className="text-muted-foreground text-lg font-light tracking-wide font-mono max-w-2xl mt-4">
-            Built for developers, by developers. Engineered for deep focus and
-            maximum productivity.
+            Criado para trabalho profundo, com foco real e execução contínua.
           </p>
         </motion.div>
 
@@ -55,23 +54,22 @@ export const AboutSection = () => {
             transition={{ duration: 0.8 }}
             className="text-left space-y-6"
           >
-            <h3 className="text-foreground text-2xl font-bold">Our Mission</h3>
+            <h3 className="text-foreground text-2xl font-bold">Nossa missão</h3>
             <p className="text-muted-foreground leading-relaxed">
-              In a world full of distractions, Polaris serves as your North
-              Star—guiding you toward sustained focus and meaningful
-              productivity. We believe that the best work happens when you can
-              enter a state of deep flow.
+              Em um mundo cheio de distrações, o Axis existe para manter você no
+              fluxo. Acreditamos que o melhor trabalho acontece quando o foco
+              encontra contexto e clareza.
             </p>
 
             <h3 className="text-foreground text-2xl font-bold pt-4">
-              Why Polaris?
+              Por que Axis?
             </h3>
             <ul className="space-y-3">
               {[
-                "Designed specifically for knowledge workers and developers",
-                "Minimalist interface that eliminates cognitive overhead",
-                "Built with modern web technologies for speed and reliability",
-                "Privacy-first approach—your data stays yours",
+                "Feito para trabalho profundo e decisões rápidas",
+                "Interface limpa para reduzir ruído mental",
+                "Ferramentas integradas para manter o contexto",
+                "Privacidade em primeiro lugar, do jeito certo",
               ].map((item, i) => (
                 <motion.li
                   key={i}
@@ -97,7 +95,7 @@ export const AboutSection = () => {
             className="bg-card/30 backdrop-blur-[8px] border border-border p-8 rounded-3xl"
           >
             <h3 className="text-foreground text-xl font-bold mb-6">
-              By the Numbers
+              O que guia o Axis
             </h3>
             <motion.div
               variants={containerVariants}
@@ -107,20 +105,16 @@ export const AboutSection = () => {
               className="space-y-6"
             >
               {[
-                { label: "Active Users", value: "2,000+" },
-                { label: "Focus Minutes", value: "50M+" },
-                { label: "Uptime", value: "99.9%", color: "text-foreground" },
+                { label: "Clareza no dia a dia", value: "Foco" },
+                { label: "Ritmo sustentável", value: "Constância" },
+                { label: "Dados sob seu controle", value: "Confiança" },
               ].map((stat, i) => (
                 <motion.div
                   key={i}
                   variants={itemVariants}
                   className="text-center"
                 >
-                  <div
-                    className={`text-3xl font-black ${
-                      stat.color || "text-primary"
-                    } mb-1`}
-                  >
+                  <div className="text-3xl font-black text-primary mb-1">
                     {stat.value}
                   </div>
                   <div className="text-muted-foreground text-sm font-mono">

@@ -11,4 +11,4 @@ export { default as WidgetCard } from "./WidgetCard";
 export { ZenModeBlurWrapper } from "./ZenModeBlurWrapper";
 
 // Magic UI Enhanced Components
-export { PolarisGrid, GridColumn as PolarisGridColumn } from "./PolarisGrid";
+export { PolarisGrid, GridColumn as PolarisGridColumn } from "./AxisGrid";

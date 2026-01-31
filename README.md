@@ -1,114 +1,107 @@
-# 🌌 Polaris
+# 🌌 Axis (Polaris)
 
-![Project Banner](public/banner-placeholder.png)
-
-<!-- (DICA: Coloque aqui um print bem largo e bonito do Dashboard) -->
+![Project Banner](public/images/Axis%20Mokcup%20Dashboard.png)
 
 > **Align your productivity vectors. Enter your flow state.**
 
-Polaris is a high-fidelity **Productivity Command Center** designed for developers, creators, and deep workers. It replaces the chaos of browser tabs with a unified, "Deep Midnight" dashboard that combines task management, habit tracking, and focus tools into a single, no-scroll interface.
+Axis (Polaris) é um **Productivity Command Center** de alta fidelidade, feito para desenvolvedores, criadores e pessoas em foco profundo. A proposta é substituir o caos de dezenas de abas por um dashboard único, “Deep Midnight”, com widgets essenciais em um layout sem rolagem.
 
 ---
 
-## ✨ The Philosophy
+## ✨ Filosofia
 
-Modern work is distracting. We switch contexts every 3 minutes.
-**Polaris** was built to solve this by providing a local-first, privacy-focused environment that encourages:
+Trabalho moderno é distração constante — a cada poucos minutos, o contexto muda. O Axis nasceu para reduzir esse ruído com uma experiência local-first e focada em privacidade, reforçando:
 
-- **Deep Work:** Via the integrated Zen Mode.
-- **Intentionality:** Through the Bento Grid layout.
-- **Consistency:** With the visual Habit Tracker.
-
----
-
-## 🚀 Key Features
-
-### 🎯 The Command Center
-
-- **Bento Grid Architecture:** A rigid 3-column layout designed to fit 100vh. No infinite scrolling. Everything you need is at eye level.
-- **Zen Timer:** A built-in Pomodoro focus tool that dims distractions when activated.
-- **Brain Dump:** A markdown-supported scratchpad that acts as a temporary buffer for your thoughts.
-
-### ⚡ Smart Widgets
-
-- **My Tasks:** A kanban-style list for immediate execution.
-- **Habit Tracker:** Visual streak tracking to build consistency.
-- **Media Hub:** Integrated focus sounds (Rain, Lofi, White Noise).
-- **Quick Links:** Fast access to your most used tools (GitHub, Figma, etc).
+- **Deep Work:** com o Zen Mode integrado.
+- **Intencionalidade:** por meio do layout Bento Grid em 100vh.
+- **Consistência:** com rastreio visual de hábitos.
 
 ---
 
-## 🛠️ Tech Stack
+## 🚀 Recursos principais
 
-Built with the bleeding edge of the React ecosystem, focusing on performance and type safety.
+### 🎯 Command Center
+
+- **Bento Grid:** layout rígido em 3 colunas para caber em 100vh, sem rolagem infinita.
+- **Zen Timer:** Pomodoro integrado que reduz distrações quando ativado.
+- **Brain Dump:** bloco de notas em Markdown para esvaziar a mente rapidamente.
+
+### ⚡ Widgets inteligentes
+
+- **My Tasks:** lista estilo kanban para execução imediata.
+- **Habit Tracker:** sequências visuais para incentivar consistência.
+- **Media Hub:** sons focais (chuva, lo-fi, ruído branco).
+- **Quick Links:** atalhos rápidos (GitHub, Figma, etc.).
+
+---
+
+## 🛠️ Stack
+
+Construído com foco em performance, previsibilidade e tipagem forte.
 
 - **Core:** [Next.js 14](https://nextjs.org/) (App Router)
-- **Language:** [TypeScript](https://www.typescriptlang.org/)
+- **Linguagem:** [TypeScript](https://www.typescriptlang.org/)
 - **Runtime:** [Bun](https://bun.sh/)
-- **Styling:** [Tailwind CSS](https://tailwindcss.com/) + Custom "Deep Midnight" Design System
-- **State:** [Zustand](https://github.com/pmndrs/zustand) (Global Client State)
+- **Estilo:** [Tailwind CSS](https://tailwindcss.com/) + Design System “Deep Midnight”
+- **Estado:** [Zustand](https://github.com/pmndrs/zustand)
 - **Backend:** [Supabase](https://supabase.com/) (Auth & Database)
-- **Components:** [Radix UI](https://www.radix-ui.com/) (Headless Primitives)
+- **Componentes:** [Radix UI](https://www.radix-ui.com/) (Headless Primitives)
 
 ---
 
-## 📸 Gallery
+## 📸 Preview
 
-<!-- Coloque aqui 2 ou 3 prints: Um do Dashboard, um do Zen Mode ativo, um do Mobile -->
-
-|            Dashboard Overview             |         Zen Mode Active          |
-| :---------------------------------------: | :------------------------------: |
-| ![Dashboard](public/dashboard-screen.png) | ![Zen Mode](public/zen-mode.png) |
+Use o banner acima como referência visual. Adicione screenshots reais quando estiverem prontos.
 
 ---
 
-## 🏗️ Architecture & Design
+## 🏗️ Arquitetura & Design
 
-Polaris follows a strict **Widget-Based Architecture**. Each section of the grid is an isolated component managed by a global store, ensuring performance even with complex state updates.
+O Axis segue uma **arquitetura baseada em widgets**. Cada seção do grid é um componente isolado, coordenado por estado global para manter performance mesmo com mudanças complexas.
 
-The UI implements the **"Deep Midnight"** theme:
+O tema **“Deep Midnight”** define a identidade visual:
 
-- Backgrounds are Rich Navy/Black (`#09090B`), not pure black.
-- Borders utilize "Glassmorphism" (`white/5` opacity).
-- Accents use Electric Indigo (`#6366F1`) for focus states.
-
----
-
-## 🚦 Running Locally
-
-1.  **Clone the repository**
-
-    ```bash
-    git clone https://github.com/your-username/polaris.git
-    ```
-
-2.  **Install dependencies (using Bun)**
-
-    ```bash
-    bun install
-    ```
-
-3.  **Setup Environment**
-    Create a `.env.local` file with your Supabase credentials:
-
-    ```env
-    NEXT_PUBLIC_SUPABASE_URL=...
-    NEXT_PUBLIC_SUPABASE_ANON_KEY=...
-    ```
-
-4.  **Run the development server**
-    ```bash
-    bun dev
-    ```
+- Backgrounds em Navy/Preto rico (`#09090B`), nunca preto puro.
+- Bordas com efeito glassmorphism (`white/5`).
+- Acentos em Electric Indigo (`#6366F1`) para foco.
 
 ---
 
-## 👤 Author
+## 🚦 Rodando localmente
 
-**Seu Nome**
+1. **Instale as dependências (Bun)**
 
-- [LinkedIn](https://linkedin.com/in/seu-perfil)
-- [Portfolio](https://seu-site.com)
+   ```bash
+   bun install
+   ```
+
+2. **Configure o ambiente**
+
+   Crie um arquivo `.env.local` com as credenciais do Supabase:
+
+   ```env
+   NEXT_PUBLIC_SUPABASE_URL=...
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=...
+   ```
+
+3. **Inicie o servidor de desenvolvimento**
+
+   ```bash
+   bun dev
+   ```
+
+## 📜 Scripts úteis
+
+- **Dev:** `bun dev`
+- **Build:** `bun run build`
+- **Start:** `bun run start`
+- **Testes:** `bun test`
+
+---
+
+## 👤 Autor
+
+**Gabriel Leal**
 
 ---
 
