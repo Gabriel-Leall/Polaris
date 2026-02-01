@@ -42,7 +42,12 @@ interface KanbanCardProps {
 }
 
 // Componente do Card individual com DnD Kit
-function KanbanCard({ task, onClick, onToggle, isDragging = false }: KanbanCardProps) {
+function KanbanCard({
+  task,
+  onClick,
+  onToggle,
+  isDragging = false,
+}: KanbanCardProps) {
   const {
     attributes,
     listeners,
@@ -83,7 +88,7 @@ function KanbanCard({ task, onClick, onToggle, isDragging = false }: KanbanCardP
           "group relative bg-card/80 backdrop-blur-sm border border-border/50 rounded-xl p-3",
           "hover:border-border hover:bg-card transition-all duration-200",
           task.completed && "opacity-60",
-          isCurrentlyDragging && "opacity-40"
+          isCurrentlyDragging && "opacity-40",
         )}
       >
         {/* Drag handle */}
@@ -99,11 +104,14 @@ function KanbanCard({ task, onClick, onToggle, isDragging = false }: KanbanCardP
         <div
           className={cn(
             "absolute top-3 right-3 w-2 h-2 rounded-full",
-            getPriorityIndicator(task.priority)
+            getPriorityIndicator(task.priority),
           )}
         />
 
-        <div className="flex items-start gap-2.5 pl-4 cursor-pointer" onClick={onClick}>
+        <div
+          className="flex items-start gap-2.5 pl-4 cursor-pointer"
+          onClick={onClick}
+        >
           {/* Checkbox */}
           <Checkbox
             checked={task.completed}
@@ -119,7 +127,7 @@ function KanbanCard({ task, onClick, onToggle, isDragging = false }: KanbanCardP
             <p
               className={cn(
                 "text-sm font-medium text-foreground line-clamp-2",
-                task.completed && "line-through text-muted-foreground"
+                task.completed && "line-through text-muted-foreground",
               )}
             >
               {task.label}
@@ -176,7 +184,7 @@ function KanbanColumn({
       ref={setDroppableRef}
       className={cn(
         "flex flex-col h-full min-w-[200px] flex-1",
-        isOver && "shadow-inner shadow-primary/50"
+        isOver && "shadow-inner shadow-primary/50",
       )}
     >
       {/* Column Header */}
@@ -201,7 +209,7 @@ function KanbanColumn({
           className={cn(
             "flex-1 space-y-2 overflow-y-auto min-h-[100px] p-1 rounded-lg",
             "border-2 border-dashed border-transparent transition-colors",
-            "hover:border-border/30"
+            "hover:border-border/30",
           )}
         >
           {tasks.length === 0 ? (
@@ -246,7 +254,7 @@ export function KanbanView({
       activationConstraint: {
         distance: 8, // 8px de movimento antes de ativar o drag
       },
-    })
+    }),
   );
 
   // Agrupar tasks por status
@@ -291,7 +299,7 @@ export function KanbanView({
 
   const handleDragOver = (event: DragOverEvent) => {
     const { active, over } = event;
-    
+
     if (!over) return;
 
     const activeId = active.id as string;
@@ -311,7 +319,7 @@ export function KanbanView({
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
-    
+
     if (!over) {
       setActiveId(null);
       return;
@@ -339,7 +347,7 @@ export function KanbanView({
   // Task ativa durante o drag
   const activeTask = useMemo(
     () => tasks.find((task) => task.id === activeId),
-    [activeId, tasks]
+    [activeId, tasks],
   );
 
   return (

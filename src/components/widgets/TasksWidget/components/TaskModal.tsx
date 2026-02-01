@@ -142,7 +142,7 @@ export function TaskModal({
                   "px-6 py-4 border-b transition-colors duration-300",
                   task.completed
                     ? "bg-primary/10 border-primary/30"
-                    : "bg-card/50 border-border/50"
+                    : "bg-card/50 border-border/50",
                 )}
               >
                 <div className="flex items-center justify-between">
@@ -157,7 +157,7 @@ export function TaskModal({
                         "text-xs font-medium px-2 py-1 rounded-full",
                         task.completed
                           ? "bg-primary/20 text-primary"
-                          : "bg-muted/50 text-muted-foreground"
+                          : "bg-muted/50 text-muted-foreground",
                       )}
                     >
                       {task.completed ? "Concluída" : "Pendente"}
@@ -207,7 +207,7 @@ export function TaskModal({
                       onClick={() => setIsEditing(true)}
                       className={cn(
                         "text-xl font-semibold cursor-pointer hover:text-primary transition-colors",
-                        task.completed && "line-through text-muted-foreground"
+                        task.completed && "line-through text-muted-foreground",
                       )}
                     >
                       {task.label}
@@ -229,7 +229,7 @@ export function TaskModal({
                     <div
                       className={cn(
                         "px-3 py-2 rounded-lg text-sm font-medium",
-                        getPriorityColor(task.priority)
+                        getPriorityColor(task.priority),
                       )}
                     >
                       {getPriorityLabel(task.priority)}
@@ -306,7 +306,7 @@ export function TaskModal({
                     size="sm"
                     onClick={handleToggle}
                     className={cn(
-                      task.completed && "bg-green-600 hover:bg-green-700"
+                      task.completed && "bg-green-600 hover:bg-green-700",
                     )}
                   >
                     {task.completed ? (

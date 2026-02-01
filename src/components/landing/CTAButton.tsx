@@ -21,16 +21,21 @@ export function CTAButton({
   const buttonRef = useRef<HTMLAnchorElement>(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isHovered, setIsHovered] = useState(false);
-  const [ripples, setRipples] = useState<{ id: number; x: number; y: number }[]>([]);
+  const [ripples, setRipples] = useState<
+    { id: number; x: number; y: number }[]
+  >([]);
 
-  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLAnchorElement>) => {
-    if (!buttonRef.current) return;
-    const rect = buttonRef.current.getBoundingClientRect();
-    setMousePosition({
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top,
-    });
-  }, []);
+  const handleMouseMove = useCallback(
+    (e: React.MouseEvent<HTMLAnchorElement>) => {
+      if (!buttonRef.current) return;
+      const rect = buttonRef.current.getBoundingClientRect();
+      setMousePosition({
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top,
+      });
+    },
+    [],
+  );
 
   const handleClick = useCallback((e: React.MouseEvent<HTMLAnchorElement>) => {
     if (!buttonRef.current) return;
@@ -38,9 +43,9 @@ export function CTAButton({
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
     const id = Date.now();
-    
+
     setRipples((prev) => [...prev, { id, x, y }]);
-    
+
     // Remove ripple after animation
     setTimeout(() => {
       setRipples((prev) => prev.filter((r) => r.id !== id));
@@ -65,7 +70,7 @@ export function CTAButton({
             : "h-12 px-10 bg-primary/90 text-primary-foreground shadow-lg",
           "hover:shadow-[0_0_40px_rgba(99,102,241,0.5)]",
           "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background",
-          className
+          className,
         )}
         onMouseMove={handleMouseMove}
         onMouseEnter={() => setIsHovered(true)}
@@ -131,7 +136,7 @@ export function CTAButton({
         <motion.span
           className={cn(
             "relative z-10 font-bold tracking-wide",
-            isPrimary ? "text-base" : "text-sm"
+            isPrimary ? "text-base" : "text-sm",
           )}
           animate={{
             scale: isHovered ? 1.02 : 1,
@@ -145,7 +150,8 @@ export function CTAButton({
         <motion.div
           className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out"
           style={{
-            background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)",
+            background:
+              "linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)",
           }}
         />
       </Link>

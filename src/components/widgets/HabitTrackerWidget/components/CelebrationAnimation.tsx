@@ -150,7 +150,11 @@ export function CelebrationAnimation({
           {/* Celebration text */}
           <motion.div
             initial={{ scale: 0, opacity: 0, y: 20 }}
-            animate={{ scale: [0, 1.2, 1], opacity: [0, 1, 1, 0], y: [20, 0, -30] }}
+            animate={{
+              scale: [0, 1.2, 1],
+              opacity: [0, 1, 1, 0],
+              y: [20, 0, -30],
+            }}
             transition={{ duration: 2, times: [0, 0.3, 0.7, 1] }}
             className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-[102]"
           >
@@ -180,10 +184,12 @@ export function CelebrationAnimation({
               animate={{
                 x:
                   window.innerWidth / 2 +
-                  Math.cos((Math.PI * 2 * i) / 12) * (150 + Math.random() * 100),
+                  Math.cos((Math.PI * 2 * i) / 12) *
+                    (150 + Math.random() * 100),
                 y:
                   window.innerHeight / 2 +
-                  Math.sin((Math.PI * 2 * i) / 12) * (150 + Math.random() * 100),
+                  Math.sin((Math.PI * 2 * i) / 12) *
+                    (150 + Math.random() * 100),
                 scale: [0, 1, 0],
                 opacity: [1, 1, 0],
               }}

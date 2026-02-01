@@ -48,7 +48,6 @@ export function TasksWidget({ className }: TasksWidgetProps) {
     setSelectedTask(null);
   }, []);
 
-
   const onCreateTask = useCallback(async () => {
     if (!newTaskLabel.trim() || isCreating) return;
 
@@ -81,7 +80,7 @@ export function TasksWidget({ className }: TasksWidgetProps) {
               size="sm"
               className={cn(
                 "h-6 w-6 p-0 rounded-md transition-all",
-                "bg-background shadow-sm text-foreground"
+                "bg-background shadow-sm text-foreground",
               )}
             >
               <LayoutList className="h-3.5 w-3.5" />

@@ -45,7 +45,9 @@ export default function TasksPage() {
 
   const [activeFilter, setActiveFilter] = useState("All Tasks");
   const [newTaskTitle, setNewTaskTitle] = useState("");
-  const [newTaskPriority, setNewTaskPriority] = useState<"high" | "medium" | "low">("medium");
+  const [newTaskPriority, setNewTaskPriority] = useState<
+    "high" | "medium" | "low"
+  >("medium");
   const [newTaskDate, setNewTaskDate] = useState("");
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
   const [newTaskTags, setNewTaskTags] = useState<string[]>([]);
@@ -158,8 +160,8 @@ export default function TasksPage() {
     const completed = newStatus === "done";
     setTasks((prev) =>
       prev.map((t) =>
-        t.id === taskId ? { ...t, status: newStatus, completed } : t
-      )
+        t.id === taskId ? { ...t, status: newStatus, completed } : t,
+      ),
     );
 
     try {
@@ -418,7 +420,7 @@ export default function TasksPage() {
                     "p-2 rounded-lg transition-all",
                     viewMode === "list"
                       ? "bg-primary text-primary-foreground shadow-sm"
-                      : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                      : "text-muted-foreground hover:text-foreground hover:bg-muted/50",
                   )}
                   title="List View"
                 >
@@ -430,14 +432,14 @@ export default function TasksPage() {
                     "p-2 rounded-lg transition-all",
                     viewMode === "kanban"
                       ? "bg-primary text-primary-foreground shadow-sm"
-                      : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                      : "text-muted-foreground hover:text-foreground hover:bg-muted/50",
                   )}
                   title="Kanban View"
                 >
                   <Kanban className="w-4 h-4" />
                 </button>
               </div>
-              
+
               {/* Filter Chips */}
               <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide">
                 {filters.map((filter) => (
@@ -473,143 +475,143 @@ export default function TasksPage() {
               </div>
             ) : (
               <div className="flex flex-col gap-3">
-              {/* Active Tasks */}
-              {activeTasks.map((task) => (
-                <div
-                  key={task.id}
-                  className="group flex flex-col sm:flex-row sm:items-center gap-4 bg-card border border-border p-4 rounded-3xl hover:border-primary/30 transition-all hover:shadow-2xl hover:bg-card/60 backdrop-blur-sm"
-                >
-                  <div className="flex items-start gap-4 flex-1">
-                    <button
-                      onClick={() => toggleTask(task.id)}
-                      className="mt-1 w-6 h-6 rounded-lg border-2 border-muted hover:border-primary flex items-center justify-center transition-colors group/check bg-card"
-                    >
-                      <Check className="w-4 h-4 text-primary opacity-0 group-hover/check:opacity-100" />
-                    </button>
-                    <div className="flex flex-col gap-1">
-                      <span className="text-base font-semibold text-foreground group-hover:text-primary transition-colors">
-                        {task.label}
-                      </span>
-                      <div className="flex flex-wrap items-center gap-3 text-xs">
-                        {task.priority === "high" && (
-                          <span className="flex items-center gap-1 text-destructive font-bold bg-destructive/10 px-2.5 py-1 rounded-full border border-destructive/20">
-                            <Flag className="w-3.5 h-3.5 fill-current" />
-                            High Priority
-                          </span>
-                        )}
-                        {task.priority === "medium" && (
-                          <span className="flex items-center gap-1 text-warning font-bold bg-warning/10 px-2.5 py-1 rounded-full border border-warning/20">
-                            <Flag className="w-3.5 h-3.5" />
-                            Medium Priority
-                          </span>
-                        )}
-                        {task.priority === "low" && (
-                          <span className="flex items-center gap-1 text-muted-foreground font-bold bg-muted/20 px-2.5 py-1 rounded-full border border-border">
-                            <Flag className="w-3.5 h-3.5" />
-                            Low Priority
-                          </span>
-                        )}
+                {/* Active Tasks */}
+                {activeTasks.map((task) => (
+                  <div
+                    key={task.id}
+                    className="group flex flex-col sm:flex-row sm:items-center gap-4 bg-card border border-border p-4 rounded-3xl hover:border-primary/30 transition-all hover:shadow-2xl hover:bg-card/60 backdrop-blur-sm"
+                  >
+                    <div className="flex items-start gap-4 flex-1">
+                      <button
+                        onClick={() => toggleTask(task.id)}
+                        className="mt-1 w-6 h-6 rounded-lg border-2 border-muted hover:border-primary flex items-center justify-center transition-colors group/check bg-card"
+                      >
+                        <Check className="w-4 h-4 text-primary opacity-0 group-hover/check:opacity-100" />
+                      </button>
+                      <div className="flex flex-col gap-1">
+                        <span className="text-base font-semibold text-foreground group-hover:text-primary transition-colors">
+                          {task.label}
+                        </span>
+                        <div className="flex flex-wrap items-center gap-3 text-xs">
+                          {task.priority === "high" && (
+                            <span className="flex items-center gap-1 text-destructive font-bold bg-destructive/10 px-2.5 py-1 rounded-full border border-destructive/20">
+                              <Flag className="w-3.5 h-3.5 fill-current" />
+                              High Priority
+                            </span>
+                          )}
+                          {task.priority === "medium" && (
+                            <span className="flex items-center gap-1 text-warning font-bold bg-warning/10 px-2.5 py-1 rounded-full border border-warning/20">
+                              <Flag className="w-3.5 h-3.5" />
+                              Medium Priority
+                            </span>
+                          )}
+                          {task.priority === "low" && (
+                            <span className="flex items-center gap-1 text-muted-foreground font-bold bg-muted/20 px-2.5 py-1 rounded-full border border-border">
+                              <Flag className="w-3.5 h-3.5" />
+                              Low Priority
+                            </span>
+                          )}
 
-                        {task.dueDate && (
-                          <span
-                            className={cn(
-                              "flex items-center gap-1 font-bold px-2.5 py-1 rounded-full border",
-                              task.dueDate ===
-                                new Date().toISOString().split("T")[0]
-                                ? "text-success bg-success/10 border-success/20"
-                                : "text-muted-foreground bg-muted/10 border-border",
-                            )}
-                          >
-                            <CalendarIcon className="w-3.5 h-3.5" />
-                            {toDateKey(task.dueDate) ===
-                            new Date().toISOString().split("T")[0]
-                              ? "Due Today"
-                              : formatShortDate(task.dueDate)}
-                          </span>
-                        )}
+                          {task.dueDate && (
+                            <span
+                              className={cn(
+                                "flex items-center gap-1 font-bold px-2.5 py-1 rounded-full border",
+                                task.dueDate ===
+                                  new Date().toISOString().split("T")[0]
+                                  ? "text-success bg-success/10 border-success/20"
+                                  : "text-muted-foreground bg-muted/10 border-border",
+                              )}
+                            >
+                              <CalendarIcon className="w-3.5 h-3.5" />
+                              {toDateKey(task.dueDate) ===
+                              new Date().toISOString().split("T")[0]
+                                ? "Due Today"
+                                : formatShortDate(task.dueDate)}
+                            </span>
+                          )}
 
-                        {task.tags?.map((tag) => (
-                          <span
-                            key={tag}
-                            className="flex items-center gap-1 text-primary-glow font-bold bg-primary/10 px-2.5 py-1 rounded-full border border-primary/20"
-                          >
-                            {tag}
-                          </span>
-                        ))}
+                          {task.tags?.map((tag) => (
+                            <span
+                              key={tag}
+                              className="flex items-center gap-1 text-primary-glow font-bold bg-primary/10 px-2.5 py-1 rounded-full border border-primary/20"
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
                       </div>
                     </div>
+                    <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity justify-end sm:justify-start">
+                      <button
+                        className="p-2 text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-xl transition-colors"
+                        title="Edit"
+                      >
+                        <Edit2 className="w-5 h-5" />
+                      </button>
+                      <button
+                        onClick={() => deleteTask(task.id)}
+                        className="p-2 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-xl transition-colors"
+                        title="Delete"
+                      >
+                        <Trash2 className="w-5 h-5" />
+                      </button>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity justify-end sm:justify-start">
-                    <button
-                      className="p-2 text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-xl transition-colors"
-                      title="Edit"
-                    >
-                      <Edit2 className="w-5 h-5" />
-                    </button>
-                    <button
-                      onClick={() => deleteTask(task.id)}
-                      className="p-2 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-xl transition-colors"
-                      title="Delete"
-                    >
-                      <Trash2 className="w-5 h-5" />
-                    </button>
+                ))}
+
+                {/* Empty State */}
+                {activeTasks.length === 0 && (
+                  <div className="py-20 text-center bg-card/20 border border-dashed border-border/30 rounded-3xl">
+                    <p className="text-muted-foreground">
+                      No tasks found. Time to relax or add some!
+                    </p>
                   </div>
-                </div>
-              ))}
+                )}
 
-              {/* Empty State */}
-              {activeTasks.length === 0 && (
-                <div className="py-20 text-center bg-card/20 border border-dashed border-border/30 rounded-3xl">
-                  <p className="text-muted-foreground">
-                    No tasks found. Time to relax or add some!
-                  </p>
+                {/* Completed Section Header */}
+                <div className="flex items-center gap-4 py-6 mt-4">
+                  <div className="h-[1px] flex-1 bg-border"></div>
+                  <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em]">
+                    Completed
+                  </span>
+                  <div className="h-[1px] flex-1 bg-border"></div>
                 </div>
-              )}
 
-              {/* Completed Section Header */}
-              <div className="flex items-center gap-4 py-6 mt-4">
-                <div className="h-[1px] flex-1 bg-border"></div>
-                <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em]">
-                  Completed
-                </span>
-                <div className="h-[1px] flex-1 bg-border"></div>
+                {/* Completed Tasks */}
+                {completedTasks.map((task) => (
+                  <div
+                    key={task.id}
+                    className="group flex flex-col sm:flex-row sm:items-center gap-4 bg-muted/10 border border-border p-4 rounded-3xl opacity-50 hover:opacity-80 transition-all"
+                  >
+                    <div className="flex items-start gap-4 flex-1">
+                      <button
+                        onClick={() => toggleTask(task.id)}
+                        className="mt-1 w-6 h-6 rounded-lg bg-primary border-2 border-primary flex items-center justify-center transition-colors shadow-glow-sm"
+                      >
+                        <Check className="w-4 h-4 text-primary-foreground font-bold" />
+                      </button>
+                      <div className="flex flex-col gap-1">
+                        <span className="text-base font-medium text-muted-foreground line-through decoration-muted">
+                          {task.label}
+                        </span>
+                        <div className="flex items-center gap-1 text-[10px] text-muted-foreground/60 uppercase tracking-wider">
+                          <CheckCircle2 className="w-3 h-3" />
+                          Completed
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity justify-end sm:justify-start">
+                      <button
+                        onClick={() => deleteTask(task.id)}
+                        className="p-2 text-muted-foreground/30 hover:text-destructive hover:bg-destructive/10 rounded-xl transition-colors"
+                        title="Delete"
+                      >
+                        <Trash2 className="w-5 h-5" />
+                      </button>
+                    </div>
+                  </div>
+                ))}
               </div>
-
-              {/* Completed Tasks */}
-              {completedTasks.map((task) => (
-                <div
-                  key={task.id}
-                  className="group flex flex-col sm:flex-row sm:items-center gap-4 bg-muted/10 border border-border p-4 rounded-3xl opacity-50 hover:opacity-80 transition-all"
-                >
-                  <div className="flex items-start gap-4 flex-1">
-                    <button
-                      onClick={() => toggleTask(task.id)}
-                      className="mt-1 w-6 h-6 rounded-lg bg-primary border-2 border-primary flex items-center justify-center transition-colors shadow-glow-sm"
-                    >
-                      <Check className="w-4 h-4 text-primary-foreground font-bold" />
-                    </button>
-                    <div className="flex flex-col gap-1">
-                      <span className="text-base font-medium text-muted-foreground line-through decoration-muted">
-                        {task.label}
-                      </span>
-                      <div className="flex items-center gap-1 text-[10px] text-muted-foreground/60 uppercase tracking-wider">
-                        <CheckCircle2 className="w-3 h-3" />
-                        Completed
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity justify-end sm:justify-start">
-                    <button
-                      onClick={() => deleteTask(task.id)}
-                      className="p-2 text-muted-foreground/30 hover:text-destructive hover:bg-destructive/10 rounded-xl transition-colors"
-                      title="Delete"
-                    >
-                      <Trash2 className="w-5 h-5" />
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
             )}
 
             {/* Task Modal */}
@@ -621,7 +623,7 @@ export default function TasksPage() {
               onDelete={deleteTask}
               onUpdate={(taskId, updates) => {
                 setTasks((prev) =>
-                  prev.map((t) => (t.id === taskId ? { ...t, ...updates } : t))
+                  prev.map((t) => (t.id === taskId ? { ...t, ...updates } : t)),
                 );
               }}
             />
