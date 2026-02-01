@@ -21,6 +21,8 @@ import { CelebrationAnimation } from "./components/CelebrationAnimation";
 const LOCAL_HABITS_KEY = "polaris-local-habits";
 const LAST_WEEK_KEY = "polaris-habits-last-week";
 const FIRST_VISIT_KEY = "polaris-habits-first-visit";
+const CELEBRATION_DATE_KEY = "polaris-habits-celebration-date";
+const CELEBRATION_WEEK_KEY = "polaris-habits-celebration-week";
 
 // Hábitos mockados para primeira visita (com alguns dias já marcados para demonstração)
 const getMockHabits = (userId: string): Habit[] => {
@@ -121,17 +123,71 @@ export function HabitTrackerWidget({ className }: HabitTrackerWidgetProps) {
   const effectiveUserId = userId || "local-user";
 
   // Check if all habits are completed today
-  const allHabitsCompleted = habits.length > 0 && habits.every((h) => h.days[todayIndex]);
+  const allHabitsCompleted =
+    habits.length > 0 && habits.every((h) => h.days[todayIndex]);
 
-  // Trigger celebration when all habits are completed
+  const getTodayKey = () => new Date().toISOString().split("T")[0];
+  const celebrationStorageKey = `${CELEBRATION_DATE_KEY}-${effectiveUserId}`;
+  const celebrationWeekKey = `${CELEBRATION_WEEK_KEY}-${effectiveUserId}`;
+
+  // Limpa a flag de celebração à meia-noite e na virada de semana
   useEffect(() => {
-    if (allHabitsCompleted && !celebrationTriggeredRef.current && !isLoading) {
-      celebrationTriggeredRef.current = true;
-      setShowCelebration(true);
-    } else if (!allHabitsCompleted) {
+    const todayKey = getTodayKey();
+    const currentWeek = getCurrentWeek();
+    const lastCelebration = localStorage.getItem(celebrationStorageKey);
+    const lastCelebrationWeek = localStorage.getItem(celebrationWeekKey);
+
+    if (lastCelebration && lastCelebration !== todayKey) {
+      localStorage.removeItem(celebrationStorageKey);
       celebrationTriggeredRef.current = false;
     }
-  }, [allHabitsCompleted, isLoading]);
+
+    if (lastCelebrationWeek && lastCelebrationWeek !== currentWeek) {
+      localStorage.removeItem(celebrationStorageKey);
+      celebrationTriggeredRef.current = false;
+    }
+
+    localStorage.setItem(celebrationWeekKey, currentWeek);
+
+    const now = new Date();
+    const nextMidnight = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate() + 1,
+      0,
+      0,
+      0,
+      0,
+    );
+    const msToMidnight = nextMidnight.getTime() - now.getTime();
+
+    const timeoutId = window.setTimeout(() => {
+      localStorage.removeItem(celebrationStorageKey);
+      localStorage.setItem(celebrationWeekKey, getCurrentWeek());
+      celebrationTriggeredRef.current = false;
+    }, msToMidnight);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [celebrationStorageKey, celebrationWeekKey]);
+
+  // Trigger celebration when all habits are completed (apenas 1x por dia)
+  useEffect(() => {
+    if (isLoading || !allHabitsCompleted) {
+      celebrationTriggeredRef.current = false;
+      return;
+    }
+
+    const todayKey = getTodayKey();
+    const lastCelebration = localStorage.getItem(celebrationStorageKey);
+
+    if (lastCelebration === todayKey || celebrationTriggeredRef.current) {
+      return;
+    }
+
+    celebrationTriggeredRef.current = true;
+    localStorage.setItem(celebrationStorageKey, todayKey);
+    setShowCelebration(true);
+  }, [allHabitsCompleted, isLoading, celebrationStorageKey]);
 
   const persistLocalHabits = (nextHabits: Habit[]) => {
     localStorage.setItem(LOCAL_HABITS_KEY, JSON.stringify(nextHabits));
@@ -592,7 +648,11 @@ export function HabitTrackerWidget({ className }: HabitTrackerWidgetProps) {
                         delay: 0.1,
                       }}
                     >
-                      <FireIcon size={14} animated={true} streakDays={habitStreak} />
+                      <FireIcon
+                        size={14}
+                        animated={true}
+                        streakDays={habitStreak}
+                      />
                       <span className="text-[10px] font-medium text-amber-500/90">
                         {habitStreak} day{habitStreak !== 1 ? "s" : ""} streak
                       </span>
