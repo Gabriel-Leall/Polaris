@@ -14,6 +14,8 @@ import {
   Tag as TagIcon,
   ChevronDown,
   Loader2,
+  LayoutList,
+  Kanban,
 } from "lucide-react";
 import { useState, useMemo, useEffect, useCallback } from "react";
 import { cn } from "@/lib/utils";
@@ -24,7 +26,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Calendar } from "@/components/ui/calendar";
-import { TaskItem } from "@/types";
+import { TaskItem, TaskStatus } from "@/types";
 import {
   getTasks,
   createTask,
@@ -32,6 +34,8 @@ import {
   deleteTask as deleteTaskAction,
 } from "@/app/actions/tasks";
 import { useAuth } from "@/hooks/useAuth";
+import { KanbanView } from "@/components/widgets/TasksWidget/components/KanbanView";
+import { TaskModal } from "@/components/widgets/TasksWidget/components/TaskModal";
 
 export default function TasksPage() {
   const { userId, isLoading: authLoading } = useAuth();
@@ -41,13 +45,13 @@ export default function TasksPage() {
 
   const [activeFilter, setActiveFilter] = useState("All Tasks");
   const [newTaskTitle, setNewTaskTitle] = useState("");
-  const [newTaskPriority, setNewTaskPriority] = useState<
-    "high" | "medium" | "low"
-  >("medium");
+  const [newTaskPriority, setNewTaskPriority] = useState<"high" | "medium" | "low">("medium");
   const [newTaskDate, setNewTaskDate] = useState("");
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
   const [newTaskTags, setNewTaskTags] = useState<string[]>([]);
   const [tagInput, setTagInput] = useState("");
+  const [viewMode, setViewMode] = useState<"list" | "kanban">("list");
+  const [selectedTask, setSelectedTask] = useState<TaskItem | null>(null);
 
   const toDateKey = (date: string) => {
     const parsed = new Date(date);
@@ -149,6 +153,23 @@ export default function TasksPage() {
     }
   };
 
+  const handleStatusChange = async (taskId: string, newStatus: TaskStatus) => {
+    // Optimistic update
+    const completed = newStatus === "done";
+    setTasks((prev) =>
+      prev.map((t) =>
+        t.id === taskId ? { ...t, status: newStatus, completed } : t
+      )
+    );
+
+    try {
+      await updateTask(taskId, { status: newStatus, completed });
+    } catch {
+      // Revert on error
+      loadTasks();
+    }
+  };
+
   const addTag = () => {
     if (tagInput.trim() && !newTaskTags.includes(tagInput.trim())) {
       setNewTaskTags([...newTaskTags, tagInput.trim()]);
@@ -196,7 +217,7 @@ export default function TasksPage() {
             <p className="text-sm text-muted-foreground mt-1">{error}</p>
             <button
               onClick={loadTasks}
-              className="mt-4 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+              className="mt-4 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
             >
               Try Again
             </button>
@@ -335,7 +356,7 @@ export default function TasksPage() {
 
                 <button
                   onClick={handleAddTask}
-                  className="h-14 px-8 bg-primary hover:bg-primary-glow text-white font-bold rounded-2xl shadow-glow-sm transition-all hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-2 shrink-0"
+                  className="h-14 px-8 bg-primary hover:bg-primary-glow text-primary-foreground font-bold rounded-2xl shadow-glow-sm transition-all hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-2 shrink-0"
                 >
                   <Plus className="w-5 h-5" />
                   Add Task
@@ -376,7 +397,7 @@ export default function TasksPage() {
                 {tagInput && (
                   <button
                     onClick={addTag}
-                    className="p-1 hover:bg-white/10 rounded-md transition-colors text-primary"
+                    className="p-1 hover:bg-foreground/10 rounded-md transition-colors text-primary"
                   >
                     <Plus className="w-3.5 h-3.5" />
                   </button>
@@ -387,30 +408,71 @@ export default function TasksPage() {
 
           {/* Filters and Content */}
           <div className="flex flex-col gap-6">
-            {/* Filter Chips */}
-            <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-hide">
-              {filters.map((filter) => (
+            {/* View Mode Toggle & Filter Chips */}
+            <div className="flex items-center gap-4 overflow-x-auto pb-2 scrollbar-hide">
+              {/* View Mode Toggle */}
+              <div className="flex items-center bg-muted/30 border border-border rounded-xl p-1 shrink-0">
                 <button
-                  key={filter}
-                  onClick={() => setActiveFilter(filter)}
+                  onClick={() => setViewMode("list")}
                   className={cn(
-                    "px-4 py-2 text-sm font-medium rounded-full transition-all hover:scale-105 whitespace-nowrap",
-                    activeFilter === filter
-                      ? "bg-primary text-white shadow-glow-sm"
-                      : "bg-white/5 border border-white/5 text-muted-foreground hover:text-white hover:border-white/10",
+                    "p-2 rounded-lg transition-all",
+                    viewMode === "list"
+                      ? "bg-primary text-primary-foreground shadow-sm"
+                      : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
                   )}
+                  title="List View"
                 >
-                  {filter}
+                  <LayoutList className="w-4 h-4" />
                 </button>
-              ))}
-              <button className="ml-auto px-4 py-2 text-muted-foreground hover:text-white text-sm font-medium flex items-center gap-1 transition-colors">
-                <ArrowUpDown className="w-4 h-4" />
-                Sort
-              </button>
+                <button
+                  onClick={() => setViewMode("kanban")}
+                  className={cn(
+                    "p-2 rounded-lg transition-all",
+                    viewMode === "kanban"
+                      ? "bg-primary text-primary-foreground shadow-sm"
+                      : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                  )}
+                  title="Kanban View"
+                >
+                  <Kanban className="w-4 h-4" />
+                </button>
+              </div>
+              
+              {/* Filter Chips */}
+              <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide">
+                {filters.map((filter) => (
+                  <button
+                    key={filter}
+                    onClick={() => setActiveFilter(filter)}
+                    className={cn(
+                      "px-4 py-2 text-sm font-medium rounded-full transition-all hover:scale-105 whitespace-nowrap",
+                      activeFilter === filter
+                        ? "bg-primary text-primary-foreground shadow-glow-sm"
+                        : "bg-muted/20 border border-border text-muted-foreground hover:text-foreground hover:border-border/60",
+                    )}
+                  >
+                    {filter}
+                  </button>
+                ))}
+                <button className="ml-auto px-4 py-2 text-muted-foreground hover:text-foreground text-sm font-medium flex items-center gap-1 transition-colors">
+                  <ArrowUpDown className="w-4 h-4" />
+                  Sort
+                </button>
+              </div>
             </div>
 
-            {/* Task List */}
-            <div className="flex flex-col gap-3">
+            {/* Task List or Kanban View */}
+            {viewMode === "kanban" ? (
+              <div className="h-[600px] bg-card/30 border border-border backdrop-blur-sm rounded-3xl p-6">
+                <KanbanView
+                  tasks={filteredTasks}
+                  onTaskClick={(task) => setSelectedTask(task)}
+                  onToggleTask={toggleTask}
+                  onStatusChange={handleStatusChange}
+                />
+              </div>
+            ) : (
+              <div className="flex flex-col gap-3">
               {/* Active Tasks */}
               {activeTasks.map((task) => (
                 <div
@@ -497,7 +559,7 @@ export default function TasksPage() {
 
               {/* Empty State */}
               {activeTasks.length === 0 && (
-                <div className="py-20 text-center bg-card/20 border border-dashed border-white/5 rounded-3xl">
+                <div className="py-20 text-center bg-card/20 border border-dashed border-border/30 rounded-3xl">
                   <p className="text-muted-foreground">
                     No tasks found. Time to relax or add some!
                   </p>
@@ -506,11 +568,11 @@ export default function TasksPage() {
 
               {/* Completed Section Header */}
               <div className="flex items-center gap-4 py-6 mt-4">
-                <div className="h-[1px] flex-1 bg-white/5"></div>
+                <div className="h-[1px] flex-1 bg-border"></div>
                 <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em]">
                   Completed
                 </span>
-                <div className="h-[1px] flex-1 bg-white/5"></div>
+                <div className="h-[1px] flex-1 bg-border"></div>
               </div>
 
               {/* Completed Tasks */}
@@ -524,7 +586,7 @@ export default function TasksPage() {
                       onClick={() => toggleTask(task.id)}
                       className="mt-1 w-6 h-6 rounded-lg bg-primary border-2 border-primary flex items-center justify-center transition-colors shadow-glow-sm"
                     >
-                      <Check className="w-4 h-4 text-white font-bold" />
+                      <Check className="w-4 h-4 text-primary-foreground font-bold" />
                     </button>
                     <div className="flex flex-col gap-1">
                       <span className="text-base font-medium text-muted-foreground line-through decoration-muted">
@@ -539,7 +601,7 @@ export default function TasksPage() {
                   <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity justify-end sm:justify-start">
                     <button
                       onClick={() => deleteTask(task.id)}
-                      className="p-2 text-white/30 hover:text-destructive hover:bg-destructive/10 rounded-xl transition-colors"
+                      className="p-2 text-muted-foreground/30 hover:text-destructive hover:bg-destructive/10 rounded-xl transition-colors"
                       title="Delete"
                     >
                       <Trash2 className="w-5 h-5" />
@@ -548,6 +610,21 @@ export default function TasksPage() {
                 </div>
               ))}
             </div>
+            )}
+
+            {/* Task Modal */}
+            <TaskModal
+              task={selectedTask}
+              isOpen={!!selectedTask}
+              onClose={() => setSelectedTask(null)}
+              onToggle={toggleTask}
+              onDelete={deleteTask}
+              onUpdate={(taskId, updates) => {
+                setTasks((prev) =>
+                  prev.map((t) => (t.id === taskId ? { ...t, ...updates } : t))
+                );
+              }}
+            />
           </div>
         </div>
 

@@ -7,6 +7,7 @@ export interface TaskItemProps {
   onToggle: (taskId: string, completed: boolean) => void;
   onDelete: (taskId: string) => void;
   onStartEdit: (task: import("@/types").TaskItem) => void;
+  onTaskClick?: (task: import("@/types").TaskItem) => void;
   editingTaskId: string | null;
   editValue: string;
   setEditValue: (value: string) => void;

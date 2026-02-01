@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { Plus, X, RotateCcw } from "lucide-react";
 import { motion } from "motion/react";
 import { Habit } from "@/types";
@@ -15,7 +15,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
-import { FireIcon } from "@/components/ui/FireIcon";
+import { FireIcon } from "@/components/ui/FireIconEvolved";
+import { CelebrationAnimation } from "./components/CelebrationAnimation";
 
 const LOCAL_HABITS_KEY = "polaris-local-habits";
 const LAST_WEEK_KEY = "polaris-habits-last-week";
@@ -112,10 +113,25 @@ export function HabitTrackerWidget({ className }: HabitTrackerWidgetProps) {
   const [showAddForm, setShowAddForm] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isLocalMode, setIsLocalMode] = useState(false);
+  const [showCelebration, setShowCelebration] = useState(false);
+  const celebrationTriggeredRef = useRef(false);
 
   // Get today's day index (0 = Sunday)
   const todayIndex = new Date().getDay();
   const effectiveUserId = userId || "local-user";
+
+  // Check if all habits are completed today
+  const allHabitsCompleted = habits.length > 0 && habits.every((h) => h.days[todayIndex]);
+
+  // Trigger celebration when all habits are completed
+  useEffect(() => {
+    if (allHabitsCompleted && !celebrationTriggeredRef.current && !isLoading) {
+      celebrationTriggeredRef.current = true;
+      setShowCelebration(true);
+    } else if (!allHabitsCompleted) {
+      celebrationTriggeredRef.current = false;
+    }
+  }, [allHabitsCompleted, isLoading]);
 
   const persistLocalHabits = (nextHabits: Habit[]) => {
     localStorage.setItem(LOCAL_HABITS_KEY, JSON.stringify(nextHabits));
@@ -576,7 +592,7 @@ export function HabitTrackerWidget({ className }: HabitTrackerWidgetProps) {
                         delay: 0.1,
                       }}
                     >
-                      <FireIcon size={14} animated={true} />
+                      <FireIcon size={14} animated={true} streakDays={habitStreak} />
                       <span className="text-[10px] font-medium text-amber-500/90">
                         {habitStreak} day{habitStreak !== 1 ? "s" : ""} streak
                       </span>
@@ -683,6 +699,13 @@ export function HabitTrackerWidget({ className }: HabitTrackerWidgetProps) {
           </div>
         </div>
       )}
+
+      {/* Celebration Animation */}
+      <CelebrationAnimation
+        isActive={showCelebration}
+        onComplete={() => setShowCelebration(false)}
+        duration={3000}
+      />
     </div>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import { LayoutList } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTasks } from "./hooks/useTasks";
 import { useTaskEdit } from "./hooks/useTaskEdit";
@@ -8,7 +9,10 @@ import { TaskForm } from "./components/TaskForm";
 import { TaskItem } from "./components/TaskItem";
 import { TaskStats } from "./components/TaskStats";
 import { EmptyState } from "./components/EmptyState";
+import { TaskModal } from "./components/TaskModal";
 import { TasksWidgetProps } from "./types";
+import { TaskItem as TaskItemType } from "@/types";
+import { Button } from "@/components/ui/button";
 
 export function TasksWidget({ className }: TasksWidgetProps) {
   const {
@@ -23,6 +27,7 @@ export function TasksWidget({ className }: TasksWidgetProps) {
 
   const [newTaskLabel, setNewTaskLabel] = useState("");
   const [isCreating, setIsCreating] = useState(false);
+  const [selectedTask, setSelectedTask] = useState<TaskItemType | null>(null);
 
   const {
     editingTaskId,
@@ -32,6 +37,17 @@ export function TasksWidget({ className }: TasksWidgetProps) {
     handleCancelEdit,
     handleSaveEdit,
   } = useTaskEdit(handleUpdateTask);
+
+  // Handle opening task modal
+  const handleTaskClick = useCallback((task: TaskItemType) => {
+    setSelectedTask(task);
+  }, []);
+
+  // Handle closing task modal
+  const handleCloseModal = useCallback(() => {
+    setSelectedTask(null);
+  }, []);
+
 
   const onCreateTask = useCallback(async () => {
     if (!newTaskLabel.trim() || isCreating) return;
@@ -48,7 +64,7 @@ export function TasksWidget({ className }: TasksWidgetProps) {
   return (
     <div className={cn("flex flex-col h-full", className)}>
       {/* Header */}
-      <div className="flex items-center justify-between pl-4 pt-2 mb-6">
+      <div className="flex items-center justify-between pl-4 pr-2 pt-2 mb-6">
         <div className="flex items-center gap-2">
           <div className="w-1 h-1 rounded-full bg-muted/80" />
           <h2
@@ -58,9 +74,23 @@ export function TasksWidget({ className }: TasksWidgetProps) {
             Task Control
           </h2>
         </div>
-        <span className="text-xs text-muted-foreground">
-          {tasks.filter((t) => !t.completed).length} active
-        </span>
+        <div className="flex items-center gap-2">
+          <div className="flex items-center bg-muted/30 rounded-lg p-0.5">
+            <Button
+              variant="ghost"
+              size="sm"
+              className={cn(
+                "h-6 w-6 p-0 rounded-md transition-all",
+                "bg-background shadow-sm text-foreground"
+              )}
+            >
+              <LayoutList className="h-3.5 w-3.5" />
+            </Button>
+          </div>
+          <span className="text-xs text-muted-foreground">
+            {tasks.filter((t) => !t.completed).length} active
+          </span>
+        </div>
       </div>
 
       {/* Error Display */}
@@ -94,6 +124,7 @@ export function TasksWidget({ className }: TasksWidgetProps) {
               onToggle={handleToggleTask}
               onDelete={handleDeleteTask}
               onStartEdit={handleStartEdit}
+              onTaskClick={handleTaskClick}
               editingTaskId={editingTaskId}
               editValue={editValue}
               setEditValue={setEditValue}
@@ -106,6 +137,16 @@ export function TasksWidget({ className }: TasksWidgetProps) {
 
       {/* Footer Stats */}
       <TaskStats tasks={tasks} />
+
+      {/* Task Modal */}
+      <TaskModal
+        task={selectedTask}
+        isOpen={!!selectedTask}
+        onClose={handleCloseModal}
+        onToggle={handleToggleTask}
+        onDelete={handleDeleteTask}
+        onUpdate={handleUpdateTask}
+      />
     </div>
   );
 }

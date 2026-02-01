@@ -1,6 +1,7 @@
 "use client";
 
 import { Pencil, Check, X } from "lucide-react";
+import { motion } from "motion/react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -12,6 +13,7 @@ export const TaskItem = ({
   onToggle,
   onDelete,
   onStartEdit,
+  onTaskClick,
   editingTaskId,
   editValue,
   setEditValue,
@@ -20,16 +22,29 @@ export const TaskItem = ({
 }: TaskItemProps) => {
   const isEditing = editingTaskId === task.id;
 
+  const handleCardClick = () => {
+    if (!isEditing && onTaskClick) {
+      onTaskClick(task);
+    }
+  };
+
   return (
-    <div
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -10 }}
+      whileHover={{ y: -1 }}
+      whileTap={{ scale: 0.99 }}
       className={cn(
-        "flex items-center gap-2.5 p-2.5 rounded-lg border border-border/50 hover:border-border hover:bg-accent/5 transition-all group",
+        "flex items-center gap-2.5 p-2.5 rounded-lg border border-border/50 hover:border-border hover:bg-accent/5 transition-all group cursor-pointer",
         task.completed && "opacity-50",
       )}
+      onClick={handleCardClick}
     >
       <Checkbox
         checked={task.completed}
         onCheckedChange={(checked) => onToggle(task.id, checked as boolean)}
+        onClick={(e) => e.stopPropagation()}
         className="shrink-0"
       />
 
@@ -82,7 +97,10 @@ export const TaskItem = ({
 
       {!isEditing && (
         <Button
-          onClick={() => onStartEdit(task)}
+          onClick={(e) => {
+            e.stopPropagation();
+            onStartEdit(task);
+          }}
           variant="secondary"
           size="sm"
           className="opacity-0 group-hover:opacity-100 transition-opacity p-1 h-6 w-6"
@@ -92,13 +110,16 @@ export const TaskItem = ({
       )}
 
       <Button
-        onClick={() => onDelete(task.id)}
+        onClick={(e) => {
+          e.stopPropagation();
+          onDelete(task.id);
+        }}
         variant="secondary"
         size="sm"
         className="opacity-0 group-hover:opacity-100 transition-opacity p-1 h-6 w-6 hover:text-destructive"
       >
         <X className="w-3 h-3" />
       </Button>
-    </div>
+    </motion.div>
   );
 };

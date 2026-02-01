@@ -1,5 +1,8 @@
 export type AppStatus = "Interview" | "Applied" | "Rejected" | "Offer";
 
+// Task status for Kanban view
+export type TaskStatus = "todo" | "in-progress" | "done";
+
 export interface EmailItem {
   id: string;
   companyName: string;
@@ -17,6 +20,7 @@ export interface TaskItem {
   priority: "low" | "medium" | "high";
   tags: string[];
   dueDate?: string;
+  status?: TaskStatus; // For Kanban view
   createdAt: Date;
   updatedAt: Date;
   userId: string;

@@ -25,6 +25,7 @@ export const updateTaskSchema = z.object({
   priority: z.enum(["low", "medium", "high"]).optional(),
   tags: z.array(z.string()).optional(),
   dueDate: z.string().optional(),
+  status: z.enum(["todo", "in-progress", "done"]).optional(),
 });
 
 export const createUserPreferencesSchema = z.object({
