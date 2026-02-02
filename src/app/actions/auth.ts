@@ -14,7 +14,8 @@ const signUpSchema = authSchema.extend({
 });
 
 const getSiteUrl = () => {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_VERCEL_URL;
+  const siteUrl =
+    process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_VERCEL_URL;
 
   if (siteUrl) {
     return siteUrl.replace(/\/$/, "");
