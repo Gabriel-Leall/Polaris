@@ -15,14 +15,14 @@ interface BentoGridProps {
  * BentoGrid layout component - Server Component
  * Implements responsive 3-column layout with Tailwind responsive classes
  * Mobile: Stack, Tablet: 2 columns, Desktop: 12-column grid
- * 
+ *
  * Column distribution:
  * - Left: 3 columns (Tasks + Quick Links)
  * - Center: 5 columns (Brain Dump + Zen Timer)
  * - Right: 4 columns (Calendar + Habits + Media Player)
  */
-function BentoGrid({ 
-  children, 
+function BentoGrid({
+  children,
   className,
   id,
   role,
@@ -34,11 +34,11 @@ function BentoGrid({
       role={role}
       aria-label={ariaLabel}
       className={cn(
-        "flex-1 grid gap-4 h-full",
+        "flex-1 w-full grid gap-4 h-full",
         "grid-cols-1",
         "md:grid-cols-2",
         "lg:grid-cols-12",
-        className
+        className,
       )}
     >
       {children}
