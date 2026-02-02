@@ -13,6 +13,20 @@ const signUpSchema = authSchema.extend({
   fullName: z.string().min(2, "Name must be at least 2 characters").optional(),
 });
 
+const getSiteUrl = () => {
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_VERCEL_URL;
+
+  if (siteUrl) {
+    return siteUrl.replace(/\/$/, "");
+  }
+
+  if (process.env.VERCEL_URL) {
+    return `https://${process.env.VERCEL_URL}`;
+  }
+
+  return "http://localhost:3000";
+};
+
 export type AuthResult = {
   success: boolean;
   error?: string;
@@ -141,7 +155,7 @@ export async function signInWithProvider(provider: "google" | "github") {
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider,
     options: {
-      redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"}/auth/callback`,
+      redirectTo: `${getSiteUrl()}/auth/callback`,
     },
   });
 
