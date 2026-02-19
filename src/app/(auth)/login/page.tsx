@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
 import { LoginForm } from "@/components/auth/LoginForm";
-import { getServerUser } from "@/lib/supabase-server";
-import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
   title: "Axis - Focus Dashboard",
@@ -16,14 +14,8 @@ interface LoginPageProps {
   };
 }
 
-export default async function LoginPage({ searchParams }: LoginPageProps) {
-  const user = await getServerUser();
-
-  if (user) {
-    redirect("/dashboard");
-  }
-
-  const redirectTo = searchParams?.redirectTo ?? "/";
+export default function LoginPage({ searchParams }: LoginPageProps) {
+  const redirectTo = searchParams?.redirectTo ?? "/dashboard";
 
   return <LoginForm redirectTo={redirectTo} />;
 }

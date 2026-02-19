@@ -1,4 +1,4 @@
-import { Sidebar, SidebarNav, DashboardLayout } from "@/components/layout";
+import { ActivityBar, DynamicSidebar, DashboardLayout } from "@/components/layout";
 import { PageTransition } from "@/components/layout/PageTransition";
 import { getServerUser } from "@/lib/supabase-server";
 import { redirect } from "next/navigation";
@@ -16,9 +16,8 @@ export default async function DashboardRootLayout({
 
   return (
     <DashboardLayout>
-      <Sidebar>
-        <SidebarNav />
-      </Sidebar>
+      <ActivityBar />
+      <DynamicSidebar />
       <PageTransition>{children}</PageTransition>
     </DashboardLayout>
   );

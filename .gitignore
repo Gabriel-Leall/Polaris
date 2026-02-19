@@ -53,7 +53,8 @@ Thumbs.db
 # Bun
 .bun
 
-
+.kilocode
+.kilocodemodes
 .kiro
 .agent
 .agents

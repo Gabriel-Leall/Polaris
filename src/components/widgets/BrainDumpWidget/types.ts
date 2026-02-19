@@ -50,11 +50,7 @@ export interface BrainDumpHeaderProps {
   isSaving: boolean;
   lastSaved: Date | null;
   saveError: boolean;
-  onSync: () => void;
-  isSyncing: boolean;
-  isReady: boolean;
   onExpand?: () => void;
   onMinimize?: () => void;
   isExpanded?: boolean;
-  onSettingsClick?: () => void;
 }

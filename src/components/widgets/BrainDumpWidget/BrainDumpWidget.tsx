@@ -1,63 +1,34 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { EditorContent } from "@tiptap/react";
 import {
   Loader2,
   AlertCircle,
   Maximize2,
-  Settings,
-  ChevronRight,
+  BookmarkPlus,
 } from "lucide-react";
 import { ErrorBoundary, Button } from "@/components/ui";
 import { cn } from "@/lib/utils";
 import {
   Dialog,
   DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
 } from "@/components/ui/dialog";
 import { useBrainDumpEditor } from "./hooks/useBrainDumpEditor";
 import { useBrainDumpSync } from "./hooks/useBrainDumpSync";
 import { EditorToolbar } from "./components/EditorToolbar";
-import { SyncButton } from "./components/SyncButton";
-import { TagReview } from "./components/TagReview";
 import { BrainDumpHeader } from "./components/BrainDumpHeader";
 import { BrainDumpWidgetProps } from "./types";
-import {
-  syncBrainDumpToNotion,
-  generateBrainDumpTags,
-  getRecentNotionTags,
-} from "@/app/actions/notion";
 import { useToast } from "@/hooks/use-toast";
-import { useAuth } from "@/hooks/useAuth";
+import { useNotesStore } from "@/store/notesStore";
 
 const BrainDumpWidgetContent = ({ className }: BrainDumpWidgetProps) => {
   const [editorHtml, setEditorHtml] = useState<string>("");
   const [noteTitle, setNoteTitle] = useState<string>("");
-  const [isSyncing, setIsSyncing] = useState(false);
+  const [isSavingToNotes, setIsSavingToNotes] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
-  const [showTagReview, setShowTagReview] = useState(false);
-  const [showApiSettings, setShowApiSettings] = useState(false);
-  const [geminiApiKey, setGeminiApiKey] = useState<string>("");
-  const [suggestedTags, setSuggestedTags] = useState<string[]>([]);
-  const [allAvailableTags, setAllAvailableTags] = useState<string[]>([]);
-  const [newTag, setNewTag] = useState("");
   const { toast } = useToast();
-  const { userId } = useAuth();
-
-  useEffect(() => {
-    const savedKey = localStorage.getItem("polaris_gemini_api_key");
-    if (savedKey) setGeminiApiKey(savedKey);
-
-    if (userId) {
-      // Busca tags iniciais
-      getRecentNotionTags(userId).then((res) => {
-        if (res.success) setAllAvailableTags(res.tags);
-      });
-    }
-  }, [userId]);
+  const { createFile, updateFileContent } = useNotesStore();
 
   const handleEditorUpdate = (html: string, text: string) => {
     setEditorHtml(html);
@@ -68,101 +39,35 @@ const BrainDumpWidgetContent = ({ className }: BrainDumpWidgetProps) => {
   const { isLoading, isSaving, lastSaved, saveError, handleContentUpdate } =
     useBrainDumpSync(editor, editorHtml);
 
-  const isReadyToSync = !!(noteTitle.trim() && editor && !editor.isEmpty);
+  const isReadyToSave = !!(noteTitle.trim() && editor && !editor.isEmpty);
 
-  const startSyncProcess = async () => {
-    if (!editorHtml || isSyncing) return;
-
-    setIsSyncing(true);
-
-    // Se tiver chave de API, tenta gerar tags
-    if (geminiApiKey) {
-      try {
-        const result = await generateBrainDumpTags(editorHtml, geminiApiKey);
-        if (result.success) {
-          setSuggestedTags(result.tags);
-        } else {
-          toast({
-            title: "Dica",
-            description:
-              "Não foi possível gerar tags automática, você pode adicionar manualmente.",
-          });
-          setSuggestedTags([]);
-        }
-      } catch (error) {
-        setSuggestedTags([]);
-      }
-    } else {
-      // Sem chave de API, pula para manual
-      setSuggestedTags([]);
-    }
-
-    setShowTagReview(true);
-    setIsSyncing(false);
-  };
-
-  const handleFinalSync = async () => {
-    setIsSyncing(true);
+  const saveToNotes = async () => {
+    if (!isReadyToSave || isSavingToNotes) return;
+    setIsSavingToNotes(true);
     try {
-      if (!userId) {
-        toast({
-          title: "Erro",
-          description: "Você precisa estar logado para sincronizar.",
-          variant: "destructive",
-        });
-        return;
+      createFile(noteTitle.trim());
+      const latestFiles = useNotesStore.getState().files;
+      const newFile = latestFiles[latestFiles.length - 1];
+      if (newFile) {
+        updateFileContent(newFile.id, editorHtml);
       }
-
-      const result = await syncBrainDumpToNotion(
-        userId,
-        editorHtml,
-        noteTitle || "Brain Dump Polaris",
-        suggestedTags,
-      );
-      if (result.success) {
-        toast({
-          title: "Sincronizado!",
-          description: "Sua nota foi enviada para o Notion com sucesso.",
-          variant: "success",
-        });
-
-        editor?.commands.clearContent();
-        setEditorHtml("");
-        setNoteTitle("");
-        setShowTagReview(false);
-        setSuggestedTags([]);
-      } else {
-        toast({
-          title: "Erro na sincronização",
-          description:
-            result.error || "Ocorreu um erro ao enviar para o Notion.",
-          variant: "destructive",
-        });
-      }
+      toast({
+        title: "Salvo nas Notes!",
+        description: `"${noteTitle}" foi adicionado às suas notas.`,
+        variant: "success",
+      });
+      editor?.commands.clearContent();
+      setEditorHtml("");
+      setNoteTitle("");
     } catch (error) {
       toast({
-        title: "Erro inesperado",
-        description: "Não foi possível conectar ao Notion.",
+        title: "Erro ao salvar",
+        description: "Não foi possível salvar a nota.",
         variant: "destructive",
       });
     } finally {
-      setIsSyncing(false);
+      setIsSavingToNotes(false);
     }
-  };
-
-  const addTag = (tagToAdd?: string) => {
-    const tag = tagToAdd || newTag;
-    if (tag && !suggestedTags.includes(tag)) {
-      setSuggestedTags([...suggestedTags, tag]);
-      setNewTag("");
-      if (!allAvailableTags.includes(tag)) {
-        setAllAvailableTags([...allAvailableTags, tag]);
-      }
-    }
-  };
-
-  const removeTag = (tagToRemove: string) => {
-    setSuggestedTags(suggestedTags.filter((t) => t !== tagToRemove));
   };
 
   if (isLoading) {
@@ -194,25 +99,7 @@ const BrainDumpWidgetContent = ({ className }: BrainDumpWidgetProps) => {
           isSaving={isSaving}
           lastSaved={lastSaved}
           saveError={!!saveError}
-          onSync={startSyncProcess}
-          isSyncing={isSyncing}
-          isReady={isReadyToSync}
-          onSettingsClick={() => setShowApiSettings(true)}
         />
-
-        {showTagReview && (
-          <TagReview
-            suggestedTags={suggestedTags}
-            allAvailableTags={allAvailableTags}
-            newTag={newTag}
-            setNewTag={setNewTag}
-            addTag={addTag}
-            removeTag={removeTag}
-            onCancel={() => setShowTagReview(false)}
-            onConfirm={handleFinalSync}
-            isSyncing={isSyncing}
-          />
-        )}
 
         <div className="px-6">
           <EditorToolbar editor={editor} />
@@ -232,13 +119,25 @@ const BrainDumpWidgetContent = ({ className }: BrainDumpWidgetProps) => {
         </div>
 
         <div className="px-6 py-4 border-t border-border/50">
-          <SyncButton
-            onClick={startSyncProcess}
-            isSyncing={isSyncing}
-            disabled={isSyncing || !isReadyToSync}
-            isReady={isReadyToSync}
-            className="w-full"
-          />
+          <Button
+            onClick={saveToNotes}
+            disabled={isSavingToNotes || !isReadyToSave}
+            className={cn(
+              "w-full transition-all duration-200 gap-2",
+              isReadyToSave
+                ? "bg-primary text-foreground hover:bg-primary/90"
+                : "bg-glass text-muted/20 hover:bg-muted hover:text-muted/40",
+            )}
+          >
+            {isSavingToNotes ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <>
+                <BookmarkPlus className="h-4 w-4" />
+                <span className="text-sm font-medium">Salvar nas Notes</span>
+              </>
+            )}
+          </Button>
         </div>
       </div>
 
@@ -250,9 +149,6 @@ const BrainDumpWidgetContent = ({ className }: BrainDumpWidgetProps) => {
             isSaving={isSaving}
             lastSaved={lastSaved}
             saveError={!!saveError}
-            onSync={startSyncProcess}
-            isSyncing={isSyncing}
-            isReady={isReadyToSync}
             onMinimize={() => setIsExpanded(false)}
             isExpanded={true}
           />
@@ -266,49 +162,6 @@ const BrainDumpWidgetContent = ({ className }: BrainDumpWidgetProps) => {
                 <EditorContent editor={editor} className="h-full" />
               )}
             </div>
-          </div>
-
-          {showTagReview && (
-            <TagReview
-              suggestedTags={suggestedTags}
-              allAvailableTags={allAvailableTags}
-              newTag={newTag}
-              setNewTag={setNewTag}
-              addTag={addTag}
-              removeTag={removeTag}
-              onCancel={() => setShowTagReview(false)}
-              onConfirm={handleFinalSync}
-              isSyncing={isSyncing}
-              isExpanded={true}
-            />
-          )}
-        </DialogContent>
-      </Dialog>
-
-      <Dialog open={showApiSettings} onOpenChange={setShowApiSettings}>
-        <DialogContent className="max-w-md bg-card border-border text-foreground shadow-2xl">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2 text-xl">
-              <Settings className="h-5 w-5 text-primary" />
-              Configurações
-            </DialogTitle>
-            <DialogDescription className="text-muted-foreground">
-              Para gerenciar sua chave do Gemini, conexão com Notion e banco de
-              dados, acesse a página central de configurações.
-            </DialogDescription>
-          </DialogHeader>
-
-          <div className="py-4">
-            <Button
-              className="w-full h-12 bg-primary hover:bg-primary/90 text-foreground gap-2"
-              onClick={() => {
-                setShowApiSettings(false);
-                window.location.href = "/settings";
-              }}
-            >
-              Ir para Configurações Gerais
-              <ChevronRight className="w-4 h-4" />
-            </Button>
           </div>
         </DialogContent>
       </Dialog>

@@ -238,73 +238,42 @@ export default function SettingsPage() {
             </div>
           </section>
 
-          {/* Notion Integration Section */}
-          <section className="space-y-8">
-            <div className="flex items-center gap-3 border-b border-border pb-4">
-              <div className="p-1.5 bg-primary/10 rounded-lg">
-                <Database className="w-4 h-4 text-primary" />
+          {/* Notion Integration Section - Coming Soon */}
+          <section className="space-y-8 relative">
+            {/* Overlay de desabilitado */}
+            <div className="absolute inset-0 z-10 rounded-2xl bg-background/60 backdrop-blur-[2px] flex items-center justify-center pointer-events-auto cursor-not-allowed">
+              <div className="flex items-center gap-2 px-4 py-2 bg-muted/30 border border-border rounded-full">
+                <div className="w-2 h-2 rounded-full bg-muted-foreground animate-pulse" />
+                <span className="text-xs font-bold text-muted-foreground uppercase tracking-widest">
+                  Em breve
+                </span>
               </div>
-              <h2 className="text-xs font-black tracking-[0.25em] text-foreground uppercase">
-                INTEGRAÇÃO NOTION
-              </h2>
             </div>
 
-            <div className="space-y-6">
-              <div className="flex items-center gap-4">
-                {notionToken ? (
-                  <div className="flex items-center gap-3 px-4 py-2 bg-success/10 border border-success/20 rounded-full">
-                    <div className="w-2 h-2 bg-success rounded-full animate-pulse" />
-                    <span className="text-sm font-bold text-success uppercase tracking-wider">
-                      Conectado ao Notion
-                    </span>
-                  </div>
-                ) : (
-                  <div className="flex items-center gap-3 px-4 py-2 bg-muted/5 border border-white/5 rounded-full">
-                    <div className="w-2 h-2 bg-muted-foreground rounded-full" />
-                    <span className="text-sm font-bold text-muted-foreground uppercase tracking-wider">
-                      Pendente de Conexão
-                    </span>
-                  </div>
-                )}
+            <div className="opacity-40 pointer-events-none select-none">
+              <div className="flex items-center gap-3 border-b border-border pb-4">
+                <div className="p-1.5 bg-primary/10 rounded-lg">
+                  <Database className="w-4 h-4 text-primary" />
+                </div>
+                <h2 className="text-xs font-black tracking-[0.25em] text-foreground uppercase">
+                  INTEGRAÇÃO NOTION
+                </h2>
               </div>
 
-              {!notionToken ? (
-                <Button
-                  onClick={handleConnectNotion}
-                  disabled={isConnectingNotion}
-                  className="w-full md:w-auto min-w-[240px] h-14 bg-white text-black hover:bg-gray-200 font-black rounded-xl shadow-lg transition-all"
-                >
-                  {isConnectingNotion ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                  ) : (
-                    "CONECTAR AO NOTION"
-                  )}
-                </Button>
-              ) : (
-                <div className="flex flex-col gap-4 max-w-xl">
-                  <div className="relative w-full">
-                    <select
-                      value={notionDbId}
-                      onChange={(e) => setNotionDbId(e.target.value)}
-                      className="w-full bg-card border border-border rounded-xl px-5 h-14 text-sm appearance-none cursor-pointer focus:ring-2 focus:ring-primary/40 focus:outline-none transition-all hover:border-primary/30"
-                    >
-                      <option value="" className="bg-main">
-                        Escolha o Banco de Dados...
-                      </option>
-                      {availableDatabases.map((db) => (
-                        <option key={db.id} value={db.id} className="bg-main">
-                          {db.title}
-                        </option>
-                      ))}
-                    </select>
-                    <ChevronRight className="absolute right-5 top-1/2 -translate-y-1/2 w-4 h-4 rotate-90 text-muted-foreground pointer-events-none" />
-                  </div>
-                  <p className="text-xs text-muted-foreground italic ml-1">
-                    Suas notas do Brain Dump serão sincronizadas automaticamente
-                    com esta database.
-                  </p>
+              <div className="space-y-6 mt-8">
+                <div className="flex items-center gap-3 px-4 py-2 bg-muted/5 border border-white/5 rounded-full w-fit">
+                  <div className="w-2 h-2 bg-muted-foreground rounded-full" />
+                  <span className="text-sm font-bold text-muted-foreground uppercase tracking-wider">
+                    Pendente de Conexão
+                  </span>
                 </div>
-              )}
+                <Button
+                  disabled
+                  className="w-full md:w-auto min-w-[240px] h-14 bg-white text-black font-black rounded-xl shadow-lg"
+                >
+                  CONECTAR AO NOTION
+                </Button>
+              </div>
             </div>
           </section>
 

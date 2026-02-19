@@ -1,17 +1,23 @@
-import { create } from 'zustand'
+import { create } from "zustand";
 
 interface UIStore {
-  isSidebarCollapsed: boolean
-  toggleSidebar: () => void
-  activeModal: string | null
-  setActiveModal: (modal: string | null) => void
+  // Modal state
+  activeModal: string | null;
+  setActiveModal: (modal: string | null) => void;
+
+  // Dynamic Sidebar - toggle simples
+  isDynamicSidebarOpen: boolean;
+  toggleDynamicSidebar: () => void;
 }
 
 export const useUIStore = create<UIStore>()((set) => ({
-  isSidebarCollapsed: false,
-  toggleSidebar: () => set((state) => ({ 
-    isSidebarCollapsed: !state.isSidebarCollapsed 
-  })),
   activeModal: null,
   setActiveModal: (modal: string | null) => set({ activeModal: modal }),
-}))
+
+  // Dynamic Sidebar aberta por padrão
+  isDynamicSidebarOpen: true,
+  toggleDynamicSidebar: () =>
+    set((state) => ({
+      isDynamicSidebarOpen: !state.isDynamicSidebarOpen,
+    })),
+}));

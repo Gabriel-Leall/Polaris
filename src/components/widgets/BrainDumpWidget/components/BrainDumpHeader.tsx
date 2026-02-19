@@ -1,10 +1,9 @@
 "use client";
 
-import { Minimize2, Settings2 } from "lucide-react";
+import { Minimize2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { SaveIndicator } from "./SaveIndicator";
-import { SyncButton } from "./SyncButton";
 import { BrainDumpHeaderProps } from "../types";
 import { DialogTitle } from "@/components/ui/dialog";
 
@@ -14,11 +13,7 @@ export const BrainDumpHeader = ({
   isSaving,
   lastSaved,
   saveError,
-  onSync,
-  isSyncing,
-  isReady,
   onMinimize,
-  onSettingsClick,
   isExpanded = false,
 }: BrainDumpHeaderProps) => {
   if (isExpanded) {
@@ -38,23 +33,6 @@ export const BrainDumpHeader = ({
             isSaving={isSaving}
             lastSaved={lastSaved}
             hasError={saveError}
-          />
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={onSettingsClick}
-            className="h-9 w-9 p-0 hover:bg-muted/50 text-white/20 hover:text-foreground"
-            title="Configurações de IA"
-          >
-            <Settings2 className="h-4 w-4" />
-          </Button>
-          <SyncButton
-            onClick={onSync}
-            isSyncing={isSyncing}
-            disabled={isSyncing || !isReady}
-            isReady={isReady}
-            showText={true}
-            className="h-9 px-4"
           />
           <Button
             variant="ghost"
@@ -87,15 +65,6 @@ export const BrainDumpHeader = ({
             lastSaved={lastSaved}
             hasError={saveError}
           />
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={onSettingsClick}
-            className="h-7 w-7 p-0 text-muted-foreground hover:text-foreground hover:bg-muted/50"
-            title="Configurações de IA"
-          >
-            <Settings2 className="h-4 w-4" />
-          </Button>
         </div>
       </div>
 

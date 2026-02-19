@@ -17,9 +17,9 @@ import {
   MessageSquare,
   User,
   LogOut,
+  FileText,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
-import { useUIStore } from "@/store/uiStore";
 import { signOut as signOutServerAction } from "@/app/actions/auth";
 
 interface NavItem {
@@ -37,45 +37,35 @@ interface SidebarNavProps {
 const mainNavItems: NavItem[] = [
   { id: "dashboard", label: "Home", icon: Home, href: "/dashboard" },
   { id: "tasks", label: "Tasks", icon: CheckSquare, href: "/tasks" },
+  { id: "notes", label: "Notes", icon: FileText, href: "/notes" },
   { id: "feedback", label: "Feedback", icon: MessageSquare, href: "/feedback" },
 ];
 
 /**
- * SidebarNav - Navigation component for the sidebar
- * Implements Polaris design system with proper active states and hover effects
+ * SidebarNav - Navigation component for the sidebar (DEPRECATED)
+ * Use ActivityBarNav instead for the new Activity Bar system
+ * @deprecated
  */
 function SidebarNavCore({ className }: SidebarNavProps) {
   const pathname = usePathname();
-  const { isSidebarCollapsed } = useUIStore();
 
   return (
     <div className={cn("flex flex-col gap-6", className)}>
       {/* Search Bar */}
       <div className="relative group px-1">
-        <div
-          className={cn(
-            "absolute inset-y-0 left-3 flex items-center pointer-events-none text-muted-foreground group-focus-within:text-foreground transition-colors",
-            isSidebarCollapsed && "left-0 w-full justify-center",
-          )}
-        >
+        <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none text-muted-foreground group-focus-within:text-foreground transition-colors">
           <Search className="w-4 h-4" />
         </div>
-        {!isSidebarCollapsed ? (
-          <>
-            <input
-              type="text"
-              placeholder="Search..."
-              className="w-full bg-white/[0.03] border border-white/10 rounded-xl py-2 pl-10 pr-12 text-sm focus:outline-none focus:ring-1 focus:ring-primary/50 focus:bg-white/[0.05] transition-all"
-            />
-            <div className="absolute inset-y-0 right-3 flex items-center gap-1">
-              <kbd className="hidden sm:inline-flex h-5 select-none items-center gap-1 rounded border border-white/10 bg-white/5 px-1.5 font-mono text-[10px] font-medium text-muted-foreground">
-                ⌘ F
-              </kbd>
-            </div>
-          </>
-        ) : (
-          <div className="w-full h-9 bg-white/[0.03] border border-white/10 rounded-xl cursor-pointer hover:bg-white/[0.05] transition-all" />
-        )}
+        <input
+          type="text"
+          placeholder="Search..."
+          className="w-full bg-white/[0.03] border border-white/10 rounded-xl py-2 pl-10 pr-12 text-sm focus:outline-none focus:ring-1 focus:ring-primary/50 focus:bg-white/[0.05] transition-all"
+        />
+        <div className="absolute inset-y-0 right-3 flex items-center gap-1">
+          <kbd className="hidden sm:inline-flex h-5 select-none items-center gap-1 rounded border border-white/10 bg-white/5 px-1.5 font-mono text-[10px] font-medium text-muted-foreground">
+            ⌘ F
+          </kbd>
+        </div>
       </div>
 
       {/* Main navigation */}
@@ -95,7 +85,6 @@ function SidebarNavCore({ className }: SidebarNavProps) {
                 isActive
                   ? "bg-muted/80 text-foreground border border-border"
                   : "text-muted-foreground hover:text-foreground border border-transparent hover:bg-muted/50",
-                isSidebarCollapsed && "justify-center px-0 h-11",
               )}
             >
               <Icon
@@ -104,9 +93,7 @@ function SidebarNavCore({ className }: SidebarNavProps) {
                   isActive ? "text-primary" : "group-hover:text-foreground",
                 )}
               />
-              {!isSidebarCollapsed && (
-                <span className="truncate relative z-10">{item.label}</span>
-              )}
+              <span className="truncate relative z-10">{item.label}</span>
 
               {/* Efeito de Glow lateral */}
               <div
@@ -137,13 +124,16 @@ function SidebarNavCore({ className }: SidebarNavProps) {
   );
 }
 
+interface SidebarUserProps {
+  collapsed?: boolean;
+}
+
 /**
  * SidebarUser - User profile section for the sidebar
  * Includes avatar, email and dropdown menu for logout/profile
  */
-export function SidebarUser() {
+export function SidebarUser({ collapsed = false }: SidebarUserProps) {
   const { user } = useAuth();
-  const { isSidebarCollapsed } = useUIStore();
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -186,7 +176,7 @@ export function SidebarUser() {
             transition={{ duration: 0.2, ease: "easeOut" }}
             className={cn(
               "absolute bottom-full left-0 w-full mb-2 p-2 bg-sidebar border border-white/10 rounded-2xl shadow-2xl z-50 overflow-hidden",
-              isSidebarCollapsed && "w-[200px]",
+              collapsed && "w-[200px]",
             )}
           >
             <button
@@ -212,26 +202,29 @@ export function SidebarUser() {
         className={cn(
           "w-full flex items-center gap-3 p-2 bg-white/[0.03] border border-white/10 rounded-2xl hover:bg-white/[0.06] transition-all group",
           isOpen && "bg-white/[0.08] border-white/20",
-          isSidebarCollapsed && "justify-center p-1.5",
+          collapsed && "justify-center p-1.5",
         )}
       >
-        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary/30 to-primary/10 flex items-center justify-center border border-white/5 shrink-0 overflow-hidden">
+        <div className={cn(
+          "rounded-xl bg-gradient-to-br from-primary/30 to-primary/10 flex items-center justify-center border border-white/5 shrink-0 overflow-hidden",
+          collapsed ? "w-8 h-8" : "w-10 h-10"
+        )}>
           {avatarUrl ? (
             <Image
               src={avatarUrl}
               alt={userName}
-              width={40}
-              height={40}
+              width={collapsed ? 32 : 40}
+              height={collapsed ? 32 : 40}
               className="w-full h-full object-cover"
             />
           ) : (
-            <span className="text-sm font-bold text-primary">
+            <span className={cn("font-bold text-primary", collapsed ? "text-xs" : "text-sm")}>
               {userInitial}
             </span>
           )}
         </div>
 
-        {!isSidebarCollapsed && (
+        {!collapsed && (
           <div className="flex-1 min-w-0 text-left">
             <p className="text-sm font-semibold text-foreground truncate capitalize">
               {userName}

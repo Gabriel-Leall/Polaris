@@ -2,16 +2,30 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { signUp } from "@/app/actions/auth";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { AuthFormShell } from "./AuthFormShell";
 import { SocialAuthButtons } from "./SocialAuthButtons";
+import { useAuth } from "@/hooks/useAuth";
 
 export const SignupForm: React.FC = () => {
+  const router = useRouter();
+  const { isAuthenticated, isLoading: authLoading } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Early return: Redirect if already authenticated
+  if (!authLoading && isAuthenticated) {
+    router.push("/dashboard");
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   async function handleSubmit(formData: FormData) {
     setIsLoading(true);

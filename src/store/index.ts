@@ -1,11 +1,13 @@
 // Zustand Stores
 // Global client state management
 
-export { useZenStore } from './zenStore'
-export { useThemeStore } from './themeStore'
-export { useUIStore } from './uiStore'
-export { useBrainDumpStore } from './brainDumpStore'
-export { useMediaPlayerStore } from './mediaPlayerStore'
-export type { MediaSource } from './mediaPlayerStore'
-export { useQuickLinksStore } from './quickLinksStore'
-export type { QuickLink } from './quickLinksStore'
+export { useZenStore } from "./zenStore";
+export { useThemeStore } from "./themeStore";
+export { useUIStore } from "./uiStore";
+export { useBrainDumpStore } from "./brainDumpStore";
+export { useMediaPlayerStore } from "./mediaPlayerStore";
+export type { MediaSource } from "./mediaPlayerStore";
+export { useQuickLinksStore } from "./quickLinksStore";
+export type { QuickLink } from "./quickLinksStore";
+export { useNotesStore } from "./notesStore";
+export type { NoteFile, NoteFolder } from "./notesStore";
