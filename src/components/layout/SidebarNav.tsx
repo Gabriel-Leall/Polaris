@@ -205,10 +205,12 @@ export function SidebarUser({ collapsed = false }: SidebarUserProps) {
           collapsed && "justify-center p-1.5",
         )}
       >
-        <div className={cn(
-          "rounded-xl bg-gradient-to-br from-primary/30 to-primary/10 flex items-center justify-center border border-white/5 shrink-0 overflow-hidden",
-          collapsed ? "w-8 h-8" : "w-10 h-10"
-        )}>
+        <div
+          className={cn(
+            "rounded-xl bg-gradient-to-br from-primary/30 to-primary/10 flex items-center justify-center border border-white/5 shrink-0 overflow-hidden",
+            collapsed ? "w-8 h-8" : "w-10 h-10",
+          )}
+        >
           {avatarUrl ? (
             <Image
               src={avatarUrl}
@@ -218,7 +220,12 @@ export function SidebarUser({ collapsed = false }: SidebarUserProps) {
               className="w-full h-full object-cover"
             />
           ) : (
-            <span className={cn("font-bold text-primary", collapsed ? "text-xs" : "text-sm")}>
+            <span
+              className={cn(
+                "font-bold text-primary",
+                collapsed ? "text-xs" : "text-sm",
+              )}
+            >
               {userInitial}
             </span>
           )}

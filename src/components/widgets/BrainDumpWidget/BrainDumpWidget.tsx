@@ -2,18 +2,10 @@
 
 import { useState } from "react";
 import { EditorContent } from "@tiptap/react";
-import {
-  Loader2,
-  AlertCircle,
-  Maximize2,
-  BookmarkPlus,
-} from "lucide-react";
+import { Loader2, AlertCircle, Maximize2, BookmarkPlus } from "lucide-react";
 import { ErrorBoundary, Button } from "@/components/ui";
 import { cn } from "@/lib/utils";
-import {
-  Dialog,
-  DialogContent,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useBrainDumpEditor } from "./hooks/useBrainDumpEditor";
 import { useBrainDumpSync } from "./hooks/useBrainDumpSync";
 import { EditorToolbar } from "./components/EditorToolbar";
