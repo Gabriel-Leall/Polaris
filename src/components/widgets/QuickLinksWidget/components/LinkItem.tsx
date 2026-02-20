@@ -54,7 +54,7 @@ export const LinkItem = ({
               "flex items-center justify-center w-full h-full rounded-2xl transition-all duration-200 overflow-hidden hover:scale-150",
               compact
                 ? "bg-black/10 dark:bg-muted hover:bg-black/20 dark:hover:bg-muted/80"
-                : "bg-muted hover:bg-white/15"
+                : "bg-muted hover:bg-white/15",
             )}
             title={link.title}
           >
@@ -63,7 +63,10 @@ export const LinkItem = ({
               <img
                 src={link.faviconUrl}
                 alt={link.title}
-                className={cn("object-contain", compact ? "w-6 h-6" : "w-8 h-8")}
+                className={cn(
+                  "object-contain",
+                  compact ? "w-6 h-6" : "w-8 h-8",
+                )}
                 onError={(e) => {
                   // Fallback to Globe icon if favicon fails to load
                   e.currentTarget.style.display = "none";
@@ -78,7 +81,7 @@ export const LinkItem = ({
               className={cn(
                 "text-muted-foreground",
                 compact ? "w-5 h-5" : "w-7 h-7",
-                link.faviconUrl ? "hidden" : "block"
+                link.faviconUrl ? "hidden" : "block",
               )}
             />
           </button>
