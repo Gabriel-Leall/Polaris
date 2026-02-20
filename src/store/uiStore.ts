@@ -5,7 +5,11 @@ interface UIStore {
   activeModal: string | null;
   setActiveModal: (modal: string | null) => void;
 
-  // Dynamic Sidebar - toggle simples
+  // Sidebar state (legacy + dynamic naming)
+  isSidebarCollapsed: boolean;
+  toggleSidebar: () => void;
+
+  // Dynamic Sidebar naming
   isDynamicSidebarOpen: boolean;
   toggleDynamicSidebar: () => void;
 }
@@ -14,10 +18,23 @@ export const useUIStore = create<UIStore>()((set) => ({
   activeModal: null,
   setActiveModal: (modal: string | null) => set({ activeModal: modal }),
 
-  // Dynamic Sidebar aberta por padrão
+  // Sidebar aberta por padrão
+  isSidebarCollapsed: false,
   isDynamicSidebarOpen: true,
+  toggleSidebar: () =>
+    set((state) => {
+      const nextCollapsed = !state.isSidebarCollapsed;
+      return {
+        isSidebarCollapsed: nextCollapsed,
+        isDynamicSidebarOpen: !nextCollapsed,
+      };
+    }),
   toggleDynamicSidebar: () =>
-    set((state) => ({
-      isDynamicSidebarOpen: !state.isDynamicSidebarOpen,
-    })),
+    set((state) => {
+      const nextOpen = !state.isDynamicSidebarOpen;
+      return {
+        isDynamicSidebarOpen: nextOpen,
+        isSidebarCollapsed: !nextOpen,
+      };
+    }),
 }));

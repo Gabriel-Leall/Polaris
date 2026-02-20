@@ -27,26 +27,31 @@ export function FileEditor() {
 
   const selectedFile = selectedFileId ? getFileById(selectedFileId) : null;
 
+  const handleSave = useCallback(() => {
+    if (!selectedFileId) return;
+    setIsSaving(true);
+    updateFileContent(selectedFileId, content);
+    setLastSaved(new Date());
+    setTimeout(() => setIsSaving(false), 500);
+  }, [content, selectedFileId, updateFileContent]);
+
   // Load content when file is selected
   useEffect(() => {
     if (selectedFile) {
       setContent(selectedFile.content || "");
     }
-  }, [selectedFileId]);
+  }, [selectedFile]);
 
   // Auto-save with debounce
   useEffect(() => {
     const timer = setTimeout(() => {
       if (selectedFileId && content !== selectedFile?.content) {
-        setIsSaving(true);
-        updateFileContent(selectedFileId, content);
-        setLastSaved(new Date());
-        setTimeout(() => setIsSaving(false), 500);
+        handleSave();
       }
     }, 1000); // Auto-save after 1 second of inactivity
 
     return () => clearTimeout(timer);
-  }, [content, selectedFileId]);
+  }, [content, selectedFile?.content, selectedFileId, handleSave]);
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -54,17 +59,14 @@ export function FileEditor() {
       if ((e.ctrlKey || e.metaKey) && e.key === "s") {
         e.preventDefault();
         if (selectedFileId) {
-          setIsSaving(true);
-          updateFileContent(selectedFileId, content);
-          setLastSaved(new Date());
-          setTimeout(() => setIsSaving(false), 500);
+          handleSave();
         }
       }
     };
 
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [content, selectedFileId]);
+  }, [selectedFileId, handleSave]);
 
   // Format actions
   const insertFormat = useCallback(
@@ -210,14 +212,7 @@ export function FileEditor() {
         <div className="flex-1" />
 
         <button
-          onClick={() => {
-            if (selectedFileId) {
-              setIsSaving(true);
-              updateFileContent(selectedFileId, content);
-              setLastSaved(new Date());
-              setTimeout(() => setIsSaving(false), 500);
-            }
-          }}
+          onClick={handleSave}
           className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-colors text-sm font-medium"
         >
           <Save className="w-4 h-4" />

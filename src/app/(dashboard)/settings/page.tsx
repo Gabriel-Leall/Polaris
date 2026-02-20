@@ -3,7 +3,6 @@ import { useState, useEffect, useCallback } from "react";
 import {
   Loader2,
   Database,
-  ChevronRight,
   Shield,
   Lock,
   Github,
@@ -17,7 +16,6 @@ import {
   getOrCreateUserPreferences,
   updateUserPreferences,
 } from "@/app/actions/userPreferences";
-import { getNotionAuthUrl, listNotionDatabases } from "@/app/actions/notion";
 
 export default function SettingsPage() {
   const { userId, user } = useAuth();
@@ -31,10 +29,6 @@ export default function SettingsPage() {
   const [notionToken, setNotionToken] = useState("");
   const [notionDbId, setNotionDbId] = useState("");
   const [geminiApiKey, setGeminiApiKey] = useState("");
-  const [availableDatabases, setAvailableDatabases] = useState<
-    { id: string; title: string }[]
-  >([]);
-  const [isConnectingNotion, setIsConnectingNotion] = useState(false);
 
   const loadSettings = useCallback(async () => {
     if (!userId) return;
@@ -49,13 +43,6 @@ export default function SettingsPage() {
         // Load local Gemini key
         const savedGemini = localStorage.getItem("polaris_gemini_api_key");
         if (savedGemini) setGeminiApiKey(savedGemini);
-
-        if (prefs.notionApiKey) {
-          const res = await listNotionDatabases(userId);
-          if (res.success && res.databases) {
-            setAvailableDatabases(res.databases);
-          }
-        }
       }
     } catch (error) {
       console.error("Failed to load settings:", error);
@@ -98,21 +85,6 @@ export default function SettingsPage() {
       });
     } finally {
       setIsSaving(false);
-    }
-  };
-
-  const handleConnectNotion = async () => {
-    try {
-      setIsConnectingNotion(true);
-      const url = await getNotionAuthUrl();
-      window.location.href = url;
-    } catch (error) {
-      toast({
-        title: "Erro",
-        description: "Não foi possível iniciar a conexão com o Notion.",
-        variant: "destructive",
-      });
-      setIsConnectingNotion(false);
     }
   };
 
