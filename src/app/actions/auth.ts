@@ -123,7 +123,7 @@ export async function signUp(formData: FormData): Promise<AuthResult> {
 export async function signOut(): Promise<void> {
   const supabase = await createSupabaseServerClient();
   await supabase.auth.signOut();
-  redirect("/landing");
+  redirect("/");
 }
 
 /**

@@ -11,6 +11,12 @@ import {
   WidgetErrorFallback,
 } from "@/components/ui/error-boundary";
 import {
+  Tooltip,
+  TooltipContent,
+  TooltipPortal,
+  TooltipTrigger,
+} from "@/components/animate-ui/primitives/radix/tooltip";
+import {
   Home,
   CheckSquare,
   Search,
@@ -18,9 +24,11 @@ import {
   User,
   LogOut,
   FileText,
+  Settings,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { signOut as signOutServerAction } from "@/app/actions/auth";
+import PolarisThemeToggle from "@/components/ui/polaris-theme-toggle";
 
 interface NavItem {
   id: string;
@@ -165,6 +173,57 @@ export function SidebarUser({ collapsed = false }: SidebarUserProps) {
     setIsOpen(false);
   };
 
+  const handleGoToSettings = () => {
+    router.push("/settings");
+    setIsOpen(false);
+  };
+
+  // Conteúdo do botão do usuário
+  const userButton = (
+    <button
+      onClick={() => setIsOpen(!isOpen)}
+      className={cn(
+        "w-full flex items-center gap-3 p-2 bg-white/[0.03] border border-white/10 rounded-2xl hover:bg-white/[0.06] transition-all group",
+        isOpen && "bg-white/[0.08] border-white/20",
+        collapsed && "justify-center p-1.5",
+      )}
+    >
+      <div
+        className={cn(
+          "rounded-xl bg-gradient-to-br from-primary/30 to-primary/10 flex items-center justify-center border border-white/5 shrink-0 overflow-hidden",
+          collapsed ? "w-8 h-8" : "w-10 h-10",
+        )}
+      >
+        {avatarUrl ? (
+          <Image
+            src={avatarUrl}
+            alt={userName}
+            width={collapsed ? 32 : 40}
+            height={collapsed ? 32 : 40}
+            className="w-full h-full object-cover"
+          />
+        ) : (
+          <span
+            className={cn(
+              "font-bold text-primary",
+              collapsed ? "text-xs" : "text-sm",
+            )}
+          >
+            {userInitial}
+          </span>
+        )}
+      </div>
+
+      {!collapsed && (
+        <div className="flex-1 min-w-0 text-left">
+          <p className="text-sm font-semibold text-foreground truncate capitalize">
+            {userName}
+          </p>
+        </div>
+      )}
+    </button>
+  );
+
   return (
     <div className="relative" ref={menuRef}>
       <AnimatePresence>
@@ -187,6 +246,16 @@ export function SidebarUser({ collapsed = false }: SidebarUserProps) {
               Ver Perfil
             </button>
             <button
+              onClick={handleGoToSettings}
+              className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all"
+            >
+              <Settings className="w-4 h-4" />
+              Configurações
+            </button>
+            <div className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium text-muted-foreground">
+              <PolarisThemeToggle variant="sidebar" showLabel={true} />
+            </div>
+            <button
               onClick={handleLogout}
               className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium text-destructive hover:bg-destructive/10 transition-all mt-1"
             >
@@ -197,48 +266,24 @@ export function SidebarUser({ collapsed = false }: SidebarUserProps) {
         )}
       </AnimatePresence>
 
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className={cn(
-          "w-full flex items-center gap-3 p-2 bg-white/[0.03] border border-white/10 rounded-2xl hover:bg-white/[0.06] transition-all group",
-          isOpen && "bg-white/[0.08] border-white/20",
-          collapsed && "justify-center p-1.5",
-        )}
-      >
-        <div
-          className={cn(
-            "rounded-xl bg-gradient-to-br from-primary/30 to-primary/10 flex items-center justify-center border border-white/5 shrink-0 overflow-hidden",
-            collapsed ? "w-8 h-8" : "w-10 h-10",
-          )}
-        >
-          {avatarUrl ? (
-            <Image
-              src={avatarUrl}
-              alt={userName}
-              width={collapsed ? 32 : 40}
-              height={collapsed ? 32 : 40}
-              className="w-full h-full object-cover"
-            />
-          ) : (
-            <span
-              className={cn(
-                "font-bold text-primary",
-                collapsed ? "text-xs" : "text-sm",
-              )}
+      {/* Com tooltip quando collapsed */}
+      {collapsed ? (
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <div>{userButton}</div>
+          </TooltipTrigger>
+          <TooltipPortal>
+            <TooltipContent
+              side="right"
+              className="z-50 px-3 py-1.5 text-sm font-medium bg-popover border border-border rounded-lg shadow-lg whitespace-nowrap"
             >
-              {userInitial}
-            </span>
-          )}
-        </div>
-
-        {!collapsed && (
-          <div className="flex-1 min-w-0 text-left">
-            <p className="text-sm font-semibold text-foreground truncate capitalize">
               {userName}
-            </p>
-          </div>
-        )}
-      </button>
+            </TooltipContent>
+          </TooltipPortal>
+        </Tooltip>
+      ) : (
+        userButton
+      )}
     </div>
   );
 }

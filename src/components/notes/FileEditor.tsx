@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useNotesStore } from "@/store/notesStore";
+import { useUIStore } from "@/store/uiStore";
 import {
   Bold,
   Italic,
@@ -15,11 +16,13 @@ import {
   Link2,
   Save,
   Check,
+  PanelRightOpen,
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 
 export function FileEditor() {
   const { selectedFileId, updateFileContent, getFileById } = useNotesStore();
+  const { isDynamicSidebarOpen, toggleDynamicSidebar } = useUIStore();
 
   const [content, setContent] = useState("");
   const [isSaving, setIsSaving] = useState(false);
@@ -116,7 +119,16 @@ export function FileEditor() {
 
   if (!selectedFile) {
     return (
-      <div className="flex-1 h-full flex items-center justify-center bg-background rounded-3xl border border-glass">
+      <div className="flex-1 h-full flex items-center justify-center bg-background rounded-3xl border border-glass relative">
+        {!isDynamicSidebarOpen && (
+          <button
+            onClick={toggleDynamicSidebar}
+            className="absolute top-4 left-4 p-2 hover:bg-muted rounded-lg transition-colors text-muted-foreground hover:text-foreground"
+            aria-label="Abrir sidebar"
+          >
+            <PanelRightOpen className="w-5 h-5" />
+          </button>
+        )}
         <div className="text-center">
           <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-primary/10 flex items-center justify-center">
             <svg
@@ -136,36 +148,56 @@ export function FileEditor() {
           <h2 className="text-xl font-semibold text-foreground mb-2">
             Nenhuma nota selecionada
           </h2>
-          <p className="text-muted-foreground text-sm max-w-sm">
+          <p className="text-muted-foreground text-sm max-w-sm mb-6">
             Selecione uma nota na sidebar ou crie uma nova para começar a
             escrever.
           </p>
+          {!isDynamicSidebarOpen && (
+            <button
+              onClick={toggleDynamicSidebar}
+              className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-xl hover:bg-primary/90 transition-colors font-medium"
+            >
+              <PanelRightOpen className="w-4 h-4" />
+              Abrir Explorer
+            </button>
+          )}
         </div>
       </div>
     );
   }
 
   return (
-    <div className="flex-1 h-full flex flex-col bg-background rounded-3xl border border-glass overflow-hidden">
+    <div className="flex-1 h-full flex flex-col bg-background rounded-3xl border border-glass overflow-hidden relative">
       {/* Header */}
-      <div className="shrink-0 p-4 border-b border-border/50 flex items-center justify-between">
-        <div className="flex-1 min-w-0">
-          <input
-            type="text"
-            value={selectedFile.name}
-            className="text-xl font-semibold bg-transparent border-none focus:outline-none focus:ring-0 text-foreground w-full truncate"
-            readOnly
-          />
-          <p className="text-xs text-muted-foreground mt-1">
-            {lastSaved ? (
-              <>Último salvamento: {lastSaved.toLocaleTimeString("pt-BR")}</>
-            ) : (
-              <>
-                Criado em:{" "}
-                {new Date(selectedFile.updatedAt).toLocaleDateString("pt-BR")}
-              </>
-            )}
-          </p>
+      <div className="shrink-0 p-4 border-b border-border/50 flex items-center justify-between gap-4">
+        <div className="flex items-center gap-3 flex-1 min-w-0">
+          {!isDynamicSidebarOpen && (
+            <button
+              onClick={toggleDynamicSidebar}
+              className="p-1.5 hover:bg-muted rounded-lg transition-colors text-muted-foreground hover:text-foreground shrink-0"
+              aria-label="Abrir sidebar"
+            >
+              <PanelRightOpen className="w-5 h-5" />
+            </button>
+          )}
+          <div className="flex-1 min-w-0">
+            <input
+              type="text"
+              value={selectedFile.name}
+              className="text-xl font-semibold bg-transparent border-none focus:outline-none focus:ring-0 text-foreground w-full truncate"
+              readOnly
+            />
+            <p className="text-xs text-muted-foreground mt-1">
+              {lastSaved ? (
+                <>Último salvamento: {lastSaved.toLocaleTimeString("pt-BR")}</>
+              ) : (
+                <>
+                  Criado em:{" "}
+                  {new Date(selectedFile.updatedAt).toLocaleDateString("pt-BR")}
+                </>
+              )}
+            </p>
+          </div>
         </div>
 
         {/* Save indicator */}

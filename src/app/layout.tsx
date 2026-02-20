@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { inter, jetbrainsMono, geistSans, geistMono } from "./fonts";
 import { GlobalErrorBoundary } from "@/components/ui/global-error-boundary";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
+import { TooltipProvider } from "@/components/animate-ui/primitives/radix/tooltip";
 import { Toaster } from "@/components/ui/toaster";
 import "./globals.css";
 
@@ -38,10 +39,12 @@ export default function RootLayout({
     >
       <body className="font-sans antialiased">
         <ThemeProvider>
-          <GlobalErrorBoundary>
-            {children}
-            <Toaster />
-          </GlobalErrorBoundary>
+          <TooltipProvider>
+            <GlobalErrorBoundary>
+              {children}
+              <Toaster />
+            </GlobalErrorBoundary>
+          </TooltipProvider>
         </ThemeProvider>
       </body>
     </html>

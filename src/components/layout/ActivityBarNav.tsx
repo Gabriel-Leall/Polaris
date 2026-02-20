@@ -7,9 +7,14 @@ import {
   ErrorBoundary,
   WidgetErrorFallback,
 } from "@/components/ui/error-boundary";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipPortal,
+  TooltipTrigger,
+} from "@/components/animate-ui/primitives/radix/tooltip";
 import { Home, CheckSquare, MessageSquare, FileText } from "lucide-react";
-import { useState } from "react";
-import { motion, AnimatePresence } from "motion/react";
+import { useUIStore } from "@/store/uiStore";
 
 interface NavItem {
   id: string;
@@ -31,54 +36,6 @@ const mainNavItems: NavItem[] = [
 ];
 
 /**
- * SimpleTooltip - Tooltip simples para o ActivityBar
- */
-function SimpleTooltip({
-  children,
-  content,
-  side = "right",
-}: {
-  children: React.ReactNode;
-  content: string;
-  side?: "right" | "left" | "top" | "bottom";
-}) {
-  const [isVisible, setIsVisible] = useState(false);
-
-  const positionClasses = {
-    right: "left-full ml-3 top-1/2 -translate-y-1/2",
-    left: "right-full mr-3 top-1/2 -translate-y-1/2",
-    top: "bottom-full mb-3 left-1/2 -translate-x-1/2",
-    bottom: "top-full mt-3 left-1/2 -translate-x-1/2",
-  };
-
-  return (
-    <div
-      className="relative"
-      onMouseEnter={() => setIsVisible(true)}
-      onMouseLeave={() => setIsVisible(false)}
-    >
-      {children}
-      <AnimatePresence>
-        {isVisible && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            transition={{ duration: 0.15 }}
-            className={cn(
-              "absolute z-50 px-3 py-1.5 text-sm font-medium bg-popover border border-border rounded-lg shadow-lg whitespace-nowrap",
-              positionClasses[side],
-            )}
-          >
-            {content}
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
-  );
-}
-
-/**
  * ActivityBarNav - Navegação icon-only com tooltip e indicador de rota ativa
  * Estilo Obsidian: indicador lateral esquerdo na rota ativa
  */
@@ -87,6 +44,7 @@ function ActivityBarNavCore({
   mobile = false,
 }: ActivityBarNavProps) {
   const pathname = usePathname();
+  const { toggleDynamicSidebar, isDynamicSidebarOpen } = useUIStore();
 
   // Versão Mobile - Bottom Navigation com labels
   if (mobile) {
@@ -102,6 +60,15 @@ function ActivityBarNavCore({
             <Link
               key={item.id}
               href={item.href}
+              onClick={(e) => {
+                if (isActive) {
+                  e.preventDefault();
+                  toggleDynamicSidebar();
+                } else if (!isDynamicSidebarOpen) {
+                  // Se estiver navegando para uma nova rota e a sidebar estiver fechada, abre ela
+                  toggleDynamicSidebar();
+                }
+              }}
               className={cn(
                 "flex flex-col items-center gap-1 p-2 rounded-xl transition-all min-w-[60px]",
                 isActive
@@ -128,24 +95,43 @@ function ActivityBarNavCore({
           (item.href !== "/" && pathname?.startsWith(item.href));
 
         return (
-          <SimpleTooltip key={item.id} content={item.label} side="right">
-            <Link
-              href={item.href}
-              className={cn(
-                "relative w-full flex items-center justify-center p-3 rounded-xl transition-all",
-                isActive
-                  ? "bg-muted/80 text-primary"
-                  : "text-muted-foreground hover:text-foreground hover:bg-muted/50",
-              )}
-            >
-              <Icon className="w-5 h-5" />
+          <Tooltip key={item.id}>
+            <TooltipTrigger asChild>
+              <Link
+                href={item.href}
+                onClick={(e) => {
+                  if (isActive) {
+                    e.preventDefault();
+                    toggleDynamicSidebar();
+                  } else if (!isDynamicSidebarOpen) {
+                    // Se estiver navegando para uma nova rota e a sidebar estiver fechada, abre ela
+                    toggleDynamicSidebar();
+                  }
+                }}
+                className={cn(
+                  "relative w-full flex items-center justify-center p-3 rounded-xl transition-all",
+                  isActive
+                    ? "bg-muted/80 text-primary"
+                    : "text-muted-foreground hover:text-foreground hover:bg-muted/50",
+                )}
+              >
+                <Icon className="w-5 h-5" />
 
-              {/* Indicador lateral estilo Obsidian */}
-              {isActive && (
-                <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-6 bg-primary rounded-r-full" />
-              )}
-            </Link>
-          </SimpleTooltip>
+                {/* Indicador lateral estilo Obsidian */}
+                {isActive && (
+                  <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-6 bg-primary rounded-r-full" />
+                )}
+              </Link>
+            </TooltipTrigger>
+            <TooltipPortal>
+              <TooltipContent
+                side="right"
+                className="z-50 px-3 py-1.5 text-sm font-medium bg-popover border border-border rounded-lg shadow-lg whitespace-nowrap"
+              >
+                {item.label}
+              </TooltipContent>
+            </TooltipPortal>
+          </Tooltip>
         );
       })}
     </nav>

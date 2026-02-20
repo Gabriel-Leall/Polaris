@@ -3,8 +3,8 @@ import Link from 'next/link';
 import { Logo } from '@/components/ui/logo';
 
 export const metadata: Metadata = {
-  title: 'Terms of Use - Polaris',
-  description: 'Terms and conditions for using Polaris.',
+  title: 'Terms of Use - Axis',
+  description: 'Terms and conditions for using Axis.',
 };
 
 export default function TermsPage() {
@@ -13,7 +13,7 @@ export default function TermsPage() {
       <header className="container mx-auto px-6 py-8 flex justify-between items-center border-b border-white/5">
         <Link href="/" className="flex items-center gap-2">
           <Logo size={24} />
-          <span className="font-bold tracking-tight text-white">POLARIS</span>
+          <span className="font-bold tracking-tight text-white">AXIS</span>
         </Link>
       </header>
 
@@ -24,18 +24,18 @@ export default function TermsPage() {
           <section className="space-y-4">
             <h2 className="text-xl font-semibold text-white">1. Acceptance of Terms</h2>
             <p>
-              By accessing and using Polaris (&quot;the Service&quot;), you agree to be bound by these Terms of Use and all applicable laws and regulations. If you do not agree with any of these terms, you are prohibited from using or accessing this site.
+              By accessing and using Axis (&quot;the Service&quot;), you agree to be bound by these Terms of Use and all applicable laws and regulations. If you do not agree with any of these terms, you are prohibited from using or accessing this site.
             </p>
           </section>
 
           <section className="space-y-4">
             <h2 className="text-xl font-semibold text-white">2. Use License</h2>
             <p>
-              Polaris grants you a personal, non-exclusive, non-transferable license to use the Service for personal or professional productivity purposes. You may not:
+              Axis grants you a personal, non-exclusive, non-transferable license to use the Service for personal or professional productivity purposes. You may not:
             </p>
             <ul className="list-disc pl-6 space-y-2">
               <li>Modify or copy the materials from the Service.</li>
-              <li>Attempt to decompile or reverse engineer any software contained in Polaris.</li>
+              <li>Attempt to decompile or reverse engineer any software contained in Axis.</li>
               <li>Use the Service for any unlawful purpose.</li>
             </ul>
           </section>
@@ -43,21 +43,21 @@ export default function TermsPage() {
           <section className="space-y-4">
             <h2 className="text-xl font-semibold text-white">3. Third-Party Services</h2>
             <p>
-              Polaris integrates with third-party services like Notion and Google Gemini. Your use of these integrations is also subject to their respective terms of service. We are not responsible for the availability or conduct of these third-party platforms.
+              Axis integrates with third-party services like Notion and Google Gemini. Your use of these integrations is also subject to their respective terms of service. We are not responsible for the availability or conduct of these third-party platforms.
             </p>
           </section>
 
           <section className="space-y-4">
             <h2 className="text-xl font-semibold text-white">4. Disclaimer</h2>
             <p>
-              The materials on Polaris are provided on an &apos;as is&apos; basis. Polaris makes no warranties, expressed or implied, and hereby disclaims all other warranties including, without limitation, implied warranties of merchantability or fitness for a particular purpose.
+              The materials on Axis are provided on an &apos;as is&apos; basis. Axis makes no warranties, expressed or implied, and hereby disclaims all other warranties including, without limitation, implied warranties of merchantability or fitness for a particular purpose.
             </p>
           </section>
 
           <section className="space-y-4">
             <h2 className="text-xl font-semibold text-white">5. Limitations of Liability</h2>
             <p>
-              In no event shall Polaris or its suppliers be liable for any damages (including, without limitation, damages for loss of data or profit, or due to business interruption) arising out of the use or inability to use the Service.
+              In no event shall Axis or its suppliers be liable for any damages (including, without limitation, damages for loss of data or profit, or due to business interruption) arising out of the use or inability to use the Service.
             </p>
           </section>
 

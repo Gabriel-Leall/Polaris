@@ -3,8 +3,8 @@ import Link from 'next/link';
 import { Logo } from '@/components/ui/logo';
 
 export const metadata: Metadata = {
-  title: 'Privacy Policy - Polaris',
-  description: 'How we handle your data at Polaris.',
+  title: 'Privacy Policy - Axis',
+  description: 'How we handle your data at Axis.',
 };
 
 export default function PrivacyPage() {
@@ -13,7 +13,7 @@ export default function PrivacyPage() {
       <header className="container mx-auto px-6 py-8 flex justify-between items-center border-b border-white/5">
         <Link href="/" className="flex items-center gap-2">
           <Logo size={24} />
-          <span className="font-bold tracking-tight text-white">POLARIS</span>
+          <span className="font-bold tracking-tight text-white">AXIS</span>
         </Link>
       </header>
 
@@ -24,7 +24,7 @@ export default function PrivacyPage() {
           <section className="space-y-4">
             <h2 className="text-xl font-semibold text-white">1. Introduction</h2>
             <p>
-              Polaris (&quot;we&quot;, &quot;us&quot;, or &quot;our&quot;) operates the Polaris productivity platform. This page informs you of our policies regarding the collection, use, and disclosure of personal data when you use our Service and the choices you have associated with that data.
+              Axis (&quot;we&quot;, &quot;us&quot;, or &quot;our&quot;) operates the Axis productivity platform. This page informs you of our policies regarding the collection, use, and disclosure of personal data when you use our Service and the choices you have associated with that data.
             </p>
           </section>
 
@@ -40,7 +40,7 @@ export default function PrivacyPage() {
 
           <section className="space-y-4">
             <h2 className="text-xl font-semibold text-white">3. Use of Data</h2>
-            <p>Polaris uses the collected data for various purposes:</p>
+            <p>Axis uses the collected data for various purposes:</p>
             <ul className="list-disc pl-6 space-y-2">
               <li>To provide and maintain our Service.</li>
               <li>To allow you to synchronize your content with third-party integrations like Notion.</li>
@@ -59,7 +59,7 @@ export default function PrivacyPage() {
           <section className="space-y-4">
             <h2 className="text-xl font-semibold text-white">5. Notion Integration</h2>
             <p>
-              When you connect your Notion account, Polaris gains access to specific workspaces or pages you select. We only use this permission to create new pages and synchronize your Brain Dump notes. We do not read your other Notion data unless it is necessary for the specific synchronization functionality.
+              When you connect your Notion account, Axis gains access to specific workspaces or pages you select. We only use this permission to create new pages and synchronize your Brain Dump notes. We do not read your other Notion data unless it is necessary for the specific synchronization functionality.
             </p>
           </section>
 

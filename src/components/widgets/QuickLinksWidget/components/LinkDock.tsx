@@ -74,7 +74,7 @@ export const LinkDock = ({
             <button
               onClick={onAddClick}
               className={cn(
-                "flex items-center justify-center w-full h-full rounded-2xl transition-all duration-200",
+                "flex items-center justify-center w-full h-full rounded-2xl transition-all duration-200 hover:scale-110",
                 showInput
                   ? "bg-primary/30 text-primary"
                   : compact

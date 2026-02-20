@@ -3,6 +3,12 @@
 import { useState } from "react";
 import { Trash2, Globe, Loader2, Edit2 } from "lucide-react";
 import { DockIcon } from "@/components/ui/dock";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipPortal,
+  TooltipTrigger,
+} from "@/components/animate-ui/primitives/radix/tooltip";
 import { cn } from "@/lib/utils";
 import { MotionValue } from "motion/react";
 import type { LinkItemProps } from "../types";
@@ -40,47 +46,52 @@ export const LinkItem = ({
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <button
-        onClick={() => onOpen(link.url)}
-        className={cn(
-          "flex items-center justify-center w-full h-full rounded-2xl transition-all duration-200 overflow-hidden",
-          compact
-            ? "bg-black/10 dark:bg-muted hover:bg-black/20 dark:hover:bg-muted/80"
-            : "bg-muted hover:bg-white/15"
-        )}
-        title={link.title}
-      >
-        {link.faviconUrl ? (
-          /* eslint-disable-next-line @next/next/no-img-element */
-          <img
-            src={link.faviconUrl}
-            alt={link.title}
-            className={cn("object-contain", compact ? "w-6 h-6" : "w-8 h-8")}
-            onError={(e) => {
-              // Fallback to Globe icon if favicon fails to load
-              e.currentTarget.style.display = "none";
-              const fallback = e.currentTarget.nextElementSibling;
-              if (fallback) {
-                (fallback as HTMLElement).style.display = "flex";
-              }
-            }}
-          />
-        ) : null}
-        <Globe
-          className={cn(
-            "text-muted-foreground",
-            compact ? "w-5 h-5" : "w-7 h-7",
-            link.faviconUrl ? "hidden" : "block"
-          )}
-        />
-      </button>
-
-      {/* Tooltip on hover */}
-      {isHovered && (
-        <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-card border border-border rounded-lg text-xs text-foreground whitespace-nowrap z-50 shadow-lg">
-          {link.title}
-        </div>
-      )}
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <button
+            onClick={() => onOpen(link.url)}
+            className={cn(
+              "flex items-center justify-center w-full h-full rounded-2xl transition-all duration-200 overflow-hidden hover:scale-150",
+              compact
+                ? "bg-black/10 dark:bg-muted hover:bg-black/20 dark:hover:bg-muted/80"
+                : "bg-muted hover:bg-white/15"
+            )}
+            title={link.title}
+          >
+            {link.faviconUrl ? (
+              /* eslint-disable-next-line @next/next/no-img-element */
+              <img
+                src={link.faviconUrl}
+                alt={link.title}
+                className={cn("object-contain", compact ? "w-6 h-6" : "w-8 h-8")}
+                onError={(e) => {
+                  // Fallback to Globe icon if favicon fails to load
+                  e.currentTarget.style.display = "none";
+                  const fallback = e.currentTarget.nextElementSibling;
+                  if (fallback) {
+                    (fallback as HTMLElement).style.display = "flex";
+                  }
+                }}
+              />
+            ) : null}
+            <Globe
+              className={cn(
+                "text-muted-foreground",
+                compact ? "w-5 h-5" : "w-7 h-7",
+                link.faviconUrl ? "hidden" : "block"
+              )}
+            />
+          </button>
+        </TooltipTrigger>
+        <TooltipPortal>
+          <TooltipContent
+            side="top"
+            className="z-50 px-2 py-1 bg-card border border-border rounded-lg text-xs text-foreground whitespace-nowrap shadow-lg"
+          >
+            {link.title}
+          </TooltipContent>
+        </TooltipPortal>
+      </Tooltip>
 
       {/* Action buttons - only show on hover and when not read-only */}
       {!readOnly && isHovered && (
