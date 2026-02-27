@@ -3,22 +3,15 @@
 import { useState, useEffect, useCallback } from "react";
 import { useNotesStore } from "@/store/notesStore";
 import { useUIStore } from "@/store/uiStore";
-import {
-  Bold,
-  Italic,
-  Heading1,
-  Heading2,
-  Heading3,
-  List,
-  ListOrdered,
-  Quote,
-  Code,
-  Link2,
-  Save,
-  Check,
-  PanelRightOpen,
-} from "lucide-react";
+
+import { Save, Check, PanelRightOpen } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
+import { useEditor, EditorContent } from "@tiptap/react";
+import {
+  getEditorExtensions,
+  getEditorProps,
+} from "../widgets/BrainDumpWidget/utils/editorConfig";
+import { EditorToolbar } from "../widgets/BrainDumpWidget/components/EditorToolbar";
 
 export function FileEditor() {
   const { selectedFileId, updateFileContent, getFileById } = useNotesStore();
@@ -38,12 +31,27 @@ export function FileEditor() {
     setTimeout(() => setIsSaving(false), 500);
   }, [content, selectedFileId, updateFileContent]);
 
+  // TipTap Editor instance
+  const editor = useEditor({
+    immediatelyRender: false,
+    // @ts-expect-error Type mismatch between tiptap core and react version packages
+    extensions: getEditorExtensions(),
+    editorProps: getEditorProps(),
+    onUpdate: ({ editor }) => {
+      setContent(editor.getHTML());
+    },
+  });
+
   // Load content when file is selected
   useEffect(() => {
     if (selectedFile) {
       setContent(selectedFile.content || "");
+      if (editor && editor.getHTML() !== selectedFile.content) {
+        editor.commands.setContent(selectedFile.content || "");
+      }
     }
-  }, [selectedFile]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedFile, editor]);
 
   // Auto-save with debounce
   useEffect(() => {
@@ -70,52 +78,6 @@ export function FileEditor() {
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [selectedFileId, handleSave]);
-
-  // Format actions
-  const insertFormat = useCallback(
-    (prefix: string, suffix: string = "") => {
-      const textarea = document.getElementById(
-        "editor-textarea",
-      ) as HTMLTextAreaElement;
-      if (!textarea) return;
-
-      const start = textarea.selectionStart;
-      const end = textarea.selectionEnd;
-      const selectedText = content.substring(start, end);
-
-      const newText =
-        content.substring(0, start) +
-        prefix +
-        selectedText +
-        suffix +
-        content.substring(end);
-      setContent(newText);
-
-      // Restore cursor position
-      setTimeout(() => {
-        textarea.focus();
-        textarea.setSelectionRange(start + prefix.length, end + prefix.length);
-      }, 0);
-    },
-    [content],
-  );
-
-  const formats = [
-    { icon: Bold, action: () => insertFormat("**", "**"), label: "Bold" },
-    { icon: Italic, action: () => insertFormat("*", "*"), label: "Italic" },
-    { icon: Heading1, action: () => insertFormat("# "), label: "Heading 1" },
-    { icon: Heading2, action: () => insertFormat("## "), label: "Heading 2" },
-    { icon: Heading3, action: () => insertFormat("### "), label: "Heading 3" },
-    { icon: List, action: () => insertFormat("- "), label: "List" },
-    {
-      icon: ListOrdered,
-      action: () => insertFormat("1. "),
-      label: "Ordered List",
-    },
-    { icon: Quote, action: () => insertFormat("> "), label: "Quote" },
-    { icon: Code, action: () => insertFormat("`", "`"), label: "Code" },
-    { icon: Link2, action: () => insertFormat("[", "](url)"), label: "Link" },
-  ];
 
   if (!selectedFile) {
     return (
@@ -184,7 +146,7 @@ export function FileEditor() {
             <input
               type="text"
               value={selectedFile.name}
-              className="text-xl font-semibold bg-transparent border-none focus:outline-none focus:ring-0 text-foreground w-full truncate"
+              className="text-lg font-semibold bg-transparent border-none focus:outline-none focus:ring-0 text-foreground w-full truncate"
               readOnly
             />
             <p className="text-xs text-muted-foreground mt-1">
@@ -201,77 +163,60 @@ export function FileEditor() {
         </div>
 
         {/* Save indicator */}
-        <AnimatePresence mode="wait">
-          {isSaving ? (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.8 }}
-              className="flex items-center gap-2 text-sm text-muted-foreground"
-            >
-              <div className="w-2 h-2 rounded-full bg-warning animate-pulse" />
-              <span>Salvando...</span>
-            </motion.div>
-          ) : (
-            lastSaved && (
+        <div className="flex items-center gap-4">
+          <AnimatePresence mode="wait">
+            {isSaving ? (
               <motion.div
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.8 }}
-                className="flex items-center gap-2 text-sm text-success"
+                className="flex items-center gap-2 text-sm text-muted-foreground"
               >
-                <Check className="w-4 h-4" />
-                <span>Salvo</span>
+                <div className="w-2 h-2 rounded-full bg-warning animate-pulse" />
+                <span className="hidden sm:inline">Salvando...</span>
               </motion.div>
-            )
-          )}
-        </AnimatePresence>
-      </div>
-
-      {/* Toolbar */}
-      <div className="shrink-0 px-4 py-2 border-b border-border/30 flex items-center gap-1 flex-wrap">
-        {formats.map((format, index) => (
+            ) : (
+              lastSaved && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.8 }}
+                  className="flex items-center gap-2 text-sm text-success"
+                >
+                  <Check className="w-4 h-4" />
+                  <span className="hidden sm:inline">Salvo</span>
+                </motion.div>
+              )
+            )}
+          </AnimatePresence>
           <button
-            key={index}
-            onClick={format.action}
-            title={format.label}
-            className="p-2 rounded-lg hover:bg-muted/50 text-muted-foreground hover:text-foreground transition-colors"
+            onClick={handleSave}
+            className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-colors text-sm font-medium"
           >
-            <format.icon className="w-4 h-4" />
+            <Save className="w-4 h-4" />
+            <span className="hidden sm:inline">Salvar</span>
           </button>
-        ))}
-
-        <div className="flex-1" />
-
-        <button
-          onClick={handleSave}
-          className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-colors text-sm font-medium"
-        >
-          <Save className="w-4 h-4" />
-          <span>Salvar</span>
-        </button>
+        </div>
       </div>
 
-      {/* Editor */}
-      <div className="flex-1 overflow-auto p-4">
-        <textarea
-          id="editor-textarea"
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          placeholder="Comece a escrever..."
-          className="w-full h-full min-h-[300px] bg-transparent border-none focus:outline-none focus:ring-0 resize-none text-foreground placeholder:text-muted-foreground/50 leading-relaxed"
-          style={{
-            fontFamily: "var(--font-jetbrains-mono), monospace",
-            fontSize: "14px",
-            lineHeight: "1.7",
-          }}
-        />
+      {/* Editor Toolbar from BrainDump */}
+      {editor && <EditorToolbar editor={editor} />}
+
+      {/* Editor Area */}
+      <div className="flex-1 overflow-auto bg-transparent relative">
+        {editor ? (
+          <EditorContent editor={editor} className="h-full w-full" />
+        ) : (
+          <div className="flex items-center justify-center h-full text-muted-foreground">
+            Carregando editor...
+          </div>
+        )}
       </div>
 
       {/* Footer info */}
-      <div className="shrink-0 px-4 py-2 border-t border-border/30 text-xs text-muted-foreground flex justify-between">
-        <span>Markdown suportado</span>
-        <span>{content.length} caracteres</span>
+      <div className="shrink-0 px-4 py-2 border-t border-border/30 text-[10px] text-muted-foreground flex justify-between uppercase tracking-wider font-semibold">
+        <span>Rich Text Editor</span>
+        <span>{content.replace(/<[^>]*>?/gm, "").length} chars</span>
       </div>
     </div>
   );

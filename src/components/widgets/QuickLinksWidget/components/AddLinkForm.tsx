@@ -39,7 +39,6 @@ export const AddLinkForm = ({
           onKeyDown={onKeyPress}
           placeholder={placeholder}
           className="flex-1 h-8 text-sm bg-muted/50 border-border"
-          autoFocus
           disabled={isAdding}
         />
         <Button

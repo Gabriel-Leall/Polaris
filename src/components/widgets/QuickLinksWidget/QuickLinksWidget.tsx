@@ -1,6 +1,7 @@
 "use client";
 
 import { Plus, Loader2, ExternalLink } from "lucide-react";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
   ErrorBoundary,
@@ -50,23 +51,20 @@ function QuickLinksWidgetCore({
     <div className={cn("flex flex-col h-full", className)}>
       {/* Header */}
       {/* Header */}
-      <div className="flex items-center justify-between pl-4 pr-4 pt-2 mb-6">
+      <div className="flex items-center justify-between px-6 py-3 border-b border-border/50 bg-muted/10 mb-3 -mx-6 -mt-2">
         <div className="flex items-center gap-2">
-          <div className="w-1 h-1 rounded-full bg-muted/80" />
-          <h2
-            className="glitch-text text-[10px] text-foreground"
-            data-text="Access Links"
-          >
+          <div className="w-1.5 h-1.5 rounded-sm bg-primary/80" />
+          <h2 className="text-xs font-semibold tracking-wide uppercase text-muted-foreground">
             Access Links
           </h2>
         </div>
         {readOnly && (
-          <a
+          <Link
             href="/quick-links"
             className="text-[10px] text-primary hover:text-primary/80"
           >
             Manage
-          </a>
+          </Link>
         )}
       </div>
 

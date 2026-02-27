@@ -9,7 +9,7 @@ interface GridColumnProps {
 /**
  * GridColumn - Responsive column component for the Bento Grid
  * No-scroll design: content must fit within fixed height containers
- * 
+ *
  * Layout distribution (12-column grid):
  * - Left: 3 columns (Tasks + Quick Links)
  * - Center: 5 columns (Brain Dump + Zen Timer - main focus area)
@@ -39,8 +39,8 @@ function GridColumn({ children, className, span = "center" }: GridColumnProps) {
       className={cn(
         "col-span-1 md:col-span-1",
         getColumnClasses(),
-        "h-full min-h-0 overflow-hidden",
-        className
+        "h-full min-h-0 overflow-hidden bg-background",
+        className,
       )}
     >
       {children}

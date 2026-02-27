@@ -51,6 +51,9 @@ export function FileExplorer() {
   const [newItemName, setNewItemName] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingName, setEditingName] = useState("");
+  const [creatingInFolderId, setCreatingInFolderId] = useState<string | null>(
+    null,
+  );
   const inputRef = useRef<HTMLInputElement>(null);
 
   // Close context menu on click outside
@@ -72,17 +75,19 @@ export function FileExplorer() {
   const handleCreate = (type: "file" | "folder") => {
     if (!newItemName.trim()) {
       setIsCreating(null);
+      setCreatingInFolderId(null);
       return;
     }
 
     if (type === "file") {
-      createFile(newItemName.trim());
+      createFile(newItemName.trim(), creatingInFolderId ?? undefined);
     } else {
-      createFolder(newItemName.trim());
+      createFolder(newItemName.trim(), creatingInFolderId ?? undefined);
     }
 
     setNewItemName("");
     setIsCreating(null);
+    setCreatingInFolderId(null);
   };
 
   // Handle renaming
@@ -146,11 +151,21 @@ export function FileExplorer() {
                 "hover:bg-muted/50 text-sm",
               )}
               style={{ paddingLeft: `${level * 12 + 12}px` }}
+              role="button"
+              tabIndex={0}
               onClick={() =>
                 folder.isExpanded
                   ? collapseFolder(folder.id)
                   : expandFolder(folder.id)
               }
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  folder.isExpanded
+                    ? collapseFolder(folder.id)
+                    : expandFolder(folder.id);
+                }
+              }}
               onContextMenu={(e) => handleContextMenu(e, folder.id, "folder")}
             >
               <button className="p-0.5 hover:bg-muted rounded transition-colors">
@@ -214,7 +229,15 @@ export function FileExplorer() {
                 : "hover:bg-muted/50",
             )}
             style={{ paddingLeft: `${level * 12 + 12}px` }}
+            role="button"
+            tabIndex={0}
             onClick={() => selectFile(file.id)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                selectFile(file.id);
+              }
+            }}
             onContextMenu={(e) => handleContextMenu(e, file.id, "file")}
           >
             <FileText
@@ -315,7 +338,6 @@ export function FileExplorer() {
               }}
               onBlur={() => handleCreate(isCreating)}
               className="w-full bg-background border border-primary rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary/50"
-              autoFocus
             />
           </motion.div>
         )}
@@ -375,6 +397,27 @@ export function FileExplorer() {
               <Trash2 className="w-4 h-4" />
               Deletar
             </button>
+
+            {/* Add 'New note here' for folders */}
+            {contextMenu.itemType === "folder" && (
+              <>
+                <div className="my-1 border-t border-border" />
+                <button
+                  onClick={() => {
+                    if (contextMenu.itemId) {
+                      setCreatingInFolderId(contextMenu.itemId);
+                      setIsCreating("file");
+                      expandFolder(contextMenu.itemId);
+                    }
+                    setContextMenu((prev) => ({ ...prev, isOpen: false }));
+                  }}
+                  className="w-full flex items-center gap-2 px-3 py-2 text-sm text-foreground hover:bg-muted transition-colors"
+                >
+                  <FileText className="w-4 h-4" />
+                  Nova Nota aqui
+                </button>
+              </>
+            )}
           </motion.div>
         )}
       </AnimatePresence>

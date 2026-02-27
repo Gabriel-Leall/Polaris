@@ -42,7 +42,7 @@ function DynamicSidebar({ className }: DynamicSidebarProps) {
         className,
       )}
     >
-      <div className="w-72 h-full bg-sidebar border-r border-glass flex flex-col">
+      <div className="w-72 h-full bg-sidebar border-r border-border flex flex-col">
         {/* Header com toggle */}
         <div className="p-3 border-b border-border flex items-center justify-between shrink-0">
           <span className="text-sm font-medium text-muted-foreground">

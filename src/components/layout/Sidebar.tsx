@@ -24,7 +24,7 @@ function Sidebar({ children, className }: SidebarProps) {
   return (
     <aside
       className={cn(
-        "bg-sidebar rounded-3xl border border-glass flex flex-col h-full glass-border-animated overflow-hidden transition-all duration-500 ease-in-out shrink-0",
+        "bg-sidebar border-r border-border flex flex-col h-full overflow-hidden transition-all duration-500 ease-in-out shrink-0",
         isSidebarCollapsed ? "w-[84px]" : "w-72",
         className,
       )}
@@ -66,7 +66,7 @@ function Sidebar({ children, className }: SidebarProps) {
       {/* Footer - Fixed at bottom */}
       <div
         className={cn(
-          "p-4 mt-auto border-t border-border bg-sidebar/50 backdrop-blur-sm shrink-0 transition-opacity duration-300",
+          "p-4 mt-auto border-t border-border shrink-0 transition-opacity duration-300",
           isSidebarCollapsed ? "px-2" : "p-4",
         )}
       >

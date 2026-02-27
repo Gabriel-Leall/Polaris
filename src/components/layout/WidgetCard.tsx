@@ -22,7 +22,7 @@ function WidgetCard({
   return (
     <div
       className={`
-      bg-card rounded-3xl border border-white/5
+      bg-card
       flex flex-col h-full
       ${className || ""}
     `}

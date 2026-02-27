@@ -53,7 +53,6 @@ export const TaskItem = ({
           <div className="flex items-center gap-2">
             <Input
               value={editValue}
-              autoFocus
               onChange={(e) => setEditValue(e.target.value)}
               onKeyDown={(e) => {
                 if (e.key === "Enter") onSaveEdit();

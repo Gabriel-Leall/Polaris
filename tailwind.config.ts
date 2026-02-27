@@ -80,19 +80,8 @@ const config: Config = {
         },
       },
       fontFamily: {
-        sans: [
-          "var(--font-inter)",
-          "Inter",
-          "Geist Sans",
-          "system-ui",
-          "sans-serif",
-        ],
-        mono: [
-          "var(--font-jetbrains-mono)",
-          "JetBrains Mono",
-          "Geist Mono",
-          "monospace",
-        ],
+        sans: ["var(--font-jetbrains-mono)", "JetBrains Mono", "monospace"],
+        mono: ["var(--font-jetbrains-mono)", "JetBrains Mono", "monospace"],
       },
       borderRadius: {
         "3xl": "24px",
@@ -172,7 +161,7 @@ const config: Config = {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [require("tailwindcss-animate"), require("@tailwindcss/typography")],
 };
 
 export default config;

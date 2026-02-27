@@ -34,10 +34,8 @@ function BentoGrid({
       role={role}
       aria-label={ariaLabel}
       className={cn(
-        "flex-1 w-full grid gap-4 h-full",
-        "grid-cols-1",
-        "md:grid-cols-2",
-        "lg:grid-cols-12",
+        "flex-1 w-full grid gap-[1px] bg-border h-full",
+        "grid-cols-1 md:grid-cols-2 lg:grid-cols-12",
         className,
       )}
     >

@@ -522,13 +522,10 @@ export function HabitTrackerWidget({ className }: HabitTrackerWidgetProps) {
   return (
     <div className={cn("flex flex-col h-full max-h-[400px]", className)}>
       {/* Header */}
-      <div className="flex items-center justify-between pl-4 pr-4 pt-2 mb-4">
+      <div className="flex items-center justify-between px-6 py-3 border-b border-border/50 bg-muted/10 mb-3 -mx-6 -mt-2">
         <div className="flex items-center gap-2">
-          <div className="w-1 h-1 rounded-full bg-muted/80" />
-          <h2
-            className="glitch-text text-[10px] text-foreground"
-            data-text="Protocol Habits"
-          >
+          <div className="w-1.5 h-1.5 rounded-sm bg-primary/80" />
+          <h2 className="text-xs font-semibold tracking-wide uppercase text-muted-foreground">
             Protocol Habits
           </h2>
         </div>
@@ -568,7 +565,6 @@ export function HabitTrackerWidget({ className }: HabitTrackerWidgetProps) {
             placeholder="New habit name..."
             className="h-8 text-sm bg-muted/50 border-border focus:border-primary/50"
             onKeyDown={(e) => e.key === "Enter" && handleCreateHabit()}
-            autoFocus
           />
           <Button
             size="sm"
@@ -639,7 +635,7 @@ export function HabitTrackerWidget({ className }: HabitTrackerWidgetProps) {
                   {completedToday && habitStreak > 0 && (
                     <motion.div
                       className="flex items-center gap-1.5 ml-3"
-                      initial={{ scale: 0, opacity: 0 }}
+                      initial={{ scale: 0.95, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
                       transition={{
                         type: "spring",
@@ -671,11 +667,11 @@ export function HabitTrackerWidget({ className }: HabitTrackerWidgetProps) {
                 >
                   {/* Checkmark Animation */}
                   <motion.div
-                    initial={{ scale: 0, rotate: -180 }}
+                    initial={{ scale: 0.95, rotate: -180 }}
                     animate={
                       completedToday
                         ? { scale: 1, rotate: 0 }
-                        : { scale: 0, rotate: -180 }
+                        : { scale: 0.95, rotate: -180 }
                     }
                     transition={{
                       type: "spring",

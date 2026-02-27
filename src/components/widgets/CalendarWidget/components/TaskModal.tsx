@@ -52,7 +52,9 @@ export const TaskModal: React.FC<TaskModalProps> = ({
       >
         <div className="w-full max-w-2xl max-h-[85vh] overflow-hidden bg-card border border-border/50 rounded-3xl shadow-2xl">
           <div className="p-6 border-b border-border/50 flex items-center justify-between bg-gradient-to-r from-primary to-primary/80">
-            <h3 className="text-2xl font-bold text-foreground">{selectedDayDate}</h3>
+            <h3 className="text-2xl font-bold text-foreground">
+              {selectedDayDate}
+            </h3>
             <Button
               variant="ghost"
               size="icon"
@@ -62,9 +64,9 @@ export const TaskModal: React.FC<TaskModalProps> = ({
               <AnimatePresence>
                 {showSavedToast ? (
                   <motion.div
-                    initial={{ scale: 0 }}
+                    initial={{ scale: 0.95 }}
                     animate={{ scale: 1 }}
-                    exit={{ scale: 0 }}
+                    exit={{ scale: 0.95 }}
                   >
                     <Check className="h-5 w-5" />
                   </motion.div>
@@ -112,7 +114,13 @@ export const TaskModal: React.FC<TaskModalProps> = ({
                       />
                     ) : (
                       <span
+                        role="button"
+                        tabIndex={0}
                         onClick={() => onStartEdit(task)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" || e.key === " ")
+                            onStartEdit(task);
+                        }}
                         className={cn(
                           "flex-1 cursor-pointer text-foreground",
                           task.completed && "line-through text-secondary",

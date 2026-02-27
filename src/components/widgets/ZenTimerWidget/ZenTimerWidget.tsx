@@ -96,7 +96,7 @@ const ZenTimerWidgetCore = ({ className }: ZenTimerWidgetCoreProps) => {
       {isConfiguring ? (
         <div className="flex-1 flex flex-col p-4 animate-in fade-in duration-300">
           {/* Header de Configuração com botões de ação no topo */}
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between px-6 py-3 border-b border-border/50 bg-muted/10 mb-3 -mx-4 -mt-4">
             <div className="flex items-center gap-2">
               <Button
                 variant="ghost"
@@ -106,10 +106,7 @@ const ZenTimerWidgetCore = ({ className }: ZenTimerWidgetCoreProps) => {
               >
                 <X className="h-4 w-4" />
               </Button>
-              <h2
-                className="glitch-text text-[10px] text-primary"
-                data-text="Configuration"
-              >
+              <h2 className="text-xs font-semibold tracking-wide uppercase text-muted-foreground">
                 Configuration
               </h2>
             </div>
@@ -117,7 +114,16 @@ const ZenTimerWidgetCore = ({ className }: ZenTimerWidgetCoreProps) => {
               variant="primary"
               size="sm"
               onClick={() => {
-                dispatch({ type: "SET_CONFIG", payload: timerConfig });
+                // Ensure min values are respected when saving
+                const safeConfig = {
+                  ...timerConfig,
+                  work: Math.max(1, Number(timerConfig.work) || 25),
+                  break: Math.max(1, Number(timerConfig.break) || 5),
+                  longBreak: Math.max(1, Number(timerConfig.longBreak) || 15),
+                  cycles: Math.max(1, Number(timerConfig.cycles) || 4),
+                };
+                dispatch({ type: "SET_CONFIG", payload: safeConfig });
+                setTimerConfig(safeConfig); // update local state to safe values
                 setIsConfiguring(false);
               }}
               className="h-7 px-4 text-[9px] font-bold rounded-lg shadow-[0_0_15px_rgba(99,102,241,0.2)] flex items-center gap-1.5"
@@ -131,7 +137,7 @@ const ZenTimerWidgetCore = ({ className }: ZenTimerWidgetCoreProps) => {
             <div className="grid grid-cols-2 gap-2">
               {/* Timer Duration */}
               <div className="group space-y-1">
-                <label className="text-[8px] text-secondary/60 uppercase font-bold tracking-wider ml-1">
+                <label className="text-xs text-secondary/80 font-medium ml-1">
                   Timer (min)
                 </label>
                 <div className="bg-muted/10 border border-border/50 rounded-lg p-2 transition-all hover:bg-muted/20 hover:border-primary/20 group-focus-within:border-primary/40 group-focus-within:bg-primary/5">
@@ -140,12 +146,14 @@ const ZenTimerWidgetCore = ({ className }: ZenTimerWidgetCoreProps) => {
                     min="1"
                     max="90"
                     value={timerConfig.work}
-                    onChange={(e) =>
+                    onChange={(e) => {
+                      const val = e.target.value;
                       setTimerConfig((c) => ({
                         ...c,
-                        work: Math.max(1, Math.min(90, Number(e.target.value))),
-                      }))
-                    }
+                        work:
+                          val === "" ? ("" as any) : Math.min(90, Number(val)),
+                      }));
+                    }}
                     className="w-full bg-transparent border-transparent text-foreground font-mono text-sm focus:outline-none no-spinner"
                   />
                 </div>
@@ -153,7 +161,7 @@ const ZenTimerWidgetCore = ({ className }: ZenTimerWidgetCoreProps) => {
 
               {/* Break Duration */}
               <div className="group space-y-1">
-                <label className="text-[8px] text-secondary/60 uppercase font-bold tracking-wider ml-1">
+                <label className="text-xs text-secondary/80 font-medium ml-1">
                   Break (min)
                 </label>
                 <div className="bg-muted/10 border border-border/50 rounded-lg p-2 transition-all hover:bg-muted/20 hover:border-status-pending/20 group-focus-within:border-status-pending/40 group-focus-within:bg-status-pending/5">
@@ -162,15 +170,14 @@ const ZenTimerWidgetCore = ({ className }: ZenTimerWidgetCoreProps) => {
                     min="1"
                     max="30"
                     value={timerConfig.break}
-                    onChange={(e) =>
+                    onChange={(e) => {
+                      const val = e.target.value;
                       setTimerConfig((c) => ({
                         ...c,
-                        break: Math.max(
-                          1,
-                          Math.min(30, Number(e.target.value)),
-                        ),
-                      }))
-                    }
+                        break:
+                          val === "" ? ("" as any) : Math.min(30, Number(val)),
+                      }));
+                    }}
                     className="w-full bg-transparent border-transparent text-foreground font-mono text-sm focus:outline-none no-spinner"
                   />
                 </div>
@@ -178,7 +185,7 @@ const ZenTimerWidgetCore = ({ className }: ZenTimerWidgetCoreProps) => {
 
               {/* Long Break Duration */}
               <div className="group space-y-1">
-                <label className="text-[8px] text-secondary/60 uppercase font-bold tracking-wider ml-1">
+                <label className="text-xs text-secondary/80 font-medium ml-1">
                   Long Break
                 </label>
                 <div className="bg-muted/10 border border-border/50 rounded-lg p-2 transition-all hover:bg-muted/20 hover:border-status-applied/20 group-focus-within:border-status-applied/40 group-focus-within:bg-status-applied/5">
@@ -187,15 +194,14 @@ const ZenTimerWidgetCore = ({ className }: ZenTimerWidgetCoreProps) => {
                     min="5"
                     max="60"
                     value={timerConfig.longBreak}
-                    onChange={(e) =>
+                    onChange={(e) => {
+                      const val = e.target.value;
                       setTimerConfig((c) => ({
                         ...c,
-                        longBreak: Math.max(
-                          5,
-                          Math.min(60, Number(e.target.value)),
-                        ),
-                      }))
-                    }
+                        longBreak:
+                          val === "" ? ("" as any) : Math.min(60, Number(val)),
+                      }));
+                    }}
                     className="w-full bg-transparent border-transparent text-foreground font-mono text-sm focus:outline-none no-spinner"
                   />
                 </div>
@@ -203,7 +209,7 @@ const ZenTimerWidgetCore = ({ className }: ZenTimerWidgetCoreProps) => {
 
               {/* Cycles */}
               <div className="group space-y-1">
-                <label className="text-[8px] text-secondary/60 uppercase font-bold tracking-wider ml-1">
+                <label className="text-xs text-secondary/80 font-medium ml-1">
                   Seções
                 </label>
                 <div className="bg-muted/10 border border-border/50 rounded-lg p-2 transition-all hover:bg-muted/20 hover:border-primary/20 group-focus-within:border-primary/40 group-focus-within:bg-primary/5">
@@ -212,15 +218,14 @@ const ZenTimerWidgetCore = ({ className }: ZenTimerWidgetCoreProps) => {
                     min="1"
                     max="20"
                     value={timerConfig.cycles}
-                    onChange={(e) =>
+                    onChange={(e) => {
+                      const val = e.target.value;
                       setTimerConfig((c) => ({
                         ...c,
-                        cycles: Math.max(
-                          1,
-                          Math.min(20, Number(e.target.value)),
-                        ),
-                      }))
-                    }
+                        cycles:
+                          val === "" ? ("" as any) : Math.min(20, Number(val)),
+                      }));
+                    }}
                     className="w-full bg-transparent border-transparent text-foreground font-mono text-sm focus:outline-none no-spinner"
                   />
                 </div>
@@ -229,7 +234,7 @@ const ZenTimerWidgetCore = ({ className }: ZenTimerWidgetCoreProps) => {
 
             {/* Total Time Preview e rodapé compacto */}
             <div className="mt-2 flex items-center justify-between px-1">
-              <span className="text-[8px] text-secondary/40 uppercase font-bold tracking-[0.2em]">
+              <span className="text-xs text-secondary/60 font-medium tracking-wide">
                 Estimation
               </span>
               <div className="flex items-center gap-2">
@@ -255,20 +260,17 @@ const ZenTimerWidgetCore = ({ className }: ZenTimerWidgetCoreProps) => {
       ) : (
         <div className="flex-1 flex flex-col animate-in fade-in duration-300">
           {/* Header do Widget */}
-          <div className="flex items-center justify-between pl-4 pt-2 mb-6">
+          <div className="flex items-center justify-between px-6 py-3 border-b border-border/50 bg-muted/10 mb-3 -mx-6 -mt-2">
             <div className="flex items-center gap-2">
               <div
                 className={cn(
-                  "w-1 h-1 rounded-full transition-all duration-500",
+                  "w-1.5 h-1.5 rounded-sm transition-all duration-500",
                   state.status === "RUNNING"
                     ? "bg-primary shadow-[0_0_8px_rgba(99,102,241,0.6)]"
-                    : "bg-muted/80",
+                    : "bg-primary/80",
                 )}
               />
-              <h2
-                className="glitch-text text-[10px] text-foreground"
-                data-text="Zen System"
-              >
+              <h2 className="text-xs font-semibold tracking-wide uppercase text-muted-foreground">
                 Zen System
               </h2>
             </div>
@@ -297,9 +299,16 @@ const ZenTimerWidgetCore = ({ className }: ZenTimerWidgetCoreProps) => {
             </div>
           </div>
 
-          {/* Área Central Interativa */}
-          <div className="flex-1 flex items-center justify-center gap-6 pb-8">
-            {/* Botão Principal de Ação */}
+          {/* Área Central — Timer Hero */}
+          <div className="flex flex-col items-center justify-center gap-4 py-4">
+            {/* Timer Display — Hero Element */}
+            <TimerDisplay
+              seconds={state.timeLeft}
+              isRunning={state.status === "RUNNING"}
+              mode={state.mode}
+            />
+
+            {/* Play/Pause Button */}
             <Button
               variant="primary"
               onClick={() =>
@@ -309,11 +318,11 @@ const ZenTimerWidgetCore = ({ className }: ZenTimerWidgetCoreProps) => {
               }
               aria-label={`Timer ${formattedTime}`}
               className={cn(
-                "h-12 w-12 rounded-full p-0 transition-all duration-500",
-                "shadow-[0_0_15px_rgba(99,102,241,0.3)]",
+                "h-12 w-12 rounded-full p-0 transition-all duration-300",
+                "shadow-[0_0_20px_rgba(99,102,241,0.25)]",
                 state.status === "RUNNING"
-                  ? "scale-105"
-                  : "hover:scale-105 active:scale-95",
+                  ? "scale-105 shadow-[0_0_30px_rgba(99,102,241,0.4)]"
+                  : "hover:scale-110 active:scale-95",
               )}
             >
               {state.status === "RUNNING" ? (
@@ -323,17 +332,11 @@ const ZenTimerWidgetCore = ({ className }: ZenTimerWidgetCoreProps) => {
               )}
             </Button>
 
-            {/* Display do Tempo */}
-            <TimerDisplay
-              seconds={state.timeLeft}
-              isRunning={state.status === "RUNNING"}
-              mode={state.mode}
-            />
-
-            {/* Zen Mode & Cycle Info */}
-            <div className="flex items-center gap-6">
-              <div className="flex flex-col items-center gap-1">
-                <span className="text-[8px] uppercase tracking-widest text-secondary font-bold">
+            {/* Secondary Controls Row */}
+            <div className="flex items-center gap-8 mt-2">
+              {/* Cycle Counter */}
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] uppercase tracking-wider text-muted-foreground">
                   Cycle
                 </span>
                 <span className="text-xs font-mono text-primary font-bold">
@@ -341,44 +344,53 @@ const ZenTimerWidgetCore = ({ className }: ZenTimerWidgetCoreProps) => {
                 </span>
               </div>
 
-              <div className="flex flex-col items-center gap-1.5">
-                <span className="text-[8px] uppercase tracking-widest text-secondary font-bold">
-                  ZEN
+              {/* Divider */}
+              <div className="w-px h-4 bg-border/50" />
+
+              {/* Zen Toggle */}
+              <div className="flex items-center gap-2.5">
+                <span className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                  Zen
                 </span>
                 <button
                   onClick={() => toggleZenMode()}
                   className={cn(
-                    "w-8 h-4 rounded-full transition-colors duration-300 relative",
-                    isZenMode ? "bg-primary/20" : "bg-muted",
+                    "w-10 h-[22px] rounded-full transition-all duration-300 relative border",
+                    isZenMode
+                      ? "bg-primary/25 border-primary/40"
+                      : "bg-muted/30 border-border/80",
                   )}
                 >
                   <div
                     className={cn(
-                      "absolute top-0.5 left-0.5 w-3 h-3 rounded-full transition-all duration-300",
+                      "absolute top-[3px] left-[3px] w-4 h-4 rounded-full transition-all duration-300",
                       isZenMode
-                        ? "translate-x-4 bg-primary shadow-[0_0_10px_rgba(99,102,241,0.6)]"
-                        : "bg-secondary",
+                        ? "translate-x-[18px] bg-primary shadow-[0_0_12px_rgba(99,102,241,0.5)]"
+                        : "bg-muted-foreground/60",
                     )}
                   />
                 </button>
+                <span
+                  className={cn(
+                    "text-[10px] font-mono font-bold transition-colors duration-300",
+                    isZenMode ? "text-primary" : "text-muted-foreground/50",
+                  )}
+                >
+                  {isZenMode ? "ON" : "OFF"}
+                </span>
               </div>
             </div>
           </div>
 
-          {/* Footer Visual */}
-          <div className="mt-auto pt-4 border-t border-border/50 flex items-center justify-between -mx-2">
+          {/* Footer — Status Indicator */}
+          <div className="mt-4 pt-3 border-t border-border/30 flex items-center justify-center shrink-0">
             <span
               className={cn(
-                "text-[7px] uppercase tracking-[0.2em] font-bold transition-opacity duration-700 pl-2",
-                isZenMode
-                  ? "text-primary opacity-100 animate-pulse"
-                  : "text-secondary opacity-50",
+                "text-[10px] uppercase font-medium tracking-wider transition-all duration-500",
+                isZenMode ? "text-primary/80" : "text-muted-foreground/40",
               )}
             >
-              {isZenMode ? "Protocol Active" : "System Ready"}
-            </span>
-            <span className="text-[8px] text-secondary font-mono pr-2">
-              v1.0
+              {isZenMode ? "● Zen Active" : "System Ready"}
             </span>
           </div>
         </div>

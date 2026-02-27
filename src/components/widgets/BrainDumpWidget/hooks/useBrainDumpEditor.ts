@@ -2,10 +2,11 @@ import { useEditor } from "@tiptap/react";
 import { getEditorExtensions, getEditorProps } from "../utils/editorConfig";
 
 export const useBrainDumpEditor = (
-  onUpdate: (html: string, text: string) => void
+  onUpdate: (html: string, text: string) => void,
 ) => {
   const editor = useEditor({
     immediatelyRender: false, // Fix SSR hydration mismatch
+    // @ts-expect-error Type mismatch between tiptap core and react packages
     extensions: getEditorExtensions(),
     content: "",
     editorProps: getEditorProps(),

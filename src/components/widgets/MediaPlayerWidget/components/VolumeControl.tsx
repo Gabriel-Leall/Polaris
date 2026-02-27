@@ -37,7 +37,19 @@ function VolumeControl({
         <div className="flex-1 flex flex-col gap-1.5">
           <div
             ref={volumeRef}
+            role="slider"
+            tabIndex={0}
+            aria-label="Volume"
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-valuenow={Math.round(isMuted ? 0 : volume * 100)}
             onClick={onVolumeClick}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                onToggleMute();
+              }
+            }}
             className="relative h-1.5 w-full bg-muted/50 rounded-full cursor-pointer overflow-hidden backdrop-blur-sm"
           >
             <div className="absolute inset-0 bg-muted/50 group-hover/vol:bg-muted transition-colors" />

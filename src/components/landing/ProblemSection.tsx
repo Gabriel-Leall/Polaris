@@ -156,9 +156,9 @@ const ConvergenceAnimation = ({
     <div className="relative w-full h-full flex items-center justify-center">
       {/* Central Hub (Polaris) - Appears during convergence */}
       <motion.div
-        initial={{ scale: 0, opacity: 0 }}
+        initial={{ scale: 0.95, opacity: 0 }}
         animate={{
-          scale: animationPhase >= 2 ? 1 : 0,
+          scale: animationPhase >= 2 ? 1 : 0.95,
           opacity: animationPhase >= 2 ? 1 : 0,
         }}
         transition={{

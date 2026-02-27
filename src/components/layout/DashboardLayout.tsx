@@ -21,9 +21,9 @@ function DashboardLayout({ children, className }: DashboardLayoutProps) {
     >
       <div
         className={`
-        flex gap-4 h-full
-        p-4 md:p-5 lg:p-6
+        flex h-full w-full
         flex-col md:flex-row
+        bg-background
       `}
       >
         {children}

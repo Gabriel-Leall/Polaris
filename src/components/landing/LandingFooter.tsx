@@ -1,4 +1,5 @@
 import { AxisIcon } from "@/components/ui/AxisIcon";
+import Link from "next/link";
 
 export const LandingFooter = () => {
   return (
@@ -12,18 +13,18 @@ export const LandingFooter = () => {
           Axis v1.0. Sistema pronto.
         </p>
         <div className="flex gap-6 justify-center">
-          <a
+          <Link
             className="text-muted-foreground hover:text-foreground text-[10px] font-mono transition-colors"
             href="/privacy"
           >
             Política de Privacidade
-          </a>
-          <a
+          </Link>
+          <Link
             className="text-muted-foreground hover:text-foreground text-[10px] font-mono transition-colors"
             href="/terms"
           >
             Termos de Uso
-          </a>
+          </Link>
           <a
             className="text-muted-foreground hover:text-foreground text-[10px] font-mono transition-colors"
             href="#"

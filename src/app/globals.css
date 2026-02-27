@@ -3,45 +3,31 @@
 @import "tailwindcss/utilities";
 
 @layer base {
-  /* Light Theme (Neumorphism / Soft UI) */
   :root {
-    --background: 222 30% 95%; /* #EFF2F9 */
-    --foreground: 215 15% 30%; /* #414D59 - Darker slate for readability */
-
-    --card: 210 25% 92%; /* #E4EBF1 */
-    --card-foreground: 215 15% 30%;
-
-    --popover: 210 25% 92%;
-    --popover-foreground: 215 15% 30%;
-
-    --primary: 217 91% 48%; /* #2563EB Blue-600 tailored for AA compliance with white text */
-    --primary-hover: 213 94% 68%;
+    --background: 0 0% 98%;
+    --foreground: 0 0% 9%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 9%;
+    --primary: 217 91% 60%;
     --primary-foreground: 0 0% 100%;
-
-    --secondary: 210 15% 50%; /* #6E7F8D - The gray from image */
-    --secondary-foreground: 0 0% 100%;
-
-    --muted: 210 20% 88%; /* Slightly darker than card for contrast */
-    --muted-foreground: 210 15% 50%; /* #6E7F8D */
-
-    --accent: 187 92% 41%;
+    --secondary: 0 0% 90%;
+    --secondary-foreground: 0 0% 9%;
+    --muted: 0 0% 90%;
+    --muted-foreground: 0 0% 45%;
+    --accent: 217 91% 60%;
     --accent-foreground: 0 0% 100%;
-
     --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 100%;
-
-    --success: 142 76% 36%;
-    --warning: 45 93% 47%;
-
-    --border: 210 12% 70%; /* #B5BFC6 -> Darker for visibility */
-    --input: 210 12% 70%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 90%;
+    --input: 0 0% 90%;
     --ring: 217 91% 60%;
-    --radius: 0.75rem;
+    --sidebar: 0 0% 98%;
+    --glass: 0 0% 0% / 0.05;
 
-    --sidebar: 222 30% 95%; /* Matching background */
-    --glass: 0 0% 100% / 0.4; /* Stronger glass effect for light mode */
+    --radius: 0.25rem;
 
-    /* Chart colors */
     --chart-1: 217 91% 60%;
     --chart-2: 187 92% 41%;
     --chart-3: 142 76% 36%;
@@ -49,49 +35,39 @@
     --chart-5: 0 84% 60%;
   }
 
-  /* Dark Theme */
   .dark {
-    --background: 240 10% 4%; /* #0A0A0B */
-    --foreground: 0 0% 98%; /* #FAFAFA */
+    --background: 0 0% 4%; /* #0A0A0A */
+    --foreground: 0 0% 90%;
 
-    --card: 240 6% 8%; /* #121214 */
-    --card-foreground: 0 0% 98%;
+    /* Painéis ligeiramente mais claros */
+    --card: 0 0% 7%;
+    --card-foreground: 0 0% 90%;
 
-    --popover: 240 6% 8%;
-    --popover-foreground: 0 0% 98%;
+    --popover: 0 0% 7%;
+    --popover-foreground: 0 0% 90%;
 
-    --primary: 217 91% 50%; /* #3B82F6 adjusted */
-    --primary-hover: 213 94% 68%; /* #60A5FA Blue-400 */
+    --primary: 217 91% 60%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 215 14% 34%; /* #475569 Slate-600 */
-    --secondary-foreground: 0 0% 98%;
+    --secondary: 0 0% 12%;
+    --secondary-foreground: 0 0% 90%;
 
-    --muted: 217 19% 14%; /* #1E293B Slate-800 */
-    --muted-foreground: 215 20% 65%; /* #94A3B8 Slate-400 */
+    --muted: 0 0% 12%;
+    --muted-foreground: 0 0% 50%;
 
-    --accent: 187 92% 41%; /* #06B6D4 Cyan-500 */
+    --accent: 217 91% 60%;
     --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 63% 31%;
+    --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
 
-    --success: 142 76% 36%;
-    --warning: 45 93% 47%;
-
-    --border: 217 19% 18%; /* #27272A */
-    --input: 240 6% 10%; /* #18181B */
+    /* Borda sutil */
+    --border: 0 0% 15%;
+    --input: 0 0% 15%;
     --ring: 217 91% 60%;
 
-    --sidebar: 240 6% 6%; /* #0E0E11 */
+    --sidebar: 0 0% 4%;
     --glass: 0 0% 100% / 0.03;
-
-    /* Chart colors */
-    --chart-1: 217 91% 60%;
-    --chart-2: 187 92% 41%;
-    --chart-3: 142 76% 36%;
-    --chart-4: 45 93% 47%;
-    --chart-5: 0 84% 60%;
   }
 
   * {
@@ -101,7 +77,7 @@
   body {
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
-    font-family: var(--font-inter), system-ui, sans-serif;
+    font-family: var(--font-jetbrains-mono), monospace;
     font-feature-settings:
       "rlig" 1,
       "calt" 1;
@@ -109,199 +85,18 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
-  /* Typography hierarchy */
   h1,
   h2,
   h3,
   h4,
   h5,
   h6 {
-    font-weight: 600;
-    color: hsl(var(--foreground));
-  }
-
-  h1 {
-    font-size: 2.25rem;
-    line-height: 2.5rem;
-    font-weight: 700;
-  }
-
-  h2 {
-    font-size: 1.5rem;
-    line-height: 2rem;
-  }
-
-  h3 {
-    font-size: 1.25rem;
-    line-height: 1.75rem;
-  }
-
-  /* Code elements */
-  code,
-  pre {
-    font-family:
-      var(--font-jetbrains-mono), "JetBrains Mono", "Geist Mono", monospace;
-    font-feature-settings: "liga" 0;
-  }
-
-  /* Focus styles for better accessibility */
-  :focus-visible {
-    outline: 2px solid transparent;
-    outline-offset: 2px;
-    --tw-ring-offset-width: 2px;
-    --tw-ring-offset-color: hsl(var(--background));
-    --tw-ring-color: hsl(var(--primary));
-    --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0
-      var(--tw-ring-offset-width) var(--tw-ring-offset-color);
-    --tw-ring-shadow: var(--tw-ring-inset) 0 0 0
-      calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);
-    box-shadow:
-      var(--tw-ring-offset-shadow), var(--tw-ring-shadow),
-      var(--tw-shadow, 0 0 #0000);
+    font-weight: 500;
   }
 }
 
 @layer components {
-  /* Glass card component */
-  .glass-card {
-    background-color: hsl(var(--card));
-    border: 1px solid hsl(var(--border));
-    backdrop-filter: blur(4px);
-  }
-
-  /* Interactive glass elements */
-  .glass-interactive {
-    background-color: hsl(var(--card));
-    border: 1px solid hsl(var(--border));
-    backdrop-filter: blur(4px);
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-  .glass-interactive:hover {
-    border-color: hsl(var(--border));
-    background-color: hsl(var(--muted));
-  }
-
-  /* Reduced glow effects - more subtle for flat design */
-  .glow-primary {
-    box-shadow: 0 0 12px hsl(var(--primary) / 0.15);
-  }
-
-  .glow-primary-sm {
-    box-shadow: 0 0 6px hsl(var(--primary) / 0.1);
-  }
-
-  .glow-primary-lg {
-    box-shadow: 0 0 20px hsl(var(--primary) / 0.2);
-  }
-
-  /* Interactive element base styles */
-  .interactive-element {
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-  .interactive-element:focus-visible {
-    outline: 2px solid transparent;
-    outline-offset: 2px;
-    --tw-ring-offset-width: 2px;
-    --tw-ring-offset-color: hsl(var(--background));
-    --tw-ring-color: hsl(var(--primary));
-    --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0
-      var(--tw-ring-offset-width) var(--tw-ring-offset-color);
-    --tw-ring-shadow: var(--tw-ring-inset) 0 0 0
-      calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);
-    box-shadow:
-      var(--tw-ring-offset-shadow), var(--tw-ring-shadow),
-      var(--tw-shadow, 0 0 #0000);
-  }
-
-  /* Hover states for interactive elements */
-  .hover-lift {
-    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-  .hover-lift:hover {
-    transform: scale(1.02);
-  }
-  .hover-lift:active {
-    transform: scale(0.98);
-  }
-
-  .hover-glow {
-    transition: box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-  .hover-glow:hover {
-    box-shadow: 0 0 8px hsl(var(--primary) / 0.15);
-  }
-
-  .hover-brighten {
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-  .hover-brighten:hover {
-    filter: brightness(1.05);
-  }
-
-  /* Sidebar active item gradient */
-  .sidebar-active {
-    background-image: linear-gradient(
-      to right,
-      hsl(var(--primary) / 0.12),
-      hsl(var(--accent) / 0.05),
-      transparent
-    );
-  }
-
-  /* Code editor styles */
-  .code-editor {
-    font-family:
-      var(--font-jetbrains-mono), "JetBrains Mono", "Geist Mono", monospace;
-    font-feature-settings:
-      "liga" 0,
-      "calt" 1;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
-
-  /* Skip link for keyboard navigation */
-  .skip-link {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border-width: 0;
-  }
-  .skip-link:focus {
-    position: absolute;
-    top: 1rem;
-    left: 1rem;
-    z-index: 50;
-    width: auto;
-    height: auto;
-    padding: 0.5rem 1rem;
-    background-color: hsl(var(--primary));
-    color: hsl(var(--primary-foreground));
-    border-radius: var(--radius);
-    clip: auto;
-    white-space: normal;
-  }
-
-  /* Reduced motion preference */
-  @media (prefers-reduced-motion: reduce) {
-    .glass-interactive,
-    .hover-lift,
-    .hover-glow,
-    .hover-brighten {
-      transition: none;
-    }
-
-    .animate-pulse,
-    .animate-spin {
-      animation: none;
-    }
-  }
-
-  /* Tiptap Placeholder Styles */
+  /* Tiptap Placeholder Styles (Keep as it is external library override) */
   .tiptap .is-editor-empty:first-child::before {
     content: attr(data-placeholder);
     float: left;
@@ -310,7 +105,23 @@
     height: 0;
   }
 
-  /* Polaris Authentication Animations */
+  /* Scrollbars invisíveis/minimais */
+  ::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--muted) / 0.3);
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground) / 0.5);
+  }
+
+  /* Custom complex animations kept here */
   @keyframes pulse-primary {
     0%,
     100% {
@@ -415,7 +226,6 @@
     opacity: 0.8;
   }
 
-  /* Hide number input arrows */
   .no-spinner::-webkit-inner-spin-button,
   .no-spinner::-webkit-outer-spin-button {
     -webkit-appearance: none;
@@ -431,4 +241,16 @@
 ::view-transition-new(root) {
   animation: none;
   mix-blend-mode: normal;
+}
+
+/* Accessibility: Respect user's reduced motion preference (WCAG 2.3.3) */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

@@ -65,7 +65,8 @@ function MediaPlayerWidgetCore({ className }: MediaPlayerWidgetProps) {
                   src={`https://img.youtube.com/vi/${currentTrack.id}/mqdefault.jpg`}
                   alt="Track"
                   fill
-                  className="object-cover opacity-80 group-hover:opacity-100 transition-all duration-500 group-hover:scale-110"
+                  sizes="80px"
+                  className="object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-500 group-hover:scale-110"
                 />
                 <iframe
                   key={`${currentTrack.id}-${isLooping}`}
@@ -77,6 +78,7 @@ function MediaPlayerWidgetCore({ className }: MediaPlayerWidgetProps) {
                     typeof window !== "undefined" ? window.location.origin : ""
                   }`}
                   allow="autoplay; encrypted-media"
+                  title="YouTube media player"
                 />
               </>
             ) : (
@@ -113,9 +115,7 @@ function MediaPlayerWidgetCore({ className }: MediaPlayerWidgetProps) {
   );
 }
 
-function MediaPlayerWidget({
-  className,
-}: MediaPlayerWidgetProps) {
+function MediaPlayerWidget({ className }: MediaPlayerWidgetProps) {
   return (
     <ErrorBoundary
       fallback={WidgetErrorFallback}

@@ -49,8 +49,8 @@ export const QuickLinksDock = ({
   const handleFaviconError = (linkId: string) => {
     setLinks((prev) =>
       prev.map((link) =>
-        link.id === linkId ? { ...link, faviconUrl: null } : link
-      )
+        link.id === linkId ? { ...link, faviconUrl: null } : link,
+      ),
     );
   };
 
@@ -116,7 +116,7 @@ export const QuickLinksDock = ({
       className={cn(
         "fixed left-1/2 transform -translate-x-1/2 z-50",
         position === "bottom" ? "bottom-6" : "top-6",
-        className
+        className,
       )}
     >
       <Dock className="bg-card/90 border-border/50">
@@ -149,7 +149,7 @@ export const QuickLinksDock = ({
                 <Globe
                   className={cn(
                     "w-5 h-5 text-muted-foreground",
-                    link.faviconUrl ? "hidden" : "block"
+                    link.faviconUrl ? "hidden" : "block",
                   )}
                 />
               </button>
@@ -186,7 +186,7 @@ export const QuickLinksDock = ({
               value={newUrl}
               onChange={(e) => setNewUrl(e.target.value)}
               placeholder="Enter URL..."
-              className="flex-1 bg-input border-border"
+              className="flex-1 bg-input border-border focus:outline-none focus:ring-1 focus:ring-primary/50"
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   handleAddLink();
@@ -196,7 +196,6 @@ export const QuickLinksDock = ({
                   setNewUrl("");
                 }
               }}
-              autoFocus
             />
             <Button
               onClick={handleAddLink}

@@ -108,8 +108,8 @@ export function CelebrationAnimation({
 
           {/* Center burst */}
           <motion.div
-            initial={{ scale: 0, opacity: 1 }}
-            animate={{ scale: [0, 3, 5], opacity: [1, 0.5, 0] }}
+            initial={{ scale: 0.95, opacity: 1 }}
+            animate={{ scale: [0.95, 3, 5], opacity: [1, 0.5, 0] }}
             transition={{ duration: 0.8, ease: "easeOut" }}
             className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 rounded-full bg-gradient-radial from-primary/80 via-primary/40 to-transparent pointer-events-none z-[100]"
           />
@@ -121,13 +121,13 @@ export function CelebrationAnimation({
               initial={{
                 x: particle.x,
                 y: particle.y,
-                scale: 0,
+                scale: 0.95,
                 rotate: particle.rotation,
               }}
               animate={{
                 x: particle.x + particle.velocity.x * 30,
                 y: particle.y + particle.velocity.y * 30 + 200,
-                scale: [0, 1, 1, 0.5, 0],
+                scale: [0.95, 1, 1, 0.5, 0],
                 rotate: particle.rotation + particle.rotationSpeed * 30,
                 opacity: [0, 1, 1, 0.8, 0],
               }}
@@ -149,9 +149,9 @@ export function CelebrationAnimation({
 
           {/* Celebration text */}
           <motion.div
-            initial={{ scale: 0, opacity: 0, y: 20 }}
+            initial={{ scale: 0.95, opacity: 0, y: 20 }}
             animate={{
-              scale: [0, 1.2, 1],
+              scale: [0.95, 1.2, 1],
               opacity: [0, 1, 1, 0],
               y: [20, 0, -30],
             }}
@@ -178,7 +178,7 @@ export function CelebrationAnimation({
               initial={{
                 x: window.innerWidth / 2,
                 y: window.innerHeight / 2,
-                scale: 0,
+                scale: 0.95,
                 opacity: 1,
               }}
               animate={{
@@ -190,7 +190,7 @@ export function CelebrationAnimation({
                   window.innerHeight / 2 +
                   Math.sin((Math.PI * 2 * i) / 12) *
                     (150 + Math.random() * 100),
-                scale: [0, 1, 0],
+                scale: [0.95, 1, 0],
                 opacity: [1, 1, 0],
               }}
               transition={{
