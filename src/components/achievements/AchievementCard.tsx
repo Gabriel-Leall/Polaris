@@ -1055,7 +1055,11 @@ export function AchievementCard({
               <span className="text-emerald-500 flex items-center gap-1">
                 <Icons.CheckCircle2 size={10} /> Concluído
               </span>
-              <span>{achievement.completedAt ? new Date(achievement.completedAt).toLocaleDateString() : ''}</span>
+              <span>
+                {achievement.completedAt
+                  ? new Date(achievement.completedAt).toLocaleDateString()
+                  : ""}
+              </span>
             </div>
           </>
         ) : (

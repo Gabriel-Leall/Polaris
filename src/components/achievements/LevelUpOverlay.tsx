@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import * as Icons from 'lucide-react';
+import React, { useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import * as Icons from "lucide-react";
 
 interface LevelUpOverlayProps {
   show: boolean;
@@ -8,7 +8,11 @@ interface LevelUpOverlayProps {
   onComplete: () => void;
 }
 
-export function LevelUpOverlay({ show, level, onComplete }: LevelUpOverlayProps) {
+export function LevelUpOverlay({
+  show,
+  level,
+  onComplete,
+}: LevelUpOverlayProps) {
   useEffect(() => {
     if (show) {
       const timer = setTimeout(() => {
@@ -24,7 +28,7 @@ export function LevelUpOverlay({ show, level, onComplete }: LevelUpOverlayProps)
       {show && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center pointer-events-none">
           {/* Backdrop vignette */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -45,11 +49,11 @@ export function LevelUpOverlay({ show, level, onComplete }: LevelUpOverlayProps)
               key={`particle-${i}`}
               className="absolute w-2 h-2 bg-indigo-300 rounded-full shadow-[0_0_15px_rgba(129,140,248,1)]"
               initial={{ x: 0, y: 0, scale: 0, opacity: 1 }}
-              animate={{ 
-                x: (Math.random() - 0.5) * 800, 
+              animate={{
+                x: (Math.random() - 0.5) * 800,
                 y: (Math.random() - 0.5) * 800,
                 scale: [0, Math.random() * 2 + 1, 0],
-                opacity: [1, 1, 0]
+                opacity: [1, 1, 0],
               }}
               transition={{ duration: 1.5 + Math.random(), ease: "easeOut" }}
             />
@@ -60,7 +64,7 @@ export function LevelUpOverlay({ show, level, onComplete }: LevelUpOverlayProps)
             <motion.div
               key={`ray-${i}`}
               className="absolute w-1 h-64 bg-gradient-to-t from-transparent via-indigo-400/50 to-transparent origin-bottom"
-              style={{ rotate: `${i * 30}deg`, bottom: '50%' }}
+              style={{ rotate: `${i * 30}deg`, bottom: "50%" }}
               initial={{ scaleY: 0, opacity: 0 }}
               animate={{ scaleY: [0, 1.5, 0], opacity: [0, 1, 0] }}
               transition={{ duration: 2, ease: "easeOut" }}
@@ -87,16 +91,20 @@ export function LevelUpOverlay({ show, level, onComplete }: LevelUpOverlayProps)
             />
 
             <div className="relative w-32 h-32 rounded-full bg-[#0a0a0a] border-4 border-indigo-500 shadow-[0_0_30px_rgba(99,102,241,0.5)] flex items-center justify-center mb-6">
-              <Icons.Zap size={48} className="text-indigo-400 fill-indigo-400/20" />
+              <Icons.Zap
+                size={48}
+                className="text-indigo-400 fill-indigo-400/20"
+              />
             </div>
 
             <h2 className="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-b from-white to-indigo-200 drop-shadow-[0_0_20px_rgba(99,102,241,0.8)] tracking-tighter mb-2">
               LEVEL UP!
             </h2>
-            
+
             <div className="bg-indigo-500/20 border border-indigo-500/50 px-6 py-2 rounded-full backdrop-blur-md">
               <span className="text-indigo-200 font-mono text-xl">
-                Você alcançou o nível <span className="text-white font-bold">{level}</span>
+                Você alcançou o nível{" "}
+                <span className="text-white font-bold">{level}</span>
               </span>
             </div>
           </motion.div>
@@ -105,5 +113,3 @@ export function LevelUpOverlay({ show, level, onComplete }: LevelUpOverlayProps)
     </AnimatePresence>
   );
 }
-
-
