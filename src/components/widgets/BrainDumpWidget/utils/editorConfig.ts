@@ -42,47 +42,46 @@ export const MOCKUP_CONTENT = `<h1>Job Search Notes</h1>
 <li>Practice mock interviews with peers</li>
 </ol>`;
 
-export const getEditorExtensions = () =>
-  [
-    StarterKit.configure({
-      // Enable markdown-style input rules for bold, italic, code
-      bold: {
-        HTMLAttributes: {
-          class: "font-bold",
-        },
-      },
-      italic: {
-        HTMLAttributes: {
-          class: "italic",
-        },
-      },
-      code: {
-        HTMLAttributes: {
-          class: "bg-white/10 px-1 py-0.5 rounded text-sm font-mono",
-        },
-      },
-      bulletList: {
-        HTMLAttributes: {
-          class: "list-disc list-outside ml-4 space-y-0",
-        },
-      },
-      orderedList: {
-        HTMLAttributes: {
-          class: "list-decimal list-outside ml-4 space-y-0",
-        },
-      },
-    }),
-    UnderlineExtension,
-    LinkExtension.configure({
-      openOnClick: true,
+export const getEditorExtensions = () => [
+  StarterKit.configure({
+    // Enable markdown-style input rules for bold, italic, code
+    bold: {
       HTMLAttributes: {
-        class: "text-primary underline hover:text-primary/80",
+        class: "font-bold",
       },
-    }),
-    Placeholder.configure({
-      placeholder: "Escreva e Revise aqui..",
-    }),
-  ];
+    },
+    italic: {
+      HTMLAttributes: {
+        class: "italic",
+      },
+    },
+    code: {
+      HTMLAttributes: {
+        class: "bg-white/10 px-1 py-0.5 rounded text-sm font-mono",
+      },
+    },
+    bulletList: {
+      HTMLAttributes: {
+        class: "list-disc list-outside ml-4 space-y-0",
+      },
+    },
+    orderedList: {
+      HTMLAttributes: {
+        class: "list-decimal list-outside ml-4 space-y-0",
+      },
+    },
+  }),
+  UnderlineExtension,
+  LinkExtension.configure({
+    openOnClick: true,
+    HTMLAttributes: {
+      class: "text-primary underline hover:text-primary/80",
+    },
+  }),
+  Placeholder.configure({
+    placeholder: "Escreva e Revise aqui..",
+  }),
+];
 
 export const getEditorProps = () => ({
   attributes: {
