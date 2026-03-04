@@ -78,3 +78,95 @@ module.exports = {
       },
   plugins: [],
 };
+
+---
+
+# 🏆 Achievement Tier Colors
+
+Paletas OKLCH exclusivas para cada tier de raridade do sistema de achievements.
+Cada família de cor foi projetada para dark mode com tons otimizados para glows, bordas, badges e gradientes de ícone.
+
+## Common — Iron Steel (Cinza Aço Frio)
+
+```css
+:root {
+  --iron-50: 0.950 0.005 260.0;
+  --iron-100: 0.880 0.008 260.0;
+  --iron-200: 0.780 0.012 265.0;
+  --iron-300: 0.680 0.014 268.0;
+  --iron-400: 0.580 0.016 270.0;
+  --iron-500: 0.500 0.014 272.0;
+  --iron-600: 0.420 0.012 274.0;
+  --iron-700: 0.340 0.010 275.0;
+  --iron-800: 0.260 0.008 276.0;
+  --iron-900: 0.180 0.006 278.0;
+}
+```
+
+## Uncommon — Jade Circuit (Verde Circuito)
+
+```css
+:root {
+  --jade-50: 0.960 0.030 160.0;
+  --jade-100: 0.910 0.060 158.0;
+  --jade-200: 0.840 0.095 155.0;
+  --jade-300: 0.760 0.120 152.0;
+  --jade-400: 0.680 0.110 150.0;
+  --jade-500: 0.590 0.100 148.0;
+  --jade-600: 0.500 0.085 146.0;
+  --jade-700: 0.400 0.070 145.0;
+  --jade-800: 0.300 0.050 144.0;
+  --jade-900: 0.200 0.035 143.0;
+}
+```
+
+## Rare — Cobalt Flux (Azul Cobalto Elétrico)
+
+```css
+:root {
+  --cobalt-50: 0.955 0.030 250.0;
+  --cobalt-100: 0.910 0.060 248.0;
+  --cobalt-200: 0.840 0.105 245.0;
+  --cobalt-300: 0.760 0.140 242.0;
+  --cobalt-400: 0.670 0.130 240.0;
+  --cobalt-500: 0.580 0.115 238.0;
+  --cobalt-600: 0.490 0.100 236.0;
+  --cobalt-700: 0.390 0.080 235.0;
+  --cobalt-800: 0.290 0.060 234.0;
+  --cobalt-900: 0.185 0.040 233.0;
+}
+```
+
+## Epic — Void Amethyst (Roxo Dimensional)
+
+```css
+:root {
+  --void-50: 0.955 0.030 300.0;
+  --void-100: 0.900 0.065 298.0;
+  --void-200: 0.830 0.110 295.0;
+  --void-300: 0.750 0.150 292.0;
+  --void-400: 0.660 0.140 290.0;
+  --void-500: 0.570 0.125 288.0;
+  --void-600: 0.480 0.110 286.0;
+  --void-700: 0.380 0.090 285.0;
+  --void-800: 0.280 0.065 284.0;
+  --void-900: 0.180 0.045 283.0;
+}
+```
+
+## Legendary — Solar Flare (Dourado Solar)
+
+```css
+:root {
+  --solar-50: 0.965 0.030 85.0;
+  --solar-100: 0.930 0.070 80.0;
+  --solar-200: 0.880 0.130 75.0;
+  --solar-300: 0.820 0.160 70.0;
+  --solar-400: 0.760 0.155 65.0;
+  --solar-500: 0.700 0.145 60.0;
+  --solar-600: 0.620 0.130 55.0;
+  --solar-700: 0.520 0.110 50.0;
+  --solar-800: 0.400 0.085 48.0;
+  --solar-900: 0.280 0.060 45.0;
+}
+```

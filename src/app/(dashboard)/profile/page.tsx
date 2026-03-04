@@ -1,75 +1,55 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
-import Image from "next/image";
+import React, { useState, useEffect } from "react";
 import {
-  CheckCircle2,
-  Flame,
-  FolderRoot,
-  Clock,
-  User,
-  Mail,
-  ShieldCheck,
-  X,
-  ChevronRight,
-  Monitor,
-  Lock,
-  Loader2,
-  ArrowRight,
-  Camera,
-  Trash2,
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+  motion,
+  AnimatePresence,
+  useMotionValue,
+  useTransform,
+  animate,
+} from "framer-motion";
+import * as Icons from "lucide-react";
+import { AchievementCard } from "@/components/achievements/AchievementCard";
+import { AchievementModal } from "@/components/achievements/AchievementModal";
 import { useAuth } from "@/hooks/useAuth";
-import { useRouter } from "next/navigation";
 import {
   getProfileStats,
-  uploadAvatar,
-  updateUserName,
+  getUserAchievements,
+  getLinkedAccounts,
+  getActivityFeed,
+  getUserXpStats,
+  getUserStreak,
 } from "@/app/actions/profile";
-import { deleteAccount } from "@/app/actions/auth";
-import { useToast } from "@/hooks/use-toast";
+import { useRouter } from "next/navigation";
+import Image from "next/image";
 
-type StatCardProps = {
-  label: string;
-  value: React.ReactNode;
-  icon: React.ElementType;
-  color: string;
-  bg: string;
-};
+function AnimatedNumber({
+  value,
+  delay = 0,
+  suffix = "",
+}: {
+  value: number;
+  delay?: number;
+  suffix?: string;
+}) {
+  const count = useMotionValue(0);
+  const rounded = useTransform(count, (latest) => Math.round(latest) + suffix);
 
-const StatCard = ({ label, value, icon: Icon, color, bg }: StatCardProps) => (
-  <div className="bg-card border border-border p-4 rounded-2xl flex flex-col gap-2 flex-1 hover:border-border/80 transition-all duration-300">
-    <div className={`p-2 w-fit rounded-lg ${bg}`}>
-      <Icon className={`w-4 h-4 ${color}`} />
-    </div>
-    <div className="space-y-0.5">
-      <p className="text-[10px] font-black tracking-widest text-muted-foreground uppercase leading-none">
-        {label}
-      </p>
-      <p className="text-xl font-bold text-foreground tracking-tight">
-        {value}
-      </p>
-    </div>
-  </div>
-);
+  useEffect(() => {
+    const controls = animate(count, value, {
+      duration: 1.5,
+      delay,
+      ease: "easeOut",
+    });
+    return controls.stop;
+  }, [value, delay, count]);
+
+  return <motion.span>{rounded}</motion.span>;
+}
 
 export default function UserProfilePage() {
   const { user, userId, isLoading: authLoading } = useAuth();
   const router = useRouter();
-  const { toast } = useToast();
 
   const [stats, setStats] = useState({
     tasksDone: 0,
@@ -77,515 +57,473 @@ export default function UserProfilePage() {
     projects: 0,
     zenTime: 0,
   });
-  const [isStatsLoading, setIsStatsLoading] = useState(true);
-  const [isUploading, setIsUploading] = useState(false);
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [deletePassword, setDeletePassword] = useState("");
-  const [isDeleting, setIsDeleting] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [achievements, setAchievements] = useState<any[]>([]);
+  const [linkedAccounts, setLinkedAccounts] = useState<any[]>([]);
+  const [activityFeed, setActivityFeed] = useState<any[]>([]);
+  const [xpStats, setXpStats] = useState({
+    currentLevel: 1,
+    totalXp: 0,
+    currentLevelXp: 0,
+    xpToNextLevel: 100,
+    title: "Novato",
+  });
+  const [streak, setStreak] = useState(0);
+
+  const [selectedAchievement, setSelectedAchievement] = useState<any | null>(
+    null,
+  );
 
   useEffect(() => {
-    async function fetchStats() {
+    async function fetchAllData() {
       if (userId) {
-        setIsStatsLoading(true);
         try {
-          const data = await getProfileStats(userId);
-          setStats(data);
+          const [
+            statsData,
+            achievementsData,
+            accountsData,
+            feedData,
+            xpData,
+            streakData,
+          ] = await Promise.all([
+            getProfileStats(userId),
+            getUserAchievements(userId),
+            getLinkedAccounts(userId),
+            getActivityFeed(userId, 10),
+            getUserXpStats(userId),
+            getUserStreak(userId),
+          ]);
+          setStats(statsData);
+          setAchievements(achievementsData || []);
+          setLinkedAccounts(accountsData || []);
+          setActivityFeed(feedData || []);
+          setXpStats(xpData);
+          setStreak(streakData);
         } catch (error) {
-          console.error("Erro ao carregar stats:", error);
-        } finally {
-          setIsStatsLoading(false);
+          console.error("Erro ao carregar dados:", error);
         }
       }
     }
-    fetchStats();
+    fetchAllData();
   }, [userId]);
-
-  useEffect(() => {
-    if (user?.user_metadata?.full_name) {
-      const fullName = user.user_metadata.full_name;
-      const [first = "", ...lastParts] = fullName.split(" ");
-      setFirstName(first);
-      setLastName(lastParts.join(" "));
-    }
-  }, [user]);
-
-  const handleAvatarClick = () => {
-    fileInputRef.current?.click();
-  };
-
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file || !userId) return;
-
-    setIsUploading(true);
-    try {
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("userId", userId);
-
-      await uploadAvatar(formData);
-
-      toast({
-        title: "Sucesso!",
-        description: "Foto de perfil atualizada.",
-        variant: "success",
-      });
-
-      window.location.reload();
-    } catch (error) {
-      const message = error instanceof Error ? error.message : String(error);
-      console.error("Upload error:", error);
-      toast({
-        title: "Erro ao subir imagem",
-        description: message,
-        variant: "destructive",
-      });
-    } finally {
-      setIsUploading(false);
-    }
-  };
-
-  const handleSaveProfile = async () => {
-    if (!userId) return;
-
-    const fullName = `${firstName} ${lastName}`.trim();
-
-    try {
-      await updateUserName(fullName);
-      toast({
-        title: "Sucesso!",
-        description: "Nome atualizado com sucesso.",
-        variant: "success",
-      });
-      // Refresh the page to update the user data
-      window.location.reload();
-    } catch (error) {
-      const message = error instanceof Error ? error.message : String(error);
-      toast({
-        title: "Erro ao salvar",
-        description: message,
-        variant: "destructive",
-      });
-    }
-  };
-
-  const handleDeleteAccount = async () => {
-    if (!deletePassword) {
-      toast({
-        title: "Senha obrigatória",
-        description: "Digite sua senha para confirmar a exclusão da conta.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setIsDeleting(true);
-    try {
-      const result = await deleteAccount(deletePassword);
-
-      if (!result.success) {
-        toast({
-          title: "Erro ao deletar conta",
-          description: result.error || "Ocorreu um erro inesperado.",
-          variant: "destructive",
-        });
-        setIsDeleting(false);
-        return;
-      }
-
-      toast({
-        title: "Conta deletada",
-        description: "Sua conta foi excluída com sucesso.",
-        variant: "success",
-      });
-    } catch (error) {
-      const message = error instanceof Error ? error.message : String(error);
-      toast({
-        title: "Erro ao deletar conta",
-        description: message,
-        variant: "destructive",
-      });
-      setIsDeleting(false);
-    }
-  };
 
   if (authLoading) {
     return (
-      <div className="flex h-full items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      <div className="flex h-full w-full items-center justify-center bg-[#050505]">
+        <Icons.Loader2 className="w-8 h-8 animate-spin text-indigo-500" />
       </div>
     );
   }
 
+  const fullName = user?.user_metadata?.full_name || "Usuário";
   const userEmail = user?.email || "";
+  const avatarUrl =
+    user?.user_metadata?.avatar_url || user?.user_metadata?.picture || ""; // Empty avatar will show fallback UI
 
-  const fullName =
-    `${firstName} ${lastName}`.trim() ||
-    user?.user_metadata?.full_name ||
-    "Usuário Polaris";
+  // Connections mapping from real data
+  const connections = linkedAccounts.map((acc) => ({
+    platform: acc.provider,
+    connected: true,
+    username: acc.provider_account_id || acc.provider,
+    // @ts-ignore
+    icon:
+      acc.provider === "github"
+        ? Icons.Github
+        : acc.provider === "google"
+          ? Icons.Mail
+          : acc.provider === "twitter"
+            ? Icons.Twitter
+            : Icons.User,
+    color:
+      acc.provider === "github"
+        ? "text-white bg-[#24292e]"
+        : acc.provider === "twitter"
+          ? "text-white bg-[#1DA1F2]"
+          : "text-zinc-400 bg-zinc-800",
+  }));
 
-  const joinedDate = user?.created_at
-    ? new Date(user.created_at).toLocaleDateString("pt-BR", {
-        month: "short",
-        year: "numeric",
-      })
-    : "---";
+  // Timeline mapping from real activity feed data
+  const timeline = activityFeed.map((act, i) => {
+    let icon = Icons.Activity;
+    let color = "text-zinc-300";
+
+    if (act.activity_type?.includes("achievement")) {
+      icon = Icons.Trophy;
+      color = "text-amber-400";
+    } else if (act.activity_type?.includes("focus")) {
+      icon = Icons.Timer;
+      color = "text-sky-400";
+    } else if (
+      act.activity_type?.includes("note") ||
+      act.activity_type?.includes("task")
+    ) {
+      icon = Icons.FileText;
+      color = "text-emerald-400";
+    } else if (
+      act.activity_type?.includes("sync") ||
+      act.activity_type?.includes("connection")
+    ) {
+      icon = Icons.Link2;
+      color = "text-zinc-300";
+    }
+
+    // Format relative time
+    const createdAt = new Date(act.created_at);
+    const now = new Date();
+    const diffMs = now.getTime() - createdAt.getTime();
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+
+    let timeString;
+    if (diffMins < 1) {
+      timeString = "Agora";
+    } else if (diffMins < 60) {
+      timeString = `${diffMins} min atrás`;
+    } else if (diffHours < 24) {
+      timeString = `${diffHours} h atrás`;
+    } else if (diffDays === 1) {
+      timeString = "Ontem";
+    } else if (diffDays < 7) {
+      timeString = `${diffDays} dias atrás`;
+    } else {
+      timeString = createdAt.toLocaleDateString("pt-BR");
+    }
+
+    return {
+      id: act.id || i,
+      type: act.activity_type || "act",
+      title: act.title || "Ação",
+      time: timeString,
+      icon,
+      color,
+    };
+  });
+
+  // Map real achievements data
+  const mappedAchievements = achievements.map((a) => ({
+    ...a,
+    icon: a.icon || "Trophy",
+    xp: a.xp || a.xp_reward || 100,
+    progress: a.progress || a.progress_percent || a.progress_current || 0,
+    total: a.total || a.progress_total || 100,
+  }));
+
+  const recentAchievements = mappedAchievements
+    .filter((a) => a.status === "completed")
+    .slice(0, 2);
 
   return (
-    <div className="w-full h-full flex items-center justify-center p-6 lg:p-10 selection:bg-primary/30 animate-fade-in">
-      {/* Hidden File Input */}
-      <input
-        type="file"
-        ref={fileInputRef}
-        onChange={handleFileChange}
-        className="hidden"
-        accept="image/*"
-      />
-
-      <div className="w-full max-w-5xl bg-card border border-border rounded-[32px] overflow-hidden shadow-2xl relative flex flex-col md:flex-row h-full max-h-[680px]">
-        {/* Left Sidebar Info */}
-        <div className="w-full md:w-[300px] bg-gradient-to-b from-primary/10 to-transparent border-r border-border p-8 flex flex-col items-center text-center shrink-0">
-          <div
-            className="relative mb-6 group cursor-pointer"
-            onClick={handleAvatarClick}
+    <div className="flex-1 bg-[#050505] overflow-y-auto w-full h-full text-zinc-300 relative">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8 p-4 sm:p-8 pt-8 sm:pt-8">
+        {/* Main Content */}
+        <div className="lg:col-span-2 space-y-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-[#0a0a0a] border border-zinc-800 rounded-3xl p-8 flex flex-col sm:flex-row items-center sm:items-start gap-8 relative overflow-hidden"
           >
-            <div
-              className={`w-28 h-28 rounded-full border-[6px] border-card overflow-hidden bg-main shadow-2xl transition-all ${isUploading ? "opacity-50" : "group-hover:opacity-80"}`}
+            <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/10 blur-3xl rounded-full pointer-events-none" />
+
+            <div className="relative shrink-0">
+              {avatarUrl ? (
+                <Image
+                  src={avatarUrl}
+                  alt="Avatar"
+                  width={112}
+                  height={112}
+                  className="w-28 h-28 rounded-full border-4 border-[#0a0a0a] shadow-[0_0_0_2px_rgba(63,63,70,1)] object-cover"
+                />
+              ) : (
+                <div className="w-28 h-28 rounded-full border-4 border-[#0a0a0a] shadow-[0_0_0_2px_rgba(63,63,70,1)] bg-zinc-800 flex items-center justify-center">
+                  <Icons.User size={48} className="text-zinc-500" />
+                </div>
+              )}
+              <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-indigo-500 text-white text-xs font-bold px-3 py-1 rounded-full border-4 border-[#0a0a0a] shadow-lg whitespace-nowrap">
+                LVL {xpStats.currentLevel}
+              </div>
+            </div>
+
+            <div className="flex-1 w-full text-center sm:text-left mt-2 sm:mt-0 z-10">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                <div>
+                  <h1 className="text-3xl font-bold text-zinc-100 tracking-tight">
+                    {fullName}
+                  </h1>
+                  <p className="text-zinc-500 font-mono text-sm">{userEmail}</p>
+                </div>
+              </div>
+
+              <div className="space-y-2 max-w-md mx-auto sm:mx-0 relative">
+                <div className="flex justify-between text-xs font-mono text-zinc-400">
+                  <span className="flex items-center gap-1">
+                    <Icons.Zap size={14} className="text-indigo-400" /> XP Atual
+                  </span>
+                  <span>
+                    <AnimatedNumber value={xpStats.currentLevelXp} /> /{" "}
+                    {xpStats.xpToNextLevel}
+                  </span>
+                </div>
+                <div className="h-2.5 bg-zinc-900 rounded-full overflow-hidden border border-zinc-800 relative">
+                  <motion.div
+                    initial={{ width: 0 }}
+                    animate={{
+                      width: `${(xpStats.currentLevelXp / xpStats.xpToNextLevel) * 100}%`,
+                    }}
+                    transition={{
+                      duration: 1,
+                      delay: 0.2,
+                      ease: "easeOut",
+                    }}
+                    className="h-full bg-gradient-to-r from-indigo-600 to-indigo-400 rounded-full relative"
+                  >
+                    <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTAgMTBMMTAgME0tNSAxMEw1IDBNNSAyMEwxNSAxMCIgc3Ryb2tlPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMikiIHN0cm9rZS13aWR0aD0iMiIvPjwvc3ZnPg==')] opacity-50" />
+                  </motion.div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Stats Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="bg-[#0a0a0a] border border-zinc-800 rounded-2xl p-6 flex flex-col items-center justify-center text-center relative overflow-hidden group"
             >
-              <div className="w-full h-full bg-gradient-to-br from-indigo-500/10 to-purple-500/10 flex items-center justify-center">
-                {user?.user_metadata?.avatar_url ||
-                user?.user_metadata?.picture ? (
-                  <Image
-                    src={
-                      user.user_metadata?.avatar_url ||
-                      user?.user_metadata?.picture
-                    }
-                    alt={fullName}
-                    width={112}
-                    height={112}
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <User className="w-10 h-10 text-primary/40" />
-                )}
-              </div>
-            </div>
+              <div className="absolute inset-0 bg-orange-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <Icons.Flame
+                className="text-orange-500 mb-3"
+                size={32}
+                strokeWidth={1.5}
+              />
+              <span className="text-3xl font-bold text-zinc-100 font-mono">
+                <AnimatedNumber value={streak} delay={0.2} />
+              </span>
+              <span className="text-[10px] text-zinc-500 uppercase tracking-widest mt-2">
+                Dias Seguidos
+              </span>
+            </motion.div>
 
-            {/* Upload Overlay */}
-            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-              <div className="p-2 bg-black/40 rounded-full backdrop-blur-sm">
-                <Camera className="w-5 h-5 text-white" />
-              </div>
-            </div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="bg-[#0a0a0a] border border-zinc-800 rounded-2xl p-6 flex flex-col items-center justify-center text-center relative overflow-hidden group"
+            >
+              <div className="absolute inset-0 bg-sky-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <Icons.Timer
+                className="text-sky-400 mb-3"
+                size={32}
+                strokeWidth={1.5}
+              />
+              <span className="text-3xl font-bold text-zinc-100 font-mono flex items-baseline gap-1">
+                <AnimatedNumber
+                  value={Math.floor(stats.zenTime)}
+                  delay={0.3}
+                  suffix="h"
+                />
+                <AnimatedNumber
+                  value={Math.floor((stats.zenTime % 1) * 60)}
+                  delay={0.4}
+                  suffix="m"
+                />
+              </span>
+              <span className="text-[10px] text-zinc-500 uppercase tracking-widest mt-2">
+                Tempo de Foco
+              </span>
+            </motion.div>
 
-            {isUploading && (
-              <div className="absolute inset-0 flex items-center justify-center bg-black/20 rounded-full">
-                <Loader2 className="w-6 h-6 animate-spin text-primary" />
-              </div>
-            )}
-
-            <div className="absolute bottom-1 right-1 bg-primary p-1.5 rounded-full border-4 border-card">
-              <CheckCircle2 className="w-3 h-3 text-white" />
-            </div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="bg-[#0a0a0a] border border-zinc-800 rounded-2xl p-6 flex flex-col items-center justify-center text-center relative overflow-hidden group"
+            >
+              <div className="absolute inset-0 bg-emerald-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <Icons.FileText
+                className="text-emerald-400 mb-3"
+                size={32}
+                strokeWidth={1.5}
+              />
+              <span className="text-3xl font-bold text-zinc-100 font-mono">
+                <AnimatedNumber value={stats.tasksDone} delay={0.4} />
+              </span>
+              <span className="text-[10px] text-zinc-500 uppercase tracking-widest mt-2">
+                Tarefas Concluídas
+              </span>
+            </motion.div>
           </div>
 
-          <div className="space-y-6 w-full">
-            <div className="space-y-1">
-              <h1 className="text-xl font-black text-foreground tracking-tight leading-tight">
-                {fullName}
-              </h1>
-              <p className="text-[11px] text-muted-foreground font-medium truncate">
-                {userEmail}
-              </p>
-            </div>
-
-            <div className="pt-4 space-y-3">
-              <div className="bg-muted/10 border border-border rounded-2xl p-4 space-y-3">
-                <div className="flex justify-between items-center px-1">
-                  <span className="text-[9px] text-muted-foreground uppercase font-black tracking-widest">
-                    Membro desde
-                  </span>
-                  <span className="text-xs text-foreground font-bold capitalize">
-                    {joinedDate}
-                  </span>
-                </div>
-                <div className="w-full h-[1px] bg-border" />
-                <div className="flex justify-between items-center px-1">
-                  <span className="text-[9px] text-muted-foreground uppercase font-black tracking-widest">
-                    Status
-                  </span>
-                  <div className="flex items-center gap-1.5">
-                    <div className="w-1.5 h-1.5 bg-success rounded-full animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.4)]" />
-                    <span className="text-[10px] text-success font-black uppercase tracking-tighter">
-                      Online
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Right Main Content */}
-        <div className="flex-1 flex flex-col min-w-0 bg-white/[0.01]">
-          {/* Header Bar */}
-          <div className="p-6 flex items-center justify-between border-b border-border shrink-0">
-            <h2 className="text-[10px] font-black tracking-[0.3em] text-muted-foreground uppercase ml-2 px-3 py-1 bg-muted/10 rounded-full">
-              Painel de Perfil
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+            className="bg-[#0a0a0a] border border-zinc-800 rounded-2xl p-6"
+          >
+            <h2 className="text-lg font-bold text-zinc-100 mb-6 flex items-center gap-2">
+              <Icons.Link2 size={20} className="text-zinc-500" /> Conexões
             </h2>
-            <button
-              onClick={() => router.back()}
-              className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted/10 rounded-full transition-all"
-            >
-              <X className="w-5 h-5" />
-            </button>
-          </div>
-
-          {/* Body */}
-          <div className="flex-1 overflow-y-auto p-8 space-y-10 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-white/10">
-            {/* Stats Row */}
-            <div className="flex gap-4">
-              <StatCard
-                label="TAREFAS"
-                value={isStatsLoading ? "..." : stats.tasksDone}
-                icon={CheckCircle2}
-                color="text-emerald-500"
-                bg="bg-emerald-500/10"
-              />
-              <StatCard
-                label="FOCO"
-                value={isStatsLoading ? "..." : `${stats.focus} dia(s)`}
-                icon={Flame}
-                color="text-orange-500"
-                bg="bg-orange-500/10"
-              />
-              <StatCard
-                label="NOTAS"
-                value={isStatsLoading ? "..." : stats.projects}
-                icon={FolderRoot}
-                color="text-blue-500"
-                bg="bg-blue-500/10"
-              />
-              <StatCard
-                label="ZEN TIME"
-                value={isStatsLoading ? "..." : `${stats.zenTime.toFixed(1)}h`}
-                icon={Clock}
-                color="text-purple-500"
-                bg="bg-purple-500/10"
-              />
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-              {/* Form Side */}
-              <div className="space-y-6">
-                <div className="flex items-center gap-3 border-b border-border pb-3">
-                  <User className="w-4 h-4 text-primary" />
-                  <h3 className="text-[10px] font-black tracking-widest text-foreground uppercase">
-                    Dados Pessoais
-                  </h3>
-                </div>
-
-                <div className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-1.5">
-                      <label className="text-[9px] font-bold text-muted-foreground uppercase ml-1">
-                        Nome
-                      </label>
-                      <Input
-                        value={firstName}
-                        onChange={(e) => setFirstName(e.target.value)}
-                        className="h-11 bg-muted/10 border-border rounded-xl px-4 text-sm focus:border-primary/50 transition-colors"
-                      />
-                    </div>
-                    <div className="space-y-1.5">
-                      <label className="text-[9px] font-bold text-muted-foreground uppercase ml-1">
-                        Sobrenome
-                      </label>
-                      <Input
-                        value={lastName}
-                        onChange={(e) => setLastName(e.target.value)}
-                        className="h-11 bg-muted/10 border-border rounded-xl px-4 text-sm focus:border-primary/50 transition-colors"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="space-y-1.5">
-                    <label className="text-[9px] font-bold text-muted-foreground uppercase ml-1">
-                      E-mail
-                    </label>
-                    <div className="relative">
-                      <Input
-                        defaultValue={userEmail}
-                        disabled
-                        className="h-11 bg-muted/5 border-border rounded-xl px-4 text-sm opacity-60 cursor-not-allowed"
-                      />
-                      <Mail className="absolute right-4 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground/30" />
-                    </div>
-                  </div>
-
-                  <div className="space-y-1.5">
-                    <label className="text-[9px] font-bold text-muted-foreground uppercase ml-1">
-                      Região / Idioma
-                    </label>
-                    <div className="relative cursor-pointer">
-                      <Input
-                        defaultValue="Brasil (PT-BR)"
-                        className="h-11 bg-muted/10 border-border rounded-xl px-4 text-sm focus:border-primary/50 transition-colors cursor-pointer"
-                      />
-                      <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2 pointer-events-none">
-                        <span className="text-sm">🇧🇷</span>
-                        <ChevronRight className="w-4 h-4 rotate-90 text-muted-foreground/30" />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Security Side */}
-              <div className="space-y-6">
-                <div className="flex items-center gap-3 border-b border-border pb-3">
-                  <ShieldCheck className="w-4 h-4 text-primary" />
-                  <h3 className="text-[10px] font-black tracking-widest text-foreground uppercase">
-                    Segurança
-                  </h3>
-                </div>
-
-                <div className="space-y-3">
-                  <button className="w-full flex items-center justify-between p-3.5 bg-muted/10 border border-border rounded-2xl hover:border-primary/30 transition-all text-left group">
-                    <div className="flex items-center gap-4">
-                      <div className="p-2 bg-muted/20 rounded-xl group-hover:bg-primary/20 transition-colors">
-                        <Lock className="w-4 h-4 text-muted-foreground group-hover:text-primary" />
-                      </div>
-                      <span className="text-sm font-bold text-foreground/90">
-                        Alterar Senha
-                      </span>
-                    </div>
-                    <ChevronRight className="w-4 h-4 text-muted-foreground/30 group-hover:translate-x-1 transition-transform" />
-                  </button>
-
-                  <button className="w-full flex items-center justify-between p-3.5 bg-muted/10 border border-border rounded-2xl hover:border-primary/30 transition-all text-left group">
-                    <div className="flex items-center gap-4">
-                      <div className="p-2 bg-muted/20 rounded-xl group-hover:bg-primary/20 transition-colors">
-                        <Monitor className="w-4 h-4 text-muted-foreground group-hover:text-primary" />
-                      </div>
-                      <div className="space-y-0.5">
-                        <p className="text-sm font-bold text-foreground/90">
-                          Sessões Ativas
-                        </p>
-                        <p className="text-[9px] font-black text-primary uppercase tracking-widest">
-                          Verificar dispositivos
-                        </p>
-                      </div>
-                    </div>
-                    <ChevronRight className="w-4 h-4 text-muted-foreground/30 group-hover:translate-x-1 transition-transform" />
-                  </button>
-
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <button className="w-full flex items-center justify-between p-3.5 bg-destructive/5 border border-destructive/20 rounded-2xl hover:border-destructive/40 hover:bg-destructive/10 transition-all text-left group">
-                        <div className="flex items-center gap-4">
-                          <div className="p-2 bg-destructive/10 rounded-xl group-hover:bg-destructive/20 transition-colors">
-                            <Trash2 className="w-4 h-4 text-destructive" />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {connections.length > 0 ? (
+                connections.map((conn) => {
+                  const IconComp = conn.icon || Icons.Link2;
+                  return (
+                    <div
+                      key={conn.platform}
+                      className="flex items-center justify-between p-4 border border-zinc-800/50 rounded-xl bg-[#0f0f0f] hover:border-zinc-700 transition-colors"
+                    >
+                      <div className="flex items-center gap-4">
+                        <div className={`p-2.5 rounded-lg ${conn.color}`}>
+                          <IconComp size={18} />
+                        </div>
+                        <div>
+                          <div className="text-sm font-bold text-zinc-200">
+                            {conn.platform}
                           </div>
-                          <div className="space-y-0.5">
-                            <p className="text-sm font-bold text-destructive">
-                              Deletar Conta
-                            </p>
-                            <p className="text-[9px] font-black text-destructive/60 uppercase tracking-widest">
-                              Ação irreversível
-                            </p>
+                          <div className="text-xs text-zinc-500 font-mono mt-0.5">
+                            {conn.username}
                           </div>
                         </div>
-                        <ChevronRight className="w-4 h-4 text-destructive/30 group-hover:translate-x-1 transition-transform" />
-                      </button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle className="flex items-center gap-3">
-                          <div className="p-2 bg-destructive/10 rounded-xl">
-                            <Trash2 className="w-5 h-5 text-destructive" />
-                          </div>
-                          Deletar Conta Permanentemente
-                        </AlertDialogTitle>
-                        <AlertDialogDescription className="pt-2">
-                          Esta ação é{" "}
-                          <span className="font-bold text-destructive">
-                            irreversível
-                          </span>
-                          . Todos os seus dados, incluindo tarefas, notas,
-                          preferências e histórico serão excluídos
-                          permanentemente.
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <div className="py-4 space-y-2">
-                        <label className="text-xs font-bold text-muted-foreground uppercase">
-                          Digite sua senha para confirmar
-                        </label>
-                        <Input
-                          type="password"
-                          placeholder="Sua senha"
-                          value={deletePassword}
-                          onChange={(e) => setDeletePassword(e.target.value)}
-                          className="h-11 bg-muted/10 border-border rounded-xl px-4"
-                          disabled={isDeleting}
-                        />
                       </div>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel disabled={isDeleting}>
-                          Cancelar
-                        </AlertDialogCancel>
-                        <AlertDialogAction
-                          onClick={(e) => {
-                            e.preventDefault();
-                            handleDeleteAccount();
-                          }}
-                          disabled={isDeleting}
-                          className="bg-destructive hover:bg-destructive/90"
-                        >
-                          {isDeleting ? (
-                            <>
-                              <Loader2 className="w-4 h-4 animate-spin mr-2" />
-                              Deletando...
-                            </>
-                          ) : (
-                            "Deletar minha conta"
-                          )}
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
+                      <span className="text-[10px] font-mono uppercase tracking-widest text-emerald-500 bg-emerald-500/10 px-2 py-1 rounded">
+                        Conectado
+                      </span>
+                    </div>
+                  );
+                })
+              ) : (
+                <div className="col-span-full p-6 border border-zinc-800/50 rounded-xl bg-[#0f0f0f] text-center">
+                  <Icons.Link2
+                    size={24}
+                    className="text-zinc-600 mx-auto mb-2"
+                  />
+                  <p className="text-sm text-zinc-500">
+                    Nenhuma conta conectada
+                  </p>
+                  <p className="text-xs text-zinc-600 mt-1">
+                    Conecte suas contas nas configurações
+                  </p>
                 </div>
-              </div>
+              )}
             </div>
-          </div>
+          </motion.div>
 
-          {/* Footer */}
-          <div className="px-10 py-5 bg-muted/10 border-t border-border flex items-center justify-between shrink-0">
-            <div className="flex items-center gap-4">
-              <div className="flex h-8 items-center px-4 bg-primary/10 border border-primary/20 rounded-full">
-                <span className="text-[9px] font-black text-primary uppercase tracking-[0.2em] shadow-primary/20">
-                  Polaris Free Plan
-                </span>
-              </div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5 }}
+          >
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-lg font-bold text-zinc-100 flex items-center gap-2">
+                <Icons.Trophy size={20} className="text-amber-400" /> Conquistas
+                Recentes
+              </h2>
               <button
-                onClick={() => router.back()}
-                className="text-[9px] font-black text-muted-foreground hover:text-foreground transition-colors uppercase tracking-[0.2em]"
+                onClick={() => router.push("/achievements")}
+                className="text-xs font-mono text-indigo-400 hover:text-indigo-300 transition-colors flex items-center gap-1"
               >
-                Cancelar
+                Ver todas <Icons.ArrowRight size={14} />
               </button>
             </div>
-            <Button
-              onClick={handleSaveProfile}
-              className="h-11 px-10 bg-primary hover:bg-primary-glow text-primary-foreground text-[10px] font-black rounded-xl flex items-center gap-2 transition-all active:scale-95 shadow-glow"
-            >
-              SALVAR PERFIL
-              <ArrowRight className="w-3.5 h-3.5 ml-1" />
-            </Button>
-          </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              {recentAchievements.length > 0 ? (
+                recentAchievements.map((achievement) => (
+                  <AchievementCard
+                    key={achievement.id}
+                    achievement={achievement as any}
+                    onClick={setSelectedAchievement}
+                  />
+                ))
+              ) : (
+                <div className="col-span-full p-6 border border-zinc-800/50 rounded-xl bg-[#0f0f0f] text-center">
+                  <Icons.Trophy
+                    size={24}
+                    className="text-zinc-600 mx-auto mb-2"
+                  />
+                  <p className="text-sm text-zinc-500">
+                    Nenhuma conquista desbloqueada ainda
+                  </p>
+                  <p className="text-xs text-zinc-600 mt-1">
+                    Complete tarefas para desbloquear conquistas
+                  </p>
+                </div>
+              )}
+            </div>
+          </motion.div>
         </div>
+
+        <motion.div
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.3 }}
+          className="space-y-6"
+        >
+          <div className="bg-[#0a0a0a] border border-zinc-800 rounded-2xl p-6 sticky top-8">
+            <h2 className="text-lg font-bold text-zinc-100 mb-8 flex items-center gap-2">
+              <Icons.Activity size={20} className="text-zinc-500" /> Timeline
+            </h2>
+
+            <div className="relative border-l border-zinc-800 ml-3 space-y-8 pb-4">
+              {timeline.length > 0 ? (
+                timeline.map((item, index) => {
+                  const IconComponent = item.icon || Icons.Activity;
+                  return (
+                    <motion.div
+                      key={item.id}
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.4 + index * 0.1 }}
+                      className="relative pl-6"
+                    >
+                      <div className="absolute -left-[13px] top-0.5 w-6 h-6 rounded-full bg-[#0a0a0a] border border-zinc-800 flex items-center justify-center z-10">
+                        <IconComponent size={12} className={item.color} />
+                      </div>
+                      <div>
+                        <p className="text-sm text-zinc-200 leading-snug">
+                          {item.title}
+                        </p>
+                        <p className="text-[10px] text-zinc-500 font-mono mt-1.5 uppercase tracking-wider">
+                          {item.time}
+                        </p>
+                      </div>
+                    </motion.div>
+                  );
+                })
+              ) : (
+                <div className="relative pl-6">
+                  <div className="absolute -left-[13px] top-0.5 w-6 h-6 rounded-full bg-[#0a0a0a] border border-zinc-800 flex items-center justify-center z-10">
+                    <Icons.Clock size={12} className="text-zinc-600" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-zinc-500 leading-snug">
+                      Nenhuma atividade registrada ainda
+                    </p>
+                    <p className="text-[10px] text-zinc-600 font-mono mt-1.5 uppercase tracking-wider">
+                      Complete tarefas e use o timer para ver seu progresso
+                    </p>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {timeline.length > 0 && (
+              <button className="w-full mt-6 py-2.5 border border-zinc-800 rounded-xl text-xs font-mono text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900 transition-colors">
+                Carregar mais
+              </button>
+            )}
+          </div>
+        </motion.div>
       </div>
+
+      <AnimatePresence>
+        {selectedAchievement && (
+          <AchievementModal
+            achievement={selectedAchievement}
+            onClose={() => setSelectedAchievement(null)}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }

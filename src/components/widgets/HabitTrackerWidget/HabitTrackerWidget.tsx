@@ -656,44 +656,47 @@ export function HabitTrackerWidget({ className }: HabitTrackerWidgetProps) {
                   )}
                 </div>
 
-                {/* Today's Completion Toggle - Visual indicator */}
-                <motion.div
-                  className={cn(
-                    "flex-shrink-0 w-9 h-9 rounded-full border-2 flex items-center justify-center transition-all duration-300 pointer-events-none",
-                    completedToday
-                      ? "border-primary bg-primary shadow-[0_0_16px_rgba(99,102,241,0.5)]"
-                      : "border-border/60 group-hover:border-primary/50 group-hover:bg-muted/50",
-                  )}
-                >
-                  {/* Checkmark Animation */}
+                {/* Today's Completion Toggle - Visual indicator - Only shows when completed */}
+                {completedToday && (
                   <motion.div
-                    initial={{ scale: 0.95, rotate: -180 }}
-                    animate={
-                      completedToday
-                        ? { scale: 1, rotate: 0 }
-                        : { scale: 0.95, rotate: -180 }
-                    }
+                    className={cn(
+                      "flex-shrink-0 w-9 h-9 rounded-full border-2 flex items-center justify-center transition-all duration-300 pointer-events-none",
+                      "border-primary bg-primary shadow-[0_0_16px_rgba(99,102,241,0.5)]",
+                    )}
+                    initial={{ scale: 0.8, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
                     transition={{
                       type: "spring",
                       stiffness: 400,
                       damping: 20,
                     }}
                   >
-                    <svg
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      className="text-primary-foreground"
-                      strokeWidth="3"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
+                    {/* Checkmark Animation */}
+                    <motion.div
+                      initial={{ scale: 0.5, rotate: -180 }}
+                      animate={{ scale: 1, rotate: 0 }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 400,
+                        damping: 20,
+                      }}
                     >
-                      <polyline points="20 6 9 17 4 12" />
-                    </svg>
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        className="text-primary-foreground"
+                        strokeWidth="3"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
+                    </motion.div>
                   </motion.div>
-                </motion.div>
+                )}
 
                 {/* Delete Button (Hidden until hover) */}
                 <button

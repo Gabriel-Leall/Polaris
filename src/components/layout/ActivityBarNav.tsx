@@ -13,7 +13,13 @@ import {
   TooltipPortal,
   TooltipTrigger,
 } from "@/components/animate-ui/primitives/radix/tooltip";
-import { Home, CheckSquare, MessageSquare, FileText } from "lucide-react";
+import {
+  Home,
+  CheckSquare,
+  MessageSquare,
+  FileText,
+  Trophy,
+} from "lucide-react";
 import { useUIStore } from "@/store/uiStore";
 
 interface NavItem {
@@ -32,6 +38,12 @@ const mainNavItems: NavItem[] = [
   { id: "dashboard", label: "Home", icon: Home, href: "/dashboard" },
   { id: "tasks", label: "Tasks", icon: CheckSquare, href: "/tasks" },
   { id: "notes", label: "Notes", icon: FileText, href: "/notes" },
+  {
+    id: "achievements",
+    label: "Achievements",
+    icon: Trophy,
+    href: "/achievements",
+  },
   { id: "feedback", label: "Feedback", icon: MessageSquare, href: "/feedback" },
 ];
 
@@ -109,17 +121,17 @@ function ActivityBarNavCore({
                   }
                 }}
                 className={cn(
-                  "relative w-full flex items-center justify-center p-3 rounded-xl transition-all",
+                  "relative w-full flex items-center justify-center p-3 transition-all duration-300 group",
                   isActive
-                    ? "bg-muted/80 text-primary"
-                    : "text-muted-foreground hover:text-foreground hover:bg-muted/50",
+                    ? "text-primary drop-shadow-[0_0_12px_var(--primary-glow)]"
+                    : "text-muted-foreground hover:text-primary hover:drop-shadow-[0_0_12px_var(--primary-glow)]",
                 )}
               >
-                <Icon className="w-5 h-5" />
+                <Icon className="w-6 h-6" />
 
-                {/* Indicador lateral estilo Obsidian */}
+                {/* Indicador lateral estilo Stitch */}
                 {isActive && (
-                  <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-6 bg-primary rounded-r-full" />
+                  <div className="absolute left-0 top-0 h-full w-0.5 bg-primary shadow-[0_0_10px_var(--primary-glow-strong)]" />
                 )}
               </Link>
             </TooltipTrigger>

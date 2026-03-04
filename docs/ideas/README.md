@@ -13,3 +13,4 @@ Este diretório contém ideias e conceitos discutidos para o futuro do Axis. Cad
 | [chat-assistente.md](./chat-assistente.md)             | Chat inteligente com Tool Calling para o usuário comandar o Axis por texto/voz |     Alta     |
 | [monetizacao.md](./monetizacao.md)                     | Estratégias de Freemium, precificação e aquisição de usuários                  |   Negócio    |
 | [sync-obsidian.md](./sync-obsidian.md)                 | Sincronização bidirecional com arquivos locais do Obsidian                     |  Média-Alta  |
+| [achievements/](./achievements/)                       | Sistema de achievements com 5 tiers de raridade, micro-interações e cores OKLCH |  Média-Alta  |

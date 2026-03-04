@@ -9,3 +9,4 @@ export * from "./sync";
 export * from "./auth";
 export * from "./mediaPreferences";
 export * from "./quickLinks";
+export * from "./achievements";

@@ -106,6 +106,74 @@ export interface CalendarDay {
   hasEvent: boolean;
 }
 
+// Achievement types
+export type AchievementStatus = "locked" | "in-progress" | "completed";
+export type AchievementType =
+  | "hours"
+  | "templates"
+  | "days"
+  | "connections"
+  | "speed"
+  | "night"
+  | "flow"
+  | "streak"
+  | "milestone"
+  | "social";
+export type AchievementAnimation =
+  | "wave-pulse"
+  | "build-glow"
+  | "streak-fire"
+  | "connect-lines"
+  | "speed-trail"
+  | "moon-glow"
+  | "flow-wave"
+  | "heat-pulse"
+  | "jade-pulse"
+  | "idle-float"
+  | "cobalt-ripple"
+  | "clock-spin"
+  | "void-particles"
+  | "shimmer-sweep"
+  | "border-rotate"
+  | "solar-flare"
+  | "flame-rise"
+  | "card-breathe"
+  | "golden-particles"
+  | "reveal-flip";
+export type AchievementRarity =
+  | "Common"
+  | "Uncommon"
+  | "Rare"
+  | "Epic"
+  | "Legendary";
+
+// Alias for compatibility
+export type Rarity = AchievementRarity;
+
+export interface Achievement {
+  id: string;
+  title: string;
+  description: string;
+  status: AchievementStatus;
+  type: AchievementType;
+  animation: AchievementAnimation;
+  icon: string; // Lucide icon name
+  progress: {
+    current: number;
+    total: number;
+    percentage: number;
+  };
+  completedAt?: Date;
+  color: {
+    from: string;
+    to: string;
+  };
+  // Modal details - now required
+  rarity: AchievementRarity;
+  xp: number; // XP reward (renamed from reward)
+  topPercentage: number; // Top X% of users who unlocked
+}
+
 // Database types for Supabase
 export interface Database {
   public: {
@@ -323,6 +391,185 @@ export interface Database {
           position?: number;
           created_at?: string;
           updated_at?: string;
+        };
+      };
+      achievements: {
+        Row: {
+          id: string;
+          title: string;
+          description: string;
+          type: AchievementType;
+          rarity: AchievementRarity;
+          icon: string;
+          animation: AchievementAnimation;
+          color_from: string;
+          color_to: string;
+          xp_reward: number;
+          target_value: number;
+          top_percentage: number;
+          sort_order: number;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id: string;
+          title: string;
+          description: string;
+          type: AchievementType;
+          rarity: AchievementRarity;
+          icon?: string;
+          animation?: AchievementAnimation;
+          color_from?: string;
+          color_to?: string;
+          xp_reward?: number;
+          target_value?: number;
+          top_percentage?: number;
+          sort_order?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          title?: string;
+          description?: string;
+          type?: AchievementType;
+          rarity?: AchievementRarity;
+          icon?: string;
+          animation?: AchievementAnimation;
+          color_from?: string;
+          color_to?: string;
+          xp_reward?: number;
+          target_value?: number;
+          top_percentage?: number;
+          sort_order?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
+      user_achievements: {
+        Row: {
+          id: string;
+          user_id: string;
+          achievement_id: string;
+          status: AchievementStatus;
+          progress_current: number;
+          progress_total: number;
+          progress_percentage: number;
+          completed_at: string | null;
+          xp_earned: number;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          achievement_id: string;
+          status?: AchievementStatus;
+          progress_current?: number;
+          progress_total?: number;
+          completed_at?: string | null;
+          xp_earned?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          achievement_id?: string;
+          status?: AchievementStatus;
+          progress_current?: number;
+          progress_total?: number;
+          completed_at?: string | null;
+          xp_earned?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
+      user_levels: {
+        Row: {
+          id: string;
+          user_id: string;
+          current_level: number;
+          total_xp: number;
+          current_level_xp: number;
+          xp_to_next_level: number;
+          title: string;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          current_level?: number;
+          total_xp?: number;
+          current_level_xp?: number;
+          xp_to_next_level?: number;
+          title?: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          current_level?: number;
+          total_xp?: number;
+          current_level_xp?: number;
+          xp_to_next_level?: number;
+          title?: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
+      linked_accounts: {
+        Row: {
+          id: string;
+          user_id: string;
+          provider: string;
+          provider_account_id: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          provider: string;
+          provider_account_id?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          provider?: string;
+          provider_account_id?: string | null;
+          created_at?: string;
+        };
+      };
+      activity_feed: {
+        Row: {
+          id: string;
+          user_id: string;
+          activity_type: string;
+          title: string;
+          description: string | null;
+          metadata: Record<string, any> | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          activity_type: string;
+          title: string;
+          description?: string | null;
+          metadata?: Record<string, any> | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          activity_type?: string;
+          title?: string;
+          description?: string | null;
+          metadata?: Record<string, any> | null;
+          created_at?: string;
         };
       };
     };

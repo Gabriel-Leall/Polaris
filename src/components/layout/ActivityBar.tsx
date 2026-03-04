@@ -26,7 +26,7 @@ function ActivityBar({ className }: ActivityBarProps) {
       {/* Desktop - ActivityBar lateral */}
       <aside
         className={cn(
-          "hidden lg:flex w-[60px] bg-sidebar border-r border-glass flex-col h-full shrink-0 rounded-r-2xl",
+          "hidden lg:flex w-[80px] bg-black/40 backdrop-blur-sm border-r border-white/5 flex-col h-full shrink-0 transition-all relative z-50",
           className,
         )}
       >
