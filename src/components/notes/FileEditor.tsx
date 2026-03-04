@@ -34,7 +34,6 @@ export function FileEditor() {
   // TipTap Editor instance
   const editor = useEditor({
     immediatelyRender: false,
-    // @ts-expect-error Type mismatch between tiptap core and react version packages
     extensions: getEditorExtensions(),
     editorProps: getEditorProps(),
     onUpdate: ({ editor }) => {

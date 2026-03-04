@@ -6,7 +6,6 @@ export const useBrainDumpEditor = (
 ) => {
   const editor = useEditor({
     immediatelyRender: false, // Fix SSR hydration mismatch
-    // @ts-expect-error Type mismatch between tiptap core and react packages
     extensions: getEditorExtensions(),
     content: "",
     editorProps: getEditorProps(),
