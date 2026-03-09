@@ -2,6 +2,7 @@
 
 import { createSupabaseServerClient } from "@/lib/supabase-server";
 import { BrainDumpNote } from "@/types";
+import { processGameEvent } from "@/app/actions/gamification";
 import {
   createBrainDumpNoteSchema,
   updateBrainDumpNoteSchema,
@@ -189,12 +190,19 @@ export const saveBrainDumpNote = async (
       });
     } else {
       // Create new note
-      return await createBrainDumpNote({
+      const note = await createBrainDumpNote({
         userId,
         content,
         contentHtml,
         version: 1,
       });
+
+      // 🎮 Gamification: award XP for creating a new note (dedup by note id)
+      processGameEvent("note_created", { referenceId: note.id }).catch(
+        () => {},
+      );
+
+      return note;
     }
   } catch (error) {
     if (error instanceof Error) {

@@ -2,6 +2,7 @@
 
 import { createSupabaseServerClient } from "@/lib/supabase-server";
 import { Habit } from "@/types";
+import { processGameEvent } from "@/app/actions/gamification";
 import {
   createHabitSchema,
   updateHabitSchema,
@@ -148,6 +149,13 @@ export const toggleHabitDay = async (
       throw new Error(
         `Failed to toggle habit day: ${error?.message ?? "Unknown error"}`,
       );
+    }
+
+    // 🎮 Gamification: award XP when day is toggled ON (dedup by habit+day)
+    if (newDays[validated.dayIndex] === true) {
+      processGameEvent("habit_day_completed", {
+        referenceId: `${id}-${dayIndex}`,
+      }).catch(() => {});
     }
 
     return mapHabitRow(habit);

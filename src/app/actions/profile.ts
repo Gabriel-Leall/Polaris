@@ -2,6 +2,7 @@
 
 import { createSupabaseServerClient } from "@/lib/supabase-server";
 import { unstable_noStore as noStore } from "next/cache";
+import { processGameEvent } from "@/app/actions/gamification";
 
 export async function getProfileStats(userId: string) {
   noStore();
@@ -115,6 +116,10 @@ export async function trackUsage(userId: string) {
     usage_count: (profile?.usage_count || 0) + 1,
     updated_at: new Date().toISOString(),
   });
+
+  // 🎮 Gamification: daily login XP (dedup by today's date)
+  const today = new Date().toISOString().split("T")[0];
+  processGameEvent("daily_login", { referenceId: today }).catch(() => {});
 }
 
 export async function addZenTime(userId: string, seconds: number) {
@@ -131,6 +136,11 @@ export async function addZenTime(userId: string, seconds: number) {
     total_zen_seconds: (profile?.total_zen_seconds || 0) + seconds,
     updated_at: new Date().toISOString(),
   });
+
+  // 🎮 Gamification: award XP for completed Pomodoro (25min = 1500s)
+  if (seconds >= 1500) {
+    processGameEvent("pomodoro_completed").catch(() => {});
+  }
 }
 
 export async function updateUserName(fullName: string) {

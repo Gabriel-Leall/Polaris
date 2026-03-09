@@ -60,7 +60,8 @@ Thumbs.db
 .agents
 .github
 .qodo
-.opencode
+.opencode 
+.specify
 # TypeScript
 *.tsbuildinfo
 next-env.d.ts

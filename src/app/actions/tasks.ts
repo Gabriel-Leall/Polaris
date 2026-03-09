@@ -12,6 +12,7 @@ import {
   type CreateTaskInput,
   type UpdateTaskInput,
 } from "@/lib/validations";
+import { processGameEvent } from "@/app/actions/gamification";
 
 type TaskRow = any;
 
@@ -104,6 +105,11 @@ export const updateTask = async (
       throw new Error(
         `Failed to update task: ${error?.message ?? "Unknown error"}`,
       );
+    }
+
+    // 🎮 Gamification: award XP when task is completed (fire-and-forget)
+    if (data.completed === true) {
+      processGameEvent("task_completed", { referenceId: id }).catch(() => {});
     }
 
     return mapTaskRow(task);

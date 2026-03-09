@@ -1,5 +1,10 @@
-import { ActivityBar, DynamicSidebar, DashboardLayout } from "@/components/layout";
+import {
+  ActivityBar,
+  DynamicSidebar,
+  DashboardLayout,
+} from "@/components/layout";
 import { PageTransition } from "@/components/layout/PageTransition";
+import { GameNotifications } from "@/components/dashboard/GameNotifications";
 import { getServerUser } from "@/lib/supabase-server";
 import { redirect } from "next/navigation";
 
@@ -19,6 +24,7 @@ export default async function DashboardRootLayout({
       <ActivityBar />
       <DynamicSidebar />
       <PageTransition>{children}</PageTransition>
+      <GameNotifications />
     </DashboardLayout>
   );
 }

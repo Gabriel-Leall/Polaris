@@ -572,6 +572,32 @@ export interface Database {
           created_at?: string;
         };
       };
+      xp_log: {
+        Row: {
+          id: string;
+          user_id: string;
+          action_type: string;
+          xp_amount: number;
+          reference_id: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          action_type: string;
+          xp_amount: number;
+          reference_id?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          action_type?: string;
+          xp_amount?: number;
+          reference_id?: string | null;
+          created_at?: string;
+        };
+      };
     };
   };
 }
