@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, LazyMotion, domAnimation, AnimatePresence } from "framer-motion";
 import * as Icons from "lucide-react";
 import { Achievement } from "@/types";
 
@@ -51,56 +51,58 @@ export function AchievementNotification({
   const gradientColor = bgMap[rarity] || bgMap.Common;
 
   return (
-    <AnimatePresence>
-      <motion.div
-        initial={{ opacity: 0, y: 50, scale: 0.9 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        exit={{ opacity: 0, y: 20, scale: 0.95 }}
-        transition={{ type: "spring", stiffness: 400, damping: 25 }}
-        className="fixed bottom-8 right-8 z-[100] w-96 bg-[#0f0f0f]/90 backdrop-blur-xl border border-zinc-800 rounded-2xl shadow-[0_20px_40px_rgba(0,0,0,0.5)] overflow-hidden"
-      >
-        <div
-          className={`absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent ${gradientColor} to-transparent opacity-50`}
-        />
-
-        {/* Shimmer effect for Epic/Legendary */}
-        {(rarity === "Legendary" || rarity === "Epic") && (
-          <motion.div
-            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent skew-x-[-20deg]"
-            animate={{ x: ["-200%", "300%"] }}
-            transition={{
-              duration: 2,
-              repeat: Infinity,
-              repeatDelay: 1,
-              ease: "easeInOut",
-            }}
-          />
-        )}
-
-        <div className="p-5 flex gap-4 items-start relative z-10">
+    <LazyMotion features={domAnimation}>
+      <AnimatePresence>
+        <m.div
+          initial={{ opacity: 0, y: 50, scale: 0.9 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: 20, scale: 0.95 }}
+          transition={{ type: "spring", stiffness: 400, damping: 25 }}
+          className="fixed bottom-8 right-8 z-[100] w-96 bg-[#0f0f0f]/90 backdrop-blur-xl border border-zinc-800 rounded-2xl shadow-[0_20px_40px_rgba(0,0,0,0.5)] overflow-hidden"
+        >
           <div
-            className={`p-3 rounded-xl bg-zinc-900/80 border shadow-inner ${iconColor}`}
-          >
-            <IconComponent size={32} strokeWidth={1.5} />
-          </div>
-          <div className="flex-1">
-            <div className="flex items-center gap-2 mb-1">
-              <Icons.Trophy size={12} className={iconColor.split(" ")[0]} />
-              <span
-                className={`text-[10px] font-bold uppercase tracking-widest ${iconColor.split(" ")[0]}`}
-              >
-                Conquista Desbloqueada
-              </span>
+            className={`absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent ${gradientColor} to-transparent opacity-50`}
+          />
+
+          {/* Shimmer effect for Epic/Legendary */}
+          {(rarity === "Legendary" || rarity === "Epic") && (
+            <m.div
+              className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent skew-x-[-20deg]"
+              animate={{ x: ["-200%", "300%"] }}
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                repeatDelay: 1,
+                ease: "easeInOut",
+              }}
+            />
+          )}
+
+          <div className="p-5 flex gap-4 items-start relative z-10">
+            <div
+              className={`p-3 rounded-xl bg-zinc-900/80 border shadow-inner ${iconColor}`}
+            >
+              <IconComponent size={32} strokeWidth={1.5} />
             </div>
-            <h3 className="text-lg font-bold text-white leading-tight mb-1">
-              {achievement.title}
-            </h3>
-            <p className="text-xs text-zinc-400 leading-relaxed">
-              {achievement.description}
-            </p>
+            <div className="flex-1">
+              <div className="flex items-center gap-2 mb-1">
+                <Icons.Trophy size={12} className={iconColor.split(" ")[0]} />
+                <span
+                  className={`text-[10px] font-bold uppercase tracking-widest ${iconColor.split(" ")[0]}`}
+                >
+                  Conquista Desbloqueada
+                </span>
+              </div>
+              <h3 className="text-lg font-bold text-white leading-tight mb-1">
+                {achievement.title}
+              </h3>
+              <p className="text-xs text-zinc-400 leading-relaxed">
+                {achievement.description}
+              </p>
+            </div>
           </div>
-        </div>
-      </motion.div>
-    </AnimatePresence>
+        </m.div>
+      </AnimatePresence>
+    </LazyMotion>
   );
 }
