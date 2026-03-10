@@ -19,7 +19,7 @@ export function UltimateGoalCard({
       {/* Content */}
       <div className="relative z-10 p-8 md:p-12 max-w-3xl flex flex-col justify-center h-full">
         {/* Badge */}
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/20 text-primary text-xs font-bold uppercase tracking-widest w-fit mb-4 border border-primary/20">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-primary/20 text-primary text-xs font-bold uppercase tracking-widest w-fit mb-4 border border-primary/20">
           Ultimate Goal
         </div>
 

@@ -66,9 +66,9 @@ export function CTAButton({
         className={cn(
           "group relative flex min-w-[180px] cursor-pointer items-center justify-center overflow-hidden rounded-full transition-all duration-300",
           isPrimary
-            ? "h-14 px-8 bg-gradient-to-r from-primary via-primary to-primary-hover text-primary-foreground shadow-[0_0_20px_rgba(99,102,241,0.3)]"
+            ? "h-14 px-8 bg-gradient-to-r from-primary via-primary to-primary-hover text-primary-foreground shadow-[0_0_20px_oklch(var(--primary)/0.3)]"
             : "h-12 px-10 bg-primary/90 text-primary-foreground shadow-lg",
-          "hover:shadow-[0_0_40px_rgba(99,102,241,0.5)]",
+          "hover:shadow-[0_0_40px_oklch(var(--primary)/0.5)]",
           "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background",
           className,
         )}
