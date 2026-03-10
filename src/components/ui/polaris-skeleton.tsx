@@ -3,13 +3,15 @@ import { cn } from "@/lib/utils";
 interface SkeletonProps extends React.HTMLAttributes<HTMLDivElement> {
   variant?: "default" | "card" | "text" | "avatar" | "button";
   lines?: number;
+  skeletonVariant?: "default" | "dashboard" | "landing" | "auth";
 }
 
-const Skeleton = ({ 
-  className, 
-  variant = "default", 
+const Skeleton = ({
+  className,
+  variant = "default",
   lines = 1,
-  ...props 
+  skeletonVariant = "default",
+  ...props
 }: SkeletonProps) => {
   const getVariantStyles = () => {
     switch (variant) {
@@ -26,6 +28,17 @@ const Skeleton = ({
     }
   };
 
+  const getSkeletonBg = () => {
+    switch (skeletonVariant) {
+      case "landing":
+        return "bg-purple-500/20";
+      case "auth":
+        return "bg-zinc-700";
+      default:
+        return "bg-muted";
+    }
+  };
+
   if (variant === "text" && lines > 1) {
     return (
       <div className={cn("space-y-2", className)} {...props}>
@@ -33,9 +46,10 @@ const Skeleton = ({
           <div
             key={i}
             className={cn(
-              "animate-pulse bg-white/10",
+              "animate-pulse",
+              getSkeletonBg(),
               getVariantStyles(),
-              i === lines - 1 && "w-3/4" // Last line shorter
+              i === lines - 1 && "w-3/4", // Last line shorter
             )}
           />
         ))}
@@ -46,9 +60,10 @@ const Skeleton = ({
   return (
     <div
       className={cn(
-        "animate-pulse bg-white/10",
+        "animate-pulse",
+        getSkeletonBg(),
         getVariantStyles(),
-        className
+        className,
       )}
       {...props}
     />
@@ -56,7 +71,10 @@ const Skeleton = ({
 };
 
 // Preset skeleton components for common use cases
-const SkeletonCard = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
+const SkeletonCard = ({
+  className,
+  ...props
+}: React.HTMLAttributes<HTMLDivElement>) => (
   <div className={cn("p-6 space-y-4", className)} {...props}>
     <div className="flex items-center justify-between">
       <Skeleton variant="text" className="w-24" />
@@ -66,25 +84,44 @@ const SkeletonCard = ({ className, ...props }: React.HTMLAttributes<HTMLDivEleme
   </div>
 );
 
-const SkeletonWidget = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
-  <div className={cn(
-    "bg-card border border-white/5 rounded-3xl p-6 space-y-4",
-    className
-  )} {...props}>
-    <div className="flex items-center justify-between">
-      <Skeleton variant="text" className="w-32 h-5" />
-      <Skeleton variant="button" className="w-8 h-8 rounded-full" />
+const SkeletonWidget = ({
+  className,
+  skeletonVariant = "default",
+  ...props
+}: React.HTMLAttributes<HTMLDivElement> & {
+  skeletonVariant?: "default" | "dashboard" | "landing" | "auth";
+}) => {
+  return (
+    <div
+      className={cn(
+        "bg-card border border-white/5 rounded-3xl p-6 space-y-4",
+        className,
+      )}
+      {...props}
+    >
+      <div className="flex items-center justify-between">
+        <Skeleton
+          skeletonVariant={skeletonVariant}
+          variant="text"
+          className="w-32 h-5"
+        />
+        <Skeleton
+          skeletonVariant={skeletonVariant}
+          variant="button"
+          className="w-8 h-8 rounded-full"
+        />
+      </div>
+      <div className="space-y-3">
+        <Skeleton skeletonVariant={skeletonVariant} variant="text" lines={4} />
+      </div>
     </div>
-    <div className="space-y-3">
-      <Skeleton variant="text" lines={4} />
-    </div>
-  </div>
-);
+  );
+};
 
-const SkeletonList = ({ 
-  items = 3, 
-  className, 
-  ...props 
+const SkeletonList = ({
+  items = 3,
+  className,
+  ...props
 }: React.HTMLAttributes<HTMLDivElement> & { items?: number }) => (
   <div className={cn("space-y-3", className)} {...props}>
     {Array.from({ length: items }).map((_, i) => (
@@ -99,11 +136,6 @@ const SkeletonList = ({
   </div>
 );
 
-export { 
-  Skeleton, 
-  SkeletonCard, 
-  SkeletonWidget, 
-  SkeletonList 
-};
+export { Skeleton, SkeletonCard, SkeletonWidget, SkeletonList };
 
 export default Skeleton;
