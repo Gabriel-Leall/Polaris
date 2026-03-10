@@ -171,7 +171,7 @@ export const MusicDemo = () => {
 
   return (
     <div className="bg-card w-full h-full p-8 flex flex-col items-center justify-center gap-6">
-      <div className="size-40 rounded-2xl bg-gradient-to-br from-primary/40 to-accent/40 border border-border flex items-center justify-center relative overflow-hidden group shadow-lg">
+      <div className="size-40 rounded-2xl bg-gradient-to-br from-muted to-card border border-border flex items-center justify-center relative overflow-hidden group shadow-lg">
         <div className="absolute inset-0 bg-background/20 group-hover:bg-transparent transition-colors" />
         <Play
           size={40}

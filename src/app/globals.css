@@ -4,83 +4,102 @@
 
 @layer base {
   :root {
-    --background: 0 0% 98%;
-    --foreground: 0 0% 9%;
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 9%;
-    --primary: 217 91% 60%;
-    --primary-foreground: 0 0% 100%;
-    --primary-glow: hsla(217, 91%, 60%, 0.6);
-    --primary-glow-strong: hsla(217, 91%, 60%, 0.8);
-    --secondary: 0 0% 90%;
-    --secondary-foreground: 0 0% 9%;
-    --muted: 0 0% 90%;
-    --muted-foreground: 0 0% 45%;
-    --accent: 217 91% 60%;
-    --accent-foreground: 0 0% 100%;
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 90%;
-    --input: 0 0% 90%;
-    --ring: 217 91% 60%;
-    --sidebar: 0 0% 98%;
-    --glass: 0 0% 0% / 0.05;
+    --background: 0.98 0.005 60;
+    --foreground: 0.2 0 0;
 
-    --radius: 0.25rem;
+    --card: 0.97 0 0;
+    --card-foreground: 0.2 0 0;
 
-    --chart-1: 217 91% 60%;
-    --chart-2: 187 92% 41%;
-    --chart-3: 142 76% 36%;
-    --chart-4: 45 93% 47%;
-    --chart-5: 0 84% 60%;
+    --popover: 0.97 0 0;
+    --popover-foreground: 0.2 0 0;
+
+    --primary: 0.6 0.18 45;
+    --primary-foreground: 0.99 0 0;
+    --primary-glow: oklch(0.6 0.18 45 / 0.6);
+    --primary-glow-strong: oklch(0.6 0.18 45 / 0.8);
+    --primary-hover: 0.55 0.17 45;
+    --primary-active: 0.5 0.16 45;
+
+    --secondary: 0.9 0 0;
+    --secondary-foreground: 0.2 0 0;
+
+    --muted: 0.9 0 0;
+    --muted-foreground: 0.45 0 0;
+
+    --accent: 0.6 0.18 45;
+    --accent-foreground: 0.99 0 0;
+
+    --destructive: 0.62 0.2 25; /* Adjusted red in OKLCH */
+    --destructive-foreground: 0.98 0 0;
+
+    /* Success and Warning colors */
+    --success: 0.6 0.15 145; /* Green */
+    --warning: 0.7 0.15 75; /* Yellow/Amber */
+
+    --border: 0.9 0 0;
+    --input: 0.9 0 0;
+    --ring: 0.6 0.18 45;
+
+    --sidebar: 0.97 0 0;
+    --glass: 0 0 0 / 0.05;
+
+    --radius: 0.375rem; /* ~rounded-md for Linear style */
+
+    --chart-1: 0.6 0.18 45;
+    --chart-2: 0.65 0.15 200;
+    --chart-3: 0.7 0.16 140;
+    --chart-4: 0.8 0.16 85;
+    --chart-5: 0.62 0.2 25;
   }
 
   .dark {
-    --background: 0 0% 4%; /* #0A0A0A */
-    --foreground: 0 0% 90%;
+    --background: 0.18 0 0;
+    --foreground: 0.99 0 0;
 
-    /* Painéis ligeiramente mais claros */
-    --card: 0 0% 7%;
-    --card-foreground: 0 0% 90%;
+    --card: 0.23 0 0;
+    --card-foreground: 0.99 0 0;
 
-    --popover: 0 0% 7%;
-    --popover-foreground: 0 0% 90%;
+    --popover: 0.23 0 0;
+    --popover-foreground: 0.99 0 0;
 
-    --primary: 217 91% 60%;
-    --primary-foreground: 0 0% 100%;
-    --primary-glow: hsla(217, 91%, 60%, 0.6);
-    --primary-glow-strong: hsla(217, 91%, 60%, 0.8);
+    --primary: 0.85 0.16 85; /* #FFBF00 Equivalent */
+    --primary-foreground: 0.18 0 0;
+    --primary-glow: oklch(0.85 0.16 85 / 0.6);
+    --primary-glow-strong: oklch(0.85 0.16 85 / 0.8);
+    --primary-hover: 0.8 0.15 85;
+    --primary-active: 0.75 0.14 85;
 
-    --secondary: 0 0% 12%;
-    --secondary-foreground: 0 0% 90%;
+    --secondary: 0.3 0 0;
+    --secondary-foreground: 0.99 0 0;
 
-    --muted: 0 0% 12%;
-    --muted-foreground: 0 0% 50%;
+    --muted: 0.3 0 0;
+    --muted-foreground: 0.7 0 0;
 
-    --accent: 217 91% 60%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 0.85 0.16 85;
+    --accent-foreground: 0.18 0 0;
 
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 98%;
+    --destructive: 0.62 0.2 25;
+    --destructive-foreground: 0.99 0 0;
 
-    /* Borda sutil */
-    --border: 0 0% 15%;
-    --input: 0 0% 15%;
-    --ring: 217 91% 60%;
+    /* Success and Warning colors */
+    --success: 0.65 0.15 145; /* Green - adjusted for dark mode */
+    --warning: 0.75 0.15 75; /* Yellow/Amber - adjusted for dark mode */
 
-    --sidebar: 0 0% 4%;
-    --glass: 0 0% 100% / 0.03;
+    --border: 0.3 0 0;
+    --input: 0.3 0 0;
+    --ring: 0.85 0.16 85;
+
+    --sidebar: 0.23 0 0;
+    --glass: 1 0 0 / 0.03;
   }
 
   * {
-    border-color: hsl(var(--border));
+    border-color: oklch(var(--border));
   }
 
   body {
-    background-color: hsl(var(--background));
-    color: hsl(var(--foreground));
+    background-color: oklch(var(--background));
+    color: oklch(var(--foreground));
     font-family: var(--font-jetbrains-mono), monospace;
     font-feature-settings:
       "rlig" 1,
@@ -104,7 +123,7 @@
   .tiptap .is-editor-empty:first-child::before {
     content: attr(data-placeholder);
     float: left;
-    color: hsl(var(--muted-foreground));
+    color: oklch(var(--muted-foreground));
     pointer-events: none;
     height: 0;
   }
@@ -118,11 +137,11 @@
     background: transparent;
   }
   ::-webkit-scrollbar-thumb {
-    background: hsl(var(--muted) / 0.3);
+    background: oklch(var(--muted) / 0.3);
     border-radius: 4px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: hsl(var(--muted-foreground) / 0.5);
+    background: oklch(var(--muted-foreground) / 0.5);
   }
 
   /* Custom complex animations kept here */
@@ -176,7 +195,7 @@
   .nebula-glow {
     background: radial-gradient(
       circle at center,
-      hsl(var(--primary) / 0.06) 0%,
+      oklch(var(--primary) / 0.06) 0%,
       transparent 75%
     );
   }
@@ -190,7 +209,7 @@
     pointer-events: none;
   }
   .orbital-path {
-    border: 1px solid hsl(var(--primary) / 0.06);
+    border: 1px solid oklch(var(--primary) / 0.06);
     border-radius: 50%;
   }
   .orbit-container {
@@ -206,8 +225,8 @@
     background: linear-gradient(
       90deg,
       transparent,
-      hsl(var(--primary) / 0.3),
-      hsl(var(--foreground))
+      oklch(var(--primary) / 0.3),
+      oklch(var(--foreground))
     );
     filter: blur(1px);
     animation: meteor 12s linear infinite;
@@ -585,10 +604,10 @@
   .glitch-text {
     position: relative;
     display: inline-block;
-    color: hsl(var(--muted-foreground));
+    color: oklch(var(--muted-foreground));
     text-shadow:
-      -0.5px 0 0.1px hsl(var(--accent) / 0.2),
-      0.5px 0 0.1px hsl(var(--destructive) / 0.2);
+      -0.5px 0 0.1px oklch(var(--accent) / 0.2),
+      0.5px 0 0.1px oklch(var(--destructive) / 0.2);
     font-family: var(--font-jetbrains-mono), monospace;
     font-weight: 700;
     letter-spacing: 0.25em;

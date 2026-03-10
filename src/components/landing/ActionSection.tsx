@@ -15,7 +15,7 @@ export const ActionSection = () => {
 
         <Link
           href="/login"
-          className="mt-[60px] inline-flex h-12 items-center justify-center rounded-full bg-primary px-10 text-sm font-semibold text-[#FAFAFA] shadow-[12px_12px_24px_rgba(15,23,42,0.12),_-10px_-10px_24px_rgba(255,255,255,0.6)] transition-all duration-300 hover:bg-primary-hover hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-background dark:shadow-[0_20px_40px_rgba(59,130,246,0.15)]"
+          className="mt-[60px] inline-flex h-12 items-center justify-center rounded-full bg-primary px-10 text-sm font-semibold text-primary-foreground shadow-[12px_12px_24px_rgba(15,23,42,0.12),_-10px_-10px_24px_rgba(255,255,255,0.6)] transition-all duration-300 hover:bg-primary-hover hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-background dark:shadow-[0_20px_40px_oklch(var(--primary)/0.15)]"
           style={{ touchAction: "manipulation" }}
         >
           Entrar no Axis

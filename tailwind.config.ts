@@ -11,72 +11,72 @@ const config: Config = {
     extend: {
       colors: {
         // Polaris Design System - CSS Variable Based (supports light/dark)
-        main: "hsl(var(--background))",
-        card: "hsl(var(--card))",
-        sidebar: "hsl(var(--sidebar))",
-        input: "hsl(var(--input))",
+        main: "oklch(var(--background))",
+        card: "oklch(var(--card))",
+        sidebar: "oklch(var(--sidebar))",
+        input: "oklch(var(--input))",
 
         // Primary colors - Blue-Cyan palette (no purple)
         primary: {
-          DEFAULT: "hsl(var(--primary))",
-          foreground: "hsl(var(--primary-foreground))",
+          DEFAULT: "oklch(var(--primary))",
+          foreground: "oklch(var(--primary-foreground))",
         },
-        "primary-hover": "hsl(var(--primary-hover))",
+        "primary-hover": "oklch(var(--primary-hover))",
 
         // Secondary colors
         secondary: {
-          DEFAULT: "hsl(var(--secondary))",
-          foreground: "hsl(var(--secondary-foreground))",
+          DEFAULT: "oklch(var(--secondary))",
+          foreground: "oklch(var(--secondary-foreground))",
         },
 
         // Status colors
-        "status-interview": "hsl(var(--primary))",
-        "status-applied": "hsl(var(--accent))",
-        "status-rejected": "hsl(var(--destructive))",
-        "status-pending": "hsl(var(--warning))",
+        "status-interview": "oklch(var(--primary))",
+        "status-applied": "oklch(var(--accent))",
+        "status-rejected": "oklch(var(--destructive))",
+        "status-pending": "oklch(var(--warning))",
 
         // Text colors
-        foreground: "hsl(var(--foreground))",
+        foreground: "oklch(var(--foreground))",
         muted: {
-          DEFAULT: "hsl(var(--muted))",
-          foreground: "hsl(var(--muted-foreground))",
+          DEFAULT: "oklch(var(--muted))",
+          foreground: "oklch(var(--muted-foreground))",
         },
-        "muted-foreground": "hsl(var(--muted-foreground))",
-        code: "hsl(var(--muted-foreground))",
+        "muted-foreground": "oklch(var(--muted-foreground))",
+        code: "oklch(var(--muted-foreground))",
 
         // Semantic colors
         destructive: {
-          DEFAULT: "hsl(var(--destructive))",
-          foreground: "hsl(var(--destructive-foreground))",
+          DEFAULT: "oklch(var(--destructive))",
+          foreground: "oklch(var(--destructive-foreground))",
         },
-        success: "hsl(var(--success))",
-        warning: "hsl(var(--warning))",
+        success: "oklch(var(--success))",
+        warning: "oklch(var(--warning))",
 
         // Glass and borders
-        glass: "hsl(var(--glass))",
-        border: "hsl(var(--border))",
+        glass: "oklch(var(--glass))",
+        border: "oklch(var(--border))",
 
         // Background
-        background: "hsl(var(--background))",
+        background: "oklch(var(--background))",
 
         // Popover and accent
         popover: {
-          DEFAULT: "hsl(var(--popover))",
-          foreground: "hsl(var(--popover-foreground))",
+          DEFAULT: "oklch(var(--popover))",
+          foreground: "oklch(var(--popover-foreground))",
         },
         accent: {
-          DEFAULT: "hsl(var(--accent))",
-          foreground: "hsl(var(--accent-foreground))",
+          DEFAULT: "oklch(var(--accent))",
+          foreground: "oklch(var(--accent-foreground))",
         },
-        ring: "hsl(var(--ring))",
+        ring: "oklch(var(--ring))",
 
         // Chart colors
         chart: {
-          "1": "hsl(var(--chart-1))",
-          "2": "hsl(var(--chart-2))",
-          "3": "hsl(var(--chart-3))",
-          "4": "hsl(var(--chart-4))",
-          "5": "hsl(var(--chart-5))",
+          "1": "oklch(var(--chart-1))",
+          "2": "oklch(var(--chart-2))",
+          "3": "oklch(var(--chart-3))",
+          "4": "oklch(var(--chart-4))",
+          "5": "oklch(var(--chart-5))",
         },
 
         // Achievement Tier Colors - OKLCH-based
@@ -163,21 +163,21 @@ const config: Config = {
       },
       boxShadow: {
         // Reduced glow for flat design - more subtle
-        glow: "0 0 12px hsl(var(--primary) / 0.15)",
-        "glow-sm": "0 0 6px hsl(var(--primary) / 0.1)",
-        "glow-lg": "0 0 20px hsl(var(--primary) / 0.2)",
-        "glow-xl": "0 0 30px hsl(var(--primary) / 0.25)",
+        glow: "0 0 12px oklch(var(--primary) / 0.15)",
+        "glow-sm": "0 0 6px oklch(var(--primary) / 0.1)",
+        "glow-lg": "0 0 20px oklch(var(--primary) / 0.2)",
+        "glow-xl": "0 0 30px oklch(var(--primary) / 0.25)",
         // Card shadows - subtle and clean
-        card: "0 1px 3px hsl(var(--foreground) / 0.05)",
-        "card-hover": "0 4px 12px hsl(var(--foreground) / 0.08)",
-        subtle: "0 1px 2px hsl(var(--foreground) / 0.05)",
-        "subtle-hover": "0 2px 4px hsl(var(--foreground) / 0.08)",
+        card: "0 1px 3px oklch(var(--foreground) / 0.05)",
+        "card-hover": "0 4px 12px oklch(var(--foreground) / 0.08)",
+        subtle: "0 1px 2px oklch(var(--foreground) / 0.05)",
+        "subtle-hover": "0 2px 4px oklch(var(--foreground) / 0.08)",
       },
       backgroundImage: {
         "gradient-active":
-          "linear-gradient(to right, hsl(var(--primary) / 0.15), hsl(var(--accent) / 0.05), transparent)",
+          "linear-gradient(to right, oklch(var(--primary) / 0.15), oklch(var(--accent) / 0.05), transparent)",
         "gradient-glass":
-          "linear-gradient(135deg, hsl(var(--foreground) / 0.03), hsl(var(--foreground) / 0.01))",
+          "linear-gradient(135deg, oklch(var(--foreground) / 0.03), oklch(var(--foreground) / 0.01))",
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic":
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",

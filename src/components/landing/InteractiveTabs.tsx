@@ -9,6 +9,7 @@ import {
   MusicDemo,
   MatrixDemo,
 } from "./DemoWidgets";
+import { SkeletonWidget } from "@/components/ui/polaris-skeleton";
 
 const TABS = [
   {
@@ -92,6 +93,17 @@ const WidgetRenderer = ({ id }: { id: string }) => {
 
 export const InteractiveTabs = () => {
   const [activeTab, setActiveTab] = useState(TABS[0]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleTabChange = (tab: (typeof TABS)[0]) => {
+    if (tab.id === activeTab.id) return;
+    setIsLoading(true);
+    // Simulate loading delay for smoother UX perception
+    setTimeout(() => {
+      setActiveTab(tab);
+      setIsLoading(false);
+    }, 150);
+  };
 
   return (
     <section className="w-full py-24 px-6 md:px-12">
@@ -111,7 +123,7 @@ export const InteractiveTabs = () => {
           {TABS.map((tab) => (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab)}
+              onClick={() => handleTabChange(tab)}
               className={`px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 ${
                 activeTab.id === tab.id
                   ? "bg-primary text-primary-foreground shadow-lg"
@@ -160,16 +172,31 @@ export const InteractiveTabs = () => {
 
           <div className="lg:col-span-3 w-full h-full min-h-[400px]">
             <AnimatePresence mode="wait">
-              <motion.div
-                key={activeTab.id}
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 1.05 }}
-                transition={{ duration: 0.5, ease: "easeOut" }}
-                className="relative w-full h-full min-h-[400px] rounded-2xl overflow-hidden border border-border shadow-lg bg-card flex items-center justify-center"
-              >
-                <WidgetRenderer id={activeTab.id} />
-              </motion.div>
+              {isLoading ? (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="relative w-full h-full min-h-[400px] rounded-2xl overflow-hidden border border-border shadow-lg bg-card flex items-center justify-center"
+                >
+                  <SkeletonWidget
+                    skeletonVariant="landing"
+                    className="w-full h-full min-h-[400px]"
+                  />
+                </motion.div>
+              ) : (
+                <motion.div
+                  key={activeTab.id}
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 1.05 }}
+                  transition={{ duration: 0.5, ease: "easeOut" }}
+                  className="relative w-full h-full min-h-[400px] rounded-2xl overflow-hidden border border-border shadow-lg bg-card flex items-center justify-center"
+                >
+                  <WidgetRenderer id={activeTab.id} />
+                </motion.div>
+              )}
             </AnimatePresence>
           </div>
         </div>
