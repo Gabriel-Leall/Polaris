@@ -68,8 +68,11 @@ export async function GET(request: Request) {
 
     const { authed_user, team } = tokenData;
     const encryptedAccessToken = encryptToken(authed_user?.access_token || tokenData.access_token);
-    const tokenExpiresAt = tokenData.expires_in 
-      ? new Date(Date.now() + tokenData.expires_in * 1000).toISOString()
+    const expiresIn = typeof tokenData.expires_in === "number" && tokenData.expires_in > 0
+      ? tokenData.expires_in
+      : null;
+    const tokenExpiresAt = expiresIn
+      ? new Date(Date.now() + expiresIn * 1000).toISOString()
       : null;
 
     const supabase = await createSupabaseServerClient();
