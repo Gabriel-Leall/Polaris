@@ -5,9 +5,9 @@ import {
   Database,
   Shield,
   Lock,
-  Github,
-  Calendar,
+  Plug,
 } from "lucide-react";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/useAuth";
@@ -249,57 +249,27 @@ export default function SettingsPage() {
             </div>
           </section>
 
-          {/* Connections Section Mockup */}
+          {/* Integrations Link Section */}
           <section className="space-y-8">
             <div className="flex items-center gap-3 border-b border-border pb-4">
               <div className="p-1.5 bg-primary/10 rounded-lg">
-                <Github className="w-4 h-4 text-primary" />
+                <Plug className="w-4 h-4 text-primary" />
               </div>
               <h2 className="text-xs font-black tracking-[0.25em] text-foreground uppercase">
-                OUTRAS CONEXÕES
+                INTEGRAÇÕES COM TERCEIROS
               </h2>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* GitHub Card */}
-              <div className="group flex items-center justify-between p-6 rounded-3xl bg-card border border-border hover:border-primary/40 transition-all duration-300">
-                <div className="flex items-center gap-5">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-muted/20 border border-border group-hover:border-primary/20 transition-all">
-                    <Github className="h-6 w-6 text-foreground" />
-                  </div>
-                  <div>
-                    <h3 className="text-base font-bold text-foreground">
-                      GitHub
-                    </h3>
-                    <p className="text-xs text-muted-foreground">
-                      Sincronizado há 2m
-                    </p>
-                  </div>
-                </div>
-                <button className="text-xs font-bold text-muted-foreground hover:text-destructive transition-colors px-3 py-1">
-                  Desconectar
-                </button>
-              </div>
-
-              {/* Google Calendar Card */}
-              <div className="group flex items-center justify-between p-6 rounded-3xl bg-card border border-border hover:border-primary/40 transition-all duration-300">
-                <div className="flex items-center gap-5">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-muted/20 border border-border group-hover:border-primary/20 transition-all">
-                    <Calendar className="h-6 w-6 text-foreground" />
-                  </div>
-                  <div>
-                    <h3 className="text-base font-bold text-foreground">
-                      Google Calendar
-                    </h3>
-                    <p className="text-xs text-muted-foreground">
-                      Não conectado
-                    </p>
-                  </div>
-                </div>
-                <button className="text-xs font-bold text-primary hover:text-primary-glow transition-all px-4 py-2 bg-primary/5 rounded-full">
-                  Conectar
-                </button>
-              </div>
+            <div className="flex flex-col gap-4 max-w-2xl">
+              <p className="text-sm text-muted-foreground leading-relaxed ml-1">
+                Conecte o Polaris a ferramentas externas como GitHub, Slack e outras para sincronizar seus dados, tarefas e notificações temporariamente em um só lugar.
+              </p>
+              
+              <Link href="/settings/integrations" className="w-fit">
+                <Button className="bg-primary hover:bg-primary-glow text-primary-foreground font-bold shadow-glow transition-all">
+                  Gerenciar Integrações
+                </Button>
+              </Link>
             </div>
           </section>
         </div>

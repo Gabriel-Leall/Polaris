@@ -598,6 +598,64 @@ export interface Database {
           created_at?: string;
         };
       };
+      integration_connections: {
+        Row: {
+          id: string;
+          user_id: string;
+          provider: "github" | "slack" | string;
+          encrypted_access_token: string;
+          encrypted_refresh_token: string | null;
+          token_expires_at: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          provider: "github" | "slack" | string;
+          encrypted_access_token: string;
+          encrypted_refresh_token?: string | null;
+          token_expires_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          provider?: "github" | "slack" | string;
+          encrypted_access_token?: string;
+          encrypted_refresh_token?: string | null;
+          token_expires_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
+      external_widget_configs: {
+        Row: {
+          id: string;
+          connection_id: string;
+          widget_type: string;
+          query_params: Record<string, any> | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          connection_id: string;
+          widget_type: string;
+          query_params?: Record<string, any> | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          connection_id?: string;
+          widget_type?: string;
+          query_params?: Record<string, any> | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
     };
   };
 }

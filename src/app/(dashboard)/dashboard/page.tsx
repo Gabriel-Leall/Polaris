@@ -6,10 +6,12 @@ import {
   HabitTrackerWidget,
   MediaPlayerWidget,
   QuickLinksWidget,
+  GitHubIssuesWidget,
 } from "@/components/widgets";
 import { BentoGrid, GridColumn } from "@/components/layout";
 import { WidgetCard } from "@/components/layout/WidgetCard";
 import { ZenModeBlurWrapper } from "@/components/ui/ZenModeBlurWrapper";
+import { IntegrationsErrorBoundary } from "@/components/widgets/IntegrationsErrorBoundary";
 import { Suspense } from "react";
 import { WidgetSkeleton } from "@/components/ui/skeleton";
 import { DashboardNotifications } from "@/components/dashboard/DashboardNotifications";
@@ -29,6 +31,16 @@ export default function Dashboard() {
                 <Suspense fallback={<WidgetSkeleton />}>
                   <TasksWidget />
                 </Suspense>
+              </WidgetCard>
+            </ZenModeBlurWrapper>
+
+            <ZenModeBlurWrapper className="shrink-0 h-[300px] bg-background">
+              <WidgetCard scrollable={false} className="h-full">
+                <IntegrationsErrorBoundary widgetName="GitHub Issues" fallbackText="Failed to load GitHub widget">
+                  <Suspense fallback={<WidgetSkeleton />}>
+                    <GitHubIssuesWidget />
+                  </Suspense>
+                </IntegrationsErrorBoundary>
               </WidgetCard>
             </ZenModeBlurWrapper>
 

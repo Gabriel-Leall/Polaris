@@ -198,3 +198,23 @@ export type UpdateMediaPreferenceInput = z.infer<
 >;
 export type CreateQuickLinkInput = z.infer<typeof createQuickLinkSchema>;
 export type UpdateQuickLinkInput = z.infer<typeof updateQuickLinkSchema>;
+
+// Integration connections validation schemas
+export const connectIntegrationSchema = z.object({
+  provider: z.enum(["github", "slack"]),
+  code: z.string().min(1, "Authorization code is required"),
+  redirectUri: z.string().url("Invalid redirect URI").optional(),
+});
+
+export const disconnectIntegrationSchema = z.object({
+  provider: z.enum(["github", "slack"]),
+});
+
+export const updateWidgetConfigSchema = z.object({
+  id: z.string().uuid("Invalid widget config ID"),
+  queryParams: z.record(z.string(), z.any()).nullable(),
+});
+
+export type ConnectIntegrationInput = z.infer<typeof connectIntegrationSchema>;
+export type DisconnectIntegrationInput = z.infer<typeof disconnectIntegrationSchema>;
+export type UpdateWidgetConfigInput = z.infer<typeof updateWidgetConfigSchema>;

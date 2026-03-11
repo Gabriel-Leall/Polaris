@@ -13,3 +13,5 @@ export { default as HabitTrackerWidget } from "./HabitTrackerWidget";
 
 // Magic UI Enhanced Widgets (re-exported from folders)
 export { QuickLinksDock } from "./QuickLinksWidget/components/QuickLinksDock";
+
+export { GitHubIssuesWidget } from "./github/GitHubIssuesWidget";

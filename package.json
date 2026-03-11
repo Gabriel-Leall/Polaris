@@ -84,6 +84,7 @@
     "jest-environment-jsdom": "^29.7.0",
     "jsdom": "^27.3.0",
     "postcss": "^8.4.0",
+    "supabase": "^2.78.1",
     "typescript": "^5.3.0",
     "vitest": "^4.0.16"
   },

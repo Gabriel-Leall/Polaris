@@ -63,6 +63,7 @@ Thumbs.db
 .opencode 
 .specify
 specs
+docs/new-landing-page
 # TypeScript
 *.tsbuildinfo
 next-env.d.ts
