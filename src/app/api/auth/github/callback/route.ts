@@ -25,6 +25,8 @@ export async function GET(request: Request) {
   const cookieStore = cookies();
   const storedNonce = cookieStore.get("github_oauth_nonce")?.value;
   if (!storedNonce || storedNonce !== stateObj.nonce) {
+    // Consume the nonce on failure so it cannot be reused.
+    cookieStore.delete("github_oauth_nonce");
     return new NextResponse("Invalid state nonce", { status: 400 });
   }
   // Consume the nonce so it cannot be reused.

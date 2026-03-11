@@ -25,6 +25,8 @@ export async function GET(request: Request) {
   const cookieStore = cookies();
   const storedState = cookieStore.get("slack_oauth_state")?.value;
   if (!storedState || storedState !== stateParam) {
+    // Consume the state cookie on failure so it cannot be reused.
+    cookieStore.delete("slack_oauth_state");
     settingsUrl.searchParams.append("error", "invalid_state");
     return NextResponse.redirect(settingsUrl.toString());
   }
