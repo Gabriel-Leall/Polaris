@@ -1,4 +1,6 @@
 import { NextResponse } from "next/server";
+import crypto from "crypto";
+import { cookies } from "next/headers";
 import { getServerUser } from "@/lib/supabase-server";
 
 export async function GET(request: Request) {
@@ -17,9 +19,23 @@ export async function GET(request: Request) {
 
   const host = new URL(request.url).origin;
   const redirectUri = `${host}/api/auth/github/callback`;
-  
-  const state = JSON.stringify({ userId: user.id, next });
+
+  // Generate a cryptographically random nonce and include it in the state
+  // so the callback can verify the request originated here (CSRF protection).
+  const nonce = crypto.randomBytes(16).toString("hex");
+  const state = JSON.stringify({ userId: user.id, next, nonce });
   const encodedState = Buffer.from(state).toString('base64');
+
+  // Persist the nonce in an HttpOnly cookie for verification in the callback.
+  const cookieStore = cookies();
+  cookieStore.set({
+    name: "github_oauth_nonce",
+    value: nonce,
+    httpOnly: true,
+    sameSite: "lax",
+    maxAge: 60 * 10, // 10 minutes
+    path: "/",
+  });
 
   // GitHub OAuth params
   const githubAuthUrl = new URL("https://github.com/login/oauth/authorize");

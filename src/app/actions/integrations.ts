@@ -1,6 +1,7 @@
 "use server";
 
 import { createSupabaseServerClient, getServerUser } from "@/lib/supabase-server";
+import { decryptToken } from "@/lib/integrations/crypto";
 import { IntegrationProvider } from "@/types/integrations";
 
 /**
@@ -64,16 +65,22 @@ export async function fetchGitHubIssues() {
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase
     .from("integration_connections")
-    .select("access_token")
+    .select("encrypted_access_token")
     .eq("user_id", user.id)
     .eq("provider", "github")
     .single();
 
-  if (error || !data?.access_token) {
+  if (error || !data?.encrypted_access_token) {
     return { success: false, error: "GitHub integration not connected" };
   }
 
-  const token = data.access_token;
+  let token: string;
+  try {
+    token = decryptToken(data.encrypted_access_token);
+  } catch (decryptErr) {
+    console.error("Failed to decrypt GitHub token:", decryptErr);
+    return { success: false, error: "Failed to decrypt integration token" };
+  }
   
   try {
     const res = await fetch("https://api.github.com/issues?filter=all&state=open&sort=updated", {
