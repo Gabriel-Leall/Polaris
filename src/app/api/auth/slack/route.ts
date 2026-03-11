@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import crypto from 'crypto';
+import { cookies } from "next/headers";
 import { getServerUser } from "@/lib/supabase-server";
 
 export async function GET(_request: Request) {
@@ -14,8 +15,20 @@ export async function GET(_request: Request) {
     return NextResponse.json({ error: "Slack Client ID not configured" }, { status: 500 });
   }
 
-  // Generate a random state string for CSRF protection
+  // Generate a random state string for CSRF protection and persist it in an
+  // HttpOnly cookie so the callback can verify the request originated here.
   const state = crypto.randomBytes(16).toString('hex');
+
+  const cookieStore = cookies();
+  cookieStore.set({
+    name: "slack_oauth_state",
+    value: state,
+    httpOnly: true,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+    maxAge: 60 * 10, // 10 minutes
+    path: "/",
+  });
   
   const url = new URL('https://slack.com/oauth/v2/authorize');
   url.searchParams.append('client_id', clientId);

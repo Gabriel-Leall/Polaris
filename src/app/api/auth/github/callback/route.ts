@@ -1,4 +1,6 @@
 import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
+import { encryptToken } from "@/lib/integrations/crypto";
 import { createSupabaseServerClient, getServerUser } from "@/lib/supabase-server";
 
 export async function GET(request: Request) {
@@ -18,6 +20,17 @@ export async function GET(request: Request) {
   } catch (error) {
     return new NextResponse("Invalid state", { status: 400 });
   }
+
+  // Verify the CSRF nonce stored in the cookie matches the one in state.
+  const cookieStore = cookies();
+  const storedNonce = cookieStore.get("github_oauth_nonce")?.value;
+  if (!storedNonce || storedNonce !== stateObj.nonce) {
+    // Consume the nonce on failure so it cannot be reused.
+    cookieStore.delete("github_oauth_nonce");
+    return new NextResponse("Invalid state nonce", { status: 400 });
+  }
+  // Consume the nonce so it cannot be reused.
+  cookieStore.delete("github_oauth_nonce");
 
   const user = await getServerUser();
   if (!user || user.id !== stateObj.userId) {
@@ -59,16 +72,18 @@ export async function GET(request: Request) {
     return new NextResponse("Failed to exchange token", { status: 400 });
   }
 
-  // Save to database
+  // Encrypt the token before storing it.
+  const encryptedAccessToken = encryptToken(accessToken);
+
+  // Save to database using the correct schema column names.
   const supabase = await createSupabaseServerClient();
   
-  // Upsert integration connection
   const { error } = await supabase
     .from("integration_connections")
     .upsert({
       user_id: user.id,
       provider: "github",
-      access_token: accessToken,
+      encrypted_access_token: encryptedAccessToken,
       updated_at: new Date().toISOString()
     }, {
       onConflict: "user_id, provider"

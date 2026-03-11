@@ -1,10 +1,12 @@
 import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
 import { encryptToken } from "@/lib/integrations/crypto";
 import { getServerUser, createSupabaseServerClient } from "@/lib/supabase-server";
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
   const code = url.searchParams.get("code");
+  const stateParam = url.searchParams.get("state");
   const error = url.searchParams.get("error");
   const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
   const settingsUrl = new URL(`${appUrl}/settings/integrations`);
@@ -18,6 +20,18 @@ export async function GET(request: Request) {
     settingsUrl.searchParams.append("error", "missing_code");
     return NextResponse.redirect(settingsUrl.toString());
   }
+
+  // Verify CSRF state nonce against the value stored in the cookie.
+  const cookieStore = cookies();
+  const storedState = cookieStore.get("slack_oauth_state")?.value;
+  if (!storedState || storedState !== stateParam) {
+    // Consume the state cookie on failure so it cannot be reused.
+    cookieStore.delete("slack_oauth_state");
+    settingsUrl.searchParams.append("error", "invalid_state");
+    return NextResponse.redirect(settingsUrl.toString());
+  }
+  // Consume the state cookie so it cannot be reused.
+  cookieStore.delete("slack_oauth_state");
 
   const user = await getServerUser();
 
@@ -55,51 +69,57 @@ export async function GET(request: Request) {
     }
 
     const { authed_user, team } = tokenData;
-    const encryptedToken = encryptToken(authed_user?.access_token || tokenData.access_token);
-    const expiresAt = tokenData.expires_in 
-      ? new Date(Date.now() + tokenData.expires_in * 1000).toISOString()
+    const encryptedAccessToken = encryptToken(authed_user?.access_token || tokenData.access_token);
+    const expiresIn = typeof tokenData.expires_in === "number" && tokenData.expires_in > 0
+      ? tokenData.expires_in
       : null;
-    let metadata: any = undefined;
-    if (team) {
-      metadata = {
-        workspace_name: team.name,
-        workspace_id: team.id,
-      };
-    }
+    const tokenExpiresAt = expiresIn
+      ? new Date(Date.now() + expiresIn * 1000).toISOString()
+      : null;
 
     const supabase = await createSupabaseServerClient();
 
-    // Check if link exists
-    const { data: existingConnection } = await supabase
+    // Use maybeSingle() to avoid an error when no existing row is found.
+    const { data: existingConnection, error: selectError } = await supabase
       .from("integration_connections")
       .select("id")
       .eq("user_id", user.id)
       .eq("provider", "slack")
-      .single();
+      .maybeSingle();
+
+    if (selectError) {
+      console.error("Error checking existing connection:", selectError);
+      throw new Error("Failed to check existing connection");
+    }
 
     if (existingConnection) {
-      // Update
-      await supabase
+      const { error: updateError } = await supabase
         .from("integration_connections")
         .update({
-          encrypted_token: encryptedToken,
-          status: "connected",
-          expires_at: expiresAt,
-          metadata
+          encrypted_access_token: encryptedAccessToken,
+          token_expires_at: tokenExpiresAt,
+          updated_at: new Date().toISOString(),
         })
         .eq("id", existingConnection.id);
+
+      if (updateError) {
+        console.error("Error updating integration connection:", updateError);
+        throw new Error("Failed to update integration connection");
+      }
     } else {
-      // Insert
-      await supabase
+      const { error: insertError } = await supabase
         .from("integration_connections")
         .insert({
           user_id: user.id,
           provider: "slack",
-          encrypted_token: encryptedToken,
-          status: "connected",
-          expires_at: expiresAt,
-          metadata
+          encrypted_access_token: encryptedAccessToken,
+          token_expires_at: tokenExpiresAt,
         });
+
+      if (insertError) {
+        console.error("Error inserting integration connection:", insertError);
+        throw new Error("Failed to save integration connection");
+      }
     }
 
     settingsUrl.searchParams.append("success", "slack_connected");
