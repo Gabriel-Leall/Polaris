@@ -68,7 +68,7 @@ export async function GET(request: Request) {
       throw new Error(tokenData.error || "Failed to exchange code for token");
     }
 
-    const { authed_user, team } = tokenData;
+    const { authed_user } = tokenData;
     const encryptedAccessToken = encryptToken(authed_user?.access_token || tokenData.access_token);
     const expiresIn = typeof tokenData.expires_in === "number" && tokenData.expires_in > 0
       ? tokenData.expires_in
