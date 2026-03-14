@@ -50,6 +50,8 @@
     --chart-3: 0.7 0.16 140;
     --chart-4: 0.8 0.16 85;
     --chart-5: 0.62 0.2 25;
+
+    --highlight-mark-bg: oklch(var(--primary) / 0.22);
   }
 
   .dark {
@@ -91,6 +93,8 @@
 
     --sidebar: 0.23 0 0;
     --glass: 1 0 0 / 0.03;
+
+    --highlight-mark-bg: oklch(var(--primary) / 0.28);
   }
 
   * {

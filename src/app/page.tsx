@@ -1,15 +1,14 @@
 import { Metadata } from "next";
 
-import { LandingHeader } from "@/components/landing/LandingHeader";
-import { HeroSection } from "@/components/landing/HeroSection";
-import { DashboardPreview } from "@/components/landing/DashboardPreview";
-import { FeaturesSection } from "@/components/landing/FeaturesSection";
-import { ProblemSection } from "@/components/landing/ProblemSection";
-import { InteractiveTabs } from "@/components/landing/InteractiveTabs";
-import { ActionSection } from "@/components/landing/ActionSection";
-
-import { LandingFooter } from "@/components/landing/LandingFooter";
-import { BackgroundEffects } from "@/components/landing/BackgroundEffects";
+import {
+  Navbar,
+  Hero,
+  Features,
+  Integrations,
+  Analytics,
+  CTA,
+  Footer,
+} from "@/components/new-landing";
 
 export const metadata: Metadata = {
   title: "Axis — Painel de foco",
@@ -24,33 +23,18 @@ export const viewport = {
 
 export default function LandingPage() {
   return (
-    <div
-      className={`bg-background text-foreground antialiased overflow-x-hidden selection:bg-primary selection:text-primary-foreground`}
-    >
-      <div className="relative flex h-auto min-h-screen w-full flex-col">
-        <BackgroundEffects />
-
-        {/* Navbar fora do container principal - estilo TickTick */}
-        <LandingHeader />
-
-        <div className="layout-container flex h-full grow flex-col relative z-10 pt-16">
-          <div
-            id="main-content"
-            className="flex flex-1 justify-center py-20 lg:py-32 px-6 md:px-12"
-          >
-            <div className="layout-content-container flex flex-col max-w-[1000px] flex-1 items-center gap-24 md:gap-32">
-              <HeroSection />
-              <DashboardPreview />
-              <ProblemSection />
-              <FeaturesSection />
-              <InteractiveTabs />
-              <ActionSection />
-            </div>
-          </div>
-
-          <LandingFooter />
-        </div>
-      </div>
+    <div className="min-h-screen flex flex-col bg-background text-foreground antialiased overflow-x-hidden selection:bg-primary selection:text-primary-foreground">
+      <Navbar />
+      <main className="flex-1">
+        <Hero />
+        <Features />
+        <Integrations />
+        <Analytics />
+        <CTA />
+      </main>
+      <Footer />
+      <div className="pointer-events-none fixed inset-x-0 bottom-0 z-40 h-24 bg-gradient-to-t from-background via-background/85 to-transparent" />
+      <div className="pointer-events-none fixed inset-x-0 bottom-0 z-40 h-16 backdrop-blur-[2px]" />
     </div>
   );
 }

@@ -2,6 +2,7 @@ import { Composition, registerRoot } from "remotion";
 import { ZenTimerComposition } from "./compositions/ZenTimerComposition";
 import { BrainDumpComposition } from "./compositions/BrainDumpComposition";
 import { HabitLoopComposition } from "./compositions/HabitLoopComposition";
+import { TaskComposition } from "./compositions/TaskComposition";
 
 export const RemotionRoot: React.FC = () => {
   return (
@@ -29,6 +30,14 @@ export const RemotionRoot: React.FC = () => {
         fps={30}
         width={640}
         height={440}
+      />
+      <Composition
+        id="TaskCard"
+        component={TaskComposition}
+        durationInFrames={150} // 5 seconds at 30fps
+        fps={30}
+        width={400}
+        height={400}
       />
     </>
   );
