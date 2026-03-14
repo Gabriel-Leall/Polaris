@@ -19,6 +19,7 @@ export * from "./logo";
 export * from "./bento-grid";
 export * from "./dock";
 export * from "./blur-fade";
+export * from "./theme-highlight";
 export * from "./animated-theme-toggler";
 export { default as PolarisThemeToggle } from "./polaris-theme-toggle";
 export {

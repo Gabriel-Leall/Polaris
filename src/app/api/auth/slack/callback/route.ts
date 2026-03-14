@@ -1,14 +1,17 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { encryptToken } from "@/lib/integrations/crypto";
-import { getServerUser, createSupabaseServerClient } from "@/lib/supabase-server";
+import {
+  getServerUser,
+  createSupabaseServerClient,
+} from "@/lib/supabase-server";
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
   const code = url.searchParams.get("code");
   const stateParam = url.searchParams.get("state");
   const error = url.searchParams.get("error");
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
   const settingsUrl = new URL(`${appUrl}/settings/integrations`);
 
   if (error) {
@@ -43,7 +46,7 @@ export async function GET(request: Request) {
   try {
     const clientId = process.env.SLACK_CLIENT_ID;
     const clientSecret = process.env.SLACK_CLIENT_SECRET;
-    
+
     if (!clientId || !clientSecret) {
       throw new Error("Missing Slack credentials");
     }
@@ -68,7 +71,7 @@ export async function GET(request: Request) {
       throw new Error(tokenData.error || "Failed to exchange code for token");
     }
 
-    const { authed_user } = tokenData;
+    const { authed_user} = tokenData;
     const encryptedAccessToken = encryptToken(authed_user?.access_token || tokenData.access_token);
     const expiresIn = typeof tokenData.expires_in === "number" && tokenData.expires_in > 0
       ? tokenData.expires_in
