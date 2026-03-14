@@ -450,7 +450,6 @@ export function LandingAnimatedWidget() {
 }
 
 export default function LandingPageAnimated() {
-
   return (
     <div className="min-h-screen bg-neutral-950 text-neutral-100">
       <nav className="sticky top-0 z-50 flex h-14 items-center justify-between border-b border-white/10 bg-neutral-950/85 px-8 backdrop-blur">
